@@ -1,0 +1,344 @@
+body{
+  padding-top: 60px;
+  font-size: 14px;
+}
+
+.avatar {
+    border-radius: 288419px;
+    height: 24px;
+}
+.button.is-active, .button:active {
+    border-color: #fff;
+    color: #fff;
+    background-color: hsl(348, 100%, 61%);
+}
+
+html, body, *, .textarea, .input, .select, .button {
+        font-family: 'Quicksand', sans-serif;
+      }
+      .input, .textarea{
+        box-shadow: none;
+      }
+      .login-banner{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow-y: auto;
+        z-index: 0;
+      }
+      .cover_image{
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .fixed-bottom{
+        position: fixed;
+        z-index: 2;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+      .pad{
+        padding: 3em;
+      }
+      .select2-container .select2-selection--single{
+        height: auto;
+        padding: 7px;
+      }
+      .select2-container--default .select2-selection--single .select2-selection__arrow {
+        top: 8px;
+      }
+      .select2-container--default .select2-search--dropdown .select2-search__field {
+        padding: 0.5rem;
+      }
+      .select2-container--default .select2-results__option--highlighted[aria-selected]{
+        background-color: #38c172;
+      }
+      .select2-container--default .select2-results__option[aria-selected="true"]{
+        background-color: #f8fafc;
+        color: #38c172;
+      }
+      .adjusted-top{
+        margin-top: 2em;
+      }
+      .footer{
+        padding: 2em 1.5em;
+      }
+      .pp-box{
+        width: 12em;
+        height: 12em;
+        border: solid #dbdbdb 1px;
+        border-radius: .25em;
+        cursor: pointer;
+        background-size: cover;
+        background-position: top center;
+        background-repeat: no-repeat;
+        position: relative;
+      }
+      .pp-box>.icon{
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+      }
+      .preview-box-wide{
+        height: 6em;
+        border: solid #dbdbdb 1px;
+        border-radius: .25em;
+        cursor: pointer;
+        background-size: cover;
+        background-position: top center;
+        background-repeat: no-repeat;
+        position: relative;
+      }
+      .preview-box-wide>.icon{
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+      }
+      .avatar{
+        border-radius: 288419px;
+        height: 24px;
+      }
+      .barcode{
+        font-family: 'Libre Barcode 39', cursive;
+      }
+      .idcard-header{
+        border-bottom: solid #003da0 2px;
+        margin-bottom: 1em;
+      }
+      .idcard-tagline{
+        color: #de9000;
+        padding-bottom: 2px;
+        border-bottom: solid 2px #003da0;
+        font-size: 0.65rem;
+        text-align: center;
+        margin-bottom: 1em;
+        font-weight: bold;
+      }
+      .box{
+        box-shadow: none;
+        border: solid #dbdbdb 1px;
+      }
+      .button{
+        font-weight: bold;
+      }
+      h2, h2.title{
+        color: #ff3860;
+      }
+      .column .label:last-child{
+        margin-top: .25em;
+      }
+      @media print {
+        .to-print{
+          display: block !important;
+        }
+        .no-print{
+          display: none !important;
+        }
+        .card-print{
+          margin-bottom: -95px !important;
+        }
+        body{
+          background-color: #fff !important;
+        }
+        .page-break{
+          page-break-after: always;
+        }
+        .bg-grey-lighter{
+          background-color: #fff;
+        }
+        .all_id_cards:last-child{
+          display: none !important;
+        }
+        .pad-right{
+          padding-right: 10px !important;
+        }
+        .pad-bottom{
+          padding-bottom: 10px !important;
+        }
+      }
+
+
+@media (min-width:1200px) {
+  .container {
+    max-width: 95%;
+    margin: 0 auto;
+  }
+}
+
+@media print {
+        .to-print{
+          display: block !important;
+        }
+        .no-print{
+          display: none !important;
+        }
+        body{
+          background-color: #fff !important;
+        }
+        .page-break{
+          page-break-after: always;
+        }
+        .bg-grey-lighter{
+          background-color: #fff;
+        }
+        .all_id_cards:last-child{
+          display: none !important;
+        }
+        .pad-right{
+          padding-right: 10px !important;
+        }
+        .pad-bottom{
+          padding-bottom: 10px !important;
+        }
+      }
+
+
+@media print {
+  .page-break {page-break-after: always;}
+
+  .print-box{
+    margin-top: -50px;
+    font-size: 12px !important;
+  }
+
+  .divFooter {
+    position: fixed;
+    bottom: 0;
+  }
+
+  .container {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  
+  .no-print, .no-print *
+    {
+        display: none !important;
+    }
+
+}/*end of media print*/
+
+
+.login-box{
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+.login-card{
+  margin-top: -60px;
+  width: 100%;
+}
+.master-nav {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+th.serial-col{
+  width: 40px;
+}
+.two-buttons{
+  width: 100px;
+}
+.table-buttons .material-icons {
+  font-size: 16px;
+}
+i.material-icons{
+  font-size: 16px;
+}
+tr.input-row{
+  background-color: #f9f9f9;
+}
+.delete-question{
+  color: #dd0000;
+  font-style: italic;
+  font-weight: bold;
+}
+
+/* theme change start */
+.bg-primary {
+    background-color: #476075!important;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #4B6173;
+    border-color: #4B6173;
+}
+.btn-primary{
+    color: #fff;
+    background-color: #476075;
+    border-color: #476075;
+}
+
+.nav-pills .nav-link.active, .nav-pills .nav-link.active:focus, .nav-pills .nav-link.active:hover {
+    color: #fff;
+    cursor: default;
+    background-color: #23e0cf;
+}
+
+.navbar-dark .navbar-brand {
+    color: #fff;
+    font-weight: 600;
+}
+
+.navbar{
+      padding: 2px 1rem !important;
+}
+
+.nav-link.active{
+  font-size:18px;
+}
+/* theme change end */
+
+.alphabet-list{
+  list-style: none;
+  margin: 0;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  padding-left: 15px;
+}
+.alphabet-list li {
+  display: inline-block;
+  cursor: pointer;
+  padding: 3px 10px;
+  /*border-right: solid #ddd 1px;*/
+}
+.alphabet-list li:first-child{
+  padding-left: 0;
+}
+.alphabet-list li.active {
+  color: #dd0000;
+  cursor: default;
+}
+
+.footer {
+  padding: 2em 1.5em;
+}
+
+
+
+/* css written by sanjay */
+.slno{
+  width: 75px;
+}
+.ml10{
+  margin-left:10px !important;
+}
+.ml5{
+  margin-left:5px !important;
+}
+.is-vertical-center{
+  display: flex;
+  align-items: center;
+}
+break{
+  flex-basis: 100%;
+  width: 0px; 
+  height: 0px; 
+  overflow: hidden;
+}
+/* css written by sanjay end */

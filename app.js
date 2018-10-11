@@ -1,0 +1,217 @@
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+var connection  = require('express-myconnection'); 
+var mysql = require('mysql');
+const jwt = require('jsonwebtoken');
+//var compression  = require('compression')
+
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+var loginRouter = require('./routes/login');
+var examSchemeRouter = require('./routes/exam-scheme');
+var gradeRouter = require('./routes/grade');
+var marksManagerRouter = require('./routes/marks-manager');
+var marksEntryRouter = require('./routes/marks-entry');
+var marksReportRouter = require('./routes/marks-report');
+var maturityDevelopmentReportRouter = require('./routes/maturity-development');
+var resultActivationReportRouter = require('./routes/result-activation');
+var physicalFitnessReportRouter = require('./routes/physical-fitness');
+var subjectGroupMapReportRouter = require('./routes/exam-subject-group-map');
+var studentAssignHouseRouter = require('./routes/student-assign-house');
+var studentGroupStudentRouter = require('./routes/student-group-student');
+
+
+//Bodhi
+var rolesRouter = require('./routes/roles');
+var coursesRouter = require('./routes/courses');
+var activityitemRouter = require('./routes/activity_item');
+var activitycategoryRouter = require('./routes/activity_category');
+var activityeventRouter = require('./routes/activity_event');
+var activityRouter = require('./routes/activity');
+var classteacherRouter = require('./routes/classteacher');
+var mentorCategoryRouter = require('./routes/mentor_category');
+var mentorCaseRouter = require('./routes/mentor_case');
+var mentorDetailRouter = require('./routes/mentor_detail');
+var mentorReportRouter = require('./routes/mentor_report');
+var disciplineCategoryRouter = require('./routes/discipline_category');
+var disciplineCaseRouter = require('./routes/discipline_case');
+var disciplineDetailRouter = require('./routes/discipline_detail');
+var disciplineReportRouter = require('./routes/discipline_report');
+var studentRouter = require('./routes/student');
+
+
+//Tarique
+var rolesRouter = require('./routes/roles');
+var coursesRouter = require('./routes/courses');
+var itemRouter = require('./routes/item');
+var employeeTypeRouter = require('./routes/employee_type');
+var eventTypeRouter = require('./routes/event_type');
+var designationsRouter = require('./routes/designations');
+var levelRouter = require('./routes/level');
+var countryRouter = require('./routes/country');
+var cityRouter = require('./routes/city');
+var religionRouter = require('./routes/religion');
+var areaRouter = require('./routes/area');
+var stateRouter = require('./routes/state');
+var standardRouter = require('./routes/standard');
+var sectionRouter = require('./routes/section');
+var clubRouter = require('./routes/club');
+var parentgroupRouter = require('./routes/parent_group');
+var remarkRouter = require('./routes/remark');
+var inventoryDepartmentRouter = require('./routes/inventory_department');
+var emplyomentStatusRouter = require('./routes/employment_status');
+var employeeStatusRouter = require('./routes/role');
+var categoryRouter = require('./routes/category');
+
+var infarmaryCategoryRouter = require('./routes/infirmary_category');
+var infarmaryCaseRouter = require('./routes/infirmary_case');
+var infarmaryStudentRouter = require('./routes/infirmary_student');
+var infirmaryStaffRouter = require('./routes/infirmary_staff');
+
+var inventoryRackRouter = require('./routes/inventory_rack');
+var inventoryUnitRouter = require('./routes/inventory_unit');
+var inventoryCategoryRouter = require('./routes/inventory_category');
+var inventorySubcategoryRouter = require('./routes/inventory_subcategory');
+var inventoryItemRouter = require('./routes/inventory_item');
+var inventoryStockRouter = require('./routes/inventory_stock');
+var inventoryIssueRouter = require('./routes/inventory_issue');
+var inventorySaleRouter = require('./routes/inventory_sale');
+
+var staffBPWeightRouter = require('./routes/staff_bp_weight');
+var eventRouter = require('./routes/event');
+var newEventRouter = require('./routes/new_event');
+var classHolidayRouter = require('./routes/class_holiday');
+
+
+//ghulam
+var sessionRouter = require('./routes/fees_session');
+var bankRouter = require('./routes/bank');
+var fineSettingRouter = require('./routes/fine_setting');
+var feeHeadRouter = require('./routes/fee_heads');
+var feeSlipRouter = require('./routes/fee_slips');
+var feePlanRouter = require('./routes/fee_plans');
+var applyPlanRouter = require('./routes/apply_fee_plans');
+var scholarshipRouter = require('./routes/scholarship');
+
+var app = express();
+
+app.use(logger('dev'));
+app.use(
+    
+    connection(mysql,{
+        
+        host: 'localhost',
+        user: 'root',
+        password : '',
+        database:'mckvieor_school'
+    },'request')
+)
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+//app.use(compression);
+
+var mysql = require('mysql')
+
+function verifyToken(req, res, next) {
+  console.log('here');
+    // Get auth header value
+    const bearerHeader = req.headers['authorization'];
+    console.log(bearerHeader);
+    // Check if bearer is undefined
+    jwt.verify(bearerHeader, 'secretkey', (err, authData) => {
+      if(err) {
+        res.sendStatus(403);
+      } else {
+        next();
+      }
+    });
+}
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+app.use('/login', loginRouter);
+app.use('/exam-scheme', verifyToken, examSchemeRouter);
+app.use('/grade', verifyToken, gradeRouter);
+app.use('/marks-manager', verifyToken, marksManagerRouter);
+app.use('/marks-entry', verifyToken, marksEntryRouter);
+app.use('/marks-report', verifyToken, marksReportRouter);
+app.use('/maturity-development', verifyToken, maturityDevelopmentReportRouter);
+app.use('/result-activation', verifyToken, resultActivationReportRouter);
+app.use('/physical-fitness', verifyToken, physicalFitnessReportRouter);
+app.use('/exam-subject-group-map', verifyToken, subjectGroupMapReportRouter);
+app.use('/student-assign-house', verifyToken, studentAssignHouseRouter);
+app.use('/student-group-student', verifyToken, studentGroupStudentRouter);
+
+//Bodhi
+app.use('/roles', verifyToken, rolesRouter);
+app.use('/courses', verifyToken, coursesRouter);
+app.use('/activity_item', verifyToken, activityitemRouter);
+app.use('/activity_category', verifyToken, activitycategoryRouter);
+app.use('/activity_event', verifyToken, activityeventRouter);
+app.use('/activity', verifyToken, activityRouter);
+app.use('/classteacher', verifyToken, classteacherRouter);
+app.use('/mentor_category', verifyToken, mentorCategoryRouter);
+app.use('/mentor_case', verifyToken, mentorCaseRouter);
+app.use('/mentor_detail', verifyToken, mentorDetailRouter);
+app.use('/mentor_report', verifyToken, mentorReportRouter);
+app.use('/discipline_category', verifyToken, disciplineCategoryRouter);
+app.use('/discipline_case', verifyToken, disciplineCaseRouter);
+app.use('/discipline_detail', verifyToken, disciplineDetailRouter);
+app.use('/discipline_report', verifyToken, disciplineReportRouter);
+app.use('/student', verifyToken, studentRouter);
+
+//Tarique
+app.use('/roles', verifyToken, rolesRouter);
+app.use('/item', verifyToken, itemRouter);
+app.use('/employee_type', verifyToken, employeeTypeRouter);
+app.use('/event_type', verifyToken, eventTypeRouter);
+app.use('/designations',  verifyToken, designationsRouter);
+app.use('/level', verifyToken, levelRouter);
+app.use('/country', verifyToken, countryRouter);
+app.use('/city', verifyToken, cityRouter);
+app.use('/state', verifyToken, stateRouter);
+app.use('/religion', verifyToken, religionRouter);
+app.use('/standard', verifyToken, standardRouter);
+app.use('/section', verifyToken, sectionRouter);
+app.use('/parent_group', verifyToken, parentgroupRouter);
+app.use('/remark', verifyToken, remarkRouter);
+app.use('/inventory_department', verifyToken, inventoryDepartmentRouter);
+app.use('/club', verifyToken, clubRouter);
+app.use('/area', verifyToken, areaRouter);
+app.use('/employment_status', verifyToken, emplyomentStatusRouter);
+app.use('/role', verifyToken, employeeStatusRouter);
+app.use('/infirmary_category', verifyToken, infarmaryCategoryRouter);
+app.use('/infirmary_case', verifyToken, infarmaryCaseRouter);
+app.use('/infirmary_student', verifyToken, infarmaryStudentRouter);
+app.use('/infirmary_staff', verifyToken, infirmaryStaffRouter);
+
+app.use('/inventory_rack', verifyToken, inventoryRackRouter);
+app.use('/inventory_unit', verifyToken, inventoryUnitRouter);
+app.use('/inventory_category', verifyToken, inventoryCategoryRouter);
+app.use('/inventory_subcategory', verifyToken, inventorySubcategoryRouter);
+app.use('/inventory_item', verifyToken, inventoryItemRouter);
+app.use('/inventory_stock', verifyToken, inventoryStockRouter);
+app.use('/inventory_issue', verifyToken, inventoryIssueRouter);
+app.use('/inventory_sale', verifyToken, inventorySaleRouter);
+
+app.use('/staff_bp_weight', verifyToken, staffBPWeightRouter);
+app.use('/event', verifyToken, eventRouter);
+app.use('/new_event', verifyToken, newEventRouter);
+app.use('/class_holiday', verifyToken, classHolidayRouter);
+
+
+//ghulam
+app.use('/bank', verifyToken, bankRouter);
+app.use('/fees_session', verifyToken, sessionRouter);
+app.use('/fine_setting', verifyToken, fineSettingRouter);
+app.use('/fee_heads', verifyToken, feeHeadRouter);
+app.use('/fee_slips', verifyToken, feeSlipRouter);
+app.use('/fee_plans', verifyToken, feePlanRouter);
+app.use('/apply_fee_plans', verifyToken, applyPlanRouter);
+app.use('/scholarship', verifyToken, scholarshipRouter);
+
+module.exports = app;
