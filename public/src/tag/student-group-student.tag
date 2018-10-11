@@ -7,102 +7,13 @@
         <h2 class="title" style="color: #ff3860;">Group Student</h2>
       </div>
       <div class="level-right">
-        <button class="button is-warning is-rounded" onclick={openHouseModal}>
+        <button class="button is-warning is-rounded" onclick={openStudentGroupModal}>
         <span class="icon">
           <span class="fas fa-plus"></span>
         </span>
         </button>
 
-        <button class="button is-warning is-rounded" onclick={readAssignHouse} style="margin-left:2px">
-        <span class="icon">
-          <span class="fas fa-sync-alt"></span>
-        </span>
-        </button>
-      </div>
-    </div>
-
-		<table class="table is-fullwidth is-striped is-hoverable">
-			<thead>
-				<tr>
-					<th class="slno">SL</th>
-          <th>House</th>
-					<th>Captain</th>
-          <th>Vice-Captain</th>
-					<th>No of Students</th>
-          <th></th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr each={c, i in houses}>
-					<td>{ i+1 }</td>
-          <td>{ c.house_name}</td>
-          <td>{ c.captain_name}</td>
-          <td>{ c.vice_captain_name}</td>
-					<td>{ c.number_of_students}</td>
-        	<td class="has-text-right">
-      			<div class="inline-flex rounded border border-grey overflow-hidden" hide={c.confirmDelete}>
-        				<span><a class="button is-small is-rounded" onclick={edit.bind(this, c)}>Edit</a></span>
-                <span><a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
-        				<span><a class="button is-small is-rounded" onclick={assignStudentsFrom.bind(this, c)}>Students</a></span>
-                <span><a class="button is-small is-rounded" onclick={openCaptainFrom.bind(this, c)}>Captain</a></span>
-                <span><a class="button is-small is-rounded" onclick={details.bind(this, c)}>Details</a></span>
-      			</div>
-      			<div class="table-buttons" if={c.confirmDelete}>
-        				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
-        				<span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
-      			</div>
-    			</td>
-				</tr>
-			</tbody>
-		</table>
-	</section>
-
-  <!-- Open House Modal Start -->
-  <div id="houseModal" class="modal ">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head">
-        <p class="modal-card-title">{title} House</p>
-      </header>
-      <section class="modal-card-body">
-        
-        <div class="columns">
-          <div class="column">
-            <div class="field">
-              <label class="label" for="role">House</label>
-              <div class="control">
-                <input class="input" type="text" ref="houseInput" >
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </section>
-      <footer class="modal-card-foot">
-        <button class="button is-danger" onclick={add} >{title}</button>
-        <button class="button" id="item-modal-close" onclick={closeHouseModal}>Cancel</button>
-      </footer>
-    </div>
-  </div>
-  <!-- House Modal End -->
-
-
-  <!-- ***************************************************Students Start************************************************ -->
-
-
-  <section class=" is-fluid" show={view=='students'}>
-
-    <div class="level">
-      <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">Students Under : {house}</h2>
-      </div>
-      <div class="level-right">
-        <button class="button is-warning is-rounded" onclick={backToAssignHouse}>
-        <span class="icon">
-          <span class="fas fa-arrow-left"></span>
-        </span>
-        </button>
-        <button class="button is-warning is-rounded ml5" onclick={refreshStudents}>
+        <button class="button is-warning is-rounded" onclick={readStudentGroup} style="margin-left:2px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
@@ -138,11 +49,137 @@
         </div>
 
         <div class="column">
-          <button class="button is-danger has-text-weight-bold" onclick={refreshStudents} >GO </button>
+          <button class="button is-danger has-text-weight-bold" onclick={readStudentGroup} >GO </button>
         </div>
           
       </div>
     </div> 
+
+		<table class="table is-fullwidth is-striped is-hoverable">
+			<thead>
+				<tr>
+					<th class="slno">SL</th>
+          <th>Group</th>
+					<th>Details</th>
+          <th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr each={c, i in studentGroups}>
+					<td>{ i+1 }</td>
+          <td>{ c.group_name}</td>
+          <td>{ c.group_detail}</td>
+        	<td class="has-text-right">
+      			<div class="inline-flex rounded border border-grey overflow-hidden" hide={c.confirmDelete}>
+        				<span><a class="button is-small is-rounded" onclick={edit.bind(this, c)}>Edit</a></span>
+                <span><a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+        				<span><a class="button is-small is-rounded" onclick={assignStudentsFrom.bind(this, c)}>Students</a></span>
+                <span><a class="button is-small is-rounded" onclick={openCaptainFrom.bind(this, c)}>Captain</a></span>
+                <span><a class="button is-small is-rounded" onclick={details.bind(this, c)}>Details</a></span>
+      			</div>
+      			<div class="table-buttons" if={c.confirmDelete}>
+        				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
+        				<span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
+      			</div>
+    			</td>
+				</tr>
+			</tbody>
+		</table>
+	</section>
+
+  <!-- Open House Modal Start -->
+  <div id="studentGroupModal" class="modal ">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">{title} Student Group</p>
+      </header>
+      <section class="modal-card-body">
+        
+        <div class="columns">
+          <div class="column">
+            <div class="field">
+              <label class="label" for="role">Student Group</label>
+              <div class="control">
+                <input class="input" type="text" ref="studentGroupInput" >
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="label" for="role">Details</label>
+              <div class="control">
+                <textarea class="textarea" type="text" rows="2" ref="detailsInput"></textarea> 
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-danger" onclick={add} >{title}</button>
+        <button class="button" id="item-modal-close" onclick={closeStudentGroupModal}>Cancel</button>
+      </footer>
+    </div>
+  </div>
+  <!-- House Modal End -->
+
+
+  <!-- ***************************************************Students Start************************************************ -->
+
+
+  <section class=" is-fluid" show={view=='students'}>
+
+    <div class="level">
+      <div class="level-left">
+        <h2 class="title" style="color: #ff3860;">Students Under : {house}</h2>
+      </div>
+      <div class="level-right">
+        <button class="button is-warning is-rounded" onclick={backToAssignHouse}>
+        <span class="icon">
+          <span class="fas fa-arrow-left"></span>
+        </span>
+        </button>
+        <button class="button is-warning is-rounded ml5" onclick={refreshStudents}>
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- <div class="box">
+      <div class="columns">
+
+        <div class="column is-narrow"><label class="label">Standard</label></div>  
+        <div class="column">  
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select ref="standardSelect" onchange={changeSection}>
+                <option value="">Select Standard</option>
+                <option each={classes} value={standard_id}>{standard}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="column is-narrow"><label class="label">Section</label></div>  
+        <div class="column">  
+          <div class="control">
+            <div class="select is-fullwidth">
+              <select ref="sectionSelect">
+                <option value="">Select Section</option>
+                <option each={tempSections} value={section_id}>{section}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="column">
+          <button class="button is-danger has-text-weight-bold" onclick={refreshStudents} >GO </button>
+        </div>
+          
+      </div>
+    </div>  -->
 
      <div class="columns is-multiline is-mobile">
 
@@ -162,7 +199,7 @@
                 <td>{c.enroll_number}</td>
                 <td>{c.first_name} {c.middle_name} {c.last_name}</td>
                 <td class="has-text-right">
-                  <input type="checkbox" checked={selected} id="{'freeSubjectCheckBox'+c.house_id}" onclick={selectFreeSubject.bind(this,c)} > 
+                  <input type="checkbox" checked={selected} id="{'freeSubjectCheckBox'+c.group_id}" onclick={selectFreeSubject.bind(this,c)} > 
                 </td>
               </tr>
             </tbody>
@@ -199,7 +236,7 @@
             <tbody>
               <tr each={c, i in assignedStudents}>
                 <td class="has-text-right">
-                  <input type="checkbox" checked={selected} id="{'assignedSubjectCheckBox'+c.house_id}" onclick={selectAssigndSubject.bind(this,c)} > 
+                  <input type="checkbox" checked={selected} id="{'assignedSubjectCheckBox'+c.group_id}" onclick={selectAssigndSubject.bind(this,c)} > 
                 </td>
                 <td>{c.roll_number}</td>
                 <td>{c.enroll_number}</td>
@@ -314,21 +351,23 @@
       self.view = 'student-group-students'
       self.loading = false;
       self.update()
-      flatpickr(".date", {
-        allowInput: true,
-        dateFormat: "d/m/Y",
-      })
-      self.readAssignHouse()
+      // flatpickr(".date", {
+      //   allowInput: true,
+      //   dateFormat: "d/m/Y",
+      // })
+      // self.readStudentGroup()
       self.readClass()
       self.readSection()
     })
     self.on("unmount", function(){
-      studentGroupStudentStore.off('house_changed', AssignHouseChanged)
+      studentGroupStudentStore.off('read_classes_changed',ClassesChanged)
+      studentGroupStudentStore.off('read_section_changed',SectionChanged)
+      studentGroupStudentStore.off('read_student_groups_changed',readStudentGroupsChanged)
+      
+      
       studentGroupStudentStore.off('add_house_changed',AddAssignHouseChanged)
       studentGroupStudentStore.off('delete_house_changed',DeleteAssignHouseChanged)
 
-      studentGroupStudentStore.off('read_classes_changed',ClassesChanged)
-      studentGroupStudentStore.off('read_section_changed',SectionChanged)
 
       studentGroupStudentStore.off('read_students_changed',ReadStudentsChanged)
       studentGroupStudentStore.off('assign_students_changed',AssignStandardChanged)
@@ -359,52 +398,71 @@
        }
     }
 
-    //read courses
-    self.readAssignHouse = () => {
-       self.loading = true;
-       studentGroupStudentStore.trigger('read_houses')
+    self.readStudentGroup = () => {
+      let error = '';
+      
+      if(self.refs.standardSelect.value==''){
+        error = error + "Please select standard, "
+      }
+
+      if(self.refs.sectionSelect.value==''){
+        error = error + "Please select section, "
+      }
+
+      if(error.length!=0){
+        toastr.error(error)
+        return
+      }else{
+        self.loading = true
+        studentGroupStudentStore.trigger('read_student_groups', self.refs.standardSelect.value, self.refs.sectionSelect.value) 
+      }
+       
     }
 
-    self.openHouseModal = () => {
+    self.openStudentGroupModal = () => {
       self.title = 'Add'
-      $("#houseModal").addClass("is-active");
+      $("#studentGroupModal").addClass("is-active");
     }
 
-    self.closeHouseModal = () => {
-      $("#houseModal").removeClass("is-active");
+    self.closeStudentGroupModal = () => {
+      $("#studentGroupModal").removeClass("is-active");
     }
 
     self.add = () => {
-      if(!self.refs.houseInput.value){
+      if(!self.refs.studentGroupInput.value){
         toastr.info("Please enter House and try again")
       }else{
         self.loading = true
         if(self.title=='Add'){
-          studentGroupStudentStore.trigger('add_house', self.refs.houseInput.value)
+          studentGroupStudentStore.trigger('add_house', self.refs.studentGroupInput.value, self.refs.detailsInput.value)
         }else if(self.title=='Update'){
-          studentGroupStudentStore.trigger('update_house', self.refs.houseInput.value,self.edit_id)
+          studentGroupStudentStore.trigger('update_house', self.refs.studentGroupInput.value,self.refs.detailsInput.value, self.edit_id)
         }
       }
     }
 
+
+
+
     self.edit = (c,e) => {
       console.log(c)
       self.title='Update'
-      $("#houseModal").addClass("is-active");
-      self.refs.houseInput.value = c.house_name
-      self.edit_id = c.house_id
+      $("#studentGroupModal").addClass("is-active");
+      self.refs.studentGroupInput.value = c.group_name
+      self.refs.detailsInput.value = c.group_detail
+      self.edit_id = c.group_id
     }
 
     self.cancelOperation = (e) => {
-      self.houses.map(c => {
+      self.studentGroups.map(c => {
           c.confirmDelete = false
           c.confirmEdit = false
       })
     }
 
     self.confirmDelete = (e) => {
-      self.houses.map(c => {
-        if(c.house_id != e.item.c.house_id){
+      self.studentGroups.map(c => {
+        if(c.group_id != e.item.c.group_id){
           c.confirmDelete = false
         }else{
           c.confirmDelete = true
@@ -414,7 +472,7 @@
 
     self.delete = (e) => {
       self.loading = true
-      studentGroupStudentStore.trigger('delete_house', e.item.c.house_id)
+      studentGroupStudentStore.trigger('delete_house', e.item.c.group_id)
     }
 
 
@@ -422,7 +480,7 @@
     
     self.assignStudentsFrom = (c) => {
       self.house = c.house_name
-      self.house_id = c.house_id
+      self.group_id = c.group_id
       self.view='students'
     }
 
@@ -443,7 +501,7 @@
         return
       }else{
         self.loading = true
-        studentGroupStudentStore.trigger('read_students', self.house_id, self.refs.standardSelect.value, self.refs.sectionSelect.value) 
+        studentGroupStudentStore.trigger('read_students', self.group_id, self.refs.standardSelect.value, self.refs.sectionSelect.value) 
       }
       
     }
@@ -469,7 +527,7 @@
       let students_to_assign = self.freeStudents.filter(c=>{
         return c.selected == true
       })
-      console.log(self.house_id)
+      console.log(self.group_id)
       console.log(students_to_assign)
 
       if(students_to_assign.length==0){
@@ -477,7 +535,7 @@
         return
       }else{
         self.loading = true
-        studentGroupStudentStore.trigger('assign_students', self.house_id, students_to_assign)
+        studentGroupStudentStore.trigger('assign_students', self.group_id, students_to_assign)
       }
     }
 
@@ -491,7 +549,7 @@
         return
       }else{
         self.loading = true
-        studentGroupStudentStore.trigger('free_up_student', self.house_id, students_to_free)
+        studentGroupStudentStore.trigger('free_up_student', self.group_id, students_to_free)
       }
     }
 
@@ -504,15 +562,15 @@
     self.details = (c,e) => {
       self.house_for_captain = c.house_name
       self.view = 'details'
-      studentGroupStudentStore.trigger('read_student_by_house_details', c.house_id)
+      studentGroupStudentStore.trigger('read_student_by_house_details', c.group_id)
     }
 
     self.openCaptainFrom = (c,e) => {
       self.house_for_captain = c.house_name
-      self.house_id_captain = c.house_id
+      self.group_id_captain = c.group_id
       self.captain_id = c.captain_id
       self.vice_captain_id = c.vice_captain_id
-      studentGroupStudentStore.trigger('read_student_by_house', c.house_id)
+      studentGroupStudentStore.trigger('read_student_by_house', c.group_id)
     }
 
     self.closeCaptainForm = () => {
@@ -540,45 +598,13 @@
         return
       }else{
         self.loading = true
-        studentGroupStudentStore.trigger('update_house_captain', self.house_id_captain, self.refs.captainSelect.value, self.refs.viceCaptainSelect.value)
+        studentGroupStudentStore.trigger('update_house_captain', self.group_id_captain, self.refs.captainSelect.value, self.refs.viceCaptainSelect.value)
       }
 
     }
 
     // ****************************************** all change metods *************************************
-
-    studentGroupStudentStore.on('house_changed',AssignHouseChanged)
-    function AssignHouseChanged(houses){
-      console.log(houses) 
-      self.loading = false
-      self.houses = []
-      self.houses = houses
-      self.update()
-      console.log(self.houses)
-    }
-
-    studentGroupStudentStore.on('add_house_changed',AddAssignHouseChanged)
-    function AddAssignHouseChanged(houses){
-      self.refs.houseInput.value=''
-      self.closeHouseModal()
-      self.loading = false
-      self.houses = []
-      self.houses = houses
-      self.update()
-      console.log(self.houses)
-    }
-
-    studentGroupStudentStore.on('delete_house_changed',DeleteAssignHouseChanged)
-    function DeleteAssignHouseChanged(houses){
-      self.loading = false
-      self.houses = []
-      self.houses = houses
-      self.update()
-      console.log(self.houses)
-    }
-
-   /************************************************ Students Changed Method ************************************************/
-   studentGroupStudentStore.on('read_classes_changed',ClassesChanged)
+    studentGroupStudentStore.on('read_classes_changed',ClassesChanged)
     function ClassesChanged(classes){
       self.loading = false
       self.classes = []
@@ -594,6 +620,42 @@
       self.sections = sections
       self.update()
     }
+
+    studentGroupStudentStore.on('read_student_groups_changed',readStudentGroupsChanged)
+    function readStudentGroupsChanged(studentGroups){
+      self.loading = false
+      self.studentGroups = []
+      self.studentGroups = studentGroups
+      self.update()
+    }
+
+
+
+
+
+    studentGroupStudentStore.on('add_house_changed',AddAssignHouseChanged)
+    function AddAssignHouseChanged(studentGroups){
+      self.refs.studentGroupInput.value=''
+      self.refs.detailsInput.value=''
+      self.closeStudentGroupModal()
+      self.loading = false
+      self.studentGroups = []
+      self.studentGroups = studentGroups
+      self.update()
+      console.log(self.studentGroups)
+    }
+
+    studentGroupStudentStore.on('delete_house_changed',DeleteAssignHouseChanged)
+    function DeleteAssignHouseChanged(studentGroups){
+      self.loading = false
+      self.studentGroups = []
+      self.studentGroups = studentGroups
+      self.update()
+      console.log(self.studentGroups)
+    }
+
+   /************************************************ Students Changed Method ************************************************/
+   
 
     studentGroupStudentStore.on('read_students_changed',ReadStudentsChanged)
     function ReadStudentsChanged(freeStudents,assignedStudents){
@@ -635,7 +697,7 @@
     studentGroupStudentStore.on('update_house_captain_changed',UpdateHouseCaptainChanged)
     function UpdateHouseCaptainChanged(students){
        $("#captainModal").removeClass("is-active");
-       self.readAssignHouse()
+       self.readStudentGroup()
     }
 
     studentGroupStudentStore.on('read_student_by_house_details_changed',ReadStudentsByHouseDetailsChanged)

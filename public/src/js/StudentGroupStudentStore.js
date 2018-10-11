@@ -2,119 +2,8 @@ function StudentGroupStudentStore() {
   riot.observable(this) // Riot provides our event emitter.
   var self = this
 
-  self.houses = []
+  self.studentGroups = []
 
-  self.on('read_houses', function() {
-    let req = {}
-    $.ajax({
-      url:'/student-group-student',
-        contentType: "application/json",
-        dataType:"json",
-        headers: {"Authorization": getCookie('token')},
-        success: function(data){
-          console.log(data)
-          if(data.status == 's'){
-            self.houses = data.houses
-            self.trigger('house_changed', data.houses)
-          }else if(data.status == 'e'){
-            showToast("House Read Error. Please try again.", data.messaage)
-          }
-        },
-        error: function(data){
-          showToast("", data)
-        }
-      })
-  })
-
-  self.on('add_house', function(house) {
-    let req = {}
-    req.house=house
-    $.ajax({
-      url:'/student-group-student/add',
-        type:"POST",
-        data: JSON.stringify(req),
-        contentType: "application/json",
-        dataType:"json",
-        headers: {"Authorization": getCookie('token')},
-        success: function(data){
-          console.log(data)
-          if(data.status == 's'){
-            let obj = {}
-            obj.id = data.id
-            obj.house = house
-            self.houses = [obj, ...self.houses]
-            toastr.success("House Created Successfully ")
-            self.trigger('add_house_changed', self.houses)
-          }else if(data.status == 'e'){
-            showToast("Error adding Item. Please try again.", data.messaage)
-          }
-        },
-        error: function(data){
-          showToast("", data)
-        }
-      })
-  })
-
-
-  self.on('update_house', function(house,id) {
-    let req = {}
-    req.house=house
-    req.id=id
-    $.ajax({
-      url:'/student-group-student/edit/'+id,
-        type:"POST",
-        data: JSON.stringify(req),
-        contentType: "application/json",
-        dataType:"json",
-        headers: {"Authorization": getCookie('token')},
-        success: function(data){
-          if(data.status == 's'){
-            self.houses = self.houses.map(cat => {
-              if(cat.house_id == id){
-                cat.house_id = id
-                cat.house_name=house
-              }
-              cat.confirmEdit = false
-              return cat
-            })
-            toastr.success("House Updated Successfully ")
-            self.trigger('add_house_changed', self.houses) // same trigger, as Add House
-          }else if(data.status == 'e'){
-            showToast("Error updating House. Please try again.", data.messaage)
-          }
-        },
-        error: function(data){
-          showToast("", data)
-        }
-      })
-  })
-
-  self.on('delete_house', function(id) {
-    $.ajax({
-      url:'/student-group-student/delete/'+id,
-        contentType: "application/json",
-        dataType:"json",
-        headers: {"Authorization": getCookie('token')},
-        success: function(data){
-          if(data.status == 's'){
-            let tempExamScheme = self.houses.filter(c => {
-              return c.house_id != id
-            })
-            self.houses = tempExamScheme
-            toastr.info("House Deleted Successfully")
-            self.trigger('delete_house_changed', self.houses)
-          }else if(data.status == 'e'){
-            showToast("Error Deleting House. Please try again.", data.messaage)
-          }
-        },
-        error: function(data){
-          showToast("", data)
-        }
-      })
-  })
-
-
-  /*******************************************************************students start*****************************************************************/
 
   self.on('read_classes', function() {
     let req = {}
@@ -158,10 +47,123 @@ function StudentGroupStudentStore() {
       })
   })
 
-  self.on('read_students', function(house_id,standard_id,section_id) {
+  self.on('read_student_groups', function(standard_id,section_id) {
     let req = {}
     $.ajax({
-      url:'/student-group-student/students/'+house_id+'/'+standard_id+'/'+section_id,
+      url:'/student-group-student/'+standard_id+'/'+section_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.studentGroups = data.studentGroups
+            self.trigger('read_student_groups_changed', data.studentGroups)
+          }else if(data.status == 'e'){
+            showToast("House Read Error. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('add_house', function(house) {
+    let req = {}
+    req.house=house
+    $.ajax({
+      url:'/student-group-student/add',
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            let obj = {}
+            obj.id = data.id
+            obj.house = house
+            self.studentGroups = [obj, ...self.studentGroups]
+            toastr.success("House Created Successfully ")
+            self.trigger('add_house_changed', self.studentGroups)
+          }else if(data.status == 'e'){
+            showToast("Error adding Item. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+
+  self.on('update_house', function(house,id) {
+    let req = {}
+    req.house=house
+    req.id=id
+    $.ajax({
+      url:'/student-group-student/edit/'+id,
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          if(data.status == 's'){
+            self.studentGroups = self.studentGroups.map(cat => {
+              if(cat.group_id == id){
+                cat.group_id = id
+                cat.house_name=house
+              }
+              cat.confirmEdit = false
+              return cat
+            })
+            toastr.success("House Updated Successfully ")
+            self.trigger('add_house_changed', self.studentGroups) // same trigger, as Add House
+          }else if(data.status == 'e'){
+            showToast("Error updating House. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('delete_house', function(id) {
+    $.ajax({
+      url:'/student-group-student/delete/'+id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          if(data.status == 's'){
+            let tempExamScheme = self.studentGroups.filter(c => {
+              return c.group_id != id
+            })
+            self.studentGroups = tempExamScheme
+            toastr.info("House Deleted Successfully")
+            self.trigger('delete_house_changed', self.studentGroups)
+          }else if(data.status == 'e'){
+            showToast("Error Deleting House. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+
+  /*******************************************************************students start*****************************************************************/
+
+
+  self.on('read_students', function(group_id,standard_id,section_id) {
+    let req = {}
+    $.ajax({
+      url:'/student-group-student/students/'+group_id+'/'+standard_id+'/'+section_id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -179,9 +181,9 @@ function StudentGroupStudentStore() {
       })
   })
 
-  self.on('assign_students', function(house_id,students) {
+  self.on('assign_students', function(group_id,students) {
     var obj = {}
-    obj['house_id'] = house_id
+    obj['group_id'] = group_id
     obj['students'] = students
     $.ajax({
       url:'/student-group-student/assign-students/',
@@ -204,9 +206,9 @@ function StudentGroupStudentStore() {
       })
   })
 
-  self.on('free_up_student', function(house_id,students) {
+  self.on('free_up_student', function(group_id,students) {
     var obj = {}
-    obj['house_id'] = house_id
+    obj['group_id'] = group_id
     obj['students'] = students
     $.ajax({
       url:'/student-group-student/free-up-student/',
@@ -231,10 +233,10 @@ function StudentGroupStudentStore() {
   })
 
 
-  self.on('read_student_by_house', function(house_id,) {
+  self.on('read_student_by_house', function(group_id,) {
     let req = {}
     $.ajax({
-      url:'/student-group-student/students_by_house/'+house_id,
+      url:'/student-group-student/students_by_house/'+group_id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -254,10 +256,10 @@ function StudentGroupStudentStore() {
 
 
 
-  self.on('update_house_captain', function(house_id,captain_id,vice_captain_id) {
+  self.on('update_house_captain', function(group_id,captain_id,vice_captain_id) {
     let req = {}
     $.ajax({
-      url:'/student-group-student/update-captain/'+house_id+'/'+captain_id+'/'+vice_captain_id,
+      url:'/student-group-student/update-captain/'+group_id+'/'+captain_id+'/'+vice_captain_id,
         type:"POST",
         data: JSON.stringify(req),
         contentType: "application/json",
@@ -278,10 +280,10 @@ function StudentGroupStudentStore() {
   })
 
 
-  self.on('read_student_by_house_details', function(house_id,) {
+  self.on('read_student_by_house_details', function(group_id,) {
     let req = {}
     $.ajax({
-      url:'/student-group-student/students_by_house_details/'+house_id,
+      url:'/student-group-student/students_by_house_details/'+group_id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
