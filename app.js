@@ -105,7 +105,8 @@ app.use(
         host: 'localhost',
         user: 'root',
         password : '',
-        database:'mckvieor_school'
+        database:'mckvieor_school',
+        multipleStatements: true,
     },'request')
 )
 app.use(express.json());

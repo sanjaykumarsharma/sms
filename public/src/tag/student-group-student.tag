@@ -28,7 +28,7 @@
         <div class="column">  
           <div class="control">
             <div class="select is-fullwidth">
-              <select ref="standardSelect" onchange={changeSection}>
+              <select ref="standardSelect" id="standard" onchange={changeSection}>
                 <option value="">Select Standard</option>
                 <option each={classes} value={standard_id}>{standard}</option>
               </select>
@@ -40,7 +40,7 @@
         <div class="column">  
           <div class="control">
             <div class="select is-fullwidth">
-              <select ref="sectionSelect">
+              <select ref="sectionSelect" id="section">
                 <option value="">Select Section</option>
                 <option each={tempSections} value={section_id}>{section}</option>
               </select>
@@ -73,7 +73,9 @@
       			<div class="inline-flex rounded border border-grey overflow-hidden" hide={c.confirmDelete}>
         				<span><a class="button is-small is-rounded" onclick={edit.bind(this, c)}>Edit</a></span>
                 <span><a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
-        				<span><a class="button is-small is-rounded" onclick={assignStudentsFrom.bind(this, c)}>Students</a></span>
+                <span><a class="button is-small is-rounded" onclick={assignStudentsFrom.bind(this, c)}>Students</a></span>
+        				<span><a class="button is-small is-rounded" onclick={assignSubjectsFrom.bind(this, c)}>Subjects</a></span>
+
                 <span><a class="button is-small is-rounded" onclick={openCaptainFrom.bind(this, c)}>Captain</a></span>
                 <span><a class="button is-small is-rounded" onclick={details.bind(this, c)}>Details</a></span>
       			</div>
@@ -87,7 +89,7 @@
 		</table>
 	</section>
 
-  <!-- Open House Modal Start -->
+  <!-- Open StudentGroup Modal Start -->
   <div id="studentGroupModal" class="modal ">
     <div class="modal-background"></div>
     <div class="modal-card">
@@ -121,7 +123,7 @@
       </footer>
     </div>
   </div>
-  <!-- House Modal End -->
+  <!-- StudentGroup Modal End -->
 
 
   <!-- ***************************************************Students Start************************************************ -->
@@ -131,10 +133,10 @@
 
     <div class="level">
       <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">Students Under : {house}</h2>
+        <h2 class="title" style="color: #ff3860;">Students Under : {class}</h2>
       </div>
       <div class="level-right">
-        <button class="button is-warning is-rounded" onclick={backToAssignHouse}>
+        <button class="button is-warning is-rounded" onclick={backToAssignStudentGroup}>
         <span class="icon">
           <span class="fas fa-arrow-left"></span>
         </span>
@@ -146,40 +148,6 @@
         </button>
       </div>
     </div>
-
-    <!-- <div class="box">
-      <div class="columns">
-
-        <div class="column is-narrow"><label class="label">Standard</label></div>  
-        <div class="column">  
-          <div class="control">
-            <div class="select is-fullwidth">
-              <select ref="standardSelect" onchange={changeSection}>
-                <option value="">Select Standard</option>
-                <option each={classes} value={standard_id}>{standard}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="column is-narrow"><label class="label">Section</label></div>  
-        <div class="column">  
-          <div class="control">
-            <div class="select is-fullwidth">
-              <select ref="sectionSelect">
-                <option value="">Select Section</option>
-                <option each={tempSections} value={section_id}>{section}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="column">
-          <button class="button is-danger has-text-weight-bold" onclick={refreshStudents} >GO </button>
-        </div>
-          
-      </div>
-    </div>  -->
 
      <div class="columns is-multiline is-mobile">
 
@@ -199,7 +167,7 @@
                 <td>{c.enroll_number}</td>
                 <td>{c.first_name} {c.middle_name} {c.last_name}</td>
                 <td class="has-text-right">
-                  <input type="checkbox" checked={selected} id="{'freeSubjectCheckBox'+c.group_id}" onclick={selectFreeSubject.bind(this,c)} > 
+                  <input type="checkbox" checked={selected} id="{'freeStudentCheckBox'+c.group_id}" onclick={selectFreeStudent.bind(this,c)} > 
                 </td>
               </tr>
             </tbody>
@@ -236,7 +204,7 @@
             <tbody>
               <tr each={c, i in assignedStudents}>
                 <td class="has-text-right">
-                  <input type="checkbox" checked={selected} id="{'assignedSubjectCheckBox'+c.group_id}" onclick={selectAssigndSubject.bind(this,c)} > 
+                  <input type="checkbox" checked={selected} id="{'assignedStudentCheckBox'+c.group_id}" onclick={selectAssigndStudent.bind(this,c)} > 
                 </td>
                 <td>{c.roll_number}</td>
                 <td>{c.enroll_number}</td>
@@ -250,7 +218,98 @@
      
   </section>
 
-  <!-- Open House Modal Start -->
+
+  <!-- ***************************************************Subjects Start************************************************ -->
+
+
+  <section class=" is-fluid" show={view=='subjects'}>
+
+    <div class="level">
+      <div class="level-left">
+        <h2 class="title" style="color: #ff3860;">Subjects Under : {class}</h2>
+      </div>
+      <div class="level-right">
+        <button class="button is-warning is-rounded" onclick={backToAssignStudentGroup}>
+        <span class="icon">
+          <span class="fas fa-arrow-left"></span>
+        </span>
+        </button>
+        <button class="button is-warning is-rounded ml5" onclick={refreshSubjects}>
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
+      </div>
+    </div>
+
+     <div class="columns is-multiline is-mobile">
+
+        <div class="column">
+          <table class="table is-fullwidth is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th>Free Subjects</th>
+                <th>Subjects Short Name</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr each={c, i in freeSubjects}>
+                <td>{c.subject_name}</td>
+                <td>{c.subject_short_name}</td>
+                <td class="has-text-right">
+                  <input type="checkbox" checked={selected} id="{'freeSubjectCheckBox'+c.group_id}" onclick={selectFreeSubject.bind(this,c)} > 
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="column is-vertical-center is-narrow has-text-centered is-multiline">
+          <table>
+            <tr>
+              <td>
+                <button class="button" onclick={assignSubjects} style="margin-top:20px;">Assign subjects  
+                  <span style="margin-left:10px" class="fas fa-angle-double-right"></span>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <button class="button" onclick={freeUpSubject} style="margin-top:20px;"><span style="margin-right:10px;" class="fas fa-angle-double-left"></span> Free up subjects</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="column">
+          <table class="table is-fullwidth is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Assigned Subject Name</th>
+                <th>Subjects Short Name</th>
+                <th>Order No</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr each={c, i in assignedSubjects}>
+                <td class="has-text-right">
+                  <input type="checkbox" checked={selected} id="{'assignedSubjectCheckBox'+c.group_id}" onclick={selectAssigndSubject.bind(this,c)} > 
+                </td>
+                <td>{c.subject_name}</td>
+                <td>{c.subject_short_name}</td>
+                <td>{c.order_no}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+     
+  </section>
+
+  <!-- Open StudentGroup Modal Start -->
   <div id="captainModal" class="modal ">
     <div class="modal-background"></div>
     <div class="modal-card">
@@ -295,16 +354,16 @@
       </footer>
     </div>
   </div>
-  <!-- House Modal End -->
+  <!-- StudentGroup Modal End -->
 
   <section class="is-fluid" show={view=='details'}>
     <div class="level no-print">
       <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">House: {house_for_captain}</h2>
+        <h2 class="title" style="color: #ff3860;">StudentGroup: {house_for_captain}</h2>
       </div>
       <div class="level-right">
 
-        <button class="button is-warning is-rounded" onclick={backToAssignHouse}>
+        <button class="button is-warning is-rounded" onclick={backToAssignStudentGroup}>
           <span class="icon">
             <span class="fas fa-arrow-left"></span>
           </span>
@@ -314,7 +373,7 @@
     </div>
 
     <center>
-     <h6 class="title">House: {house_for_captain}</h6>
+     <h6 class="title">StudentGroup: {house_for_captain}</h6>
     </center>
 
     <table class="table is-fullwidth is-striped is-hoverable">
@@ -360,31 +419,31 @@
       self.readSection()
     })
     self.on("unmount", function(){
-      studentGroupStudentStore.off('read_classes_changed',ClassesChanged)
-      studentGroupStudentStore.off('read_section_changed',SectionChanged)
-      studentGroupStudentStore.off('read_student_groups_changed',readStudentGroupsChanged)
-      
-      
-      studentGroupStudentStore.off('add_house_changed',AddAssignHouseChanged)
-      studentGroupStudentStore.off('delete_house_changed',DeleteAssignHouseChanged)
+      studentStudentGroupStore.off('read_classes_changed',ClassesChanged)
+      studentStudentGroupStore.off('read_section_changed',SectionChanged)
+      studentStudentGroupStore.off('read_student_groups_changed',readStudentGroupsChanged)
+      studentStudentGroupStore.off('add_student_group_changed',AddStudentGroupChanged)
+      studentStudentGroupStore.off('delete_student_group_changed',DeleteStudentGroupChanged)
 
+      studentStudentGroupStore.off('read_students_changed',ReadStudentsChanged)
+      studentStudentGroupStore.off('assign_students_changed',AssignStandardChanged)
 
-      studentGroupStudentStore.off('read_students_changed',ReadStudentsChanged)
-      studentGroupStudentStore.off('assign_students_changed',AssignStandardChanged)
+      studentStudentGroupStore.off('read_subjects_changed',ReadSubjectsChanged)
+      studentStudentGroupStore.off('assign_subjects_changed',AssignSubjectsChanged)
 
-      studentGroupStudentStore.off('read_student_by_house_changed',ReadStudentsByHouseChanged)
-      studentGroupStudentStore.off('update_house_captain_changed',UpdateHouseCaptainChanged)
-      studentGroupStudentStore.off('read_student_by_house_details_changed',ReadStudentsByHouseDetailsChanged)
+      studentStudentGroupStore.off('read_student_by_student_group_changed',ReadStudentsByStudentGroupChanged)
+      studentStudentGroupStore.off('update_student_group_captain_changed',UpdateStudentGroupCaptainChanged)
+      studentStudentGroupStore.off('read_student_by_student_group_details_changed',ReadStudentsByStudentGroupDetailsChanged)
     })
 
     self.readClass = () => {
        self.loading = true;
-       studentGroupStudentStore.trigger('read_classes')
+       studentStudentGroupStore.trigger('read_classes')
     }
 
     self.readSection = () => {
        self.loading = true;
-       studentGroupStudentStore.trigger('read_section')
+       studentStudentGroupStore.trigger('read_section')
     }
 
     self.changeSection = () => {
@@ -414,14 +473,29 @@
         return
       }else{
         self.loading = true
-        studentGroupStudentStore.trigger('read_student_groups', self.refs.standardSelect.value, self.refs.sectionSelect.value) 
+        studentStudentGroupStore.trigger('read_student_groups', self.refs.standardSelect.value, self.refs.sectionSelect.value) 
       }
        
     }
 
     self.openStudentGroupModal = () => {
-      self.title = 'Add'
-      $("#studentGroupModal").addClass("is-active");
+      let error = '';
+      
+      if(self.refs.standardSelect.value==''){
+        error = error + "Please select standard, "
+      }
+
+      if(self.refs.sectionSelect.value==''){
+        error = error + "Please select section, "
+      }
+
+      if(error.length!=0){
+        toastr.error(error)
+        return
+      }else{
+        self.title = 'Add'
+        $("#studentGroupModal").addClass("is-active");
+      }  
     }
 
     self.closeStudentGroupModal = () => {
@@ -429,20 +503,39 @@
     }
 
     self.add = () => {
+
+      let error = '';
+      
+      if(self.refs.standardSelect.value==''){
+        error = error + "Please select standard, "
+      }
+
+      if(self.refs.sectionSelect.value==''){
+        error = error + "Please select section, "
+      }
+
       if(!self.refs.studentGroupInput.value){
-        toastr.info("Please enter House and try again")
+        toastr.info("Please enter student group and try again")
+      }
+
+      if(error.length!=0){
+        toastr.error(error)
+        return
       }else{
+        var obj={};
+        obj['standard_id']=self.refs.standardSelect.value
+        obj['section_id']=self.refs.sectionSelect.value
+        obj['group_name']=self.refs.studentGroupInput.value
+        obj['group_detail']=self.refs.detailsInput.value
+
         self.loading = true
         if(self.title=='Add'){
-          studentGroupStudentStore.trigger('add_house', self.refs.studentGroupInput.value, self.refs.detailsInput.value)
+          studentStudentGroupStore.trigger('add_student_group', obj)
         }else if(self.title=='Update'){
-          studentGroupStudentStore.trigger('update_house', self.refs.studentGroupInput.value,self.refs.detailsInput.value, self.edit_id)
+          studentStudentGroupStore.trigger('update_student_group', obj, self.edit_id)
         }
       }
     }
-
-
-
 
     self.edit = (c,e) => {
       console.log(c)
@@ -472,16 +565,19 @@
 
     self.delete = (e) => {
       self.loading = true
-      studentGroupStudentStore.trigger('delete_house', e.item.c.group_id)
+      studentStudentGroupStore.trigger('delete_student_group', e.item.c.group_id)
     }
 
 
     // ****************************************** students *************************************
     
     self.assignStudentsFrom = (c) => {
-      self.house = c.house_name
+      self.class = $("#standard option:selected").text() + ' ' + $("#section option:selected").text() 
       self.group_id = c.group_id
+      //self.standard_id = self.refs.standardSelect.value
+      //self.section_id = self.refs.sectionSelect.value
       self.view='students'
+      self.refreshStudents()
     }
 
     self.refreshStudents = () =>{
@@ -501,12 +597,12 @@
         return
       }else{
         self.loading = true
-        studentGroupStudentStore.trigger('read_students', self.group_id, self.refs.standardSelect.value, self.refs.sectionSelect.value) 
+        studentStudentGroupStore.trigger('read_students', self.group_id, self.refs.standardSelect.value, self.refs.sectionSelect.value) 
       }
       
     }
 
-    self.selectFreeSubject = (student,e) => {
+    self.selectFreeStudent = (student,e) => {
         self.freeStudents.map(i=>{
           if(student.student_id==i.student_id){
             i.selected=!i.selected
@@ -514,7 +610,7 @@
         })
     }
 
-    self.selectAssigndSubject = (student,e) => {
+    self.selectAssigndStudent = (student,e) => {
         self.assignedStudents.map(i=>{
           if(student.student_id==i.student_id){
             i.selected=!i.selected
@@ -531,11 +627,11 @@
       console.log(students_to_assign)
 
       if(students_to_assign.length==0){
-        toastr.error('Please Select Student To Assign House.')
+        toastr.error('Please Select Student To Assign Student Group.')
         return
       }else{
         self.loading = true
-        studentGroupStudentStore.trigger('assign_students', self.group_id, students_to_assign)
+        studentStudentGroupStore.trigger('assign_students', self.group_id, students_to_assign)
       }
     }
 
@@ -549,12 +645,90 @@
         return
       }else{
         self.loading = true
-        studentGroupStudentStore.trigger('free_up_student', self.group_id, students_to_free)
+        studentStudentGroupStore.trigger('free_up_student', self.group_id, students_to_free)
       }
     }
 
-    self.backToAssignHouse = () =>{
+    self.backToAssignStudentGroup = () =>{
       self.view='student-group-students'
+    }
+
+    // ****************************************** subjects *************************************
+    
+    self.assignSubjectsFrom = (c) => {
+      self.class = $("#standard option:selected").text() + ' ' + $("#section option:selected").text() 
+      self.group_id = c.group_id
+      self.view='subjects'
+      self.refreshSubjects()
+    }
+
+    self.refreshSubjects = () =>{
+
+      let error = '';
+      
+      if(self.refs.standardSelect.value==''){
+        error = error + "Please select standard, "
+      }
+
+      if(self.refs.sectionSelect.value==''){
+        error = error + "Please select section, "
+      }
+
+      if(error.length!=0){
+        toastr.error(error)
+        return
+      }else{
+        self.loading = true
+        studentStudentGroupStore.trigger('read_subjects', self.group_id, self.refs.standardSelect.value, self.refs.sectionSelect.value) 
+      }
+      
+    }
+
+    self.selectFreeSubject = (subject,e) => {
+        self.freeSubjects.map(i=>{
+          if(subject.subject_id==i.subject_id){
+            i.selected=!i.selected
+          }
+        })
+    }
+
+    self.selectAssigndSubject = (subject,e) => {
+        self.assignedSubjects.map(i=>{
+          if(subject.subject_id==i.subject_id){
+            i.selected=!i.selected
+          }
+        })
+        console.log(self.assignedSubjects)
+    }
+
+    self.assignSubjects = () =>{
+      let subjects_to_assign = self.freeSubjects.filter(c=>{
+        return c.selected == true
+      })
+      console.log(self.group_id)
+      console.log(subjects_to_assign)
+
+      if(subjects_to_assign.length==0){
+        toastr.error('Please Select subject To Assign subject.')
+        return
+      }else{
+        self.loading = true
+        studentStudentGroupStore.trigger('assign_subjects', self.group_id, subjects_to_assign)
+      }
+    }
+
+    self.freeUpSubject = () =>{
+      let subjects_to_free = self.assignedSubjects.filter(c=>{
+        return c.selected == true
+      })
+      
+      if(subjects_to_free.length==0){
+        toastr.error('Please select subjects to free from student group .')
+        return
+      }else{
+        self.loading = true
+        studentStudentGroupStore.trigger('free_up_subject', self.group_id, subjects_to_free)
+      }
     }
 
     //**************************************Captain & Vice-captain
@@ -562,7 +736,7 @@
     self.details = (c,e) => {
       self.house_for_captain = c.house_name
       self.view = 'details'
-      studentGroupStudentStore.trigger('read_student_by_house_details', c.group_id)
+      studentStudentGroupStore.trigger('read_student_by_student_group_details', c.group_id)
     }
 
     self.openCaptainFrom = (c,e) => {
@@ -570,7 +744,7 @@
       self.group_id_captain = c.group_id
       self.captain_id = c.captain_id
       self.vice_captain_id = c.vice_captain_id
-      studentGroupStudentStore.trigger('read_student_by_house', c.group_id)
+      studentStudentGroupStore.trigger('read_student_by_student_group', c.group_id)
     }
 
     self.closeCaptainForm = () => {
@@ -598,13 +772,13 @@
         return
       }else{
         self.loading = true
-        studentGroupStudentStore.trigger('update_house_captain', self.group_id_captain, self.refs.captainSelect.value, self.refs.viceCaptainSelect.value)
+        studentStudentGroupStore.trigger('update_student_group_captain', self.group_id_captain, self.refs.captainSelect.value, self.refs.viceCaptainSelect.value)
       }
 
     }
 
     // ****************************************** all change metods *************************************
-    studentGroupStudentStore.on('read_classes_changed',ClassesChanged)
+    studentStudentGroupStore.on('read_classes_changed',ClassesChanged)
     function ClassesChanged(classes){
       self.loading = false
       self.classes = []
@@ -613,7 +787,7 @@
       console.log(self.classes)
     }
 
-    studentGroupStudentStore.on('read_section_changed',SectionChanged)
+    studentStudentGroupStore.on('read_section_changed',SectionChanged)
     function SectionChanged(sections){
       self.loading = false
       self.sections = []
@@ -621,7 +795,7 @@
       self.update()
     }
 
-    studentGroupStudentStore.on('read_student_groups_changed',readStudentGroupsChanged)
+    studentStudentGroupStore.on('read_student_groups_changed',readStudentGroupsChanged)
     function readStudentGroupsChanged(studentGroups){
       self.loading = false
       self.studentGroups = []
@@ -629,12 +803,8 @@
       self.update()
     }
 
-
-
-
-
-    studentGroupStudentStore.on('add_house_changed',AddAssignHouseChanged)
-    function AddAssignHouseChanged(studentGroups){
+    studentStudentGroupStore.on('add_student_group_changed',AddStudentGroupChanged)
+    function AddStudentGroupChanged(studentGroups){
       self.refs.studentGroupInput.value=''
       self.refs.detailsInput.value=''
       self.closeStudentGroupModal()
@@ -642,11 +812,10 @@
       self.studentGroups = []
       self.studentGroups = studentGroups
       self.update()
-      console.log(self.studentGroups)
     }
 
-    studentGroupStudentStore.on('delete_house_changed',DeleteAssignHouseChanged)
-    function DeleteAssignHouseChanged(studentGroups){
+    studentStudentGroupStore.on('delete_student_group_changed',DeleteStudentGroupChanged)
+    function DeleteStudentGroupChanged(studentGroups){
       self.loading = false
       self.studentGroups = []
       self.studentGroups = studentGroups
@@ -657,8 +826,9 @@
    /************************************************ Students Changed Method ************************************************/
    
 
-    studentGroupStudentStore.on('read_students_changed',ReadStudentsChanged)
+    studentStudentGroupStore.on('read_students_changed',ReadStudentsChanged)
     function ReadStudentsChanged(freeStudents,assignedStudents){
+      console.log('here in students')
       self.loading = false
       self.freeStudents = []
       self.freeStudents = freeStudents
@@ -675,7 +845,7 @@
       self.update()
     }
 
-    studentGroupStudentStore.on('assign_students_changed',AssignStandardChanged)
+    studentStudentGroupStore.on('assign_students_changed',AssignStandardChanged)
     function AssignStandardChanged(students_assigned){
       self.loading = false
 
@@ -683,8 +853,40 @@
       
     }
 
-    studentGroupStudentStore.on('read_student_by_house_changed',ReadStudentsByHouseChanged)
-    function ReadStudentsByHouseChanged(students){
+    /************************************************ Subjects Changed Method ************************************************/
+   
+
+    studentStudentGroupStore.on('read_subjects_changed',ReadSubjectsChanged)
+    function ReadSubjectsChanged(freeSubjects,assignedSubjects){
+      self.loading = false
+      self.freeSubjects = []
+      self.freeSubjects = freeSubjects
+      self.freeSubjects.map(c => {
+          c.selected=false
+      })
+      console.log(freeSubjects)
+      self.assignedSubjects = []
+      self.assignedSubjects = assignedSubjects
+      self.assignedSubjects.map(c => {
+          c.selected=false
+      })
+      self.view='subjects'
+      self.update()
+    }
+
+    studentStudentGroupStore.on('assign_subjects_changed',AssignSubjectsChanged)
+    function AssignSubjectsChanged(subjects_assigned){
+      self.loading = false
+
+      self.refreshSubjects()
+      
+    }
+
+
+
+
+    studentStudentGroupStore.on('read_student_by_student_group_changed',ReadStudentsByStudentGroupChanged)
+    function ReadStudentsByStudentGroupChanged(students){
       self.loading = false
       self.studentsCaptains = []
       self.studentsCaptains = students
@@ -694,14 +896,14 @@
       self.refs.viceCaptainSelect.value=self.vice_captain_id
     }
 
-    studentGroupStudentStore.on('update_house_captain_changed',UpdateHouseCaptainChanged)
-    function UpdateHouseCaptainChanged(students){
+    studentStudentGroupStore.on('update_student_group_captain_changed',UpdateStudentGroupCaptainChanged)
+    function UpdateStudentGroupCaptainChanged(students){
        $("#captainModal").removeClass("is-active");
        self.readStudentGroup()
     }
 
-    studentGroupStudentStore.on('read_student_by_house_details_changed',ReadStudentsByHouseDetailsChanged)
-    function ReadStudentsByHouseDetailsChanged(students){
+    studentStudentGroupStore.on('read_student_by_student_group_details_changed',ReadStudentsByStudentGroupDetailsChanged)
+    function ReadStudentsByStudentGroupDetailsChanged(students){
       self.loading = false
       self.studentsDetails = []
       self.studentsDetails = students

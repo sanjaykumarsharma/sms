@@ -67,8 +67,8 @@ RiotControl.addStore(examSubjectGroupMapStore)
 var studentAssignHouseStore = new StudentAssignHouseStore() 
 RiotControl.addStore(studentAssignHouseStore)
 
-var studentGroupStudentStore = new StudentGroupStudentStore() 
-RiotControl.addStore(studentGroupStudentStore)
+var studentStudentGroupStore = new StudentStudentGroupStore() 
+RiotControl.addStore(studentStudentGroupStore)
 
 
 //****************************************************ghulam
