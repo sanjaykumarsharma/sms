@@ -11043,19 +11043,24 @@ function StudentStudentGroupStore() {
     });
   });
 
-  self.on('read_student_by_student_group', function (group_id) {
-    var req = {};
+  self.on('save_order_number', function (group_id, subjects) {
+    var obj = {};
+    obj['group_id'] = group_id;
+    obj['subjects'] = subjects;
     $.ajax({
-      url: '/student-group-student/students_by_student_group/' + group_id,
+      url: '/student-group-student/save-order-number/',
+      type: "POST",
+      data: JSON.stringify(obj),
       contentType: "application/json",
       dataType: "json",
       headers: { "Authorization": getCookie('token') },
       success: function success(data) {
-        console.log(data);
         if (data.status == 's') {
-          self.trigger('read_student_by_student_group_changed', data.students);
+
+          toastr.success("Order number saved successfully ");
+          self.trigger('save_order_number_changed', subjects);
         } else if (data.status == 'e') {
-          showToast("Students Read Error. Please try again.", data.messaage);
+          showToast("Error while saving order number. Please try again.", data.messaage);
         }
       },
       error: function error(data) {
@@ -11064,10 +11069,10 @@ function StudentStudentGroupStore() {
     });
   });
 
-  self.on('update_student_group_captain', function (group_id, captain_id, vice_captain_id) {
+  self.on('copy_order_number', function (group_id) {
     var req = {};
     $.ajax({
-      url: '/student-group-student/update-captain/' + group_id + '/' + captain_id + '/' + vice_captain_id,
+      url: '/student-group-student/copy-order-number/' + group_id,
       type: "POST",
       data: JSON.stringify(req),
       contentType: "application/json",
@@ -11075,10 +11080,10 @@ function StudentStudentGroupStore() {
       headers: { "Authorization": getCookie('token') },
       success: function success(data) {
         if (data.status == 's') {
-          toastr.success("StudentGroup Captain Updated Successfully ");
-          self.trigger('update_student_group_captain_changed');
+          // toastr.success("Copy order number successfull")
+          self.trigger('copy_order_number_changed', data.subjects);
         } else if (data.status == 'e') {
-          showToast("Error updating house captain. Please try again.", data.messaage);
+          showToast("Error in copy order number. Please try again.", data.messaage);
         }
       },
       error: function error(data) {
@@ -11087,19 +11092,103 @@ function StudentStudentGroupStore() {
     });
   });
 
-  self.on('read_student_by_student_group_details', function (group_id) {
+  self.on('read_subject_groups_for_copy_order_no', function (standard_id, section_id) {
     var req = {};
     $.ajax({
-      url: '/student-group-student/students_by_student_group_details/' + group_id,
+      url: '/student-group-student/' + standard_id + '/' + section_id,
       contentType: "application/json",
       dataType: "json",
       headers: { "Authorization": getCookie('token') },
       success: function success(data) {
         console.log(data);
         if (data.status == 's') {
-          self.trigger('read_student_by_student_group_details_changed', data.students);
+          self.trigger('read_subject_groups_for_copy_order_no_changed', data.studentGroups);
         } else if (data.status == 'e') {
-          showToast("Students Read Error. Please try again.", data.messaage);
+          showToast("StudentGroup Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_student_group_details', function (group_id) {
+    var req = {};
+    $.ajax({
+      url: '/student-group-student/student-group-details/read/' + group_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_student_group_details_changed', data.students, data.subjects);
+        } else if (data.status == 'e') {
+          showToast("Group details Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('hide_group', function (group_id, section_id) {
+    var req = {};
+    $.ajax({
+      url: '/student-group-student/hide-group/' + group_id + '/' + section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('hide_group_changed', data.info);
+        } else if (data.status == 'e') {
+          showToast("Group details Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_hidden_groups', function (section_id) {
+    var req = {};
+    $.ajax({
+      url: '/student-group-student/hidden-group/read-groups/' + section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_hidden_groups_changed', data.studentGroups);
+        } else if (data.status == 'e') {
+          showToast("Hidden Group Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('unhide_group', function (group_id, section_id) {
+    var req = {};
+    $.ajax({
+      url: '/student-group-student/delete-hidden-group/delete/' + group_id + '/' + section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_unhide_group_changed', data.studentGroups);
+        } else if (data.status == 'e') {
+          showToast("Hidden Group Read Error. Please try again.", data.messaage);
         }
       },
       error: function error(data) {

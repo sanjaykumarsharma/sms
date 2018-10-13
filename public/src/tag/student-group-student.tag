@@ -18,6 +18,9 @@
           <span class="fas fa-sync-alt"></span>
         </span>
         </button>
+
+        <button class="button is-warning is-rounded" onclick={readHiddenGroup} style="margin-left:2px">Show Hidden Group</button>
+
       </div>
     </div>
 
@@ -75,9 +78,8 @@
                 <span><a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
                 <span><a class="button is-small is-rounded" onclick={assignStudentsFrom.bind(this, c)}>Students</a></span>
         				<span><a class="button is-small is-rounded" onclick={assignSubjectsFrom.bind(this, c)}>Subjects</a></span>
-
-                <span><a class="button is-small is-rounded" onclick={openCaptainFrom.bind(this, c)}>Captain</a></span>
-                <span><a class="button is-small is-rounded" onclick={details.bind(this, c)}>Details</a></span>
+                <span><a class="button is-small is-rounded" onclick={details.bind(this, c)}>Print Group</a></span>
+                <span><a class="button is-small is-rounded" onclick={hideGroup.bind(this, c)}>Hide Group</a></span>
       			</div>
       			<div class="table-buttons" if={c.confirmDelete}>
         				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
@@ -258,7 +260,7 @@
                 <td>{c.subject_name}</td>
                 <td>{c.subject_short_name}</td>
                 <td class="has-text-right">
-                  <input type="checkbox" checked={selected} id="{'freeSubjectCheckBox'+c.group_id}" onclick={selectFreeSubject.bind(this,c)} > 
+                  <input type="checkbox" checked={selected} id="{'freeSubjectCheckBox'+c.subject_id}" onclick={selectFreeSubject.bind(this,c)} > 
                 </td>
               </tr>
             </tbody>
@@ -289,20 +291,29 @@
                 <th></th>
                 <th>Assigned Subject Name</th>
                 <th>Subjects Short Name</th>
-                <th>Order No</th>
+                <th style="width:150px">Order No</th>
               </tr>
             </thead>
             <tbody>
               <tr each={c, i in assignedSubjects}>
                 <td class="has-text-right">
-                  <input type="checkbox" checked={selected} id="{'assignedSubjectCheckBox'+c.group_id}" onclick={selectAssigndSubject.bind(this,c)} > 
+                  <input type="checkbox" checked={selected} id="{'assignedSubjectCheckBox'+c.subject_id}" onclick={selectAssigndSubject.bind(this,c)} > 
                 </td>
                 <td>{c.subject_name}</td>
                 <td>{c.subject_short_name}</td>
-                <td>{c.order_no}</td>
+                <td><input type="text" class="input" id="{'orderInput'+c.subject_id}" value={c.order_no}></td>
               </tr>
             </tbody>
           </table>
+
+          <div class="level">
+            <div class="level-left">
+            </div>
+            <div class="level-right">
+              <button class="button is-danger ml5" onclick={saveOrderNumber}>Save Order No</button>
+              <button class="button is-danger ml5" onclick={openCopyOrderNumberForm}>Copy Order No</button>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -310,11 +321,11 @@
   </section>
 
   <!-- Open StudentGroup Modal Start -->
-  <div id="captainModal" class="modal ">
+  <div id="copyOrderNumberModal" class="modal ">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">Captain & Vice-Captain of {house_for_captain}</p>
+        <p class="modal-card-title">Copy Order Number</p>
       </header>
       <section class="modal-card-body">
         
@@ -322,44 +333,57 @@
           <div class="column">
 
             <div class="field">
-              <label class="label" for="role">Captain</label>
-              <div class="control">
+              <label class="label" for="role">Standard</label>
+               <div class="control">
                 <div class="select is-fullwidth">
-                  <select ref="captainSelect">
-                    <option value="">Select Captain</option>
-                    <option each={studentsCaptains} value={student_id}>{first_name}{middle_name}{last_name}</option>
+                  <select ref="standardSelectCopyOrderNo" id="standardForCopyOrderNo" disabled>
+                    <option each={classes} value={standard_id}>{standard}</option>
                   </select>
                 </div>
               </div>
             </div>
 
             <div class="field">
-              <label class="label" for="role">Vice-Captain</label>
-              <div class="control">
+              <label class="label" for="role">Section</label>
+               <div class="control">
                 <div class="select is-fullwidth">
-                  <select ref="viceCaptainSelect">
-                    <option value="">Select Vice-Captain</option>
-                    <option each={studentsCaptains} value={student_id}>{first_name}{middle_name}{last_name}</option>
+                  <select ref="sectionSelectCopyOrderNo" id="sectionForCopyOrderNo" onchange={readGroups}>
+                    <option value="">Select Section</option>
+                    <option each={tempSectionsForCopyOrderNo} value={section_id}>{section}</option>
                   </select>
                 </div>
               </div>
             </div>
+
+            <div class="field">
+              <label class="label" for="role">Group</label>
+               <div class="control">
+                <div class="select is-fullwidth">
+                  <select ref="groupSelect">
+                    <option value="">Select Group</option>
+                    <option each={tempSubjectGroups} value={group_id}>{group_name}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-danger" onclick={updateCaptain} >Submit</button>
-        <button class="button" id="item-modal-close" onclick={closeCaptainForm}>Cancel</button>
+        <button class="button is-danger" onclick={copyOrderNumber} >Submit</button>
+        <button class="button" id="item-modal-close" onclick={closeCopyOrderNumberForm}>Cancel</button>
       </footer>
     </div>
   </div>
   <!-- StudentGroup Modal End -->
 
+  <!-- details -->
   <section class="is-fluid" show={view=='details'}>
     <div class="level no-print">
       <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">StudentGroup: {house_for_captain}</h2>
+        <h2 class="title" style="color: #ff3860;">Group Student</h2>
       </div>
       <div class="level-right">
 
@@ -373,34 +397,87 @@
     </div>
 
     <center>
-     <h6 class="title">StudentGroup: {house_for_captain}</h6>
+     <h6> <strong>Class:</strong> {class} <strong>Group:</strong> {group_details} </h6>
     </center>
-
+  
+    <h6><strong>Students List</strong></h6>
     <table class="table is-fullwidth is-striped is-hoverable">
       <thead>
         <tr>
           <th class="slno">SL</th>
+          <th>Roll</th>
           <th>Enroll No</th>
-          <th>Class</th>
-          <th>Student's Name</th>
-          <th>Father's Name</th>
-          <th>SMS</th>
+          <th>Name</th>
         </tr>
       </thead>
       <tbody>
         <tr each={c, i in studentsDetails}>
           <td>{i+1}</td>
+          <td>{c.roll_number}</td>
           <td>{c.enroll_number}</td>
-          <td>{c.standard}</td>
           <td>{c.name}</td>
-          <td>{c.f_name}</td>
-          <td>{c.mobile}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h6><strong>Subjects List</strong></h6>
+    <table class="table is-fullwidth is-striped is-hoverable">
+      <thead>
+        <tr>
+          <th class="slno">SL</th>
+          <th>Subject Name</th>
+          <th>Subject Short Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr each={c, i in subjectsDetails}>
+          <td>{i+1}</td>
+          <td>{c.subject_name}</td>
+          <td>{c.subject_short_name}</td>
         </tr>
       </tbody>
     </table>
 
 
   </section>
+
+   <!-- Open StudentGroup Modal Start -->
+  <div id="hiddenGroupModal" class="modal ">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Hidden Groups</p>
+      </header>
+      <section class="modal-card-body">
+        
+        <table class="table is-fullwidth is-striped is-hoverable">
+          <thead>
+            <tr>
+              <th class="slno">SL</th>
+              <th>Group</th>
+              <th>Details</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr each={c, i in hiddenStudentsGroups}>
+              <td>{i+1}</td>
+              <td>{c.group_name}</td>
+              <td>{c.group_detail}</td>
+              <td class="has-text-right">
+                <span><a class="button is-small is-rounded is-danger" onclick={unHideGroup.bind(this, c)}>Un-hide Group</a></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>        
+
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button" id="item-modal-close" onclick={closeHiddenGroupModel}>Cancel</button>
+      </footer>
+    </div>
+  </div>
+  <!-- StudentGroup Modal End -->
 
 	<script>
 	var self = this
@@ -430,10 +507,15 @@
 
       studentStudentGroupStore.off('read_subjects_changed',ReadSubjectsChanged)
       studentStudentGroupStore.off('assign_subjects_changed',AssignSubjectsChanged)
+      studentStudentGroupStore.off('save_order_number_changed',orderNumberChanged)
+      studentStudentGroupStore.off('read_subject_groups_for_copy_order_no_changed',ReadSubjectGroupsForCopyOrderNumberChanged)
+      studentStudentGroupStore.off('copy_order_number_changed',CopyOrderNumberChanged)
 
-      studentStudentGroupStore.off('read_student_by_student_group_changed',ReadStudentsByStudentGroupChanged)
-      studentStudentGroupStore.off('update_student_group_captain_changed',UpdateStudentGroupCaptainChanged)
-      studentStudentGroupStore.off('read_student_by_student_group_details_changed',ReadStudentsByStudentGroupDetailsChanged)
+      studentStudentGroupStore.off('read_student_group_details_changed',ReadStudentGroupDetailsChanged)
+
+      studentStudentGroupStore.off('hide_group_changed',HideGroupChanged)
+      studentStudentGroupStore.off('read_hidden_groups_changed',ReadHiddenGroupChanged)
+      studentStudentGroupStore.off('read_unhide_group_changed',DeleteHiddenGroupChanged)
     })
 
     self.readClass = () => {
@@ -731,40 +813,61 @@
       }
     }
 
-    //**************************************Captain & Vice-captain
-
-    self.details = (c,e) => {
-      self.house_for_captain = c.house_name
-      self.view = 'details'
-      studentStudentGroupStore.trigger('read_student_by_student_group_details', c.group_id)
+    self.saveOrderNumber = () =>{
+      self.assignedSubjects.map(c=>{
+        var orderInput = '#orderInput'+c.subject_id
+        c.order_no = $(orderInput).val()
+      })
+      console.log(self.assignedSubjects)
+      studentStudentGroupStore.trigger('save_order_number', self.group_id, self.assignedSubjects)
     }
 
-    self.openCaptainFrom = (c,e) => {
-      self.house_for_captain = c.house_name
-      self.group_id_captain = c.group_id
-      self.captain_id = c.captain_id
-      self.vice_captain_id = c.vice_captain_id
-      studentStudentGroupStore.trigger('read_student_by_student_group', c.group_id)
+    //************************************** Copy Order Number
+
+    self.changeSectionForCopyOrderNo = (standard_id) => {
+      self.tempSectionsForCopyOrderNo = []
+      self.tempSectionsForCopyOrderNo = self.sections.filter(s=>{
+        return s.standard_id==standard_id
+      })
     }
 
-    self.closeCaptainForm = () => {
-      $("#captainModal").removeClass("is-active");
+    self.openCopyOrderNumberForm = (c,e) => {
+      self.changeSectionForCopyOrderNo(self.refs.standardSelect.value)
+      self.refs.standardSelectCopyOrderNo.value = self.refs.standardSelect.value
+      $("#copyOrderNumberModal").addClass("is-active");
+      console.log(self.tempSectionsForCopyOrderNo)
     }
 
-    self.updateCaptain = () => {
+    self.closeCopyOrderNumberForm = () => {
+      $("#copyOrderNumberModal").removeClass("is-active");
+    }
+
+    self.readGroups = () => {
+      if(self.refs.sectionSelectCopyOrderNo.value == ''){
+        toastr.error('Please select section')
+      }else{
+        studentStudentGroupStore.trigger('read_subject_groups_for_copy_order_no', self.refs.standardSelect.value, self.refs.sectionSelectCopyOrderNo.value)
+      }
+    }
+
+    self.copyOrderNumber = () => {
 
       let error = '';
       
-      if(self.refs.captainSelect.value==''){
-        error = error + "Please select Captain, "
+      if(self.refs.sectionSelectCopyOrderNo.value==''){
+        error = error + "Please select section, "
       }
 
-      if(self.refs.viceCaptainSelect.value==''){
-        error = error + "Please select vice captain, "
+      if(self.refs.sectionSelectCopyOrderNo.value==self.refs.sectionSelect.value){
+        error = error + "Yor are in the selected section, "
       }
 
-      if(self.refs.viceCaptainSelect.value==self.refs.captainSelect.value){
-        error = error + "captain and vice captain can't be same, "
+      if(self.refs.groupSelect.value==''){
+        error = error + "Please select group, "
+      }
+
+      if(self.refs.groupSelect.value==self.group_id){
+        error = error + "You are in the selected group, "
       }
 
       if(error.length!=0){
@@ -772,9 +875,51 @@
         return
       }else{
         self.loading = true
-        studentStudentGroupStore.trigger('update_student_group_captain', self.group_id_captain, self.refs.captainSelect.value, self.refs.viceCaptainSelect.value)
+        studentStudentGroupStore.trigger('copy_order_number', self.refs.groupSelect.value)
       }
 
+    } 
+
+    self.details = (c,e) => {
+      self.class = $("#standard option:selected").text() + ' ' + $("#section option:selected").text() 
+      self.group_details = c.group_name 
+      self.loading = true
+      studentStudentGroupStore.trigger('read_student_group_details', c.group_id)
+    }
+
+    self.hideGroup = (c,e) => {
+      self.loading = true
+      studentStudentGroupStore.trigger('hide_group', c.group_id, self.refs.sectionSelect.value)
+    }
+
+    self.readHiddenGroup = () => {
+      let error = '';
+      
+      if(self.refs.standardSelect.value==''){
+        error = error + "Please select standard, "
+      }
+
+      if(self.refs.sectionSelect.value==''){
+        error = error + "Please select section, "
+      }
+
+      if(error.length!=0){
+        toastr.error(error)
+        return
+      }else{
+        self.loading = true
+        studentStudentGroupStore.trigger('read_hidden_groups', self.refs.sectionSelect.value) 
+      }
+       
+    }
+
+    self.closeHiddenGroupModel = () => {
+      $("#hiddenGroupModal").removeClass("is-active");
+    }
+
+    self.unHideGroup = (c,e) => {
+      self.loading = true
+      studentStudentGroupStore.trigger('unhide_group', c.group_id, self.refs.sectionSelect.value)
     }
 
     // ****************************************** all change metods *************************************
@@ -880,34 +1025,74 @@
 
       self.refreshSubjects()
       
-    }
+    } 
 
-
-
-
-    studentStudentGroupStore.on('read_student_by_student_group_changed',ReadStudentsByStudentGroupChanged)
-    function ReadStudentsByStudentGroupChanged(students){
+    studentStudentGroupStore.on('save_order_number_changed',orderNumberChanged)
+    function orderNumberChanged(subjects_assigned){
       self.loading = false
-      self.studentsCaptains = []
-      self.studentsCaptains = students
-      $("#captainModal").addClass("is-active");
-      self.update()
-      self.refs.captainSelect.value=self.captain_id
-      self.refs.viceCaptainSelect.value=self.vice_captain_id
+    }
+  
+    studentStudentGroupStore.on('read_subject_groups_for_copy_order_no_changed',ReadSubjectGroupsForCopyOrderNumberChanged)
+    function ReadSubjectGroupsForCopyOrderNumberChanged(subjects){
+       self.tempSubjectGroups = []
+       self.tempSubjectGroups = subjects
+       self.update()
     }
 
-    studentStudentGroupStore.on('update_student_group_captain_changed',UpdateStudentGroupCaptainChanged)
-    function UpdateStudentGroupCaptainChanged(students){
-       $("#captainModal").removeClass("is-active");
-       self.readStudentGroup()
+    studentStudentGroupStore.on('copy_order_number_changed',CopyOrderNumberChanged)
+    function CopyOrderNumberChanged(subjects){
+      self.loading = false
+      console.log(subjects)
+       self.assignedSubjects.map(s=>{
+        subjects.map(o=>{
+          if(s.subject_id==o.subject_id){
+            s.order_no=o.order_no
+          }
+        })
+       })
+       self.closeCopyOrderNumberForm()
+       console.log(self.assignedSubjects)
+       self.update()
     }
 
-    studentStudentGroupStore.on('read_student_by_student_group_details_changed',ReadStudentsByStudentGroupDetailsChanged)
-    function ReadStudentsByStudentGroupDetailsChanged(students){
+    studentStudentGroupStore.on('read_student_group_details_changed',ReadStudentGroupDetailsChanged)
+    function ReadStudentGroupDetailsChanged(students,subjects){
       self.loading = false
       self.studentsDetails = []
       self.studentsDetails = students
+
+      self.subjectsDetails = []
+      self.subjectsDetails = subjects
+
+      self.view = 'details'
       self.update()
+    }
+
+    studentStudentGroupStore.on('hide_group_changed',HideGroupChanged)
+    function HideGroupChanged(info){
+      self.loading = false
+      if(info.length!=0){
+        toastr.error(info)
+        self.update()
+        return
+      }else{
+        self.readStudentGroup()
+      }
+    }
+
+    studentStudentGroupStore.on('read_hidden_groups_changed',ReadHiddenGroupChanged)
+    function ReadHiddenGroupChanged(students){
+      self.loading = false
+      self.hiddenStudentsGroups = []
+      self.hiddenStudentsGroups = students
+      $("#hiddenGroupModal").addClass("is-active");
+      self.update()
+    }
+
+    studentStudentGroupStore.on('read_unhide_group_changed',DeleteHiddenGroupChanged)
+    function DeleteHiddenGroupChanged(students){
+      self.loading = false
+      self.readHiddenGroup()
     }
 
 

@@ -379,6 +379,49 @@ router.post('/assign-subjects', function(req, res, next) {
 });
 
 // free subjects
+router.post('/save-order-number', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+      var data = {}
+      
+      var sql = ''
+      input.subjects.map(c=>{
+        var qry = `update group_subject_map set order_no=${c.order_no}
+                   where subject_id=${c.subject_id} 
+                   and group_id=${input.group_id}
+                   and session_id =${req.cookies.session_id};`;
+        if(sql==''){
+          sql = qry;
+        }else{
+          sql = sql + qry;
+        }
+      })        
+
+      
+      console.log(sql);
+
+      connection.query(sql, function(err, rows)
+      {
+
+        if(err){
+          console.log("Error updating order_no : %s ",err );
+          data.status = 'e';
+          data.error = err
+          data.messaage = err.sqlMessage
+        }else{
+          data.status = 's';
+          res.send(data)
+        }
+        
+      });
+
+
+   });
+
+});
+
 router.post('/free-up-subject', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
@@ -388,10 +431,11 @@ router.post('/free-up-subject', function(req, res, next) {
       
       var sql = ''
       input.subjects.map(c=>{
+        var qry = `delete from group_subject_map where subject_id=${c.subject_id} and group_id=${input.group_id} and session_id=${req.cookies.session_id};`;
         if(sql==''){
-          sql = `delete from group_subject_map where subject_id=${c.subject_id} and group_id=${input.group_id} and session_id=${req.cookies.session_id};`;
+          sql = qry;
         }else{
-          sql = sql +`delete from group_subject_map where subject_id=${c.subject_id} and group_id=${input.group_id} and session_id=${req.cookies.session_id};`;
+          sql = sql + qry;
         }
       })        
 
@@ -419,70 +463,35 @@ router.post('/free-up-subject', function(req, res, next) {
 });
 
 
-/* Read Students listing. */
-router.get('/students_by_student_group/:group_id', function(req, res, next) {
+/* copy order number */
 
-  // req.getConnection(function(err,connection){
-       
-     var data = {}
-     var qry = `select first_name,middle_name,last_name,enroll_number,a.student_id,reg_number,
-                concat(first_name,' ',middle_name, ' ' ,last_name) as name,
-                concat(standard,' ',section) as standard, f_name,mobile
-                from student_master a
-                JOIN parent_master b on (a.student_id=b.student_id  and b.current_session_id = ${req.cookies.session_id})
-                JOIN student_current_standing c on (a.student_id = c.student_id and a.current_session_id = ${req.cookies.session_id})
-                JOIN section_master d on c.section_id = d.section_id
-                JOIN standard_master e on d.standard_id = e.standard_id 
-                where c.group_id=${req.params.group_id}
-                and (a.withdraw='N' || a.withdraw_session > ${req.cookies.session_id})
-                and c.session_id= ${req.cookies.session_id}
-                order by d.section_id, 1,2,3`;
-
-     console.log(qry)
-     pool.query(qry,function(err,result){
-            
-        if(err){
-           console.log("Error reading students by house: ",err );
-           data.status = 'e';
-           data.error = err
-           data.messaage = err.sqlMessage
-        }else{
-            data.status = 's';
-            data.students = result;
-            res.send(data)
-        }
-     
-     });
-
-  // });
-
-});
-
-
-router.post('/update-captain/:group_id/:captain_id/:vice_captain_id', function(req, res, next) {
+router.post('/copy-order-number/:group_id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
-  var id = input.id;
 
   //req.getConnection(function(err,connection){
         var data = {}
 
-        var values = {
-            house_name    : input.house,
-        };
-        var qry = `update student_group set captain=${req.params.captain_id}, vice_captain=${req.params.vice_captain_id}
-                   where group_id=${req.params.group_id}`;
+        var qry = `select a.subject_id, subject_name, subject_code,
+                   subject_short_name,b.order_no
+                   from subject_master a,group_subject_map b
+                   where a.subject_id=b.subject_id 
+                   and b.group_id=${req.params.group_id}
+                   and b.session_id =${req.cookies.session_id}
+                   order by 2`;
+        console.log(qry)           
 
-        pool.query(qry, function(err, rows)
+        pool.query(qry, function(err, result)
         {
   
           if(err){
-           console.log("Error inserting StudentGroup  : %s ",err );
+           console.log("Error reading subject order number  : %s ",err );
            data.status = 'e';
            data.error = err
            data.messaage = err.sqlMessage
           }else{
               data.status = 's';
+              data.subjects = result;
               res.send(data)
           }
           
@@ -491,41 +500,167 @@ router.post('/update-captain/:group_id/:captain_id/:vice_captain_id', function(r
 
 });
 
-router.get('/students_by_student_group_details/:group_id', function(req, res, next) {
+router.get('/student-group-details/read/:group_id', function(req, res, next) {
 
-  // req.getConnection(function(err,connection){
+  req.getConnection(function(err,connection){
        
      var data = {}
-     var qry = `select first_name,middle_name,last_name,enroll_number,a.student_id,reg_number,
-                concat(first_name,' ',middle_name, ' ' ,last_name) as name,
-                concat(standard,' ',section) as standard, f_name,mobile
+     var qry1 = `select a.student_id,concat(first_name,' ', middle_name,' ', last_name) as name,
+                enroll_number, group_id,roll_number 
                 from student_master a
-                JOIN parent_master b on (a.student_id=b.student_id  and b.current_session_id = ${req.cookies.session_id})
-                JOIN student_current_standing c on (a.student_id = c.student_id and a.current_session_id = ${req.cookies.session_id})
-                JOIN section_master d on c.section_id = d.section_id
-                JOIN standard_master e on d.standard_id = e.standard_id 
-                where c.group_id=${req.params.group_id}
-                and (a.withdraw='N' || a.withdraw_session > ${req.cookies.session_id})
-                and c.session_id= ${req.cookies.session_id}
-                order by d.section_id, 1,2,3`;
+                join student_current_standing b on (a.student_id = b.student_id and a.current_session_id = ${req.cookies.session_id})
+                join section_master c on b.section_id = c.section_id
+                join standard_master d on c.standard_id = d.standard_id
+                where b.group_id = ${req.params.group_id}
+                and b.session_id= ${req.cookies.session_id}
+                and (a.withdraw='N' or a.withdraw_session > ${req.cookies.session_id})
+                order by first_name, middle_name, last_name, enroll_number`;
 
+      var qry2 = `select a.subject_id, subject_name, subject_code,subject_short_name,b.order_no
+                  from subject_master a,group_subject_map b
+                  where a.subject_id=b.subject_id 
+                  and b.group_id= ${req.params.group_id}
+                  and b.session_id= ${req.cookies.session_id}
+                  order by 2`;          
+    
+      var qry = qry1+';'+qry2;
      console.log(qry)
-     pool.query(qry,function(err,result){
+     connection.query(qry,function(err,result){
             
         if(err){
-           console.log("Error reading students by house: ",err );
+           console.log("Error reading group details: ",err );
            data.status = 'e';
            data.error = err
            data.messaage = err.sqlMessage
         }else{
             data.status = 's';
-            data.students = result;
+            data.students = result[0];
+            data.subjects = result[1];
             res.send(data)
         }
      
      });
 
-  // });
+   });
 
 });
+
+router.get('/hide-group/:group_id/:section_id', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var qry = `select count(group_id) as total 
+                from student_current_standing 
+                where group_id = ${req.params.group_id}
+                and section_id = ${req.params.section_id}
+                and session_id = ${req.cookies.session_id}`;
+
+     console.log(qry)
+     connection.query(qry,function(err,result){
+            
+        if(err){
+           console.log("Error hidding group: ",err );
+           data.status = 'e';
+           data.error = err
+           data.messaage = err.sqlMessage
+        }else{
+            console.log(result[0].total)
+            if(result[0].total>0){
+              data.info ='This group has assigned students in current session'
+              data.status = 's';
+              res.send(data)
+            }else{
+              var today = new Date();
+              var dt= today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+              var qry1 = `insert into student_group_hide_map(group_id, section_id, hidden_session, creation_date, modified_by)
+                          values(${req.params.group_id}, ${req.params.section_id}, ${req.cookies.session_id}, ${dt}, '${req.cookies.user}')`;
+              console.log(qry1)
+              connection.query(qry1,function(err,result){
+            
+                if(err){
+                   console.log("Error hidding group: ",err );
+                   data.status = 'e';
+                   data.error = err
+                   data.messaage = err.sqlMessage
+                }else{
+                    data.status = 's';
+                    data.info = ''
+                    res.send(data)
+                }
+             
+              });
+            }
+        }
+     
+     });
+
+   });
+
+});
+
+
+router.get('/hidden-group/read-groups/:section_id', function(req, res, next) {
+
+  //req.getConnection(function(err,connection){
+       
+     var data = {}
+     var qry = `select  a.group_id, group_name, group_detail
+                from student_group_hide_map a
+                join student_group b on a.group_id = b.group_id
+                where a.section_id=${req.params.section_id}
+                and hidden_session<= ${req.cookies.session_id}
+                order by group_name`;
+     
+     console.log(qry)
+
+     pool.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading hidden group : %s ",err );
+           data.status = 'e';
+           data.error = err
+           data.messaage = err.sqlMessage
+        }else{
+          data.status = 's';
+          data.studentGroups = result;
+          res.send(data)
+        }
+     
+     });
+       
+  //});
+
+});
+
+router.get('/delete-hidden-group/delete/:group_id/:section_id', function(req, res, next) {
+
+  //req.getConnection(function(err,connection){
+       
+     var data = {}
+     var qry = `delete from student_group_hide_map 
+                where section_id=${req.params.section_id} 
+                and group_id=${req.params.group_id}`;
+     
+     console.log(qry)
+
+     pool.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error deleting hidden group : %s ",err );
+           data.status = 'e';
+           data.error = err
+           data.messaage = err.sqlMessage
+        }else{
+          data.status = 's';
+          res.send(data)
+        }
+     
+     });
+       
+  //});
+
+});
+
+
 module.exports = router;
