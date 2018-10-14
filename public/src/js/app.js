@@ -73,6 +73,9 @@ RiotControl.addStore(studentStudentGroupStore)
 var studentAssignSubjectStore = new StudentAssignSubjectStore() 
 RiotControl.addStore(studentAssignSubjectStore)
 
+var studentAssignSectionStore = new StudentAssignSectionStore() 
+RiotControl.addStore(studentAssignSectionStore)
+
 
 //****************************************************ghulam
 var sessionStore = new SessionStore() 
@@ -317,6 +320,9 @@ let goTo = (path1, path2, path3) => {
     break;
     case 'student-assign-subject':
       currentPage = riot.mount('div#view', 'student-assign-subject')[0];
+    break;
+    case 'student-assign-section':
+      currentPage = riot.mount('div#view', 'student-assign-section')[0];
     break;
     case 'fee-bill':
       currentPage = riot.mount('div#view', 'bill', {selected_master: path2})[0];

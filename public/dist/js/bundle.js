@@ -653,6 +653,9 @@ RiotControl.addStore(studentStudentGroupStore);
 var studentAssignSubjectStore = new StudentAssignSubjectStore();
 RiotControl.addStore(studentAssignSubjectStore);
 
+var studentAssignSectionStore = new StudentAssignSectionStore();
+RiotControl.addStore(studentAssignSectionStore);
+
 //****************************************************ghulam
 var sessionStore = new SessionStore();
 RiotControl.addStore(sessionStore);
@@ -895,6 +898,9 @@ var goTo = function goTo(path1, path2, path3) {
       break;
     case 'student-assign-subject':
       currentPage = riot.mount('div#view', 'student-assign-subject')[0];
+      break;
+    case 'student-assign-section':
+      currentPage = riot.mount('div#view', 'student-assign-section')[0];
       break;
     case 'fee-bill':
       currentPage = riot.mount('div#view', 'bill', { selected_master: path2 })[0];
@@ -10737,6 +10743,130 @@ function StudentAssignHouseStore() {
           self.trigger('read_student_by_house_details_changed', data.students);
         } else if (data.status == 'e') {
           showToast("Students Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function StudentAssignSectionStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.studentGroups = [];
+
+  self.on('read_classes', function () {
+    var req = {};
+    $.ajax({
+      url: '/standard',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_classes_changed', data.standards);
+        } else if (data.status == 'e') {
+          showToast("standards Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_section', function () {
+    var req = {};
+    $.ajax({
+      url: '/section',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_section_changed', data.sections);
+        } else if (data.status == 'e') {
+          showToast("section Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  /*******************************************************************subjects start*****************************************************************/
+
+  self.on('read_students', function (standard_id, section_id, second_section_id) {
+    var req = {};
+    $.ajax({
+      url: '/student-assign-section/students/' + standard_id + '/' + section_id + '/' + second_section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_students_changed', data.freeStudents, data.assignedStudents);
+        } else if (data.status == 'e') {
+          showToast("AssignSection Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('assign_students', function (section_id, students) {
+    var obj = {};
+    obj['section_id'] = section_id;
+    obj['students'] = students;
+    $.ajax({
+      url: '/student-assign-section/assign-students/',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          toastr.success("Sections assigned successfully ");
+          self.trigger('assign_students_changed', students);
+        } else if (data.status == 'e') {
+          showToast("Error assigning students. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('free_up_students', function (section_id, students) {
+    var obj = {};
+    obj['section_id'] = section_id;
+    obj['students'] = students;
+    $.ajax({
+      url: '/student-assign-section/free-up-students/',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+
+          toastr.success("Sections assigned successfully ");
+          self.trigger('assign_students_changed', students);
+        } else if (data.status == 'e') {
+          showToast("Error while free up students. Please try again.", data.messaage);
         }
       },
       error: function error(data) {
