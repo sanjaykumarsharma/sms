@@ -36,6 +36,7 @@
                 <div class="navbar-dropdown">
                   <a class="navbar-item" href="#/student-assign-house">Assign House</a>
                   <a class="navbar-item" href="#/student-group-student">Group Student</a>
+                  <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a>
                 </div>
               </div>
 

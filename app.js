@@ -21,6 +21,7 @@ var physicalFitnessReportRouter = require('./routes/physical-fitness');
 var subjectGroupMapReportRouter = require('./routes/exam-subject-group-map');
 var studentAssignHouseRouter = require('./routes/student-assign-house');
 var studentGroupStudentRouter = require('./routes/student-group-student');
+var studentAssignSubjectRouter = require('./routes/student-assign-subject');
 
 
 //Bodhi
@@ -146,6 +147,7 @@ app.use('/physical-fitness', verifyToken, physicalFitnessReportRouter);
 app.use('/exam-subject-group-map', verifyToken, subjectGroupMapReportRouter);
 app.use('/student-assign-house', verifyToken, studentAssignHouseRouter);
 app.use('/student-group-student', verifyToken, studentGroupStudentRouter);
+app.use('/student-assign-subject', verifyToken, studentAssignSubjectRouter);
 
 //Bodhi
 app.use('/roles', verifyToken, rolesRouter);

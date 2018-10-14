@@ -650,6 +650,9 @@ RiotControl.addStore(studentAssignHouseStore);
 var studentStudentGroupStore = new StudentStudentGroupStore();
 RiotControl.addStore(studentStudentGroupStore);
 
+var studentAssignSubjectStore = new StudentAssignSubjectStore();
+RiotControl.addStore(studentAssignSubjectStore);
+
 //****************************************************ghulam
 var sessionStore = new SessionStore();
 RiotControl.addStore(sessionStore);
@@ -889,6 +892,9 @@ var goTo = function goTo(path1, path2, path3) {
       break;
     case 'student-group-student':
       currentPage = riot.mount('div#view', 'student-group-student')[0];
+      break;
+    case 'student-assign-subject':
+      currentPage = riot.mount('div#view', 'student-assign-subject')[0];
       break;
     case 'fee-bill':
       currentPage = riot.mount('div#view', 'bill', { selected_master: path2 })[0];
@@ -10731,6 +10737,109 @@ function StudentAssignHouseStore() {
           self.trigger('read_student_by_house_details_changed', data.students);
         } else if (data.status == 'e') {
           showToast("Students Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function StudentAssignSubjectStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.studentGroups = [];
+
+  self.on('read_classes', function () {
+    var req = {};
+    $.ajax({
+      url: '/standard',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_classes_changed', data.standards);
+        } else if (data.status == 'e') {
+          showToast("standards Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  /*******************************************************************subjects start*****************************************************************/
+
+  self.on('read_subjects', function (standard_id) {
+    var req = {};
+    $.ajax({
+      url: '/student-assign-subject/subjects/' + standard_id + '/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_subjects_changed', data.freeSubjects, data.assignedSubjects);
+        } else if (data.status == 'e') {
+          showToast("AssignSubject Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('assign_subjects', function (standard_id, subjects) {
+    var obj = {};
+    obj['standard_id'] = standard_id;
+    obj['subjects'] = subjects;
+    $.ajax({
+      url: '/student-assign-subject/assign-subjects/',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          toastr.success("Subjects assigned successfully ");
+          self.trigger('assign_subjects_changed', subjects);
+        } else if (data.status == 'e') {
+          showToast("Error assigning subjects. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('free_up_subject', function (standard_id, subjects) {
+    var obj = {};
+    obj['standard_id'] = standard_id;
+    obj['subjects'] = subjects;
+    $.ajax({
+      url: '/student-assign-subject/free-up-subject/',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+
+          toastr.success("Subjects freed successfully ");
+          self.trigger('assign_subjects_changed', subjects);
+        } else if (data.status == 'e') {
+          showToast("Error while free up subjects. Please try again.", data.messaage);
         }
       },
       error: function error(data) {
