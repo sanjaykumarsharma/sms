@@ -39,6 +39,7 @@
                   <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a>
                   <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a>
                   <a class="navbar-item" href="#/student-assign-section">Assign Section</a>
+                  <a class="navbar-item" href="#/student-login-slip">Login Slip</a>
                 </div>
               </div>
 
