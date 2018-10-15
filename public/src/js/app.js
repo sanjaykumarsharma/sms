@@ -73,6 +73,9 @@ RiotControl.addStore(studentStudentGroupStore)
 var studentAssignSubjectStore = new StudentAssignSubjectStore() 
 RiotControl.addStore(studentAssignSubjectStore)
 
+var studentWithdrawnStudentStore = new StudentWithdrawnStudentStore() 
+RiotControl.addStore(studentWithdrawnStudentStore)
+
 var studentAssignSectionStore = new StudentAssignSectionStore() 
 RiotControl.addStore(studentAssignSectionStore)
 
@@ -317,6 +320,9 @@ let goTo = (path1, path2, path3) => {
     break;
     case 'student-group-student':
       currentPage = riot.mount('div#view', 'student-group-student')[0];
+    break;
+    case 'student-withdrawn-student':
+      currentPage = riot.mount('div#view', 'student-withdrawn-student')[0];
     break;
     case 'student-assign-subject':
       currentPage = riot.mount('div#view', 'student-assign-subject')[0];

@@ -653,6 +653,9 @@ RiotControl.addStore(studentStudentGroupStore);
 var studentAssignSubjectStore = new StudentAssignSubjectStore();
 RiotControl.addStore(studentAssignSubjectStore);
 
+var studentWithdrawnStudentStore = new StudentWithdrawnStudentStore();
+RiotControl.addStore(studentWithdrawnStudentStore);
+
 var studentAssignSectionStore = new StudentAssignSectionStore();
 RiotControl.addStore(studentAssignSectionStore);
 
@@ -895,6 +898,9 @@ var goTo = function goTo(path1, path2, path3) {
       break;
     case 'student-group-student':
       currentPage = riot.mount('div#view', 'student-group-student')[0];
+      break;
+    case 'student-withdrawn-student':
+      currentPage = riot.mount('div#view', 'student-withdrawn-student')[0];
       break;
     case 'student-assign-subject':
       currentPage = riot.mount('div#view', 'student-assign-subject')[0];
@@ -11873,6 +11879,110 @@ function StudentStore() {
           self.trigger('add_student_changed', self.students);
         } else if (data.status == 'e') {
           showToast("Error adding Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function StudentWithdrawnStudentStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.studentGroups = [];
+
+  self.on('read_classes', function () {
+    var req = {};
+    $.ajax({
+      url: '/standard',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_classes_changed', data.standards);
+        } else if (data.status == 'e') {
+          showToast("standards Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_section', function () {
+    var req = {};
+    $.ajax({
+      url: '/section',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_section_changed', data.sections);
+        } else if (data.status == 'e') {
+          showToast("section Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  /*******************************************************************subjects start*****************************************************************/
+
+  self.on('read_students', function (standard_id, section_id, fdt, tdt) {
+    var obj = {};
+    obj['standard_id'] = standard_id;
+    obj['section_id'] = section_id;
+    obj['fdt'] = fdt;
+    obj['tdt'] = tdt;
+    $.ajax({
+      url: '/student-withdrawn-student/students',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_students_changed', data.students);
+        } else if (data.status == 'e') {
+          showToast("WithdrawnStudent Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('cancle_withdraw_students', function (student_id) {
+    var obj = {};
+    obj['student_id'] = student_id;
+    $.ajax({
+      url: '/student-withdrawn-student/cancle-withdraw-students/',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+
+          toastr.success("Sections assigned successfully ");
+          self.trigger('cancle_withdraw_students_changed');
+        } else if (data.status == 'e') {
+          showToast("Error while free up students. Please try again.", data.messaage);
         }
       },
       error: function error(data) {

@@ -37,6 +37,7 @@
                   <a class="navbar-item" href="#/student-assign-house">Assign House</a>
                   <a class="navbar-item" href="#/student-group-student">Group Student</a>
                   <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a>
+                  <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a>
                   <a class="navbar-item" href="#/student-assign-section">Assign Section</a>
                 </div>
               </div>
