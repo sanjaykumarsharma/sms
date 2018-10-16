@@ -25,6 +25,7 @@ var studentAssignSubjectRouter = require('./routes/student-assign-subject');
 var studentWithdrawnStudentRouter = require('./routes/student-withdrawn-student');
 var studentAssignSectionRouter = require('./routes/student-assign-section');
 var studentLoginSlipRouter = require('./routes/student-login-slip');
+var studentResultActivationRouter = require('./routes/student-result-activation');
 
 
 //Bodhi
@@ -154,6 +155,7 @@ app.use('/student-assign-subject', verifyToken, studentAssignSubjectRouter);
 app.use('/student-withdrawn-student', verifyToken, studentWithdrawnStudentRouter);
 app.use('/student-assign-section', verifyToken, studentAssignSectionRouter);
 app.use('/student-login-slip', verifyToken, studentLoginSlipRouter);
+app.use('/student-result-activation', verifyToken, studentResultActivationRouter);
 
 //Bodhi
 app.use('/roles', verifyToken, rolesRouter);
