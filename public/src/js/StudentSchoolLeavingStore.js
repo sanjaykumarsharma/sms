@@ -1,4 +1,4 @@
-function StudentResultActivationStore() {
+function StudentSchoolLeavingStore() {
   riot.observable(this) // Riot provides our event emitter.
   var self = this
 
@@ -50,10 +50,11 @@ function StudentResultActivationStore() {
 
   /*******************************************************************subjects start*****************************************************************/
 
- self.on('read_students', function(standard_id,section_id) {
+ self.on('read_students', function(standard_id,section_id,type) {
      var obj = {}
     obj['standard_id'] = standard_id
     obj['section_id'] = section_id
+    obj['type'] = type
     $.ajax({
       url:'/student-school-leaving/students',
         type:"POST",
@@ -66,7 +67,7 @@ function StudentResultActivationStore() {
           if(data.status == 's'){
             self.trigger('read_students_changed', data.students)
           }else if(data.status == 'e'){
-            showToast("ResultActivation Read Error. Please try again.", data.messaage)
+            showToast("SchoolLeaving Read Error. Please try again.", data.messaage)
           }
         },
         error: function(data){

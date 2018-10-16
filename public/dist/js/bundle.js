@@ -662,6 +662,9 @@ RiotControl.addStore(studentAssignSectionStore);
 var studentLoginSlipStore = new StudentLoginSlipStore();
 RiotControl.addStore(studentLoginSlipStore);
 
+var studentSchoolLeavingStore = new StudentSchoolLeavingStore();
+RiotControl.addStore(studentSchoolLeavingStore);
+
 var studentResultActivationStore = new StudentResultActivationStore();
 RiotControl.addStore(studentResultActivationStore);
 
@@ -916,6 +919,9 @@ var goTo = function goTo(path1, path2, path3) {
       break;
     case 'student-login-slip':
       currentPage = riot.mount('div#view', 'student-login-slip')[0];
+      break;
+    case 'student-school-leaving':
+      currentPage = riot.mount('div#view', 'student-school-leaving')[0];
       break;
     case 'student-result-activation':
       currentPage = riot.mount('div#view', 'student-result-activation')[0];
@@ -11967,7 +11973,7 @@ function StudentResultActivationStore() {
     obj['standard_id'] = standard_id;
     obj['section_id'] = section_id;
     $.ajax({
-      url: '/student-result-activation/students',
+      url: '/student-school-leaving/students',
       type: "POST",
       data: JSON.stringify(obj),
       contentType: "application/json",
@@ -11992,7 +11998,111 @@ function StudentResultActivationStore() {
     obj['enroll_number'] = enroll_number;
     obj['active_result'] = active_result;
     $.ajax({
-      url: '/student-result-activation/update-result-status/',
+      url: '/student-school-leaving/update-result-status/',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+
+          toastr.success("Login status updated successfully ");
+          self.trigger('update_result_status_changed');
+        } else if (data.status == 'e') {
+          showToast("Error updating status. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function StudentSchoolLeavingStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.studentGroups = [];
+
+  self.on('read_classes', function () {
+    var req = {};
+    $.ajax({
+      url: '/standard',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_classes_changed', data.standards);
+        } else if (data.status == 'e') {
+          showToast("standards Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_section', function () {
+    var req = {};
+    $.ajax({
+      url: '/section',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_section_changed', data.sections);
+        } else if (data.status == 'e') {
+          showToast("section Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  /*******************************************************************subjects start*****************************************************************/
+
+  self.on('read_students', function (standard_id, section_id, type) {
+    var obj = {};
+    obj['standard_id'] = standard_id;
+    obj['section_id'] = section_id;
+    obj['type'] = type;
+    $.ajax({
+      url: '/student-school-leaving/students',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_students_changed', data.students);
+        } else if (data.status == 'e') {
+          showToast("SchoolLeaving Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('update_result_status', function (enroll_number, active_result) {
+    var obj = {};
+    obj['enroll_number'] = enroll_number;
+    obj['active_result'] = active_result;
+    $.ajax({
+      url: '/student-school-leaving/update-result-status/',
       type: "POST",
       data: JSON.stringify(obj),
       contentType: "application/json",

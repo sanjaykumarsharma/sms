@@ -82,6 +82,9 @@ RiotControl.addStore(studentAssignSectionStore)
 var studentLoginSlipStore = new StudentLoginSlipStore() 
 RiotControl.addStore(studentLoginSlipStore)
 
+var studentSchoolLeavingStore = new StudentSchoolLeavingStore() 
+RiotControl.addStore(studentSchoolLeavingStore)
+
 var studentResultActivationStore = new StudentResultActivationStore() 
 RiotControl.addStore(studentResultActivationStore)
 
@@ -338,6 +341,9 @@ let goTo = (path1, path2, path3) => {
     break;
     case 'student-login-slip':
       currentPage = riot.mount('div#view', 'student-login-slip')[0];
+    break;
+    case 'student-school-leaving':
+      currentPage = riot.mount('div#view', 'student-school-leaving')[0];
     break;
     case 'student-result-activation':
       currentPage = riot.mount('div#view', 'student-result-activation')[0];

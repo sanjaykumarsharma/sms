@@ -40,6 +40,7 @@
                   <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a>
                   <a class="navbar-item" href="#/student-assign-section">Assign Section</a>
                   <a class="navbar-item" href="#/student-login-slip">Login Slip</a>
+                  <a class="navbar-item" href="#/student-school-leaving">Student Leaving Certificate</a>
                   <a class="navbar-item" href="#/student-result-activation">Result Activation</a>
                 </div>
               </div>
