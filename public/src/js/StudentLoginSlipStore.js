@@ -75,11 +75,12 @@ function StudentLoginSlipStore() {
       })
   })
 
-  self.on('cancle_withdraw_students', function(student_id) {
+  self.on('update_login_status', function(enroll_number,is_active) {
     var obj = {}
-    obj['student_id'] = student_id
+    obj['enroll_number'] = enroll_number
+    obj['is_active'] = is_active
     $.ajax({
-      url:'/student-login-slip/cancle-withdraw-students/',
+      url:'/student-login-slip/update-login-status/',
         type:"POST",
         data: JSON.stringify(obj),
         contentType: "application/json",
@@ -88,10 +89,10 @@ function StudentLoginSlipStore() {
         success: function(data){
           if(data.status == 's'){
             
-            toastr.success("Sections assigned successfully ")
-            self.trigger('cancle_withdraw_students_changed') 
+            toastr.success("Login status updated successfully ")
+            self.trigger('update_login_status_changed') 
           }else if(data.status == 'e'){
-            showToast("Error while free up students. Please try again.", data.messaage)
+            showToast("Error updating status. Please try again.", data.messaage)
           }
         },
         error: function(data){
@@ -99,6 +100,109 @@ function StudentLoginSlipStore() {
         }
       })
   })
+  
+  self.on('print_login_slip', function(standard_id,section_id,student_id) {
+    var obj = {}
+    obj['student_id'] = student_id
+    obj['standard_id'] = standard_id
+    obj['section_id'] = section_id
+    $.ajax({
+      url:'/student-login-slip/print-login-slip/',
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          if(data.status == 's'){
+            
+            self.trigger('print_login_slip_changed',data.students) 
+          }else if(data.status == 'e'){
+            showToast("Error print login slip. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('print_login_slip_all', function(standard_id,section_id) {
+    var obj = {}
+    obj['standard_id'] = standard_id
+    obj['section_id'] = section_id
+    $.ajax({
+      url:'/student-login-slip/print-login-slip-all/',
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          if(data.status == 's'){
+            
+            self.trigger('print_login_slip_changed',data.students) 
+          }else if(data.status == 'e'){
+            showToast("Error print login slip. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+  
+  self.on('reset_password', function(enroll_number) {
+    var obj = {}
+    obj['enroll_number'] = enroll_number
+    $.ajax({
+      url:'/student-login-slip/reset-password/',
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          if(data.status == 's'){
+            toastr.success("Password reset successfully ")
+            self.trigger('reset_password_changed') 
+          }else if(data.status == 'e'){
+            showToast("Error in reset password. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+
+  self.on('generate_id', function(standard_id,section_id,student_id) {
+    var obj = {}
+    obj['student_id'] = student_id
+    obj['standard_id'] = standard_id
+    obj['section_id'] = section_id
+    $.ajax({
+      url:'/student-login-slip/generate-id/',
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          if(data.status == 's'){
+            
+            self.trigger('generate_id_changed') 
+          }else if(data.status == 'e'){
+            showToast("Error generating ID. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+  
   
 
 }

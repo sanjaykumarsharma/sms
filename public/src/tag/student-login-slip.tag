@@ -1,13 +1,15 @@
 <student-login-slip>
 <loading-bar if={loading}></loading-bar>  
 
-  <section class=" is-fluid">
+  <section class=" is-fluid" show={view=='home'}>
 
     <div class="level">
       <div class="level-left">
         <h2 class="title" style="color: #ff3860;">Login Slip</h2>
       </div>
       <div class="level-right">
+        <button class="button is-warning is-rounded has-text-weight-bold" onclick={printLoginSlipAll}> Print Login Slip </button>
+        <button class="button is-warning is-rounded has-text-weight-bold ml5" onclick={generateID}> Generate ID </button>
       </div>
     </div>
      
@@ -69,10 +71,10 @@
           <td>{c.is_active}</td>
           <td class="has-text-right">
             <span>
-              <a class="button is-small is-rounded" rel="nofollow" onclick={allowBlock.bind(this, c)}>
-                <span class="is-danger" show={c.is_active=='Y'}>Block</span>
-                <span show={c.is_active=='N'}>Allow</span>
-              </a>
+              <a class="button is-small is-rounded is-danger" show={c.is_active=='Y'} rel="nofollow" onclick={allowBlock.bind(this, c)}>Block</a>
+              <a class="button is-small is-rounded is-primary" show={c.is_active=='N'} rel="nofollow" onclick={allowBlock.bind(this, c)}>Allow</a>
+              <a class="button is-small is-rounded" onclick={printLoginSlip.bind(this, c)}>Print</a>
+              <a class="button is-small is-rounded" onclick={resetPassword.bind(this, c)}>Reset Password</a>
             </span>
           </td>
         </tr>
@@ -80,15 +82,49 @@
     </table>
      
   </section>
+
+  <section class=" is-fluid" show={view=='print-details'}>
+
+    <div class="level no-print">
+      <div class="level-left">
+        <h2 class="title" style="color: #ff3860;">Login Slip</h2>
+      </div>
+      <div class="level-right">
+        <button class="button is-warning is-rounded" onclick={backToHome}>
+        <span class="icon">
+          <span class="fas fa-arrow-left"></span>
+        </span>
+        </button>
+        
+      </div>
+    </div>
+
+
+    <div each={c, i in studentDetails}>
+      <table class="table">
+          <tr><th>Student Name</th><td>{c.student}</td></tr>
+          <tr><th>Class</th><td>{c.standard} {c.section}</td></tr>
+          <tr><th>Enroll Number</th><td>{c.enroll_number}</td></tr>
+          <tr><th>Father's Name</th><td>{c.f_name}</td></tr>
+          <tr><th>Student's/Parent Login ID</th><td>{c.login}</td></tr>
+          <tr><th>Student's Password</th><td>{c.password}</td></tr>
+          <tr><th>Parent's Password</th><td>{c.parent_password}</td></tr>    
+     </table>
+     <h6>How to login on website:- www.mckv.edu.in> Member Login > Enter login ID and Password >> Select user type (Students or parents) > Press OK</h6>
+     <p>Note : Please keep the password details secure with you.</p>
+    </div>
+
+  </section>
 	<script>
 	var self = this
     self.on("mount", function(){
       self.loading = false;
+      self.view = 'home'
       self.update()
-      flatpickr(".date", {
-        allowInput: true,
-        dateFormat: "d/m/Y",
-      })
+      // flatpickr(".date", {
+      //   allowInput: true,
+      //   dateFormat: "d/m/Y",
+      // })
       self.readClass()
       self.readSection()
     })
@@ -97,7 +133,10 @@
       studentLoginSlipStore.off('read_section_changed',SectionChanged)
 
       studentLoginSlipStore.off('read_students_changed',ReadSectionsChanged)
-      studentLoginSlipStore.off('cancle_withdraw_students_changed',CancleWithdrawStudentChanged)
+      studentLoginSlipStore.off('update_login_status_changed',UpdateLoginStatusChanged)
+      studentLoginSlipStore.off('print_login_slip_changed',PrintLoginSlipChanged)
+      studentLoginSlipStore.off('reset_password_changed', ResetPasswordChanged)
+      studentLoginSlipStore.off('generate_id_changed', GenerateIDChanged)
     })
 
     self.readClass = () => {
@@ -148,7 +187,85 @@
 
     self.allowBlock = (c,e) =>{
       self.loading = true
-      studentLoginSlipStore.trigger('cancle_withdraw_students', c.student_id)
+      var is_active = 'N'
+      if(c.is_active=='Y'){
+        is_active='N'
+      }else{
+        is_active='Y'
+      }
+      studentLoginSlipStore.trigger('update_login_status', c.enroll_number, is_active)
+    }
+
+    self.resetPassword = (c,e) =>{
+      self.loading = true
+      studentLoginSlipStore.trigger('reset_password', c.enroll_number)
+    }
+
+    self.printLoginSlip = (c,e) =>{
+      let error = '';
+      
+      if(self.refs.standardSelect.value==''){
+        error = error + "Please select standard, "
+      }
+
+      if(self.refs.sectionSelect.value==''){
+        error = error + "Please select section of student, "
+      }
+
+      if(error.length!=0){
+        toastr.error(error)
+        return
+      }else{
+        self.loading = true
+        studentLoginSlipStore.trigger('print_login_slip', self.refs.standardSelect.value, self.refs.sectionSelect.value, c.student_id) 
+      }
+
+    }
+
+    self.printLoginSlipAll = () =>{
+      let error = '';
+      
+      if(self.refs.standardSelect.value==''){
+        error = error + "Please select standard, "
+      }
+
+      if(self.refs.sectionSelect.value==''){
+        error = error + "Please select section of student, "
+      }
+
+      if(error.length!=0){
+        toastr.error(error)
+        return
+      }else{
+        self.loading = true
+        studentLoginSlipStore.trigger('print_login_slip_all', self.refs.standardSelect.value, self.refs.sectionSelect.value) 
+      }
+
+    }
+
+    self.backToHome = () => {
+      self.view = 'home'
+    }
+
+    self.generateID = () =>{
+      let error = '';
+      
+      if(self.refs.standardSelect.value==''){
+        error = error + "Please select standard, "
+      }
+
+      if(self.refs.sectionSelect.value==''){
+        error = error + "Please select section of student, "
+      }
+
+      if(error.length!=0){
+        toastr.error(error)
+        return
+      }else{
+        self.loading = true
+        studentLoginSlipStore.trigger('generate_id', self.refs.standardSelect.value, self.refs.sectionSelect.value) 
+      }
+
     }
 
     // ****************************************** all change metods *************************************
@@ -184,13 +301,34 @@
       self.update()
     }
 
-    studentLoginSlipStore.on('cancle_withdraw_students_changed',CancleWithdrawStudentChanged)
-    function CancleWithdrawStudentChanged(){
+    studentLoginSlipStore.on('update_login_status_changed',UpdateLoginStatusChanged)
+    function UpdateLoginStatusChanged(){
       self.loading = false
 
       self.refreshStudents()
       
     } 
+
+    studentLoginSlipStore.on('print_login_slip_changed',PrintLoginSlipChanged)
+    function PrintLoginSlipChanged(details){
+      self.view = 'print-details'
+      self.loading = false
+      self.studentDetails = []
+      self.studentDetails = details
+      self.update()
+    }
+    
+    studentLoginSlipStore.on('reset_password_changed', ResetPasswordChanged)
+    function ResetPasswordChanged(){
+      self.loading = false
+      self.update()
+    }
+
+    studentLoginSlipStore.on('generate_id_changed', GenerateIDChanged)
+    function GenerateIDChanged(){
+      self.loading = false
+      self.update()
+    }
 
 
 </script>
