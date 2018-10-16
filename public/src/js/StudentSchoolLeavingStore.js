@@ -76,12 +76,11 @@ function StudentSchoolLeavingStore() {
       })
   })
 
-  self.on('update_result_status', function(enroll_number,active_result) {
+  self.on('print_feed_back_form', function(student_id) {
     var obj = {}
-    obj['enroll_number'] = enroll_number
-    obj['active_result'] = active_result
+    obj['student_id'] = student_id
     $.ajax({
-      url:'/student-school-leaving/update-result-status/',
+      url:'/student-school-leaving/print-feed-back-form/',
         type:"POST",
         data: JSON.stringify(obj),
         contentType: "application/json",
@@ -90,10 +89,10 @@ function StudentSchoolLeavingStore() {
         success: function(data){
           if(data.status == 's'){
             
-            toastr.success("Login status updated successfully ")
-            self.trigger('update_result_status_changed') 
+            // toastr.success("Login status updated successfully ")
+            self.trigger('print_feed_back_form_changed',data.students) 
           }else if(data.status == 'e'){
-            showToast("Error updating status. Please try again.", data.messaage)
+            showToast("Error reading. Please try again.", data.messaage)
           }
         },
         error: function(data){

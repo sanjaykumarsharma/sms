@@ -72,7 +72,7 @@ router.post('/students', function(req, res, next) {
 
 /*update-login-status*/
 
-router.post('/update-result-status', function(req, res, next) {
+router.post('/print-feed-back-form', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
 
@@ -83,13 +83,29 @@ router.post('/update-result-status', function(req, res, next) {
 
       var data = {}
       
-      var sql = `update student_master set active_result='${input.active_result}'
-                 where enroll_number='${input.enroll_number}'
-                 and current_session_id=${req.cookies.session_id}`;
+      var sql = `select concat(b.first_name,' ',b.middle_name,' ',b.last_name) as name,
+                f_name,r_no, date_format(b.dob,'%d/%m/%Y') as dob, 
+                date_format(leaving_date, '%d/%m/%Y') as dol,
+                date_format(h.doa, '%d/%m/%Y') as doa,
+                g.standard,section,
+                h.admission_for_class, type,examination_appeared, b.enroll_number,punctuality,
+                conduct, attendance, faculty_relationship, peer_group_relationship,
+                class_responsibility, house_responsibility, attitude,remarks,house_name 
+                from school_leaving a 
+                join student_master b on (a.student_id=b.student_id and b.current_session_id=${req.cookies.session_id})
+                join student_current_standing d on (a.student_id = d.student_id and d.session_id = ${req.cookies.session_id})
+                left join house_master e on d.house_id = e.house_id 
+                join parent_master c on (a.student_id = c.student_id  and c.current_session_id=${req.cookies.session_id})
+                join section_master f on d.section_id = f.section_id
+                join standard_master g on f.standard_id = g.standard_id
+                left join student_master h on (b.reference_enrol = h.enroll_number  and b.current_session_id= ${req.cookies.session_id})
+                where a.student_id in (${input.student_id})
+                and d.session_id=${req.cookies.session_id}
+                group by a.student_id`;
       
       console.log(sql);
 
-      connection.query(sql, function(err, rows)
+      connection.query(sql, function(err, result)
       {
 
         if(err){
@@ -99,6 +115,7 @@ router.post('/update-result-status', function(req, res, next) {
           data.messaage = err.sqlMessage
         }else{
           data.status = 's';
+          data.students = result;
           res.send(data)
         }
         
