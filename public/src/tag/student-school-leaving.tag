@@ -92,10 +92,23 @@
 
   <section class=" is-fluid" show={view=='feed-back-form'}>
 
+    <div class="level">
+      <div class="level-left">
+        <h2 class="title" style="color: #ff3860;">School Leaving Certificate</h2>
+      </div>
+      <div class="level-right">
+        <button class="button is-warning is-rounded" onclick={backToHome}>
+        <span class="icon">
+          <span class="fas fa-arrow-left"></span>
+        </span>
+        </button>
+      </div>
+    </div>
+
     <div each={c, i in printDetails}>
 
-      <center>
-        <table style="border-style:none;">
+      
+        <table style="border-style:none;" class="table">
           <tr style="border-style:none;">
             <td style="border-style:none;">
                <img src="img/school_small.png" style="height:100px;">
@@ -114,51 +127,51 @@
       <div class="topHeader">CERTIFICATE OF CONDUCT & CHARACTER</div> 
 
       <caption>STUDENT PARTICULARS</caption>
-      <table style="margin-top:5px;">
+      <table style="margin-top:5px;" class="table">
         <tr>
-         <th class="title">Name in Full</th>
+         <t>Name in Full</th>
          <td ColSpan="5">{c.name}</td>
         </tr>
         <tr>
-          <th>Standard</th><td>'. {c.standard} . "-" . {c.section}</td>
+          <th>Standard</th><td> {c.standard}  {c.section}</td>
           <th>Enrol No.</th><td>{c.enroll_number}</td>
           <th>House</th><td>{c.house_name}</td>
-        </tr>';
+        </tr>
         <tr>
-          <th  class="title">Name of Father</th>
+          <th>Name of Father</th>
           <td ColSpan="5">{c.f_name}</td>
         </tr>
         <tr>
-          <th  class="title">Date of Birth</th>
+          <th>Date of Birth</th>
           <td ColSpan="5">{c.dob}</td>
         </tr>
         <tr>
-          <th  class="title">Date of Admission to MCKV</th>
-          <td ColSpan="5">{c.doa}.'</td>
+          <th>Date of Admission to MCKV</th>
+          <td ColSpan="5">{c.doa}</td>
         </tr>
         <tr>
-          <th  class="title">Class in which he took admission</th>
-          <td ColSpan="5">{c.admission_for_class}.'</td>
+          <th>Class in which he took admission</th>
+          <td ColSpan="5">{c.admission_for_class}</td>
         </tr>
         <tr>
-          <th  class="title">Date of  leaving school</th>
+          <th>Date of  leaving school</th>
           <td ColSpan="5">{c.dol}</td>
         </tr> 
         <tr>
-          <th  class="title">Examination appeared for/passed</th>
+          <th>Examination appeared for/passed</th>
           <td ColSpan="5">{c.examination_appeared}</td>
         </tr>
         <tr>
-          <th  class="title">Conduct</th>
+          <th>Conduct</th>
           <td ColSpan="5">{c.conduct}</td>
         </tr>
         <tr>
-          <th  class="title">Attendance</th>
+          <th>Attendance</th>
           <td ColSpan="5">{c.attendance}</td>
         </tr>
       </table>
 
-      <table>
+      <table class="table">
         <caption style="text-align:left !important;font-size:.8em; !important">Social & Life Skills:</caption>
         <tr>
           <th class="socialTitle">a) Relations with the Faculty</th><td>{c.faculty_relationship}</td>
@@ -182,20 +195,20 @@
         </tr>
       </table>
 
-      <table>   
+      <table class="table">   
         <tr>
-          <th class="title">Remarks if any </th>
+          <th>Remarks if any </th>
           <td>{c.remarks}</td>
         </tr>
       </table>
       <br><br><br>
  
-      <table style="border-style:none;margin-top:60px">
+      <table style="border-style:none;margin-top:60px" class="table">
         <tr>
            <td class="principal title">___________________<br><span class="principalText">Principal</sapn></td>              
         </tr>
        </table>   
-      <table style="border-style:none;margin-top:5px">
+      <table style="border-style:none;margin-top:5px" class="table">
         <tr>
            <td class="principal title"></td>
            <td class="profile">(for school profile, see reverse)</td>
@@ -233,7 +246,7 @@
           </p>
         </div>
         <div style='width:800px;'>
-            <table style='margin-top:10px;border:none'>
+            <table style='margin-top:10px;border:none' class="table">
               <tr><td  style='border: #fff;'><b><u>Explanation of Grades</u></b></td></tr> 
               <tr><td style='border: #fff;'>A = Excellent</td></tr>
               <tr><td style='border: #fff;'>B = Very Good</td></tr>
@@ -320,6 +333,10 @@
     }
 
 
+    self.backToHome = () =>{
+      self.view='home'
+    }
+
     self.printFeedBackForm = (c,e) =>{
       self.loading = true
       studentSchoolLeavingStore.trigger('print_feed_back_form', c.student_id)
@@ -360,8 +377,8 @@
     function PrintFeedBackFormChanged(students){
       self.loading = false
       self.view='feed-back-form'
-      self.printDetails = []
-      self.printDetails = students
+      self.printDetails = [{}]
+      // self.printDetails = students
       self.update()
       
     } 
