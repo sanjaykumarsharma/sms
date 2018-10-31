@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
   req.getConnection(function(err,connection){
        
      var data = {}
-     connection.query('SELECT * FROM activity_category_master',function(err,result)     {
+     connection.query('SELECT * FROM category_master',function(err,result)     {
             
         if(err){
            console.log("Error reading category : %s ",err );
@@ -40,7 +40,7 @@ router.post('/add', function(req, res, next) {
             category_name    : input.category_name,
         };
         
-        var query = connection.query("INSERT INTO activity_category_master set ? ",values, function(err, rows)
+        var query = connection.query("INSERT INTO category_master set ? ",values, function(err, rows)
         {
   
           if(err){
@@ -70,14 +70,14 @@ router.post('/edit/:category_id', function(req, res, next) {
         var data = {}
 
         var values = {
-            category    : input.category,
+            category_name    : input.category_name,
         };
         
-        var query = connection.query("UPDATE activity_category_master set ? WHERE category_id = ?",[values,category_id], function(err, rows)
+        var query = connection.query("UPDATE category_master set ? WHERE category_id = ?",[values,category_id], function(err, rows)
         {
   
           if(err){
-           console.log("Error inserting category : %s ",err );
+           console.log("Error updating category : %s ",err );
            data.status = 'e';
 
 	       }else{
@@ -100,7 +100,7 @@ router.get('/delete/:category_id', function(req, res, next) {
   req.getConnection(function(err,connection){
         var data = {}
 
-        var query = connection.query("DELETE from activity_category_master WHERE category_id = ?",[category_id], function(err, rows)
+        var query = connection.query("DELETE from category_master WHERE category_id = ?",[category_id], function(err, rows)
         {
   
           if(err){

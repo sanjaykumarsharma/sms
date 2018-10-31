@@ -7,10 +7,10 @@ router.get('/readEmployee', function(req, res, next) {
   req.getConnection(function(err,connection){
        
      var data = {}
-     connection.query('SELECT * FROM employees',function(err,result)     {
+     connection.query("SELECT employee_id, emp_id, concat(first_name,' ',middle_name,' ',last_name) as name FROM employee",function(err,result)     {
             
         if(err){
-           console.log("Error reading category : %s ",err );
+           console.log("Error reading employee : %s ",err );
            data.status = 'e';
 
         }else{
@@ -34,12 +34,15 @@ router.get('/read_employee_roles', function(req, res, next) {
   req.getConnection(function(err,connection){
        
      var data = {}
-     var qry = 'SELECT e.employee_id, role_id, name, role FROM employee_role e';
-         qry = qry + ' LEFT JOIN employees c ON e.employee_id = c.username '; 
+     var qry = `select role_id, a.employee_id, concat(first_name,' ', middle_name,' ',last_name) as employee_name, role
+      from employee_role a
+      join employee b on a.employee_id = b.employee_id
+      order by first_name`;
+         
      connection.query(qry,function(err,result)     {
             
         if(err){
-           console.log("Error reading event : %s ",err );
+           console.log("Error reading Employee Role : %s ",err );
            data.status = 'e';
 
         }else{

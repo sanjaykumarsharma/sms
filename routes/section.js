@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 /* Read Course listing. */
+
 router.get('/', function(req, res, next) {
 
   req.getConnection(function(err,connection){
@@ -28,7 +29,62 @@ router.get('/', function(req, res, next) {
 
 });
 
-/* Add Course listing. */
+router.get('/readStandard', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     connection.query('SELECT * FROM standard_master',function(err,result)     {
+            
+        if(err){
+           console.log("Error reading category : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.standards = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});
+
+/* Read Event listing. */
+router.get('/read_section', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var qry = 'SELECT e.standard_id, section_id, standard, section FROM section_master e';
+         qry = qry + ' LEFT JOIN standard_master c ON e.standard_id = c.standard_id '; 
+     connection.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading standard : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.sections = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});
+
+/* Add Event listing. */
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
@@ -37,19 +93,20 @@ router.post('/add', function(req, res, next) {
         var data = {}
 
         var values = {
-            standard    : input.standard,
+            section    : input.section,
+            standard_id : input.standard_id,
         };
         
-        var query = connection.query("INSERT INTO standard_master set ? ",values, function(err, rows)
+        var query = connection.query("INSERT INTO section_master set ? ",values, function(err, rows)
         {
   
           if(err){
-           console.log("Error inserting cuntry : %s ",err );
+           console.log("Error inserting courses : %s ",err );
            data.status = 'e';
 
          }else{
               data.status = 's';
-              data.id = rows.insertId;
+              data.section_id = rows.insertId;
               res.send(JSON.stringify(data))
           }
          
@@ -60,29 +117,30 @@ router.post('/add', function(req, res, next) {
 });
 
 
-/* Edit Course listing. */
+/* Edit Event listing. */
 router.post('/edit/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
   var id = input.id;
-  console.log(input.id);
+
   req.getConnection(function(err,connection){
         var data = {}
 
         var values = {
-            standard    : input.standard,
+            section    : input.section,
+            standard_id : input.standard_id,
         };
         
-        var query = connection.query("UPDATE standard_master set ? WHERE standard_id = ?",[values,id], function(err, rows)
+        var query = connection.query("UPDATE section_master set ? WHERE section_id = ?",[values,id], function(err, rows)
         {
   
           if(err){
-           console.log("Error editing standard : %s ",err );
+           console.log("Error inserting courses : %s ",err );
            data.status = 'e';
 
          }else{
               data.status = 's';
-              data.id = rows.insertId;
+              data.section_id = rows.insertId;
               res.send(JSON.stringify(data))
           }
          
@@ -92,7 +150,7 @@ router.post('/edit/:id', function(req, res, next) {
 
 });
 
-/* Delete Course listing. */
+/* Delete Event listing. */
 router.get('/delete/:id', function(req, res, next) {
 
   var id = req.params.id;
@@ -100,11 +158,11 @@ router.get('/delete/:id', function(req, res, next) {
   req.getConnection(function(err,connection){
         var data = {}
 
-        var query = connection.query("DELETE from standard_master WHERE standard_id = ?",[id], function(err, rows)
+        var query = connection.query("DELETE from section_master WHERE section_id = ?",[id], function(err, rows)
         {
   
           if(err){
-           console.log("Error deleting standard : %s ",err );
+           console.log("Error deleting event : %s ",err );
            data.status = 'e';
 
          }else{

@@ -34,8 +34,7 @@ router.get('/read_event', function(req, res, next) {
   req.getConnection(function(err,connection){
        
      var data = {}
-     var qry = 'SELECT e.event_id, e.category_id, event_name, category_name FROM activity_event_master e';
-         qry = qry + ' JOIN activity_category_master c ON e.category_id = c.category_id '; 
+     var qry = `SELECT event_id, event_name FROM activity_event_master e `;
      connection.query(qry,function(err,result)     {
             
         if(err){

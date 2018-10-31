@@ -8,22 +8,6 @@
 		</div>
 		<div class="box">
 			<div class="columns">
-        <!-- <div class="column is-narrow">
-          <label class="label" style="margin-left:-14px">Type</label>
-        </div>
-        <div class="column is-narrow">
-          <div class="control">
-            <div class="select" >
-              <select ref="r_sale_type">
-                  <option>Staff</option>
-                  <option>College</option>
-                  <option>Health</option>
-                  <option>MV</option>
-                  <option>Other</option>
-              </select>
-            </div>
-          </div>
-        </div> -->
         <div class="column is-narrow">
           <label class="label" style="margin-left:-14px">Category</label>
         </div>
@@ -37,34 +21,6 @@
             </div>
           </div>
         </div>
-
-       <!--  <div class="column is-narrow">
-         <label class="label" style="margin-left:-14px">Subcategory</label>
-       </div> -->
-       <!--  <div class="column is-narrow">
-         <div class="control">
-           <div class="select">
-             <select ref="sub_category_id" style="margin-left:-10px">
-               <option each={filteredSubcategories} value={sub_category_id}>{sub_category}
-               </option>
-             </select>
-           </div>
-         </div>
-       </div> -->
-        <!-- <div class="column is-narrow">
-          <label class="label" style="margin-left:-14px">Item</label>
-        </div> -->
-        <!-- <div class="column is-narrow">
-          <div class="control">
-            <input class=" input"
-              ref="item_name" type="text" style="margin-left:-10px">
-          </div>
-        </div> -->
-			<!--   <div class="column">
-        <button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
-        onclick={getInventoryStock} >GO
-        </button>
-      </div> -->
 			</div>
 		</div>
      <div class="level-right">

@@ -70,7 +70,7 @@ router.post('/edit/:category_id', function(req, res, next) {
         var data = {}
 
         var values = {
-            category    : input.category,
+            category_name    : input.category_name,
         };
         
         var query = connection.query("UPDATE activity_category_master set ? WHERE category_id = ?",[values,category_id], function(err, rows)

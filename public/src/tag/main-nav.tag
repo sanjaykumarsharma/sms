@@ -17,7 +17,7 @@
             <div class="navbar-end">
 
               <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link" >Exam</a>
+                <a class="navbar-item" >Exam</a>
                 <div class="navbar-dropdown">
                   <a class="navbar-item" href="#/exam-scheme">Exam Scheme</a>
                   <a class="navbar-item" href="#/grade">Grade</a>
@@ -32,7 +32,7 @@
               </div>
 
               <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link" >Student</a>
+                <a class="navbar-item" >Student</a>
                 <div class="navbar-dropdown">
                   <a class="navbar-item" href="#/student-assign-house">Assign House</a>
                   <a class="navbar-item" href="#/student-group-student">Group Student</a>
@@ -42,29 +42,45 @@
                   <a class="navbar-item" href="#/student-login-slip">Login Slip</a>
                   <a class="navbar-item" href="#/student-school-leaving">Student Leaving Certificate</a>
                   <a class="navbar-item" href="#/student-result-activation">Result Activation</a>
+                  <a class="navbar-item" href="#/student">Student</a>
+                  <a class="navbar-item" href="#/student-info-update">Student Info Update</a>
+                  <a class="navbar-item" href="#/id-card">ID Card</a>
+                  <a class="navbar-item" href="#/id-signature">Id Signature</a>
                 </div>
               </div>
 
               <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link" >Activity</a>
+                <a class="navbar-item" >Notification</a>
+                <div class="navbar-dropdown">
+                  <a class="navbar-item " href="#/student-notification">Student Email & Sms</a>
+                  <a class="navbar-item" href="#/employee-notification">Employee Email & Sms</a>
+                  
+                </div>
+              </div>
+
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-item" >Activity</a>
                 <div class="navbar-dropdown">
                   <a class="navbar-item " href="#/activity-detail">Activity Detail</a>
-                  <a class="navbar-item" href="#/report">Report</a>
+                  <a class="navbar-item" href="#/activity-report">Report</a>
                   <a class="navbar-item {active: selected_nav_item == 'activity-setting'}" href="#/activity-setting/activity-item">Setting</a>
                 </div>
               </div>
 
               <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link" >Fees</a> 
+                <a class="navbar-item">Fees</a> 
                 <div class="navbar-dropdown">
+                  <a class="navbar-item {active: selected_nav_item == 'receive-fees'}" href="#/receive-fees">Receive Fees</a>
                   <a class="navbar-item {active: selected_nav_item == 'fee-bill'}" href="#/fee-bill/bill">Fee Head</a>
+                  <a class="navbar-item {active: selected_nav_item == 'fees-report'}" href="#/fees-report/month-wise">Reports</a>
                   <a class="navbar-item {active: selected_nav_item == 'scholarship'}" href="#/scholarship">Scholarship</a>
+                 
                   <a class="navbar-item {active: selected_nav_item == 'fees-setting'}" href="#/fees-setting/fine-setting">Setting</a>
                 </div>
               </div>
 
               <div class="navbar-item has-dropdown is-hoverable">
-               <a class="navbar-link" >Mentor</a>
+               <a class="navbar-item" >Mentor</a>
                <div class="navbar-dropdown">
                  <a class="navbar-item " href="#/mentor-detail">Mentor Detail</a>
                  <a class="navbar-item" href="#/mentor-report">Report</a>
@@ -72,7 +88,7 @@
                </div>
              </div>
              <div class="navbar-item has-dropdown is-hoverable">
-               <a class="navbar-link" >Discipline</a>
+               <a class="navbar-item" >Discipline</a>
                <div class="navbar-dropdown">
                  <a class="navbar-item " href="#/discipline-detail">Discipline Detail</a>
                  <a class="navbar-item" href="#/discipline-report">Report</a>
@@ -81,7 +97,7 @@
                </div>
              </div>
              <div class="navbar-item has-dropdown is-hoverable">
-               <a class="navbar-link" >Activity</a>
+               <a class="navbar-item" >Activity</a>
                <div class="navbar-dropdown">
                  <a class="navbar-item " href="#/activity-detail">Activity Detail</a>
                  <a class="navbar-item" href="#/report">Report</a>
@@ -89,33 +105,64 @@
                </div>
              </div>
 
+
+             <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-item" >Admin</a>
+                 <div class="navbar-dropdown">
+                  <a class="navbar-item " href="#/student-search">Search</a>
+                  <a class="navbar-item " href="#/student-browser">Browser</a>
+                  <a class="navbar-item " href="#/occupation-report">Occupation Report</a>
+                   <a class="navbar-item {active: selected_nav_item == 'admin-report'}" href="#/admin-report/student-summary-report">Report</a>
+                   <a class="navbar-item " href="#/birthday">Bithday</a>
+                </div>
+              </div>
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-item" >Attendance</a>
+                <div class="navbar-dropdown">
+                  <a class="navbar-item " href="#/attendance-entry">Attendance Entry</a>
+                  <a class="navbar-item " href="#/daily-attendance">Daily Attendance</a>
+                </div>
+              </div>
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-item" >Staff</a>
+                <div class="navbar-dropdown">
+                  <a class="navbar-item " href="#/staff">Staff</a>
+                  <a class="navbar-item " href="#/ex-staff">EX-Staff</a>
+                  <a class="navbar-item " href="#/browse-staff">Browse</a>
+                </div>
+              </div>
+
              <!-- tarique -->
              <div class="navbar-end">
                <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link" >Master</a>
+                <a class="navbar-item" >Master</a>
                 <div class="navbar-dropdown">
                   <a class="navbar-item {active: selected_nav_item == 'master'}" href="#/master/employee-type">Setting</a>
                 </div>
               </div>
               <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link" >Infirmary</a>
+                <a class="navbar-item" >Infirmary</a>
                 <div class="navbar-dropdown">
                   <a class="navbar-item {active: selected_nav_item == 'infirmary-setting'}" href="#/infirmary-setting/infirmary-category">Setting</a>
                     <a class="navbar-item {active: selected_nav_item == 'infirmary'}" href="#/infirmary/infirmary-student">Infirmary Detail</a>
                 </div>
               </div>
               <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-link" >Inventory</a>
+                <a class="navbar-item" >Inventory</a>
                 <div class="navbar-dropdown">
                   <a class="navbar-item {active: selected_nav_item == 'inventory-setting'}" href="#/inventory-setting/inventory-rack">Setting</a>
                   <a class="navbar-item" href="#/inventory-stock">Stock Inwards Entry</a>
                   <a class="navbar-item" href="#/inventory-issue">Issue</a>
                   <a class="navbar-item" href="#/inventory-sale">Sale</a>
+                  <a class="navbar-item" href="#/inventory-returnable">Returnable</a>
+                  <a class="navbar-item {active: selected_nav_item == 'inventory-report'}" href="#/inventory-report/inventory-received-goods-report">Report</a>
+                 <!--  <a class="navbar-item" href="#/inventory-report">Report</a> -->
                     <!-- {active: selected_nav_item == 'inventory-stock'}" <a class="navbar-item {active: selected_nav_item == 'inventory'}" href="#/Inventory/inventory-student">Inventory Detail</a> -->
                 </div>
               </div>
 
-              <a class="navbar-item has-text-danger" onclick={logout}>Logout</a>
+              <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+              
             </div>
           </div>
         </div>

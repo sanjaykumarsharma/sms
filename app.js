@@ -46,15 +46,30 @@ var disciplineCaseRouter = require('./routes/discipline_case');
 var disciplineDetailRouter = require('./routes/discipline_detail');
 var disciplineReportRouter = require('./routes/discipline_report');
 var studentRouter = require('./routes/student');
+var studentInfoUpdateRouter = require('./routes/student_info_update');
+var smsRouter = require('./routes/sms');
+var emailRouter = require('./routes/email');
+var studentnotificationRouter = require('./routes/student-notification');
+var employeenotificationRouter = require('./routes/employee-notification');
+var idsignatureRouter = require('./routes/id_signature');
+var idcardRouter = require('./routes/id_card');
+var activityReport = require('./routes/activity_report');
 
 
 //Tarique
+var staffRouter = require('./routes/staff');
+var classTeacherRouter = require('./routes/class_teacher');
+var studentSearchRouter = require('./routes/studentSearch');
+var adminReportRouter = require('./routes/admin_report');
+var birthDayRouter = require('./routes/birth_day');
+var attendanceRouter = require('./routes/attendance');
+
 var rolesRouter = require('./routes/roles');
-var coursesRouter = require('./routes/courses');
 var itemRouter = require('./routes/item');
 var employeeTypeRouter = require('./routes/employee_type');
 var eventTypeRouter = require('./routes/event_type');
 var designationsRouter = require('./routes/designations');
+var departmentRouter = require('./routes/department');
 var levelRouter = require('./routes/level');
 var countryRouter = require('./routes/country');
 var cityRouter = require('./routes/city');
@@ -70,6 +85,7 @@ var inventoryDepartmentRouter = require('./routes/inventory_department');
 var emplyomentStatusRouter = require('./routes/employment_status');
 var employeeStatusRouter = require('./routes/role');
 var categoryRouter = require('./routes/category');
+var subjectRouter = require('./routes/subject');
 
 var infarmaryCategoryRouter = require('./routes/infirmary_category');
 var infarmaryCaseRouter = require('./routes/infirmary_case');
@@ -84,12 +100,12 @@ var inventoryItemRouter = require('./routes/inventory_item');
 var inventoryStockRouter = require('./routes/inventory_stock');
 var inventoryIssueRouter = require('./routes/inventory_issue');
 var inventorySaleRouter = require('./routes/inventory_sale');
+var inventoryReportRouter = require('./routes/inventory_report');
 
 var staffBPWeightRouter = require('./routes/staff_bp_weight');
 var eventRouter = require('./routes/event');
 var newEventRouter = require('./routes/new_event');
 var classHolidayRouter = require('./routes/class_holiday');
-
 
 //ghulam
 var sessionRouter = require('./routes/fees_session');
@@ -100,6 +116,8 @@ var feeSlipRouter = require('./routes/fee_slips');
 var feePlanRouter = require('./routes/fee_plans');
 var applyPlanRouter = require('./routes/apply_fee_plans');
 var scholarshipRouter = require('./routes/scholarship');
+var feeReceivedRouter = require('./routes/receive_fees');
+var feesReportRouter = require('./routes/fees_report');
 
 var app = express();
 
@@ -176,13 +194,30 @@ app.use('/discipline_case', verifyToken, disciplineCaseRouter);
 app.use('/discipline_detail', verifyToken, disciplineDetailRouter);
 app.use('/discipline_report', verifyToken, disciplineReportRouter);
 app.use('/student', verifyToken, studentRouter);
+app.use('/student_info_update', verifyToken, studentInfoUpdateRouter);
+app.use('/sms', verifyToken, smsRouter);
+app.use('/email', verifyToken, emailRouter);
+app.use('/employee-notification', verifyToken, employeenotificationRouter);
+app.use('/student-notification', verifyToken, studentnotificationRouter);
+app.use('/id_signature', verifyToken, idsignatureRouter);
+app.use('/id_card', verifyToken, idcardRouter);
+app.use('/activity_report', verifyToken, activityReport);
 
 //Tarique
+app.use('/admin_report', verifyToken, adminReportRouter);
+app.use('/birth_day', verifyToken, birthDayRouter);
+app.use('/attendance', verifyToken, attendanceRouter);
+app.use('/class_teacher', verifyToken, classTeacherRouter);
+app.use('/studentSearch', verifyToken, studentSearchRouter);
+app.use('/staff', verifyToken, staffRouter);
 app.use('/roles', verifyToken, rolesRouter);
 app.use('/item', verifyToken, itemRouter);
 app.use('/employee_type', verifyToken, employeeTypeRouter);
 app.use('/event_type', verifyToken, eventTypeRouter);
 app.use('/designations',  verifyToken, designationsRouter);
+app.use('/department',  verifyToken, departmentRouter);
+app.use('/category',  verifyToken, categoryRouter);
+app.use('/subject',  verifyToken, subjectRouter);
 app.use('/level', verifyToken, levelRouter);
 app.use('/country', verifyToken, countryRouter);
 app.use('/city', verifyToken, cityRouter);
@@ -210,6 +245,7 @@ app.use('/inventory_item', verifyToken, inventoryItemRouter);
 app.use('/inventory_stock', verifyToken, inventoryStockRouter);
 app.use('/inventory_issue', verifyToken, inventoryIssueRouter);
 app.use('/inventory_sale', verifyToken, inventorySaleRouter);
+app.use('/inventory_report', verifyToken, inventoryReportRouter);
 
 app.use('/staff_bp_weight', verifyToken, staffBPWeightRouter);
 app.use('/event', verifyToken, eventRouter);
@@ -226,5 +262,7 @@ app.use('/fee_slips', verifyToken, feeSlipRouter);
 app.use('/fee_plans', verifyToken, feePlanRouter);
 app.use('/apply_fee_plans', verifyToken, applyPlanRouter);
 app.use('/scholarship', verifyToken, scholarshipRouter);
+app.use('/receive_fees', verifyToken, feeReceivedRouter);
+app.use('/fees_report', verifyToken, feesReportRouter);
 
 module.exports = app;

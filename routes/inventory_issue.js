@@ -163,7 +163,7 @@ router.get('/:id/:type', function(req, res, next) {
         var user_condition = "";
         //if(session_id['role'] != 'ADMINISTRATOR') user_condition =`and a.created_by = ${user}`;
        // and received_date between :dtf and :dto
-        var qry = `select issue_id, c.category_id, a.issue_sub_category_id as sub_category_id, return_type,
+        var qry = `select issue_id, rate, c.category_id, a.issue_sub_category_id as sub_category_id, return_type,
                 a.issue_item_id as item_id, date_format(issue_date,'%d/%m/%Y') as issue_date, date_format(issue_date,'%Y-%m-%d') as iss_date,
                 item_name,category_name, concat(first_name,' ',middle_name,' ',last_name ) as staff_name,
                 issue_to, issue_type, issue_quantity, unit, concat(issue_quantity,' ',unit) as i_quantity, purpose,staff_id 
@@ -204,6 +204,207 @@ router.get('/:id/:type', function(req, res, next) {
   });
 
 });
+
+// read Returnable Item
+
+/* Read stock Item listing. */
+router.get('/read_returnable/:id/:type', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+      connection.beginTransaction(function(err) { 
+        if (err) { throw err; }
+        var data = {}
+        var user='';
+        var session_id=req.cookies.session_id
+        //var category_id=req.params.id
+        var issue_type=req.params.type
+        var start_date=''
+        var end_date=''
+        //console.log(category_id)
+         var qury=`select session_name, date_format(session_start_date,'%Y-%m-%d') as session_start_date, date_format(session_end_date,'%Y-%m-%d') as session_end_date
+            from session_master where session_id = ${session_id}`;
+          connection.query(qury,function(err,result){
+          if(err){
+              return connection.rollback(function() {
+              throw err;
+               /*console.log("Error reading Session Date item : %s ",err );
+               data.status = 'e';*/
+             })
+          }//else{
+            
+          start_date=result[0].session_start_date
+          end_date=result[0].session_end_date
+            
+          //} 
+       
+
+         console.log(start_date) 
+
+       
+      //  var user=req.cookies.session_id['user']
+        var condition = "";
+        var category_id=-1;
+        if(category_id !=-1){
+          condition = `and a.issue_category_id = ${category_id}`;
+         }
+        var user_condition = "";
+        //if(session_id['role'] != 'ADMINISTRATOR') user_condition =`and a.created_by = ${user}`;
+       // and received_date between :dtf and :dto
+        var qry = `select issue_id, date_format(issue_date,'%d/%m/%Y') as issued_date, issue_date as r_date,
+                item_name,category_name, concat(first_name,' ',middle_name,' ',last_name ) as staff_name,
+                issue_to, concat(issue_quantity,' ',unit) as issued_quantity,a.issue_sub_category_id,
+                concat(available_quantity,' ',unit) as available_qty, purpose,
+                date_format(issue_date,'%Y-/%m-/%d') as issue_date, issue_category_id, issue_unit,
+                issue_item_id, issue_type, issue_rack_id, rack_name,
+                return_type, staff_id, issue_to, issue_quantity , available_quantity
+                from issue_goods a
+                join inventory_item_master b on a.issue_item_id = b.item_id
+                join inventory_category_master c on a.issue_category_id = c.category_id
+                join unit_master e on a.issue_unit = e.unit_id
+                left join rack_master f on a.issue_rack_id = f.rack_id
+                left join employee d on a.staff_id = d.emp_id
+                where a.issue_type = '${issue_type}'
+                and return_type='Y'
+                and available_quantity>0 
+                ${condition} ${user_condition}
+                order by r_date desc`; 
+          console.log(qry)  
+         connection.query(qry,function(err,result){
+            
+          if(err){
+           return connection.rollback(function() {
+              throw err;
+          });
+
+        }
+        connection.commit(function(err) {
+            if (err) {
+              return connection.rollback(function() {
+                throw err;
+              });
+            }
+            data.status = 's';
+            data.inventoryReturnableGoods = result;
+            console.log('success!');
+            console.log(data);
+            res.send(JSON.stringify(data))
+          });
+     
+     });
+    })
+  })   
+  });
+
+});
+
+
+/* Add Inventory Returnable Goods. */
+router.post('/add_inventory_return_goods', function(req, res, next) {
+    console.log(req)
+    var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+      connection.beginTransaction(function(err) { 
+        if (err) { throw err; }
+        var data = {}
+        var now = new Date();
+        var jsonDate = now.toJSON();
+        var formatted = new Date(jsonDate);
+        var available_quantity='';
+       // console.log(input.obj.issue_id)
+        var issue_id=input.obj.issue_id;
+        var issued_quantity='';
+        var balance='';
+        
+
+         var values = {
+          issue_id : input.obj.issue_id,
+          return_date : input.return_date,
+          return_to : input.return_to,
+          return_quantity : input.return_quantity,
+          return_remarks : input.remark,
+          creation_date : formatted,
+          created_by : req.cookies.role,
+          modified_by : req.cookies.role,
+          modification_date : formatted,
+        };
+          
+         var values1 = {
+          received_date : input.return_date,
+          item_id : input.obj.item_id,
+          category_id : input.obj.category_id,
+          sub_category_id : input.obj.sub_category_id,
+          quantity : input.return_quantity,
+          unit_id : input.obj.unit,
+          rate : 0,
+          received_from : input.return_to,
+          rack_id : input.obj.rack_id,
+          remark : input.remark,
+          creation_date : formatted,
+          created_by : req.cookies.role,
+          modified_by : req.cookies.role,
+        };
+         var qury=`select available_quantity from issue_goods where issue_id=${issue_id}`;
+          connection.query(qury,function(err,result){
+          if(err){
+              return connection.rollback(function() {
+               throw err;
+              
+             });
+          }
+            
+          available_quantity=result[0].available_quantity
+          issued_quantity=input.return_quantity
+          balance = Number(available_quantity) - Number(issued_quantity)
+
+              var qury1=`update issue_goods set 
+                         available_quantity=${balance},
+                         modification_date=${formatted},
+                         modified_by='${modified_by}'
+                         where issue_id=${issue_id}`;
+                connection.query(qury1,function(err,result){
+                if(err){
+                    return connection.rollback(function() {
+                     throw err;
+                    
+                   });
+                }
+              })  ;
+              connection.query("INSERT INTO return_goods set ? ",values, function(err, rows){
+              
+                    if(err){
+                     return connection.rollback(function() {
+                        throw err;
+                         
+                       });
+
+                   }
+               }) ;   
+               connection.query("INSERT INTO received_goods set ? ",values1, function(err, rows){
+                      if (err) {
+                      return connection.rollback(function() {
+                        throw err;
+                      });
+                    }
+
+                    connection.commit(function(err) {
+                        if (err) {
+                          return connection.rollback(function() {
+                            throw err;
+                          });
+                        }
+                        data.status = 's';
+                      //  data.inventoryReturnableGoods = result;
+                        console.log('success!');
+                        console.log(data);
+                        res.send(JSON.stringify(data))
+                   }) ;    
+             //}) ;
+          });
+      
+     }); //first query end
+});// being transaction
+}); // ist connection 
+});       
 
 /* Add Event listing. */
 router.post('/add', function(req, res, next) {

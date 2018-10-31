@@ -1,0 +1,1187 @@
+var express = require('express');
+var router = express.Router();
+
+//===========read_head_wise_fees==============
+router.get('/read_head_wise_fees/:start_date/:end_date', function(req, res, next) {
+  var start_date = req.params.start_date;
+  var end_date = req.params.end_date;
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+     /*var qry = `SELECT head, sum(coalesce(c.amount,0)) as cash FROM
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode = 'Cash')
+        JOIN fee_slip_details c on a.fee_slip_id = c.fee_slip_id 
+        JOIN fee_head_master d on (d.head_id = c.head_id)
+        where b.session_id=${session_id}
+        and b.tuition_fee_only != 'Y'
+        group by head
+        UNION 
+        select 'Fine Received' as head , sum(coalesce(a.fine_recevied, 0)) as cash from
+        fee_received a, fee_received_details b
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and b.mode = 'Cash'
+        and b.session_id=${session_id}
+        UNION 
+        SELECT 'Tuition Fees' as head, sum(coalesce(b.amounting_to,0)) as cash FROM
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode = 'Cash')
+        where b.session_id=${session_id}
+        and b.tuition_fee_only ='Y'
+        UNION
+        select 'Scholarship' as head , sum(coalesce(c.scholorship_amount, 0)*-1) as cash from
+        fee_received a, fee_received_details b, fee_scholorship c
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and a.fee_slip_id = c.fee_slip_id
+        and a.student_id = c.student_id
+        and b.mode = 'Cash'
+        and b.session_id=${session_id}
+        order by 1`;*/
+    var qry =`SELECT head, sum(coalesce(c.amount,0)) as bank FROM 
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode != 'Cash')
+        JOIN fee_slip_details c on a.fee_slip_id = c.fee_slip_id 
+        JOIN fee_head_master d on (d.head_id = c.head_id)   
+        where b.session_id=(select session_id from session_master where session_id = ${session_id})
+        and b.tuition_fee_only != 'Y'
+        group by head
+        UNION 
+        select 'Fine Received' as head , sum(coalesce(a.fine_recevied, 0)) as bank from
+        fee_received a, fee_received_details b
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and b.mode != 'Cash'            
+        and b.session_id=(select session_id from session_master where session_id = ${session_id})          
+        UNION
+        SELECT 'Tuition Fees' as head, sum(coalesce(b.amounting_to,0)) as cash FROM
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode != 'Cash')
+        where b.session_id=(select session_id from session_master where session_id = ${session_id})
+        and b.tuition_fee_only ='Y'
+        UNION 
+        select 'Scholarship' as head , sum(coalesce(c.scholorship_amount, 0)*-1) as bank from
+        fee_received a, fee_received_details b, fee_scholorship c
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and a.fee_slip_id = c.fee_slip_id
+        and a.student_id = c.student_id
+        and b.mode != 'Cash'         
+        and b.session_id=(select session_id from session_master where session_id = ${session_id})           
+        order by 1`;
+  console.log(qry)
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+            var stdData =[];
+            for(var i=0; i<result.length; i++){
+                var o ={}
+                o['head'] = result[i].head;
+                o['bank'] = result[i].bank != null ? result[i].bank : 0;
+                o['cash'] = 0;
+                o['total'] = Number(o['cash']) + Number(o['bank']);
+
+                if(stdData[result[i].head]){
+                  stdData[result[i].head]['cash'] = Number(stdData[result[i].head]['cash']) + Number(o['cash']);
+                  stdData[result[i].head]['bank'] = Number(stdData[result[i].head]['bank']) + Number(o['bank']);
+                  stdData[result[i].head]['total'] = Number(stdData[result[i].head]['cash']) + Number(stdData[result[i].head]['bank']);
+                }else{
+                  stdData[result[i].head].push(o);
+                }
+                /*o['head'] = result[i].head; 
+                o['cash'] = result[i].cash != null ? result[i].cash : 0;  
+                o['bank'] = 0; 
+                o['total'] = result[i].cash;*/
+                /*if(result[i].head){
+                o['cash'] = Number(o['cash']) + Number(result[i].cash);
+                o['total'] = Number(o['tota']) + Number(result[i].cash);
+              }else{*/
+                //stdData.push(o);
+              //}
+            }
+            /*console.log("=======data=========")
+            console.log(stdData)*/
+             data.status = 's';
+             data.headWiseData = stdData;
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+//======== read un-assigned students ==========
+
+router.get('/read_un_assigned', function(req, res, next) {
+  
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+     var qry = `select enroll_number, concat(first_name,' ',middle_name,' ',last_name) as name,
+        f_name, concat(standard,' ',section)as standard 
+        from student_master a
+        JOIN student_current_standing b on (a.student_id = b.student_id and a.current_session_id = b.session_id)
+        JOIN section_master c on b.section_id = c.section_id
+        JOIN standard_master f on c.standard_id = f.standard_id
+        JOIN parent_master d on (a.student_id = d.student_id and d.current_session_id = a.current_session_id)
+        JOIN fee_plan_student_map e on (a.student_id = e.student_id and a.current_session_id = ${session_id})
+        where a.student_id not in(select student_id from fee_plan_student_map where session_id=${session_id})
+        and (a.withdraw='N' || a.withdraw_session > ${session_id})
+        and b.session_id=${session_id}
+        order by c.section_id, a.first_name`;
+
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+            data.status = 's';
+            data.students = result;
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+///========= read session wise plan report =====
+
+router.get('/read_session_scheme/:session_id', function(req, res, next) {
+  
+  req.getConnection(function(err,connection){
+       var ses_id = req.params.session_id
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+     var qry = `select a.fee_plan_id, session_name,fee_plan_name, 
+        count(a.student_id) as total 
+        from fee_plan_student_map a
+        join fee_plan_master b on a.fee_plan_id = b.fee_plan_id
+        join session_master c on a.session_id = c.session_id
+        join student_master d on (a.student_id = d.student_id and d.current_session_id=${session_id})
+        where a.session_id = ${ses_id}
+        and (withdraw='N' || withdraw_session > ${session_id})
+        group by fee_plan_id
+        order by fee_plan_name`;
+
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+            data.status = 's';
+            data.schemes = result;
+
+            //======= grand total ====
+            var grand_total=0;
+            for (var i = result.length - 1; i >= 0; i--) {
+               grand_total = Number(grand_total)+Number(result[i].total);
+             } 
+
+            data.grand_total = grand_total; 
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+//======== read issued letter ====================
+
+router.get('/read_issued_fees_letter/:month_id', function(req, res, next) {
+  
+  req.getConnection(function(err,connection){
+       var month_id = req.params.month_id
+       var from_date = ''
+       var to_date = ''
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     var qry_date =`select date_format(session_start_date, '%Y') as year from session_master where session_id = ${session_id}`;
+     connection.query(qry_date, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+           
+            var session_year = result[0].year;
+            if(month_id<4){
+              session_year++;
+            }
+             from_date = session_year + "-" + month_id + "-" + "01";
+             to_date = session_year + "-" + month_id + "-" + "31"; 
+        }
+     
+     
+     
+     var qry = `select b.student_id, b.enroll_number, concat(first_name, ' ' ,middle_name, ' ',last_name) as name,letter_key,c.letter_id,
+              letter_name, concat(standard,' ',section)as standard, date_format(a.creation_date,'%d/%m/%Y') as issue_date, a.modified_by
+              from student_letter a
+              LEFT JOIN student_master b on (a.student_id = b.student_id and b.current_session_id =${session_id} )
+              LEFT JOIN letter_master c on a.letter_id = c.letter_id
+              LEFT JOIN student_current_standing d on (b.student_id = d.student_id and b.current_session_id =${session_id} )
+              LEFT JOIN section_master e on d.section_id = e.section_id
+              LEFT JOIN standard_master f on e.standard_id = f.standard_id
+              where a.creation_date <= '${to_date}'
+              and a.creation_date >= '${from_date}'
+              and d.session_id= ${session_id}
+              order by e.section_id, first_name`;
+     
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+            
+            data.assignedStudents = result;
+            
+        }
+     
+     });
+           data.status = 'e';
+
+        }else{
+            data.status = 's';
+            data.assignedStudents = result;
+            res.send(data)
+        }
+     
+     });
+       
+  });
+ });    
+
+});
+//========== read assigned students==========
+router.get('/read_assigned_students/:fee_plan_id', function(req, res, next) {
+  
+  req.getConnection(function(err,connection){
+       var fee_plan_id = req.params.fee_plan_id
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+     var qry = `select enroll_number, concat(first_name,' ' ,middle_name,' ', last_name) as name,
+        concat(standard,' ', section) as standard,f.standard_id,e.section,mobile, f_mobile, f_phone
+        from fee_plan_master a
+        join fee_plan_student_map b on a.fee_plan_id= b.fee_plan_id
+        join student_master d on (b.student_id = d.student_id and d.current_session_id =${session_id})
+        join student_current_standing g on b.student_id = g.student_id
+        join section_master e on g. section_id = e.section_id
+        join standard_master f on e.standard_id = f.standard_id
+        join parent_master h on (d.student_id = h.student_id and h.current_session_id=${session_id})
+        where a.fee_plan_id = ${fee_plan_id}
+        order by e.section, d.first_name`;
+
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+            data.status = 's';
+            data.assignedStudents = result;
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+//========== monthly fees report ===============
+router.get('/read_date_wise_fees/:start_date/:end_date', function(req, res, next) {
+  var start_date = req.params.start_date;
+  var end_date = req.params.end_date;
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+     var qry = `select date_format(receipt_date, '%d/%m/%Y') as receipt_date, fees, fine,
+          scholarship, (fees + fine - scholarship) as total from
+          (select receipt_date, sum(amount_due) as fees , sum(fine_recevied) as fine,
+          sum(if(scholorship_amount is not null, scholorship_amount, 0)) as scholarship
+          from fee_received a
+          JOIN fee_received_details b on a.receipt_id = b.receipt_id
+          LEFT JOIN fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+          where b.receipt_date between ? and ?
+          and b.session_id=${session_id}
+          group by receipt_date ) a
+          order by 1`;
+
+     connection.query(qry,[start_date,end_date], function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+            data.status = 's';
+            data.dateWiseData = result;
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+//========= advance fees ==========
+
+router.get('/read_early_fees_payer/:start_date/:end_date', function(req, res, next) {
+  var start_date = req.params.start_date;
+  var end_date = req.params.end_date;
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+     var qry = `select i.fee_slip_name,a.receipt_id, date_format(receipt_date,'%d/%m/%Y') as receipt_date, enroll_number, 
+              concat(first_name,' ' ,middle_name,' ', last_name) as name,
+              concat(standard, ' ', section) as standard, 
+              amount_due , fine_recevied as fine, 
+              if(scholorship_amount is not null, scholorship_amount, 0) as scholorship_amount,
+              if(scholorship_amount is not null,amount_due + fine_recevied -scholorship_amount ,amount_due + fine_recevied) as total
+              from fee_received a
+              JOIN fee_received_details b on a.receipt_id = b.receipt_id
+              LEFT JOIN   fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+              JOIN   student_master e on (a.student_id = e.student_id and e.current_session_id =${session_id})
+              JOIN   student_current_standing f on (a.student_id = f.student_id and a.session_id=f.session_id)
+              LEFT JOIN   section_master g on f.section_id = g.section_id
+              LEFT JOIN   standard_master h on g.standard_id = h.standard_id
+              LEFT JOIN   fee_slip i on (a.fee_slip_id = i.fee_slip_id and a.fee_plan_id = i.fee_plan_id)
+              where  b.receipt_date < i.last_date
+              and b.receipt_date between ? and ?
+              and b.session_id=${session_id}
+              order by g.section_id, name, i.fee_slip_id`;
+
+     connection.query(qry,[start_date,end_date], function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.advanceFees = result;
+           //connection.end()
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+//=========== read scholarship list =========
+router.get('/getScholarshipList/:start_date/:end_date', function(req, res, next) {
+  var start_date = req.params.start_date;
+  var end_date = req.params.end_date;
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+     var qry = `select concat(first_name,' ' ,middle_name,' ', last_name) as name,d.enroll_number,
+              concat(standard,' ', section) as standard,  fee_slip_name, scholorship_amount 
+              from 
+             (select * from fee_scholorship where session_id=${session_id} ) a
+              LEFT JOIN fee_slip b on a.fee_slip_id = b.fee_slip_id
+              JOIN student_current_standing c  on (a.student_id = c.student_id and c.session_id=${session_id})
+              LEFT JOIN student_master d  on (a.student_id = d.student_id and d.current_session_id = ${session_id})
+              LEFT JOIN section_master e  on c.section_id = e.section_id
+              LEFT JOIN standard_master f on e.standard_id = f.standard_id
+              
+              where b.last_date between ? and ?
+              order by e.section_id, first_name,b.fee_slip_id`;
+
+     connection.query(qry,[start_date,end_date], function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.scholarships = result;
+           //connection.end()
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+//========== read Fees Collection Summary =====
+router.post('/read_collection_summary', function(req, res, next) {
+  var obj = JSON.parse(JSON.stringify(req.body));
+
+  var start_date = obj.start_date;
+  var end_date =  obj.end_date;
+  
+   var data = {}
+  req.getConnection(function(err,connection){
+     var condition = "";
+     var session_id = req.cookies.session_id
+
+     
+      
+     var qry = `SELECT coalesce(bank_name, 'School') as bank, mode, 
+        sum(amount_due + fine_recevied - coalesce(scholorship_amount, 0) - coalesce(concession_amount, 0)) as amount 
+        from fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+                and b.receipt_date between '${start_date}' and '${end_date}')
+        LEFT JOIN fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+        LEFT JOIN fee_concession d on (a.student_id = d.student_id and a.fee_slip_id = d.fee_slip_id)
+        LEFT JOIN bank_account_master e on b.bank_id = e.bank_account_no
+        where b.session_id=${session_id}
+        group by bank, mode order by 1`;
+
+   //console.log(qry)
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+
+            var feeData = []
+            var prev_bank =''
+            console.log(result)
+            for(var i = 0;  i < result.length ; i++){                
+            var error = 0;
+            if(result[i].bank != prev_bank){
+              if(prev_bank == ""){
+                var temp = {}
+                temp['bank'] = result[i].bank
+                if(result[i].mode == 'Cash' || result[i].mode == 'Bank'){
+                  temp['cash'] = result[i].amount;
+                  if(temp['cheque']) temp['cheque'] = 0;
+                }else{
+                  temp['cheque'] = result[i].amount;
+                  if(temp['cash']) temp['cash'] = 0;
+                }
+              }else{
+                temp['total'] = Number(temp['cash']) + Number(temp['cheque'])
+                feeData.push(temp)
+                temp = {}
+                temp['bank'] = result[i].bank
+                if(result[i].mode == 'Cash' || result[i].mode == 'Bank'){
+                  temp['cash'] = result[i].amount;
+                  if(temp['cheque']) temp['cheque'] = 0;
+                }else{
+                  temp['cheque'] = result[i].amount;
+                  if(temp['cash']) temp['cash'] = 0;
+                }
+              }
+              prev_bank = result[i].bank;
+            }else{
+              if(result[i].mode == 'Cash' || result[i].mode == 'Bank'){
+                if(temp['cash']){
+                  temp['cash'] = Number(temp['cash']) + Number(result[i].amount)
+                }else{
+                  temp['cash'] = result[i].amount;
+                }
+                if(temp['cheque']) temp['cheque'] = 0;
+              }else{
+                if(temp['cheque']){
+                  temp['cheque'] = Number(temp['cheque']) + Number(result[i].amount) 
+                }else{
+                  temp['cheque'] = result[i].amount;
+                }
+                if(temp['cash']) temp['cash'] = 0;
+              }
+            }
+          }
+          temp['total'] = Number(temp['cash']) + Number(temp['cheque']);
+          feeData.push(temp)
+          
+
+
+             data.status = 's';
+            data.collectionSummary = feeData;
+            
+
+           //connection.end()
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+//============== read outstanding fees ========
+  
+router.get('/read_outstanding_fees/:start_date/:end_date', function(req, res, next) {
+  var start_date = req.params.start_date;
+  var end_date = req.params.end_date;
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+     var qry = `select distinct e.student_id, gender, fee_slip_name,b.fee_slip_id, enroll_number,roll_number, 
+        concat(first_name, ' ', middle_name, ' ', last_name)as student_name,e.last_fee_slip_id,
+        concat(standard, ' ', section) as standard, f_name, concat(f_mobile,' (F)') as f_mobile, f_phone, mobile, total_amount as fees,
+        f_add_l1, f_add_l2, concat(f_city,' - ',f_zip) as f_city, f_state
+        from fee_plan_student_map a
+        JOIN fee_slip b on a.fee_plan_id = b.fee_plan_id
+        JOIN fee_plan_master c on (a.fee_plan_id = c.fee_plan_id and c.session_id = ${session_id})
+        LEFT JOIN fee_received d on (a.fee_plan_id = d.fee_plan_id and a.student_id = d.student_id 
+                and b.fee_slip_id = d.fee_slip_id)
+        JOIN student_master e on (a.student_id = e.student_id and e.current_session_id =${session_id} )
+        JOIN student_current_standing f on a.student_id = f.student_id
+        JOIN section_master g on f.section_id = g.section_id
+        JOIN standard_master h on g.standard_id = h.standard_id
+        JOIN parent_master i on (a.student_id = i.student_id  and i.current_session_id = ${session_id})
+        LEFT JOIN fee_scholorship j on (a.student_id = j.student_id and b.fee_slip_id = j.fee_slip_id)
+        where receipt_id is null
+        and (e.withdraw='N' || e.withdraw_session > ${session_id})
+        and f.session_id= ${session_id}
+        and b.last_date <='${end_date}'
+        and b.last_date >='${start_date}'
+        and (b.fee_slip_id <= e.last_fee_slip_id or e.last_fee_slip_id is null)
+        order by g.section_id, student_name, b.fee_slip_id`;
+
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+
+      var prev_enroll_number = "";
+      var prev_student_id = "";
+      var prev_gender = "";
+      var prev_standard = "";
+      var prev_sub_total = 0;
+      var sub_total = 0 ;
+      var grand_total = 0;
+      var slNo = 0;
+      var count=0;
+      var outstandingData = []
+        for(var i = 0; i<result.length; i++){
+      //var error = 0;
+       if(result[i].enroll_number !=prev_enroll_number){
+           if(prev_enroll_number !=""){
+              var obj = {}
+              obj['slNo'] = ++slNo;
+              obj['student_id'] = prev_student_id;
+              obj['gender'] = prev_gender;
+              obj['enroll_number'] = prev_enroll_number;
+              obj['roll_number'] =roll_number;
+              obj['standard']= standard;
+              obj['student_name'] = student_name;
+              obj['f_name'] = f_name;
+              obj['f_mobile'] = f_mobile;
+              obj['mobile'] = mobile;
+              if(result[i].last_fee_slip_id == null){
+                obj['fee_slip_name'] = fee_slip_name;
+              }else if(result[i].last_fee_slip_id >= result[i].fee_slip_id){      
+                obj['fee_slip_name'] = fee_slip_name;
+              }
+            //  obj['fee_slip_name'] = fee_slip_name;
+              obj['fees'] = fees;
+              obj['f_add_l1'] = f_add_l1;
+              obj['f_add_l2'] = f_add_l2;
+              obj['f_city'] = f_city;
+           //   obj['f_zip'] = $f_zip;
+              obj['f_state'] = f_state;
+              outstandingData.push(obj)
+           }
+            prev_student_id = result[i].student_id
+            prev_gender = result[i].gender
+            prev_enroll_number = result[i].enroll_number
+           var roll_number = result[i].roll_number
+            /* for last fee slip id */
+            
+            if(result[i].last_fee_slip_id == null){
+               var  fee_slip_name = result[i].fee_slip_name;
+            }else if(result[i].last_fee_slip_id >= result[i].fee_slip_id){      
+               var fee_slip_name = result[i].fee_slip_name;
+            } 
+            
+            
+           // fee_slip_name = result[i].fee_slip_name'];
+            var standard=result[i].standard
+            var student_name = result[i].student_name
+            var f_name = result[i].f_name
+            var f_mobile = result[i].f_mobile
+            var mobile = result[i].mobile
+            var f_add_l1 = result[i].f_add_l1
+            var f_add_l2 = result[i].f_add_l2
+            var f_city = result[i].f_city
+          //  $f_zip = result[i].f_zip
+            var f_state = result[i].f_state
+            var fees = result[i].fees               
+          }else{  
+               if(result[i].last_fee_slip_id == null){
+                var fee_slip_name = fee_slip_name + ", " + result[i].fee_slip_name
+                  fees=fees + result[i].fees
+               }else if(result[i].last_fee_slip_id >= result[i].fee_slip_id){       
+                  var fee_slip_name = fee_slip_name + ", " + result[i].fee_slip_name
+                  var fees=fees + result[i].fees
+               }else{
+                  var fee_slip_name = "";
+                  var fees=fees + result[i].fees
+               }                      
+          }      
+                    
+           if(result[i].standard != prev_standard){
+              if(prev_standard != ""){
+
+
+                obj = {}
+                obj["fee_slip_name"] = "Sub Total";  
+                obj["fees"] = prev_sub_total;
+                grand_total = grand_total + prev_sub_total; 
+                outstandingData.push(obj)           
+               }  
+                obj = {}
+                obj["student_name"] = "Class: " + result[i].standard;               
+                outstandingData.push(obj)
+                prev_standard = result[i].standard
+                prev_sub_total=result[i].fees       
+              }
+             else{           
+                  sub_total = result[i].fees
+                  prev_sub_total =Number(prev_sub_total) + Number(sub_total)   
+              }
+
+      } 
+      /*if(error == 0){
+          obj = {}
+          obj['slNo'] = ++slNo;
+          obj['student_id'] = prev_student_id;
+          obj['gender'] = prev_gender;
+          obj['enroll_number'] = prev_enroll_number;
+          obj['roll_number'] = roll_number;
+          obj['standard']= standard;
+          obj['student_name'] = student_name;
+          obj['f_name'] = f_name;
+          obj['f_mobile'] = f_mobile;
+          obj['mobile'] = mobile;
+          if(result[i].last_fee_slip_id == null){
+            obj['fee_slip_name'] = fee_slip_name;
+          }else if(result[i].last_fee_slip_id >= result[i].fee_slip_id){      
+            obj['fee_slip_name'] = fee_slip_name;
+          }
+          obj['f_add_l1'] = f_add_l1;
+          obj['f_add_l2'] = f_add_l2;
+          obj['f_city'] = f_city;
+        //  obj['f_zip'] = $f_zip;
+          obj['f_state'] = f_state;
+          obj['fees'] = fees;
+          outstandingData.push(obj)
+        }*/                 
+      //add the sub total for the last Class
+      obj = {}
+      obj["fee_slip_name"] = "Sub Total";
+      obj["fees"] = prev_sub_total;
+      outstandingData.push(obj)
+      
+      //add grand total
+      obj = {}
+      obj["fee_slip_name"] = "Grand Total";
+      obj["fees"] = Number(grand_total) + Number(prev_sub_total)  
+      outstandingData.push(obj)    
+
+//=================return =====
+            data.status = 's';
+            data.outstandingData = outstandingData;
+           //connection.end()
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+//========== monthly fees report ===============
+router.get('/read_monthly_fees/:start_date/:end_date', function(req, res, next) {
+  var start_date = req.params.start_date;
+  var end_date = req.params.end_date;
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+     var qry = `select date_format(receipt_date, '%M') as month, sum(fees) as fees, sum(fine) as fine,
+        sum(scholarship) as scholarship, sum(fees + fine - scholarship ) as total 
+        from
+        (select receipt_date, sum(amount_due) as fees , sum(fine_recevied) as fine,
+          sum(if(scholorship_amount is not null, scholorship_amount, 0)) as scholarship
+          from fee_received a
+          JOIN fee_received_details b on a.receipt_id = b.receipt_id
+          LEFT JOIN fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+          where b.receipt_date between ? and ?
+          and b.session_id=${session_id}
+          group by receipt_date ) a
+          group by month
+          order by receipt_date`;
+
+     connection.query(qry,[start_date,end_date], function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.monthlyData = result;
+           //connection.end()
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+//=========== read outstanding by class ===========
+
+router.post('/read_outstanding_classwise', function(req, res, next) {
+  var obj = JSON.parse(JSON.stringify(req.body));
+
+  var section_id =  obj.section_id;
+  var standard_id =  obj.standard_id;
+  var month_id = obj.month_id
+   var data = {}
+
+    req.getConnection(function(err,connection){
+     var from_date = ''
+     var to_date = ''
+     var condition = "";
+     var session_id = req.cookies.session_id
+     var qry_date =`select date_format(session_start_date, '%Y') as year from session_master where session_id = ${session_id}`;
+     connection.query(qry_date, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+           
+            var session_year = result[0].year;
+            if(month_id<4){
+              session_year++;
+            }
+             from_date = session_year + "-" + month_id + "-" + "01";
+             to_date = session_year + "-" + month_id + "-" + "31"; 
+        }
+      
+      var condition = "";
+     var session_id = req.cookies.session_id
+
+     if(standard_id == -1 && section_id== -1) condition = ``;
+      else if(standard_id != -1 && section_id==-1) condition = `and f.standard_id=${standard_id}`;
+      else if(standard_id==-1 && section_id!=-1)condition = `and f.standard_id=${standard_id} and f.section_id=${section_id}`;    
+     
+     
+     var qry = `select e.student_id, gender,roll_number, enroll_number, concat(first_name, ' ', middle_name, ' ', last_name)as student_name,
+        concat(standard,' ',section) as standard, f_name, f_mobile, mobile, total_amount as fees,
+        last_date, fee_slip_name as month, f_add_l1, f_add_l2, concat(f_city,' - ',f_zip) as f_city, f_state
+        from    
+        fee_plan_student_map a
+        JOIN fee_slip b on a.fee_plan_id = b.fee_plan_id
+        JOIN fee_plan_master c on (a.fee_plan_id = c.fee_plan_id and c.session_id = (select session_id from session_master where session_id = ${session_id}))
+        LEFT JOIN fee_received d on (a.fee_plan_id = d.fee_plan_id and a.student_id = d.student_id 
+                and b.fee_slip_id = d.fee_slip_id)
+        JOIN student_master e on (a.student_id = e.student_id and e.current_session_id = ${session_id})
+        JOIN student_current_standing f on a.student_id = f.student_id
+        JOIN section_master g on f.section_id = g.section_id
+        JOIN standard_master h on g.standard_id = h.standard_id
+        JOIN parent_master i on (a.student_id = i.student_id and i.current_session_id=${session_id})
+        LEFT JOIN fee_scholorship j on (a.student_id = j.student_id and b.fee_slip_id = j.fee_slip_id)  
+        where receipt_id is null
+        and b.last_date <= '${to_date}'
+        and b.last_date >= '${from_date}'
+        and (e.withdraw='N' || e.withdraw_session > ${session_id})
+        and f.session_id= ${session_id}
+        ${condition}
+        order by  g.section_id, student_name, b.fee_slip_id`;
+     
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );connection.query(qry, function(err, result)     
+     {
+            
+        
+     });
+           data.status = 'e';
+
+        }else{
+            data.status = 's';
+            data.outstandingFees = result;
+            res.send(data)
+        }
+     
+     });
+       
+  });
+ });    
+  
+});
+//========== read estimated fees report ==============
+
+router.post('/read_estimated_fees', function(req, res, next) {
+  var obj = JSON.parse(JSON.stringify(req.body));
+
+  var start_date = obj.start_date;
+  var end_date =  obj.end_date;
+  var section_id =  obj.section_id;
+  var standard_id =  obj.standard_id;
+   var data = {}
+  req.getConnection(function(err,connection){
+     var condition = "";
+     var session_id = req.cookies.session_id
+
+     if(standard_id == -1 && section_id== -1) condition = ``;
+      else if(standard_id != -1 && section_id==-1) condition = `and f.standard_id=${standard_id}`;
+      else if(standard_id==-1 && section_id!=-1)condition = `and f.standard_id=${standard_id} and f.section_id=${section_id}`;
+      //else "Invalid class section combination selected";
+      
+     var qry = `select '' as total, '' as fees , '' as scholarship,
+    sum(c.amount) as total_fees
+    from
+    (select * from fee_plan_student_map where session_id=${session_id}) a
+    JOIN fee_slip b on (a.fee_plan_id = b.fee_plan_id )
+    join fee_slip_details c on b.fee_slip_id = c.fee_slip_id
+    join student_current_standing d on (a.student_id=d.student_id and a.session_id=d.session_id)
+    join student_master e on ( d.student_id=e.student_id and e.current_session_id = ${session_id} and (withdraw='N' || withdraw_session > ${session_id} ))
+    LEFT JOIN section_master f on d.section_id=f.section_id
+    where b.last_date between ${start_date} and ${end_date} 
+    ${condition}
+    
+    Union
+    select 'Total' as total,sum(amount_due) as amount_due , 
+                sum(if(scholorship_amount is not null, scholorship_amount, 0)) as scholarship_amount, '' as total_fees
+                from fee_received a
+                LEFT JOIN  fee_received_details b on a.receipt_id = b.receipt_id
+                LEFT JOIN  fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+                LEFT JOIN  student_master e on (a.student_id = e.student_id  and e.current_session_id = ${session_id})
+                LEFT JOIN  student_current_standing f on ( a.student_id = f.student_id  and a.session_id = f.session_id)
+                LEFT JOIN  section_master g on f.section_id = g.section_id
+                LEFT JOIN  fee_slip i on (a.fee_slip_id = i.fee_slip_id and a.fee_plan_id = i.fee_plan_id)   
+                where i.last_date between ${start_date} and ${end_date}
+              ${condition}
+                and a.session_id=${session_id}
+  group by total`;
+
+    //console.log(qry)
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+            /*console.log("========= result ==========");
+            console.log(result)*/
+            var total = 0;
+            var stdData = []
+            for(var i = 0;  i < result.length ; i++){
+              var temp = {}
+              if(result[i].total_fees !=""){
+                temp['total'] = "TOTAL FEES";
+                temp['total_fees'] = result[i].total_fees
+                stdData.push(temp);
+                total =Number(total) + Number(result[i].total_fees)
+              }
+              if(result[i].fees !==""){
+                temp['total'] = "RECEIVED AMOUNT";
+                temp['total_fees'] = result[i].fees
+                stdData.push(temp);
+                total =Number(total) - Number(result[i].fees)
+              }
+              if (result[i].scholarship != ""){
+                 temp['total'] = "SCHOLARSHIP";
+                 temp['total_fees'] = result[i].scholarship
+                 stdData.push(temp);
+                 total =Number(total) - Number(result[i].scholarship)
+              }
+               
+            }
+            temp = {}
+            temp['total'] = "NET FEES DUE";
+            temp['total_fees'] =total;
+            stdData.push(temp)
+
+
+            data.status = 's';
+            data.estimatedFees = stdData;
+            
+           //connection.end()
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+// ======== Read Bank Wise Fees =========
+router.post('/read_bank_wise_fees', function(req, res, next) {
+  var obj = JSON.parse(JSON.stringify(req.body));
+
+  var start_date = obj.start_date;
+  var end_date =  obj.end_date;
+  var bank_id =  obj.bank_id;
+  var mode =  obj.mode;
+   var data = {}
+  req.getConnection(function(err,connection){
+     var condition = "";
+     var session_id = req.cookies.session_id
+
+     if(bank_id == -1 && mode== "All") condition = ``;
+      else if(bank_id != -1 && mode=="Cash") condition = `and b.bank_id is NULL and b.mode='${mode}'`;
+      else if(bank_id==-1 && mode=="Online")condition = `and b.mode='${mode}'`;
+      else if(bank_id!=-1 && mode=="Online")condition = `and b.mode='${mode}' and b.bank_id='${bank_id}'`; 
+      else if(bank_id == -1 && mode=="Bank") condition = `and b.mode='${mode}'`;
+      else if(bank_id == -1 && mode=="Cheque") condition = `and b.mode='${mode}'`;
+      else if(bank_id != -1 && mode=="Cheque") condition = `and b.mode='${mode}' and b.bank_id='${bank_id}'`;
+      else if(bank_id != -1 && mode=="All") condition = `and b.bank_id = '${bank_id}'`;
+      else if(bank_id != -1 && mode=="Bank") condition = `and b.bank_id = '${bank_id}' and b.mode='${mode}'`;
+      
+     var qry = `SELECT enroll_number, a.receipt_id, concat(first_name,' ', middle_name, ' ', last_name) as student_name,
+        concat(standard, ' ', section) as class, coalesce(bank_name, 'School') as bank, mode, 
+        coalesce(item_no, '') as item_no, date_format(receipt_date,'%d/%m/%Y')as receipt_date,  fee_slip_name, 
+        amount_due as fees, fine_recevied as fine, coalesce(scholorship_amount, 0) as scholarship,
+        (amount_due + fine_recevied - coalesce(scholorship_amount, 0)) as total 
+        FROM fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id and b.receipt_date between ? and ? ${condition}) 
+        JOIN student_master c on (a.student_id = c.student_id and c.current_session_id = ${session_id})
+        JOIN student_current_standing d on (a.student_id = d.student_id and b.session_id=d.session_id)
+        JOIN section_master e on d.section_id = e.section_id 
+        JOIN standard_master f on e.standard_id = f.standard_id 
+        LEFT JOIN bank_account_master g on b.bank_id = g.bank_account_no 
+        LEFT JOIN fee_scholorship h on (a.fee_slip_id = h.fee_slip_id and a.student_id = h.student_id) 
+        JOIN fee_slip i on a.fee_slip_id = i.fee_slip_id
+        where b.session_id= ${session_id}
+        order by receipt_date,  a.receipt_id,class, i.fee_slip_id`;
+
+    console.log(qry)
+     connection.query(qry,[start_date,end_date], function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+          //var data ={}
+            data.status = 's';
+            data.bankWiseFees = result;
+            
+           //connection.end()
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
+/* Read banks */
+
+router.get('/read_banks', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     
+     var qry = `select bank_account_no as bank_id, bank_name as bank 
+                from bank_account_master 
+                order by 2`;
+
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.banks = result;
+           //connection.end()
+            res.send(data)
+        }
+     
+     });
+
+  });
+
+});
+
+/* Read Mode*/
+
+router.get('/read_mode', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     
+     var qry = `select mode from fee_received_details group by mode`;
+
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.modes = result;
+           //connection.end()
+            res.send(data)
+        }
+     
+     });
+
+  });
+
+});
+
+
+router.get('/read_class_wise_report/:standard_id/:section_id/:session_id', function(req, res, next) {
+  var standard_id = req.params.standard_id;
+  var section_id = req.params.section_id;
+  var session_id = req.params.session_id;
+  console.log("HERE")
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var condition = "";
+     var created_by = req.cookies.user
+     var active_session_id = req.cookies.session_id
+     console.log(session_id)
+     var category_condition="";
+
+      if(standard_id == -1 && section_id==-1)   condition = "";
+
+      if(standard_id != -1 && section_id==-1)   condition = ` and d.standard_id = ${standard_id} `;
+
+      if(standard_id != -1 && section_id!=-1)   condition = ` and  d.standard_id= ${standard_id} and d.section_id= ${section_id} `;
+     /*if(req.cookies.role != 'ADMIN') $condition = ` and created_by = '${created_by}' `;*/
+
+     var roleCondition = "";
+
+      if(req.cookies.role != "ADMIN") roleCondition = ` and a.created_by =  '${created_by}' `;
+
+      if(req.cookies.role != "ADMIN" && condition !="") roleCondition = ` and  a.created_by = '${created_by}' `;
+
+
+     var qry = `select category_name, count(*) as total
+                from mentor a
+                left join student_master b on (a.enroll_number = b.enroll_number and b.current_session_id = ${active_session_id} )
+                left join student_current_standing c on (b.student_id = c.student_id and a.session_id = c.session_id and b.current_session_id = ${active_session_id} )
+                left join section_master d on c.section_id = d.section_id
+                left join standard_master f on d.standard_id = f.standard_id 
+                join mentor_category_master e on a.category_id = e.category_id
+                where a.session_id = ?
+                ${condition} ${roleCondition}
+                group by category_name `;
+
+     connection.query(qry,[session_id], function(err, result)
+     {
+            
+        if(err){
+           console.log("Error reading Date Wise Case Report : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.class_wise_case_report = result;
+
+            var grand_total=0;
+            for (var i = result.length - 1; i >= 0; i--) {
+               grand_total = grand_total+result[i].total;
+             } 
+
+            data.grand_total = grand_total; 
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});
+
+
+module.exports = router;

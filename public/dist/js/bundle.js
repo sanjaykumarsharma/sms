@@ -381,6 +381,185 @@ function ActivityItemStore() {
 }
 'use strict';
 
+function ActivityReportStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  /*self.case_wise_reports = []*/
+
+  self.on('read_activity_date_wise_report', function (obj) {
+    console.log('i am in read_categories api call from ajax');
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    req.activity_type = obj.activity_type;
+    $.ajax({
+      url: '/activity_report/read_activity_date_wise_report/' + obj.start_date + '/' + obj.end_date + '/' + obj.activity_type,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.activity_date_wise_report = data.activity_date_wise_report;
+          self.trigger('read_activity_date_wise_report_changed', self.activity_date_wise_report);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_activity_session_wise_report', function (activity_type, session_id) {
+    console.log('i am in read_categories api call from ajax');
+    var req = {};
+    req.activity_type = activity_type;
+    req.session_id = session_id;
+    $.ajax({
+      url: '/activity_report/read_activity_session_wise_report/' + activity_type + '/' + session_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.activity_session_wise_report = data.activity_session_wise_report;
+          self.trigger('read_activity_session_wise_report_changed', self.activity_session_wise_report);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_activity_event_wise_report', function (activity_type, event_id) {
+    console.log('i am in read_categories api call from ajax');
+    var req = {};
+    req.activity_type = activity_type;
+    req.event_id = event_id;
+    $.ajax({
+      url: '/activity_report/read_activity_event_wise_report/' + activity_type + '/' + event_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.activity_event_wise_report = data.activity_event_wise_report;
+          self.trigger('read_activity_event_wise_report_changed', self.activity_event_wise_report);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_activity_event_wise_graph_report', function (activity_type, session_id) {
+    console.log('i am in read_categories api call from ajax');
+    var req = {};
+    req.activity_type = activity_type;
+    req.session_id = session_id;
+    $.ajax({
+      url: '/activity_report/read_activity_event_wise_graph_report/' + activity_type + '/' + session_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_activity_event_wise_graph_report_changed', data.activity_event_wise_graph_report, data.grand_total);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_student_event_report', function (obj) {
+    console.log('i am in read_categories api call from ajax');
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    $.ajax({
+      url: '/activity_report/read_student_event_report/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.student_event_report = data.student_event_report;
+          self.trigger('read_student_event_report_changed', self.student_event_report);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_session', function () {
+    console.log('i am in read_session api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/activity_report/read_session/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.sessions = data.sessions;
+          self.trigger('read_session_changed', data.sessions);
+        } else if (data.status == 'e') {
+          showToast("Session Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_event', function () {
+    console.log('i am in read_session api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/activity_report/read_event/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.events = data.events;
+          self.trigger('read_event_changed', data.events);
+        } else if (data.status == 'e') {
+          showToast("Event Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
 function ActivityStore() {
   riot.observable(this); // Riot provides our event emitter.
   var self = this;
@@ -575,6 +754,258 @@ function ActivityStore() {
     });
   });
 }
+'use strict';
+
+function AdminReportStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  /*
+    self.on('read_by_field', function(roll_no,student_name,reg_number,f_name,m_name) {
+       let req = {}
+       req.roll_no=roll_no
+       req.student_name=student_name
+       req.reg_number=reg_number
+       req.f_name=f_name
+       req.m_name=m_name
+      $.ajax({
+        url:'/studentSearch/read_by_field',
+          type:"POST",
+          data: JSON.stringify(req),
+          contentType: "application/json",
+          dataType:"json",
+          headers: {"Authorization": getCookie('token')},
+          success: function(data){
+            console.log(data)
+            if(data.status == 's'){
+               self.searchStudents=data.searchStudents
+              toastr.success("Successfully Inserted")
+              self.trigger('read_by_field_change', self.searchStudents)
+            }else if(data.status == 'e'){
+              showToast("Error search Student. Please try again.", data)
+            }
+          },
+          error: function(data){
+            showToast("", data)
+          }
+        })
+    })
+  */
+
+  //read Student Family Occupation
+  self.on('read_student_summary_report', function () {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_student_summary_report',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          //self.studentSummaryReports=[]
+          console.log("inside report");
+          self.studentSummaryReports = data.studentSummaryReports;
+          // console.log(self.studentSummaryReports[0])
+          self.trigger('read_student_summary_report_changed', self.studentSummaryReports);
+        } else if (data.status == 'e') {
+          showToast("Student Summary Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //read Student strength 
+  self.on('read_student_strength_report', function () {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_student_strength_report',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          //self.studentSummaryReports=[]
+          console.log("inside report");
+          self.studentStrengthReports = data.studentStrengthReports;
+          // console.log(self.studentStrengthReports[0])
+          self.trigger('read_student_strength_report_changed', self.studentStrengthReports);
+        } else if (data.status == 'e') {
+          showToast("Student Strength Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //student category summary report
+  self.on('read_student_category_summary_report', function (categories) {
+    var req = {};
+    req.categories = categories;
+    $.ajax({
+      url: '/admin_report/read_student_category_summary_report',
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      type: "POST",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          //self.studentSummaryReports=[]
+          console.log("inside report");
+          self.studentCategorySummaryReports = data.studentCategorySummaryReports;
+          console.log(self.studentCategorySummaryReports);
+          self.trigger('read_student_category_summary_report_changed', self.studentCategorySummaryReports);
+        } else if (data.status == 'e') {
+          showToast("Student Category Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //student category Strength report
+  self.on('read_student_category_strength_report', function (category_id) {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_student_category_strength_report/' + category_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          //self.studentSummaryReports=[]
+          console.log("inside report");
+          self.studentCategoryStrengthReports = data.studentCategoryStrengthReports;
+          console.log(self.studentCategoryStrengthReports);
+          self.trigger('read_student_category_strength_report_changed', self.studentCategoryStrengthReports);
+        } else if (data.status == 'e') {
+          showToast("Student Category Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //stdent Group Report
+
+  self.on('read_student_group_report', function (standard_id, section_id) {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_student_group_report/' + standard_id + '/' + section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          //self.studentSummaryReports=[]
+          console.log("inside report");
+          self.studentGroupReports = data.studentGroupReports;
+          console.log(self.studentGroupReports);
+          self.trigger('read_student_group_report_change', self.studentGroupReports);
+        } else if (data.status == 'e') {
+          showToast("Student Group Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //stdent House Report
+
+  self.on('read_student_house_report', function (standard_id, section_id) {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_student_house_report/' + standard_id + '/' + section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          //self.studentSummaryReports=[]
+          console.log("inside report");
+          self.studentHouseReports = data.studentHouseReports;
+          console.log(self.studentHouseReports);
+          self.trigger('read_student_house_report_change', self.studentHouseReports);
+        } else if (data.status == 'e') {
+          showToast("Student House Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //stdent Class Teacher Report
+
+  self.on('read_class_teacher_report', function () {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_class_teacher_report',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          //self.studentSummaryReports=[]
+          console.log("inside report");
+          self.studentClassTeacherReports = data.studentClassTeacherReports;
+          console.log(self.studentClassTeacherReports);
+          self.trigger('read_class_teacher_report_change', self.studentClassTeacherReports);
+        } else if (data.status == 'e') {
+          showToast("Student Class teacher Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // new stdent list report
+
+  self.on('read_new_student_list_report', function () {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_new_student_list_report',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          //self.studentSummaryReports=[]
+          console.log("inside report");
+          self.newStudentListReports = data.newStudentListReports;
+          console.log(self.newStudentListReports);
+          self.trigger('read_new_student_list_report_changed', self.newStudentListReports);
+        } else if (data.status == 'e') {
+          showToast("Student List Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
 "use strict";
 
 var showToast = function showToast(msg, data) {
@@ -693,6 +1124,12 @@ RiotControl.addStore(feeSlipStore);
 var scholarshipStore = new ScholarshipStore();
 RiotControl.addStore(scholarshipStore);
 
+var feeReceivedStore = new FeeReceivedStore();
+RiotControl.addStore(feeReceivedStore);
+
+var feesReportStore = new FeesReportStore();
+RiotControl.addStore(feesReportStore);
+
 //bodhi
 var activityitemStore = new ActivityItemStore();
 RiotControl.addStore(activityitemStore);
@@ -733,8 +1170,26 @@ RiotControl.addStore(disciplinedetailStore);
 var disciplineReportStore = new DisciplineReportStore();
 RiotControl.addStore(disciplineReportStore);
 
+var activityReportStore = new ActivityReportStore();
+RiotControl.addStore(activityReportStore);
+
 var studentStore = new StudentStore();
 RiotControl.addStore(studentStore);
+
+var studentinfoupdateStore = new StudentInfoUpdateStore();
+RiotControl.addStore(studentinfoupdateStore);
+
+var employeeNotificationStore = new EmployeeNotificationStore();
+RiotControl.addStore(employeeNotificationStore);
+
+var studentNotificationStore = new StudentNotificationStore();
+RiotControl.addStore(studentNotificationStore);
+
+var idSignatureStore = new IdSignatureStore();
+RiotControl.addStore(idSignatureStore);
+
+var idCardStore = new IdCardStore();
+RiotControl.addStore(idCardStore);
 
 //tarique
 var roleStore = new RoleStore();
@@ -754,6 +1209,9 @@ RiotControl.addStore(levelStore);
 
 var countryStore = new CountryStore();
 RiotControl.addStore(countryStore);
+
+var subjectStore = new SubjectStore();
+RiotControl.addStore(subjectStore);
 
 var cityStore = new CityStore();
 RiotControl.addStore(cityStore);
@@ -784,6 +1242,9 @@ RiotControl.addStore(remarkStore);
 
 var inventorydepartmentStore = new InventoryDepartmentStore();
 RiotControl.addStore(inventorydepartmentStore);
+
+var departmentStore = new DepartmentStore();
+RiotControl.addStore(departmentStore);
 
 var employmentStatusStore = new EmploymentStatusStore();
 RiotControl.addStore(employmentStatusStore);
@@ -844,6 +1305,24 @@ RiotControl.addStore(inventoryIssueStore);
 
 var inventorySaleStore = new InventorySaleStore();
 RiotControl.addStore(inventorySaleStore);
+
+var inventoryReportStore = new InventoryReportStore();
+RiotControl.addStore(inventoryReportStore);
+
+var staffStore = new StaffStore();
+RiotControl.addStore(staffStore);
+
+var studentSearchStore = new StudentSearchStore();
+RiotControl.addStore(studentSearchStore);
+
+var birthDayStore = new BirthDayStore();
+RiotControl.addStore(birthDayStore);
+
+var attendanceStore = new AttendanceStore();
+RiotControl.addStore(attendanceStore);
+
+var adminReportStore = new AdminReportStore();
+RiotControl.addStore(adminReportStore);
 
 var currentPage = null;
 
@@ -926,8 +1405,29 @@ var goTo = function goTo(path1, path2, path3) {
     case 'student-result-activation':
       currentPage = riot.mount('div#view', 'student-result-activation')[0];
       break;
+    case 'student-info-update':
+      currentPage = riot.mount('div#view', 'student-info-update')[0];
+      break;
+    case 'id-card':
+      currentPage = riot.mount('div#view', 'id-card')[0];
+      break;
+    case 'id-signature':
+      currentPage = riot.mount('div#view', 'id-signature')[0];
+      break;
+    /*===========qadir start ==========*/
+    case 'receive-fees':
+      currentPage = riot.mount('div#view', 'receive-fees', { selected_master: path1 })[0];
+      switch (path2) {
+        case 'receive-fees':
+          riot.mount("div#setting-view", 'receive-fees');
+          break;
+      }
+      break;
+
     case 'fee-bill':
       currentPage = riot.mount('div#view', 'bill', { selected_master: path2 })[0];
+      console.log("currentPage = ");
+      console.log(currentPage);
       switch (path2) {
         case 'fee-head':
           riot.mount("div#bill-view", 'fee-head');
@@ -948,6 +1448,76 @@ var goTo = function goTo(path1, path2, path3) {
           riot.mount("div#bill-view", 'fee-head');
       }
       break;
+    case 'fees-report':
+      currentPage = riot.mount('div#view', 'fees-report', { selected_master: path2 })[0];
+      console.log("currentPage = ");
+      console.log(currentPage);
+      switch (path2) {
+        case 'month-wise':
+          riot.mount("div#fees-report-view", 'month-wise');
+          break;
+        case 'daily-collection':
+          riot.mount("div#fees-report-view", 'daily-collection');
+          break;
+        case 'daily-register':
+          riot.mount("div#fees-report-view", 'daily-register');
+          break;
+        case 'bank-wise':
+          riot.mount("div#fees-report-view", 'bank-wise');
+          break;
+        case 'date-wise':
+          riot.mount("div#fees-report-view", 'date-wise');
+          break;
+        case 'head-wise-summary':
+          riot.mount("div#fees-report-view", 'head-wise-summary');
+          break;
+        case 'head-wise':
+          riot.mount("div#fees-report-view", 'head-wise');
+          break;
+        case 'outstanding-fees':
+          riot.mount("div#fees-report-view", 'outstanding-fees');
+          break;
+        case 'outstanding-fees-class':
+          riot.mount("div#fees-report-view", 'outstanding-fees-class');
+          break;
+        case 'due-by-class':
+          riot.mount("div#fees-report-view", 'due-by-class');
+          break;
+        case 'fees-collection-summary':
+          riot.mount("div#fees-report-view", 'fees-collection-summary');
+          break;
+        case 'fees-collection-summary':
+          riot.mount("div#fees-report-view", 'fees-collection-summary');
+          break;
+        case 'estimated-fees':
+          riot.mount("div#fees-report-view", 'estimated-fees');
+          break;
+        case 'advance-by-class':
+          riot.mount("div#fees-report-view", 'advance-by-class');
+          break;
+        case 'advance-fees':
+          riot.mount("div#fees-report-view", 'advance-fees');
+          break;
+        case 'scholarship-list':
+          riot.mount("div#fees-report-view", 'scholarship-list');
+          break;
+        case 'issued-letter':
+          riot.mount("div#fees-report-view", 'issued-letter');
+          break;
+        case 'fees-scheme-report':
+          riot.mount("div#fees-report-view", 'fees-scheme-report');
+          break;
+        case 'fees-scheme-assigned':
+          riot.mount("div#fees-report-view", 'fees-scheme-assigned');
+          break;
+        case 'fees-scheme-unassigned':
+          riot.mount("div#fees-report-view", 'fees-scheme-unassigned');
+          break;
+        default:
+          riot.mount("div#fees-report-view", 'month-wise');
+      }
+      break;
+
     case 'scholarship':
       currentPage = riot.mount('div#view', 'scholarship', { selected_master: path1 })[0];
       switch (path2) {
@@ -956,6 +1526,7 @@ var goTo = function goTo(path1, path2, path3) {
           break;
       }
       break;
+
     case 'fees-setting':
       currentPage = riot.mount('div#view', 'fees-setting', { selected_master: path2 })[0];
       switch (path2) {
@@ -972,6 +1543,7 @@ var goTo = function goTo(path1, path2, path3) {
           riot.mount("div#setting-view", 'fine-setting');
       }
       break;
+    /*==============qadir end ======*/
     case 'activity-detail':
       currentPage = riot.mount('div#view', 'activity-detail')[0];
       break;
@@ -990,6 +1562,34 @@ var goTo = function goTo(path1, path2, path3) {
         default:
           riot.mount("div#activity-setting-view", 'activity-item');
       }
+      break;
+    case 'activity-report':
+      currentPage = riot.mount('div#view', 'activity-report', { selected_master: path2 })[0];
+      switch (path2) {
+        case 'activity-date-wise-report':
+          riot.mount("div#activity-report-view", 'activity-date-wise-report');
+          break;
+        case 'activity-session-wise-report':
+          riot.mount("div#activity-report-view", 'activity-session-wise-report');
+          break;
+        case 'activity-event-wise-report':
+          riot.mount("div#activity-report-view", 'activity-event-wise-report');
+          break;
+        case 'activity-student-event-report':
+          riot.mount("div#activity-report-view", 'activity-student-event-report');
+          break;
+        case 'activity-event-wise-graph-report':
+          riot.mount("div#activity-report-view", 'activity-event-wise-graph-report');
+          break;
+        default:
+          riot.mount("div#activity-report-view", 'activity-date-wise-report');
+      }
+      break;
+    case 'employee-notification':
+      currentPage = riot.mount('div#view', 'employee-notification')[0];
+      break;
+    case 'student-notification':
+      currentPage = riot.mount('div#view', 'student-notification')[0];
       break;
     case 'mentor-detail':
       currentPage = riot.mount('div#view', 'mentor-detail')[0];
@@ -1059,6 +1659,80 @@ var goTo = function goTo(path1, path2, path3) {
       }
       break;
     //tarique
+    case 'staff':
+      riot.mount("div#view", 'staff');
+      break;
+    case 'ex-staff':
+      riot.mount("div#view", 'ex-staff');
+      break;
+    case 'browse-staff':
+      riot.mount("div#view", 'browse-staff');
+      break;
+    case 'student-search':
+      riot.mount("div#view", 'student-search');
+      break;
+    case 'student-browser':
+      riot.mount("div#view", 'student-browser');
+      break;
+    case 'occupation-report':
+      riot.mount("div#view", 'occupation-report');
+      break;
+    case 'birthday':
+      riot.mount("div#view", 'birthday');
+      break;
+    case 'attendance-entry':
+      riot.mount("div#view", 'attendance-entry');
+      break;
+    case 'daily-attendance':
+      riot.mount("div#view", 'daily-attendance');
+      break;
+    case 'admin-report':
+      currentPage = riot.mount('div#view', 'admin-report', { selected_admin_report: path2 })[0];
+      switch (path2) {
+        case 'student-summary-report':
+          riot.mount("div#admin-report-view", 'student-summary-report');
+          break;
+        case 'student-strength-report':
+          riot.mount("div#admin-report-view", 'student-strength-report');
+          break;
+        case 'student-category-summary-report':
+          riot.mount("div#admin-report-view", 'student-category-summary-report');
+          break;
+        case 'student-category-strength-report':
+          riot.mount("div#admin-report-view", 'student-category-strength-report');
+          break;
+        case 'student-religion-strength-report':
+          riot.mount("div#admin-report-view", 'student-religion-strength-report');
+          break;
+        case 'student-group-report':
+          riot.mount("div#admin-report-view", 'student-group-report');
+          break;
+        case 'student-house-report':
+          riot.mount("div#admin-report-view", 'student-house-report');
+          break;
+        case 'student-class-teacher-report':
+          riot.mount("div#admin-report-view", 'student-class-teacher-report');
+          break;
+        case 'new-admission-report':
+          currentPage = riot.mount('div#admin-report-view', 'new-admission-report', { selected_new_admission_report: path3 })[0];
+          switch (path3) {
+
+            case 'new-admission-category-report':
+              riot.mount("div#new-admission-report-view", 'new-admission-category-report');
+              break;
+            case 'new-admission-list-report':
+              riot.mount("div#new-admission-report-view", 'new-admission-list-report');
+              break;
+            default:
+              riot.mount("div#new-admission-report-view", 'new-admission-category-report');
+
+          }
+          break;
+        default:
+          riot.mount("div#admin-report-view", 'student-summary-report');
+      }
+      break;
+
     case 'inventory-stock':
       currentPage = riot.mount('div#view', 'inventory-stock')[0];
       break;
@@ -1067,6 +1741,9 @@ var goTo = function goTo(path1, path2, path3) {
       break;
     case 'inventory-issue':
       currentPage = riot.mount('div#view', 'inventory-issue')[0];
+      break;
+    case 'inventory-returnable':
+      currentPage = riot.mount('div#view', 'inventory-returnable')[0];
       break;
     case 'setting':
       currentPage = riot.mount('div#view', 'setting', { selected_master: path2 })[0];
@@ -1084,6 +1761,32 @@ var goTo = function goTo(path1, path2, path3) {
           riot.mount("div#setting-view", 'item');
       }
       break;
+    case 'inventory-report':
+      currentPage = riot.mount('div#view', 'inventory-report', { selected_inventory_report: path2 })[0];
+      switch (path2) {
+        case 'inventory-received-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-received-goods-report');
+          break;
+        case 'inventory-issued-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-issued-goods-report');
+          break;
+        case 'inventory-person-wise-issued-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-person-wise-issued-goods-report');
+          break;
+        case 'inventory-item-wise-issued-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-item-wise-issued-goods-report');
+          break;
+        case 'inventory-sales-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-sales-goods-report');
+          break;
+        case 'inventory-return-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-return-goods-report');
+          break;
+        default:
+          riot.mount("div#inventory-report-view", 'inventory-received-goods-report');
+      }
+      break;
+
     case 'infirmary-setting':
       currentPage = riot.mount('div#view', 'infirmary-setting', { selected_master: path2 })[0];
       switch (path2) {
@@ -1137,9 +1840,17 @@ var goTo = function goTo(path1, path2, path3) {
         case 'employment-status':
           riot.mount("div#master-view", 'employment-status');
           break;
-
         case 'role':
           riot.mount("div#master-view", 'role');
+          break;
+        case 'category':
+          riot.mount("div#master-view", 'category');
+          break;
+        case 'subject':
+          riot.mount("div#master-view", 'subject');
+          break;
+        case 'class-teacher-master':
+          riot.mount("div#master-view", 'class-teacher-master');
           break;
         case 'country':
           riot.mount("div#master-view", 'country');
@@ -1195,6 +1906,7 @@ var goTo = function goTo(path1, path2, path3) {
           riot.mount("div#master-view", 'employee-type');
       }
       break;
+
     case 'infirmary':
       currentPage = riot.mount('div#view', 'infirmary', { selected_master: path2 })[0];
       switch (path2) {
@@ -1620,6 +2332,128 @@ function AreaStore() {
 }
 'use strict';
 
+function AttendanceStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.on('read_attendance_data', function (standard_id, section_id, start_date) {
+    var req = {};
+    req.standard_id = standard_id;
+    req.section_id = section_id;
+    req.start_date = start_date;
+    console.log("inside Store");
+    console.log(req);
+    $.ajax({
+      url: '/attendance/read_attendance_data',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.attendanceData = data.attendanceData;
+          toastr.success("Successfully");
+          self.trigger('read_attendance_data_changed', self.attendanceData);
+        } else if (data.status == 'e') {
+          showToast("Error . Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data.err);
+      }
+    });
+  });
+
+  // Add Attendance
+  self.on('add_attendance_data', function (studentData, start_date) {
+    var req = {};
+    req.studentData = studentData;
+    req.start_date = start_date;
+    console.log("inside add_attendance_data store");
+    console.log(req);
+    $.ajax({
+      url: '/attendance/add_attendance_data',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          // self.attendanceData=data.attendanceData
+          toastr.success("Successfully");
+          self.trigger('add_attendance_data_changed');
+        } else if (data.status == 'e') {
+          showToast("Error . Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data.err);
+      }
+    });
+  });
+
+  // read daily attendance data
+
+  self.on('read_daily_attendance_data', function (start_date) {
+    var req = {};
+    req.start_date = start_date;
+    console.log("inside raed_attendance_data store");
+    console.log(req);
+    $.ajax({
+      url: '/attendance/read_daily_attendance_data',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.dailyAttendanceData = data.dailyAttendanceData;
+          toastr.success("Successfully");
+          self.trigger('read_daily_attendance_data_changed', self.dailyAttendanceData);
+        } else if (data.status == 'e') {
+          showToast("Error . Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data.err);
+      }
+    });
+  });
+
+  //read Student Family Occupation
+  /*self.on('read_student_summary_report', function() {
+     let req = {}
+     $.ajax({
+       url:'/admin_report/read_student_summary_report',
+         contentType: "application/json",
+         dataType:"json",
+         headers: {"Authorization": getCookie('token')},
+         success: function(data){
+           console.log(data)
+           if(data.status == 's'){
+             //self.studentSummaryReports=[]
+             console.log("inside report")
+             self.studentSummaryReports = data.studentSummaryReports
+            // console.log(self.studentSummaryReports[0])
+             self.trigger('read_student_summary_report_changed', self.studentSummaryReports)
+           }else if(data.status == 'e'){
+             showToast("Student Summary Report Read Error. Please try again.", data)
+           }
+         },
+         error: function(data){
+           showToast("", data)
+         }
+       })
+   })*/
+}
+'use strict';
+
 function BankStore() {
   riot.observable(this); // Riot provides our event emitter.
   var self = this;
@@ -1627,7 +2461,7 @@ function BankStore() {
   self.banks = [];
 
   self.on('read_bank', function () {
-    console.log('i am in read_categories api call from ajax');
+    console.log('i am in read bank api call from ajax');
     var req = {};
     $.ajax({
       url: '/bank',
@@ -1743,6 +2577,69 @@ function BankStore() {
       }
     });
   });
+}
+'use strict';
+
+function BirthDayStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.on('read_birth_day', function (dayType, s_date, e_date, type_id) {
+    var req = {};
+    req.dayType = dayType;
+    req.s_date = s_date;
+    req.e_date = e_date;
+    req.type_id = type_id;
+    console.log("inside Store");
+    console.log(req);
+    $.ajax({
+      url: '/birth_day/read_birth_day',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.birthDayData = data.birthDayData;
+          toastr.success("Successfully");
+          self.trigger('read_birth_day_changed', self.birthDayData);
+        } else if (data.status == 'e') {
+          showToast("Error . Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //read Student Family Occupation
+  /*self.on('read_student_summary_report', function() {
+     let req = {}
+     $.ajax({
+       url:'/admin_report/read_student_summary_report',
+         contentType: "application/json",
+         dataType:"json",
+         headers: {"Authorization": getCookie('token')},
+         success: function(data){
+           console.log(data)
+           if(data.status == 's'){
+             //self.studentSummaryReports=[]
+             console.log("inside report")
+             self.studentSummaryReports = data.studentSummaryReports
+            // console.log(self.studentSummaryReports[0])
+             self.trigger('read_student_summary_report_changed', self.studentSummaryReports)
+           }else if(data.status == 'e'){
+             showToast("Student Summary Report Read Error. Please try again.", data)
+           }
+         },
+         error: function(data){
+           showToast("", data)
+         }
+       })
+   })*/
 }
 'use strict';
 
@@ -2137,23 +3034,23 @@ function ClassTeacherStore() {
   riot.observable(this); // Riot provides our event emitter.
   var self = this;
 
-  self.events = [];
+  self.classTeachers = [];
 
-  self.on('read_standard', function () {
-    console.log('i am in read_standard api call from ajax');
+  self.on('read_class_teacher', function () {
+    console.log('i am in Class teacher api call from ajax');
     var req = {};
     $.ajax({
-      url: '/classteacher',
+      url: '/class_teacher/read_class_teacher',
       contentType: "application/json",
       dataType: "json",
       headers: { "Authorization": getCookie('token') },
       success: function success(data) {
         console.log(data);
         if (data.status == 's') {
-          self.standard = data.standard;
-          self.trigger('read_standard_changed', data.standard);
+          self.classTeachers = data.classTeachers;
+          self.trigger('read_class_teacher_changed', data.classTeachers);
         } else if (data.status == 'e') {
-          showToast("Categories Read Error. Please try again.", data);
+          showToast(" Class Read Error. Please try again.", data);
         }
       },
       error: function error(data) {
@@ -2161,22 +3058,127 @@ function ClassTeacherStore() {
       }
     });
   });
-  self.on('read_section_by_standard', function (standard_id) {
-    console.log('i am in read_events_by_category api call from ajax');
-    console.log(standard_id);
+
+  self.employees = [];
+
+  self.on('read_teaching_staff', function () {
+    console.log('i am in teaching Staff api call from ajax');
     var req = {};
     $.ajax({
-      url: '/classteacher/read_section/' + standard_id,
+      url: '/class_teacher/read_teaching_staff',
       contentType: "application/json",
       dataType: "json",
       headers: { "Authorization": getCookie('token') },
       success: function success(data) {
         console.log(data);
         if (data.status == 's') {
-          self.section = data.section;
-          self.trigger('read_section_by_standardchanged', data.section);
+          self.employees = data.employees;
+          self.trigger('read_teaching_staff_changed', self.employees);
         } else if (data.status == 'e') {
-          showToast("Events Read Error. Please try again.", data);
+          showToast(" Class Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('delete_class_teacher', function (id) {
+    $.ajax({
+      url: '/class_teacher/delete/' + id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          var tempClassTeachers = self.classTeachers.filter(function (c) {
+            return c.ts_id != id;
+          });
+          self.classTeachers = tempClassTeachers;
+          toastr.info("Class teacher Deleted Successfully");
+          self.trigger('delete_class_teacher_changed', self.classTeachers);
+        } else if (data.status == 'e') {
+          showToast("Error Deleting Class Teacher. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('edit_class_teacher', function (standard_id, section_id, class_teacher, asst_class_teacher, room_no, id) {
+    var req = {};
+    req.standard_id = standard_id;
+    req.section_id = section_id;
+    req.class_teacher = class_teacher;
+    req.asst_class_teacher = asst_class_teacher;
+    req.room_no = room_no;
+    req.id = id;
+    $.ajax({
+      url: '/class_teacher/edit/' + id,
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          self.classTeachers = self.classTeachers.map(function (cat) {
+            if (cat.ts_id == id) {
+              cat.ts_id = id;
+              cat.standard_id = standard_id;
+              cat.section_id = section_id;
+              cat.class_teacher = class_teacher;
+              cat.asst_class_teacher = asst_class_teacher;
+              cat.room_no = room_no;
+            }
+            // cat.confirmEdit = false
+            return cat;
+          });
+          toastr.success("Class Teacher Updated Successfully ");
+          self.trigger('edit_class_teacher_changed', self.classTeachers);
+        } else if (data.status == 'e') {
+          showToast("Error updating classTeachers. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('add_class_teacher', function (standard_id, section_id, class_teacher, asst_class_teacher, room_no) {
+    var req = {};
+    req.standard_id = standard_id;
+    req.section_id = section_id;
+    req.class_teacher = class_teacher;
+    req.asst_class_teacher = asst_class_teacher;
+    req.room_no = room_no;
+    $.ajax({
+      url: '/class_teacher/add',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          console.log('add subject after');
+          var obj = {};
+          obj.ts_id = data.id;
+          obj.standard_id = standard_id;
+          obj.section_id = section_id;
+          obj.class_teacher = class_teacher;
+          obj.asst_class_teacher = asst_class_teacher;
+          obj.room_no = room_no;
+          self.classTeachers = [obj].concat(self.classTeachers);
+          toastr.success("Class teacher Inserserted Successfully ");
+          self.trigger('add_class_teacher_changed', self.classTeachers);
+        } else if (data.status == 'e') {
+          showToast("Invalid Username or password. Please try again.", data);
         }
       },
       error: function error(data) {
@@ -2544,6 +3546,150 @@ function CourseStore() {
           self.trigger('courses_changed', self.courses);
         } else if (data.status == 'e') {
           showToast("Invalid Username or password. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function DepartmentStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.departments = [];
+
+  self.on('read_department', function () {
+    console.log('i am in read_department api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/department/read_department',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.departments = data.departments;
+          self.trigger('departments_changed', data.departments);
+        } else if (data.status == 'e') {
+          showToast("Department Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.employees = [];
+
+  self.on('read_hod', function () {
+    console.log('i am in read_hod api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/department/read_hod',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.employees = data.employees;
+          self.trigger('read_hod_changed', data.employees);
+        } else if (data.status == 'e') {
+          showToast("HOD Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('delete_department', function (id) {
+    $.ajax({
+      url: '/department/delete/' + id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          var tempDepartment = self.departments.filter(function (c) {
+            return c.department_id != id;
+          });
+          self.departments = tempDepartment;
+          self.trigger('departments_changed', self.departments);
+        } else if (data.status == 'e') {
+          showToast("Error Deleting Department. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('edit_department', function (department_name, employee_name, id) {
+    var req = {};
+    req.department_name = department_name;
+    req.employee_name = employee_name;
+    req.id = id;
+    $.ajax({
+      url: '/department/edit/' + id,
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          self.departments = self.departments.map(function (cat) {
+            if (cat.department_id == id) {
+              cat.department_id = id;
+              cat.department_name = department_name;
+              cat.emp_name = employee_name;
+            }
+            // cat.confirmEdit = false
+            return cat;
+          });
+          self.trigger('departments_changed', self.departments);
+        } else if (data.status == 'e') {
+          showToast("Error updating Department. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('add_department', function (department_name, employee_name) {
+    var req = {};
+    req.department_name = department_name;
+    req.employee_name = employee_name;
+    $.ajax({
+      url: '/department/add',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          console.log('add department after');
+          var obj = {};
+          obj.department_id = data.id;
+          obj.department_name = department_name;
+          obj.hod = employee_name;
+          self.departments = [obj].concat(self.departments);
+          self.trigger('departments_changed', self.departments);
+        } else if (data.status == 'e') {
+          showToast("Error adding Department. Please try again.", data);
         }
       },
       error: function error(data) {
@@ -3306,6 +4452,115 @@ function DisciplineReportStore() {
           self.trigger('read_class_wise_report_changed', data.class_wise_case_report, data.grand_total);
         } else if (data.status == 'e') {
           showToast("Categories Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function EmployeeNotificationStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.employees = [];
+
+  self.on('read_staff_departments', function () {
+    console.log('i am in read_departments api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/employee-notification',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          console.log(data.staff_departments);
+          self.trigger('staff_departments_changed', data.staff_departments);
+        } else if (data.status == 'e') {
+          showToast("Staff Department Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_employees', function (emp_type_id) {
+    var req = {};
+    $.ajax({
+      url: '/employee-notification/' + emp_type_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          if (data.employees.length == 0) {
+            toastr.info("No Data Found!");
+          }
+          self.trigger('employees_changed', data.employees);
+        } else if (data.status == 'e') {
+          console.log('Error' + data.error);
+          showToast("Employees Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('send_sms', function (mobile_no, message) {
+    var req = {};
+    req.mobile_no = mobile_no;
+    req.message = message;
+    req.type = 'Employee';
+    $.ajax({
+      url: '/sms/',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('employee_sms_changed');
+        } else if (data.status == 'e') {
+          showToast("Error sending SMS. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('send_email', function (email, employee_subject, employee_message) {
+    var req = {};
+    req.email = email;
+    req.subject = employee_subject;
+    req.message = employee_message;
+    req.type = 'Employee';
+    $.ajax({
+      url: '/email/',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('employee_email_changed');
+        } else if (data.status == 'e') {
+          showToast("Error sending Email. Please try again.", data);
         }
       },
       error: function error(data) {
@@ -4887,6 +6142,183 @@ function FeePlanStore() {
 }
 'use strict';
 
+function FeeReceivedStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.students = [];
+
+  //========= read Fine ========
+  self.on('read_fine', function () {
+    console.log('i am in read_fine api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/receive_fees',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+
+        if (data.status == 's') {
+          self.fines = data.fines;
+          self.trigger('read_fine_changed', data.fines);
+        } else if (data.status == 'e') {
+          showToast("Fine Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //========== read fee slip by students ===
+  self.on('read_fee_plan', function (student_id) {
+    console.log('i am in read fee fee plan api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/receive_fees/read_fee_plan/' + student_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.fee_plans = data.fee_plans;
+          self.trigger('read_fee_plan_changed', data.fee_plans);
+        } else if (data.status == 'e') {
+          showToast("No data found Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //========read_transaction========
+  self.on('read_transaction', function (student_id) {
+    console.log('i am in read Fees Trancation api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/receive_fees/read_transaction/' + student_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+
+        if (data.status == 's') {
+
+          self.transactions = data.transactions;
+          self.trigger('read_transaction_changed', data.transactions);
+        } else if (data.status == 'e') {
+          showToast("No tranaction available.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //=====read student ====
+  self.on('read_student', function (enrol) {
+    console.log('i am in read Student for Receiving Fees api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/receive_fees/read_student/' + enrol,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.students = data.students;
+          self.trigger('read_student_changed', data.students);
+        } else if (data.status == 'e') {
+          showToast("No data found Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //========== read fee slip by students ===
+  self.on('read_fee_slip', function (student_id) {
+    console.log('i am in read fee fee slip api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/receive_fees/read_fee_slip/' + student_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.fee_slips = data.fee_slips;
+          self.trigger('read_feeslip_changed', data.fee_slips);
+        } else if (data.status == 'e') {
+          showToast("No data found Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('add_fees', function (obj) {
+
+    $.ajax({
+      url: '/receive_fees/add',
+      type: "POST",
+      async: false,
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          console.log('success');
+
+          toastr.success("Fee Received Successfully");
+          self.trigger('add_fees_changed');
+        } else if (data.status == 'e') {
+          showToast("Error in Mapping Heads. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('delete_transaction', function (id) {
+    $.ajax({
+      url: '/receive_fees/delete/' + id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          var tempTransaction = self.transactions.filter(function (c) {
+            return c.receipt_id != id;
+          });
+          self.transactions = tempTransaction;
+          toastr.info("transaction Deleted Successfully");
+          self.trigger('delete_transaction_changed', self.transactions);
+        } else if (data.status == 'e') {
+          showToast("Error Deleting Event. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
 function FeeSlipStore() {
   riot.observable(this); // Riot provides our event emitter.
   var self = this;
@@ -4994,6 +6426,446 @@ function FeeSlipStore() {
           self.trigger('slips_changed', self.slips);
         } else if (data.status == 'e') {
           showToast("Error adding Item. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function FeesReportStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  //========= read head wise fees ==========
+  self.headWiseData = [];
+  self.on('read_head_wise_fees', function (obj) {
+    console.log('i am in read head wise fees api call from ajax');
+    var req = {};
+    /* req.start_date=obj.start_date
+     req.end_date=obj.end_date*/
+    $.ajax({
+      url: '/fees_report/read_head_wise_fees/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+
+        if (data.status == 's') {
+          console.log("===================");
+          console.log(data.headWiseData);
+          self.headWiseData = data.headWiseData;
+          self.trigger('read_head_wise_changed', data.headWiseData);
+        } else if (data.status == 'e') {
+          showToast("data read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //========= read un assigned students ============
+  self.on('read_no_scheme', function () {
+    console.log('i am in read_no_scheme api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/fees_report/read_un_assigned',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.students = data.students;
+          self.trigger('read_no_scheme_changed', data.students);
+        } else if (data.status == 'e') {
+          showToast("students Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //========= read session wise fees plan (scheme)==
+
+  self.on('read_session_scheme', function (session_id) {
+    console.log('i am in  read_session_scheme api call from ajax');
+    $.ajax({
+      url: '/fees_report/read_session_scheme/' + session_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.schemes = data.schemes;
+          self.trigger('read_session_scheme_changed', data.schemes, data.grand_total);
+        } else if (data.status == 'e') {
+          showToast("Error in reading data. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //========== read Issued Letter =============
+
+  self.on('read_issued_fees_letter', function (month_id) {
+    console.log('i am in  read_issued_fees_letter api call from ajax');
+    console.log("id =" + month_id);
+    $.ajax({
+      url: '/fees_report/read_issued_fees_letter/' + month_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.letter_students = data.letter_students;
+          self.trigger('read_fees_letter_changed', data.letter_students);
+        } else if (data.status == 'e') {
+          showToast("Error in reading data. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //============== read assigned students =========
+  self.on('read_assigned_students', function (fee_plan_id) {
+    console.log('i am in  read_assigned_students api call from ajax');
+    console.log("id =" + fee_plan_id);
+    $.ajax({
+      url: '/fees_report/read_assigned_students/' + fee_plan_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.assignedStudents = data.assignedStudents;
+          self.trigger('read_assigned_student_changed', data.assignedStudents);
+        } else if (data.status == 'e') {
+          showToast("Error in reading data. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //======= read datewise fees ===============
+  self.dateWiseData = [];
+  self.on('read_date_wise_fees', function (obj) {
+    console.log('i am in read date wise fees api call from ajax');
+    var req = {};
+    /* req.start_date=obj.start_date
+     req.end_date=obj.end_date*/
+    $.ajax({
+      url: '/fees_report/read_date_wise_fees/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.dateWiseData = data.dateWiseData;
+          self.trigger('read_date_fees_changed', data.dateWiseData);
+        } else if (data.status == 'e') {
+          showToast("data read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //=========== read early fees ========
+
+
+  self.scholarships = [];
+  self.on('read_early_fees_payer', function (obj) {
+    console.log('i am in read advanceFees fees api call from ajax');
+    var req = {};
+    /* req.start_date=obj.start_date
+     req.end_date=obj.end_date*/
+    $.ajax({
+      url: '/fees_report/read_early_fees_payer/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.advanceFees = data.advanceFees;
+          self.trigger('read_advanced_fees_changed', data.advanceFees);
+        } else if (data.status == 'e') {
+          showToast("data read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //======= read scholarship list ========
+
+  self.scholarships = [];
+  self.on('read_scholarship_list', function (obj) {
+    console.log('i am in read scholarship fees api call from ajax');
+    var req = {};
+    /* req.start_date=obj.start_date
+     req.end_date=obj.end_date*/
+    $.ajax({
+      url: '/fees_report/getScholarshipList/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.scholarships = data.scholarships;
+          self.trigger('read_scholarship_list_changed', data.scholarships);
+        } else if (data.status == 'e') {
+          showToast("data read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //=========== read fees collection summary ======
+  self.collectionSummary = [];
+  self.on('read_collection_summary', function (obj) {
+    console.log("path");
+    console.log(obj);
+    console.log("-------path----");
+    $.ajax({
+      url: '/fees_report/read_collection_summary',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log("---=======---collection=======-----======");
+        console.log(data);
+        console.log("---=======---=======-----======");
+        if (data.status == 's') {
+          self.collectionSummary = data.collectionSummary;
+          self.trigger('read_collection_summary_changed', data.collectionSummary);
+        } else if (data.status == 'e') {
+          showToast("Error in reading data. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //============ read month wise fees============
+  self.monthlyData = [];
+  self.on('read_monthly_fees', function (obj) {
+    console.log('i am in read monthly fees api call from ajax');
+    var req = {};
+    /* req.start_date=obj.start_date
+     req.end_date=obj.end_date*/
+    $.ajax({
+      url: '/fees_report/read_monthly_fees/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.monthlyData = data.monthlyData;
+          self.trigger('read_monthly_fees_changed', data.monthlyData);
+        } else if (data.status == 'e') {
+          showToast("data read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //============ read outstanding by date ==========
+
+  self.outstandingData = [];
+  self.on('read_outstanding_fees', function (obj) {
+    console.log('i am in read outstanding fees api call from ajax');
+    var req = {};
+    /* req.start_date=obj.start_date
+     req.end_date=obj.end_date*/
+    $.ajax({
+      url: '/fees_report/read_outstanding_fees/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log("--=000---");
+        console.log(data);
+        if (data.status == 's') {
+          self.outstandingData = data.outstandingData;
+          self.trigger('read_outstanding_fees_changed', data.outstandingData);
+        } else if (data.status == 'e') {
+          showToast("data read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //============ read outstanding by class ==========
+
+  self.on('read_outstanding_classwise', function (obj) {
+    $.ajax({
+      url: '/fees_report/read_outstanding_classwise',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.outstandingFees = data.outstandingFees;
+          self.trigger('read_outstanding_classwise_changed', data.outstandingFees);
+        } else if (data.status == 'e') {
+          showToast("Error in reading data. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //=============== read estimated fees =============
+
+  self.on('read_estimated_fees', function (obj) {
+    $.ajax({
+      url: '/fees_report/read_estimated_fees',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log("---=======---=======-----======");
+        console.log(data);
+        console.log("---=======---=======-----======");
+        if (data.status == 's') {
+          self.estimatedFees = data.estimatedFees;
+          self.trigger('read_bank_wise_changed', data.estimatedFees);
+        } else if (data.status == 'e') {
+          showToast("Error in reading data. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //======= read bank wise fees ==============
+  self.on('read_bank_wise_fees', function (obj) {
+    $.ajax({
+      url: '/fees_report/read_bank_wise_fees',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+
+        console.log("---=======---=======-----======");
+        if (data.status == 's') {
+          self.bankWiseFees = data.bankWiseFees;
+          self.trigger('read_bank_wise_changed', data.bankWiseFees);
+        } else if (data.status == 'e') {
+          showToast("Error in reading data. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //========read banks===========
+  self.on('read_banks', function () {
+    console.log('i am in banks api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/fees_report/read_banks',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          self.banks = data.banks;
+          self.trigger('read_bank_changed', data.banks);
+        } else if (data.status == 'e') {
+          showToast("bank list Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //======= read modes =======  
+  self.on('read_mode', function () {
+    console.log('i am in mode api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/fees_report/read_mode',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          self.modes = data.modes;
+          self.trigger('read_mode_changed', data.modes);
+        } else if (data.status == 'e') {
+          showToast("mode list Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.dailyFees = [];
+
+  self.on('read_daily_fees', function (obj) {
+    console.log('i am in read daily fees api call from ajax');
+    var req = {};
+    /* req.start_date=obj.start_date
+     req.end_date=obj.end_date*/
+    $.ajax({
+      url: '/fees_report/read_daily_fees/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.dailyFees = data.dailyFees;
+          self.trigger('read_monthly_fees_changed', data.dailyFees);
+        } else if (data.status == 'e') {
+          showToast("Categories Read Error. Please try again.", data);
         }
       },
       error: function error(data) {
@@ -5215,6 +7087,259 @@ function GradeStore() {
         } else if (data.status == 'e') {
           showToast("Error Deleting Grade. Please try again.", data);
         }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function IdCardStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.on('read_standard', function () {
+    var req = {};
+    $.ajax({
+      url: '/id_card/read_standard/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.standards = data.standards;
+          self.trigger('read_standard_changed', data.standards);
+        } else if (data.status == 'e') {
+          showToast("Standard Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_section', function () {
+    var req = {};
+    $.ajax({
+      url: '/id_card/read_section/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.sections = data.sections;
+          self.trigger('read_section_changed', data.sections);
+        } else if (data.status == 'e') {
+          showToast("Section Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_student', function (standard_id, section_id) {
+    console.log(standard_id);
+    console.log(section_id);
+    var req = {};
+    req.standard_id = standard_id;
+    req.section_id = section_id;
+    $.ajax({
+      url: '/id_card/read_student/' + standard_id + '/' + section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.students = data.students;
+          self.trigger('read_student_changed', data.students);
+        } else if (data.status == 'e') {
+          showToast("Student Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_id_card', function (student_id) {
+    console.log(student_id);
+    var req = {};
+    req.student_id = student_id;
+    $.ajax({
+      url: '/id_card/read_id_card/' + student_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.students = data.students;
+          self.trigger('read_id_card_changed', data.students_id_card_details);
+        } else if (data.status == 'e') {
+          showToast("Student Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function IdSignatureStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.epmloyee_card_setup = [];
+
+  self.on('read_signature', function () {
+    var req = {};
+    $.ajax({
+      url: '/id_signature/read_signature/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.signature = data.signature;
+          self.trigger('read_signature_changed', data.signature);
+        } else if (data.status == 'e') {
+          showToast("Standard Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('add_signature', function (type) {
+    var req = {};
+    req.type = type;
+    $.ajax({
+      url: '/id_signature/add_signature',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          console.log('add item after');
+          toastr.success("Data Inserserted Successfully ");
+          self.trigger('add_signature_changed', self.signature, data.type);
+        } else if (data.status == 'e') {
+          showToast("Error adding Signature. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('edit_signature', function (type, old_type) {
+    var req = {};
+    req.type = type;
+    req.old_type = old_type;
+    $.ajax({
+      url: '/id_signature/edit_signature/' + type + '/' + old_type,
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Data Updated Successfully ");
+          self.trigger('edit_signature_changed', self.signature, data.type);
+        } else if (data.status == 'e') {
+          showToast("Error Updateing Signature. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('delete_signature', function (type) {
+    var req = {};
+    req.type = type;
+    $.ajax({
+      url: '/id_signature/delete_signature/' + type,
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Data Deleted Successfully ");
+          self.trigger('delete_signature_changed');
+        } else if (data.status == 'e') {
+          showToast("Error Deleting Signature. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('active_signature', function (type) {
+    var req = {};
+    req.type = type;
+    $.ajax({
+      url: '/id_signature/active_signature/' + type,
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Data Updated Successfully ");
+          self.trigger('active_signature_changed', data.active_signature);
+        } else if (data.status == 'e') {
+          showToast("Error Updateing Signature. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('upload_signature_image', function (signature_image, type) {
+    var form_data = new FormData();
+    form_data.append("signature_picture", signature_image);
+    $.ajax({
+      url: '/id_signature/upload_signature_image/signature/' + type,
+      type: "POST",
+      dataType: 'script',
+      processData: false,
+      contentType: false,
+      data: form_data,
+      headers: { "Authorization": getCookie('token') },
+      success: function success(image_name) {
+        console.log(image_name);
+        self.trigger('upload_signature_image_changed', image_name);
       },
       error: function error(data) {
         showToast("", data);
@@ -5783,6 +7908,30 @@ function InventoryIssueStore() {
       }
     });
   });
+  self.on('read_inventory_returnable_item', function (id, type) {
+    console.log("item_id");
+    console.log(id);
+    //console.log('i am in stock api call from ajax')
+    var req = {};
+    $.ajax({
+      url: '/inventory_issue/read_returnable/' + id + '/' + type,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.inventoryReturnableGoods = data.inventoryReturnableGoods;
+          self.trigger('read_inventory_returnable_changed', data.inventoryReturnableGoods);
+        } else if (data.status == 'e') {
+          showToast("Item Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
 
   //read available Item Quantity
 
@@ -5901,6 +8050,60 @@ function InventoryIssueStore() {
           self.inventoryIssues = [obj].concat(self.inventoryIssues);
           toastr.success("Issue Item Inserserted Successfully ");
           self.trigger('add_inventory_issue_changed', self.inventoryIssues);
+        } else if (data.status == 'e') {
+          showToast("Error adding Issue Item. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // add Retun goods
+
+  self.on('add_inventory_return_goods', function (obj, return_date, return_to, return_quantity, remark) {
+    var req = {};
+    req.obj = obj, req.return_date = return_date, req.return_to = return_to, req.return_quantity = return_quantity, req.remark = remark,
+    /* req.issue_type=issue_type,
+     req.issue_to=issue_to,
+     req.staff_id=staff_id,
+     req.available_quantity=available_quantity,
+     req.issue_quantity=issue_quantity,
+     req.unit_id=unit_id,
+     req.purpose=purpose,
+     req.rack_id=rack_id,*/
+    $.ajax({
+      url: '/inventory_issue/add_inventory_return_goods',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          console.log('add Retun goods after');
+          var _obj = {};
+          _obj.return_date = return_date, _obj.return_to = return_to, _obj.return_quantity = return_quantity, _obj.remark = remark,
+          /*obj.issue_id=data.issue_id
+          obj.issue_date=issue_date,
+          obj.category_id=category_id,
+          obj.sub_category_id=sub_category_id,
+          obj.item_id=item_id,
+          obj.return_type=return_type,
+          obj.issue_type=issue_type,
+          obj.issue_to=issue_to,
+          obj.staff_id=staff_id,
+          obj.available_quantity=available_quantity,
+          obj.issue_quantity=issue_quantity,
+          obj.unit_id=unit_id,
+          obj.purpose=purpose,
+          obj.rack_id=rack_id,*/
+          // obj.category_id = category_id
+          self.inventoryReturnableGoods = [_obj].concat(self.inventoryReturnableGoods);
+          toastr.success("Issue Item Inserserted Successfully ");
+          self.trigger('add_inventory_issue_changed', self.inventoryReturnableGoods);
         } else if (data.status == 'e') {
           showToast("Error adding Issue Item. Please try again.", data);
         }
@@ -6154,6 +8357,269 @@ function InventoryRackStore() {
           self.trigger('inventoryRack_changed', self.inventoryRacks);
         } else if (data.status == 'e') {
           showToast("Error adding Item. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function InventoryReportStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.receivedFromArray = [];
+
+  self.on('read_inventory_received_from', function () {
+    console.log('i am in recievd Form api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/inventory_report/read_received_from',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.receivedFromArray = data.receivedFromArray;
+          self.trigger('read_inventory_received_from_changed', data.receivedFromArray);
+        } else if (data.status == 'e') {
+          showToast("Received From Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //read received goods
+  self.on('read_inventory_received_goods_report', function (received_from, start_date, end_date) {
+    console.log('i am in recievd Form api call from ajax');
+    var req = {};
+    $.ajax({
+
+      url: '/inventory_report/read_inventory_received_goods_report/' + received_from + '/' + start_date + '/' + end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.inventoryReceivedGoodsReports = data.inventoryReceivedGoodsReports;
+          self.trigger('read_inventory_received_goods_report_changed', data.inventoryReceivedGoodsReports);
+        } else if (data.status == 'e') {
+          showToast("Received From Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // read issued goods
+
+  self.on('read_inventory_issued_goods_report', function (issue_type, start_date, end_date) {
+    console.log('i am in issued goods  api call from ajax');
+    var req = {};
+    $.ajax({
+      // url:'/inventory_issue/'+id+'/'+type,
+      url: '/inventory_report/read_inventory_issued_goods_report/' + issue_type + '/' + start_date + '/' + end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.inventoryIssuedGoodsReports = data.inventoryIssuedGoodsReports;
+          self.trigger('read_inventory_issued_goods_report_changed', data.inventoryIssuedGoodsReports);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //read Issued Person
+
+  self.on('read_inventory_issue_to', function (issue_type) {
+    console.log('i am in issue to Form api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/inventory_report/read_inventory_issue_to/' + issue_type,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.issuedPersons = data.issuedPersons;
+          self.trigger('read_inventory_issue_to_changed', data.issuedPersons);
+        } else if (data.status == 'e') {
+          showToast("data read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // read issued goods person wise
+
+  self.on('read_inventory_person_wise_issued_goods_report', function (issue_type, issue_to, start_date, end_date) {
+    console.log('i am in issued goods  api call from ajax');
+    var req = {};
+    $.ajax({
+      // url:'/inventory_issue/'+id+'/'+type,
+      url: '/inventory_report/read_inventory_person_wise_issued_goods_report/' + issue_type + '/' + issue_to + '/' + start_date + '/' + end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.inventoryPersonWiseIssuedGoodsReports = data.inventoryPersonWiseIssuedGoodsReports;
+          self.trigger('read_inventory_person_wise_issued_goods_report_changed', data.inventoryPersonWiseIssuedGoodsReports);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //read category wise inventory item
+
+  self.inventoryItems = [];
+
+  self.on('read_inventory_item', function (category_id) {
+    console.log('i am in recievd Form api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/inventory_report/read_inventory_item/' + category_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.inventoryItems = data.inventoryItems;
+          self.trigger('read_inventory_item_changed', data.inventoryItems);
+        } else if (data.status == 'e') {
+          showToast("inventory Item Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // read issued goods Item wise
+
+  self.on('read_inventory_item_wise_issued_goods_report', function (category_id, item_id, start_date, end_date) {
+    console.log('i am in issued goods  api call from ajax');
+    var req = {};
+    $.ajax({
+      // url:'/inventory_issue/'+id+'/'+type,
+      url: '/inventory_report/read_inventory_item_wise_issued_goods_report/' + category_id + '/' + item_id + '/' + start_date + '/' + end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.inventoryItemWiseIssuedGoodsReports = data.inventoryItemWiseIssuedGoodsReports;
+          self.trigger('read_inventory_item_wise_issued_goods_report_changed', data.inventoryItemWiseIssuedGoodsReports);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // read Sale goods Item wise
+
+  self.on('read_inventory_sale_goods_report', function (start_date, end_date) {
+    console.log('i am in sale goods  api call from ajax');
+    var req = {};
+    $.ajax({
+      // url:'/inventory_issue/'+id+'/'+type,
+      url: '/inventory_report/read_inventory_sale_goods_report/' + start_date + '/' + end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.inventorySaleGoodsReports = data.inventorySaleGoodsReports;
+          self.trigger('read_inventory_sale_goods_report_changed', data.inventorySaleGoodsReports);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // read Return goods Item wise
+
+  self.on('read_inventory_return_goods_report', function (start_date, end_date) {
+    console.log('i am in return goods  api call from ajax');
+    var req = {};
+    $.ajax({
+      // url:'/inventory_issue/'+id+'/'+type,
+      url: '/inventory_report/read_inventory_return_goods_report/' + start_date + '/' + end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.inventoryReturnGoodsReports = data.inventoryReturnGoodsReports;
+          self.trigger('read_inventory_return_goods_report_changed', data.inventoryReturnGoodsReports);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // read Inventory Summary report
+
+  self.on('read_inventory_summary_report', function (start_date, end_date) {
+    console.log('i am in return goods  api call from ajax');
+    var req = {};
+    $.ajax({
+      // url:'/inventory_issue/'+id+'/'+type,
+      url: '/inventory_report/read_inventory_summary_report/' + start_date + '/' + end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.inventorySummaryReports = data.inventorySummaryReports;
+          self.trigger('read_inventory_summary_report_changed', data.inventorySummaryReports);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
         }
       },
       error: function error(data) {
@@ -10251,6 +12717,410 @@ function StaffInfirmaryStore() {
 }
 'use strict';
 
+function StaffStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  /*self.on('read_cast', function() {
+    let req = {}
+    $.ajax({
+      url:'/student/read_cast/',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.cast = data.cast
+            self.trigger('read_cast_changed', data.cast)
+          }else if(data.status == 'e'){
+            showToast("Cast Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+    self.on('read_religion', function() {
+    let req = {}
+    $.ajax({
+      url:'/student/read_religion/',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.religion = data.religion
+            self.trigger('read_religion_changed', data.religion)
+          }else if(data.status == 'e'){
+            showToast("Religion Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })*/
+
+  /*self.on('read_student', function(read_standard_id,read_section_id,read_enroll_number) {
+    console.log(read_standard_id)
+    console.log(read_section_id)
+    console.log(read_enroll_number)
+    let req = {}
+    req.read_standard_id=read_standard_id
+    req.read_section_id=read_section_id
+    req.read_enroll_number=read_enroll_number
+    $.ajax({
+      url:'/student/read_student/'+read_standard_id+'/'+read_section_id+'/'+read_enroll_number,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.students = data.students
+            self.trigger('read_student_changed', data.students)
+          }else if(data.status == 'e'){
+            showToast("Student Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })*/
+
+  self.on('read_for_edit_staff', function (emp_id) {
+    console.log(emp_id);
+    var req = {};
+    req.emp_id = emp_id;
+
+    $.ajax({
+      url: '/staff/read_for_edit_staff/' + emp_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.staff_details = data.staff_details;
+          self.trigger('read_for_edit_staff_changed', data.staff_details);
+        } else if (data.status == 'e') {
+          showToast("Student Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //read Staff
+  var Staffs = [];
+  self.on('read_staff', function (employee_type_id, department_id, designation_id, level_id) {
+    console.log('i am in staff Form api call from ajax');
+    var req = {};
+    $.ajax({
+
+      url: '/staff/read_staff/' + employee_type_id + '/' + department_id + '/' + designation_id + '/' + level_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.staffs = data.staffs;
+          self.trigger('read_staff_changed', data.staffs);
+        } else if (data.status == 'e') {
+          showToast("Received From Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_department', function () {
+    var req = {};
+    $.ajax({
+      url: '/staff/read_department',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.departments = data.departments;
+          self.trigger('department_changed', data.departments);
+        } else if (data.status == 'e') {
+          showToast("departments Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('add_staff', function (obj) {
+    console.log(obj);
+    // return;
+    $.ajax({
+      url: '/staff/add_staff',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          console.log('add Staff after');
+          toastr.success("Successfully Inserted");
+          self.trigger('add_staff_changed', self.staffs, data.staff_id);
+        } else if (data.status == 'e') {
+          showToast("Error adding Staff. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  /*self.on('edit_student', function(obj,student_id) {
+    let req = {}
+    console.log(obj)
+    console.log(student_id)
+    req.student_id=student_id
+    $.ajax({
+      url:'/student/edit_student/'+student_id,
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully Update")
+            self.trigger('edit_student_changed', self.students)
+          }else if(data.status == 'e'){
+            showToast("Error Updating Student. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })*/
+
+  // read Ex-staff
+  self.on('read_ex_staff', function (emp_type_id) {
+    var req = {};
+    $.ajax({
+      url: '/staff/read_ex_staff/' + emp_type_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.exStaffs = data.exStaffs;
+          self.trigger('read_ex_staff_changed', self.exStaffs);
+        } else if (data.status == 'e') {
+          showToast("Staff Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // read Browse-staff
+  self.on('read_browse_staff', function (emp_type_id) {
+    var req = {};
+    $.ajax({
+      url: '/staff/read_browse_staff/' + emp_type_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.browseStaffs = data.browseStaffs;
+          self.trigger('read_browse_staff_changed', self.browseStaffs);
+        } else if (data.status == 'e') {
+          showToast("Staff Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('edit_staff', function (obj, staff_id) {
+    var req = {};
+    console.log(obj);
+    console.log(staff_id);
+    req.staff_id = staff_id;
+    $.ajax({
+      url: '/staff/edit_staff/' + staff_id,
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Successfully Update");
+          self.trigger('edit_staff_changed', self.staffs);
+        } else if (data.status == 'e') {
+          showToast("Error Updating staff. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  self.on('update_staff_status', function (emp_id, leaving_date, remark) {
+    var req = {};
+    req.emp_id = emp_id;
+    req.leaving_date = leaving_date;
+    req.remark = remark;
+    $.ajax({
+      url: '/staff/update_staff_status',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Successfully Update");
+          self.trigger('update_staff_status_changed');
+        } else if (data.status == 'e') {
+          showToast("Error Updating staff. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // delete Staff
+
+  self.on('delete_staff', function (id) {
+    $.ajax({
+      url: '/staff/delete/' + id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          var tempStaffs = self.staffs.filter(function (c) {
+            return c.emp_id != id;
+          });
+          self.staffs = tempStaffs;
+          toastr.info("Staff Deleted Successfully");
+          self.trigger('delete_staff_changed', self.staffs);
+        } else if (data.status == 'e') {
+          showToast("Error Deleting Staff. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //allow Block staff 
+
+  self.on('allow_block_staff', function (emp_id, is_active) {
+    var req = {};
+    req.emp_id = emp_id;
+    req.is_active = is_active;
+
+    $.ajax({
+      url: '/staff/allow_block_staff',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Successfully Update");
+          self.trigger('allow_block_staff_changed');
+        } else if (data.status == 'e') {
+          showToast("Error Updating staff. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  self.on('reset_staff_password', function (emp_id) {
+    var req = {};
+    req.emp_id = emp_id;
+    // req.password=password
+
+    $.ajax({
+      url: '/staff/reset_staff_password',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Successfully Update");
+          self.trigger('reset_staff_password_changed');
+        } else if (data.status == 'e') {
+          showToast("Error Updating staff. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('upload_staff_image', function (staff_image, staff_id) {
+    var form_data = new FormData();
+    form_data.append("staff_profile_picture", staff_image);
+    $.ajax({
+      url: '/staff/upload_staff_image/staff/' + staff_id,
+      type: "POST",
+      dataType: 'script',
+      processData: false,
+      contentType: false,
+      data: form_data,
+      headers: { "Authorization": getCookie('token') },
+      success: function success(image_name) {
+        console.log(image_name);
+        self.trigger('upload_staff_image_changed', image_name);
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
 function StandardStore() {
   riot.observable(this); // Riot provides our event emitter.
   var self = this;
@@ -11714,6 +14584,82 @@ function StudentInfirmaryStore() {
 }
 'use strict';
 
+function StudentInfoUpdateStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.on('read_standard', function () {
+    var req = {};
+    $.ajax({
+      url: '/student_info_update/read_standard/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.standards = data.standards;
+          self.trigger('read_standard_changed', data.standards);
+        } else if (data.status == 'e') {
+          showToast("Standard Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_section', function () {
+    var req = {};
+    $.ajax({
+      url: '/student_info_update/read_section/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.sections = data.sections;
+          self.trigger('read_section_changed', data.sections);
+        } else if (data.status == 'e') {
+          showToast("Section Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_student_info_update', function (read_section_id, read_enroll_number) {
+    console.log(read_section_id);
+    console.log(read_enroll_number);
+    var req = {};
+    req.read_section_id = read_section_id;
+    req.read_enroll_number = read_enroll_number;
+    $.ajax({
+      url: '/student_info_update/read_student_info_update/' + read_section_id + '/' + read_enroll_number,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.students = data.students;
+          self.trigger('read_student_info_update_changed', data.students);
+        } else if (data.status == 'e') {
+          showToast("Student Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
 function StudentLoginSlipStore() {
   riot.observable(this); // Riot provides our event emitter.
   var self = this;
@@ -11908,6 +14854,140 @@ function StudentLoginSlipStore() {
           self.trigger('generate_id_changed');
         } else if (data.status == 'e') {
           showToast("Error generating ID. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function StudentNotificationStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.students = [];
+
+  self.on('read_standard', function () {
+    var req = {};
+    $.ajax({
+      url: '/student-notification/read_standard/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.standards = data.standards;
+          self.trigger('read_standard_changed', data.standards);
+        } else if (data.status == 'e') {
+          showToast("Standard Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_section', function () {
+    var req = {};
+    $.ajax({
+      url: '/student-notification/read_section/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.sections = data.sections;
+          self.trigger('read_section_changed', data.sections);
+        } else if (data.status == 'e') {
+          showToast("Section Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_students', function (obj) {
+    console.log('i am in read_students api call from ajax');
+    var req = {};
+    console.log(obj.course);
+    req.standard_id = obj.standard_id;
+    req.section_id = obj.section_id;
+    $.ajax({
+      url: '/student-notification/read_student/' + obj.standard_id + '/' + obj.section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.students = data.students;
+          if (data.students.length == 0) {
+            toastr.info("No Data Found!");
+          }
+          self.trigger('students_changed', data.students);
+        } else if (data.status == 'e') {
+          showToast("Student Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('send_sms', function (mobile_no, student_message) {
+    var req = {};
+    req.mobile_no = mobile_no;
+    req.message = student_message;
+    req.type = 'Student';
+    $.ajax({
+      url: '/sms/',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('student_sms_changed');
+        } else if (data.status == 'e') {
+          showToast("Error sending SMS. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('send_email', function (email, student_subject, student_message) {
+    var req = {};
+    req.email = email;
+    req.subject = student_subject;
+    req.message = student_message;
+    req.type = 'Student';
+    $.ajax({
+      url: '/email/',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('student_email_changed');
+        } else if (data.status == 'e') {
+          showToast("Error sending Email. Please try again.", data);
         }
       },
       error: function error(data) {
@@ -12124,6 +15204,118 @@ function StudentSchoolLeavingStore() {
 }
 'use strict';
 
+function StudentSearchStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.on('read_by_field', function (roll_no, student_name, reg_number, f_name, m_name) {
+    var req = {};
+    req.roll_no = roll_no;
+    req.student_name = student_name;
+    req.reg_number = reg_number;
+    req.f_name = f_name;
+    req.m_name = m_name;
+    $.ajax({
+      url: '/studentSearch/read_by_field',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.searchStudents = data.searchStudents;
+          toastr.success("Successfully Inserted");
+          self.trigger('read_by_field_change', self.searchStudents);
+        } else if (data.status == 'e') {
+          showToast("Error search Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //student Browser Data
+
+  self.on('read_student_browser', function (standard_id, section_id) {
+    var req = {};
+    req.standard_id = standard_id;
+    req.section_id = section_id;
+    $.ajax({
+      url: '/studentSearch/read_student_browser',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.browseStudents = data.browseStudents;
+          toastr.success("Successfully Inserted");
+          self.trigger('read_student_browser_change', self.browseStudents);
+        } else if (data.status == 'e') {
+          showToast("Error search Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //read Student Family Occupation
+  self.on('read_occupation', function () {
+    var req = {};
+    $.ajax({
+      url: '/studentSearch/read_occupation/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.parentOccupations = data.parentOccupations;
+          self.trigger('read_occupation_changed', data.parentOccupations);
+        } else if (data.status == 'e') {
+          showToast("Occuaption Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //Read Occupation Report
+
+  self.on('read_occupation_report', function (occupation) {
+    var req = {};
+    $.ajax({
+      url: '/studentSearch/read_occupation_report/' + occupation,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.occupationReports = data.occupationReports;
+          self.trigger('read_occupation_report_change', data.occupationReports);
+        } else if (data.status == 'e') {
+          showToast("Occuaption Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
 function StudentStore() {
   riot.observable(this); // Riot provides our event emitter.
   var self = this;
@@ -12291,9 +15483,34 @@ function StudentStore() {
     });
   });
 
+  self.on('read_student_profile', function (student_id) {
+    console.log(student_id);
+    var req = {};
+    req.student_id = student_id;
+
+    $.ajax({
+      url: '/student/read_student_profile/' + student_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.student_profile_details = data.student_profile_details;
+          self.trigger('read_student_profile_changed', data.student_profile_details);
+        } else if (data.status == 'e') {
+          showToast("Student Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
   self.on('add_student', function (obj) {
     $.ajax({
-      url: '/student/add',
+      url: '/student/add_student',
       type: "POST",
       data: JSON.stringify(obj),
       contentType: "application/json",
@@ -12304,10 +15521,246 @@ function StudentStore() {
         if (data.status == 's') {
           console.log('add Student after');
           toastr.success("Successfully Inserted");
-          self.trigger('add_student_changed', self.students);
+          self.trigger('add_student_changed', self.students, data.student_id);
         } else if (data.status == 'e') {
           showToast("Error adding Student. Please try again.", data);
         }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('edit_student', function (obj, student_id) {
+    var req = {};
+    console.log(obj);
+    console.log(student_id);
+    req.student_id = student_id;
+    $.ajax({
+      url: '/student/edit_student/' + student_id,
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Successfully Update");
+          self.trigger('edit_student_changed', self.students);
+        } else if (data.status == 'e') {
+          showToast("Error Updating Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('create_student_withdraw', function (obj, student_id) {
+    /*let req = {}*/
+    console.log(obj);
+    console.log(student_id);
+    /*req.student_id=student_id*/
+    $.ajax({
+      url: '/student/create_student_withdraw/' + student_id,
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Successfully Withdraw Student");
+          self.trigger('create_student_withdraw_changed', self.withdraw_students);
+        } else if (data.status == 'e') {
+          showToast("Error Updating Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('delete_student', function (student_id) {
+    console.log(student_id);
+    var req = {};
+    req.student_id = student_id;
+    console.log(req.student_id);
+    $.ajax({
+      url: '/student/delete_student/' + student_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          var tempstudents = self.students.filter(function (c) {
+            return c.student_id != student_id;
+          });
+          self.students = tempstudents;
+          self.trigger('delete_student_changed', self.students);
+        } else if (data.status == 'e') {
+          showToast("Error Deleting Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('regenerate_roll_no', function (read_section_id) {
+    var req = {};
+    console.log(read_section_id);
+    req.read_section_id = read_section_id;
+    $.ajax({
+      url: '/student/regenerate_roll_no/' + read_section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Successfully Regenerate Roll No");
+          self.trigger('regenerate_roll_no_changed', self.students);
+        } else if (data.status == 'e') {
+          showToast("Error Updating Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('student_list', function (read_section_id) {
+    var req = {};
+    console.log(read_section_id);
+    req.read_section_id = read_section_id;
+    $.ajax({
+      url: '/student/student_list/' + read_section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('student_list_changed', data.student_list, data.total);
+        } else if (data.status == 'e') {
+          showToast("Error Listing Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('print_list', function (read_standard_id, read_section_id) {
+    var req = {};
+    console.log(read_section_id);
+    req.read_standard_id = read_standard_id;
+    req.read_section_id = read_section_id;
+    $.ajax({
+      url: '/student/print_list/' + read_standard_id + '/' + read_section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('print_list_changed', data.print_list);
+        } else if (data.status == 'e') {
+          showToast("Error Listing Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('upload_student_image', function (student_image, student_id) {
+    var form_data = new FormData();
+    form_data.append("student_profile_picture", student_image);
+    $.ajax({
+      url: '/student/upload_student_image/student/' + student_id,
+      type: "POST",
+      dataType: 'script',
+      processData: false,
+      contentType: false,
+      data: form_data,
+      headers: { "Authorization": getCookie('token') },
+      success: function success(image_name) {
+        console.log(image_name);
+        self.trigger('upload_student_image_changed', image_name);
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('upload_father_image', function (father_image, student_id) {
+    var form_data = new FormData();
+    form_data.append("father_profile_picture", father_image);
+    $.ajax({
+      url: '/student/upload_father_image/father/' + student_id,
+      type: "POST",
+      dataType: 'script',
+      processData: false,
+      contentType: false,
+      data: form_data,
+      headers: { "Authorization": getCookie('token') },
+      success: function success(image_name) {
+        console.log(image_name);
+        self.trigger('upload_father_image_changed', image_name);
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('upload_mother_image', function (mother_image, student_id) {
+    var form_data = new FormData();
+    form_data.append("mother_profile_picture", mother_image);
+    $.ajax({
+      url: '/student/upload_mother_image/mother/' + student_id,
+      type: "POST",
+      dataType: 'script',
+      processData: false,
+      contentType: false,
+      data: form_data,
+      headers: { "Authorization": getCookie('token') },
+      success: function success(image_name) {
+        console.log(image_name);
+        self.trigger('upload_mother_image_changed', image_name);
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('upload_guardian_image', function (guardian_image, student_id) {
+    var form_data = new FormData();
+    form_data.append("guardian_profile_picture", guardian_image);
+    $.ajax({
+      url: '/student/upload_guardian_image/guardian/' + student_id,
+      type: "POST",
+      dataType: 'script',
+      processData: false,
+      contentType: false,
+      data: form_data,
+      headers: { "Authorization": getCookie('token') },
+      success: function success(image_name) {
+        console.log(image_name);
+        self.trigger('upload_guardian_image_changed', image_name);
       },
       error: function error(data) {
         showToast("", data);
@@ -12411,6 +15864,132 @@ function StudentWithdrawnStudentStore() {
           self.trigger('cancle_withdraw_students_changed');
         } else if (data.status == 'e') {
           showToast("Error while free up students. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
+function SubjectStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.subjects = [];
+
+  self.on('read_subject', function () {
+    console.log('i am in suject api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/subject/read_subject',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.subjects = data.subjects;
+          self.trigger('read_subject_changed', data.subjects);
+        } else if (data.status == 'e') {
+          showToast(" Subject Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('delete_subject', function (id) {
+    $.ajax({
+      url: '/subject/delete/' + id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          var tempSubjects = self.subjects.filter(function (c) {
+            return c.subject_id != id;
+          });
+          self.subjects = tempSubjects;
+          toastr.info("Subject Deleted Successfully");
+          self.trigger('delete_subject_changed', self.subjects);
+        } else if (data.status == 'e') {
+          showToast("Error Deleting Subject. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('edit_subject', function (subject_name, subject_short_name, department_id, id) {
+    var req = {};
+    req.subject_name = subject_name;
+    req.subject_short_name = subject_short_name;
+    req.department_id = department_id;
+    req.id = id;
+    $.ajax({
+      url: '/subject/edit/' + id,
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          self.subjects = self.subjects.map(function (cat) {
+            if (cat.subject_id == id) {
+              cat.subject_id = id;
+              cat.subject_name = subject_name;
+              cat.subject_short_name = subject_short_name;
+              cat.department_id = department_id;
+            }
+            // cat.confirmEdit = false
+            return cat;
+          });
+          toastr.success("Subject Updated Successfully ");
+          self.trigger('edit_subject_changed', self.subjects);
+        } else if (data.status == 'e') {
+          showToast("Error updating subjects. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('add_subject', function (subject_name, subject_short_name, department_id) {
+    var req = {};
+    req.subject_name = subject_name;
+    req.subject_short_name = subject_short_name;
+    req.department_id = department_id;
+    $.ajax({
+      url: '/subject/add',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          console.log('add subject after');
+          var obj = {};
+          obj.subject_id = data.id;
+          obj.subject_name = subject_name;
+          obj.subject_short_name = subject_short_name;
+          obj.department_id = department_id;
+          self.subjects = [obj].concat(self.subjects);
+          toastr.success("Subject Inserserted Successfully ");
+          self.trigger('add_subject_changed', self.subjects);
+        } else if (data.status == 'e') {
+          showToast("Invalid Username or password. Please try again.", data);
         }
       },
       error: function error(data) {

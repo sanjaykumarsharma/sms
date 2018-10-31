@@ -26,7 +26,7 @@
 				</div>
 				<div class="column is-narrow">
 					<div class="control">
-						<input class=" input"
+						<input class=" input" id="addEventInput" 
 						  ref="addEventInput" type="text">
 					</div>
 				</div>
@@ -146,7 +146,8 @@
     self.edit = (ev,e) => {
       console.log(ev)
       self.title='Update'
-      self.refs.addEventInput.value = ev.events
+      document.getElementById("addEventInput").focus()
+      self.refs.addEventInput.value = ev.event_name
       self.refs.category_id.value = ev.category_id
       self.edit_id = ev.event_id
     }

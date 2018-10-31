@@ -12,7 +12,7 @@
 					<div class="field">
 						<label class="label" for="role">Item</label>
 						<div class="control">
-							<input class="input" type="text" ref="addItemInput"
+							<input class="input" type="text" id="item_name" ref="addItemInput"
 							onkeyup={addEnter}>
 						</div>
 					</div>
@@ -39,16 +39,16 @@
 				<tr each={r, i in Items}>
 					<td>{ i+1 }</td>
 					<td>{ r.item_name}</td>
-		          	<td class="has-text-right">
-            			<div class="inline-flex rounded border border-grey overflow-hidden" hide={r.confirmDelete}>
-              				<span><a class="button is-small is-rounded" onclick={edit.bind(this, r)}>Edit</a></span>
-              				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
-            			</div>
-            			<div class="table-buttons" if={r.confirmDelete}>
-              				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
-              				<span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
-            			</div>
-          			</td>
+          	<td class="has-text-right">
+        			<div class="inline-flex rounded border border-grey overflow-hidden" hide={r.confirmDelete}>
+          				<span><a class="button is-small is-rounded" onclick={edit.bind(this, r)}>Edit</a></span>
+          				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+        			</div>
+        			<div class="table-buttons" if={r.confirmDelete}>
+          				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
+          				<span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
+        			</div>
+      			</td>
 				</tr>
 			</tbody>
 		</table>
@@ -123,6 +123,7 @@
     self.edit = (r,e) => {
       console.log(r)
       self.title='Update'
+      document.getElementById("item_name").focus()
       self.refs.addItemInput.value = r.item_name
       self.edit_id = r.item_id
     }

@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var pool = require('../db');
-
+var async = require("async");
 
 /* Read Session listing. */
 router.get('/', function(req, res, next) {
@@ -121,7 +121,7 @@ router.post('/add', function(req, res, next) {
     var input = JSON.parse(JSON.stringify(req.body));
     var now = new Date();
     var jsonDate = now.toJSON();
-    var creation_date = new Date(jsonDate);
+    var creation_date = '2018-10-10';
 
     var modified_by = req.cookies.role;
     //console.log(input)
@@ -130,111 +130,36 @@ router.post('/add', function(req, res, next) {
     var slips = input.fee;
 
 
+    var fee_slip_id = '';
+    var amount = 0;
+    var data = [];
+    console.log("====slips====")
+    console.log(slips)
+   
+     req.getConnection(function(err, connection) {
+         connection.beginTransaction(function(err) {
 
+          if (err) { throw err; }
+            
+            async.eachSeries(slips,function iteratorOverElems(element,callback) {
+                console.log("------------")
+                 console.log(slips[index])
 
-    req.getConnection(function(err, connection) {
-        connection.beginTransaction(function(err) {
+                 
+                  })
+              },function finalCb(err){
+              if(err){
+                 //rollback
+              }else{
+              // commmit here when all the insertions have been successful            
+              }
+          });
+            
+          //res.send(JSON.stringify(data))
 
-            for (var i = 0; i < slips.length; i++) {
-                if (slips[i].amount > 0) {
+    });
 
-                    var count = -1;
-                    var updateCount = -2;
-                    console.log("Count 1")
-
-
-                    var q = `select count(*) as total from 
-          fee_scholorship 
-          where student_id=${input.student_id}
-          and fee_slip_id=${slips[i].fee_slip_id}`;
-
-                    if (err) { throw err; }
-
-                    connection.query(q, function(error, results, fields) {
-                        if (error) {
-                            return connection.rollback(function() {
-                                throw error;
-                            });
-                        } else {
-                            //console.log("result" + results[0].total)
-                            var total = results[0].total
-                            console.log("results")
-                            count = total;
-                            console.log("total = " + total)
-                            console.log("Count 2")
-                            if (total > 0) updateCount = 1;
-
-                            
-                        }
-                    })
-
-                    var q1 = `select count(*) as totals from fee_received 
-          where student_id=${input.student_id}
-          and fee_slip_id=${slips[i].fee_slip_id}`;
-
-                    connection.query(q1, function(error1, results1, fields) {
-                        if (error1) {
-                            return connection.rollback(function() {
-                                throw error1;
-                            });
-                        } else {
-                            var totals = results1[0].totals
-                            if (totals > 0) {
-                                updateCount = 2;
-                                count = -999;
-                            }
-                        }
-                    })
-                    var data = [];
-                    console.log("count ======" + count)
-                    console.log("Count 3")
-                    if (count == 0) { // insert
-                        var queryAdd = `insert into fee_scholorship(student_id,fee_slip_id,scholorship_amount,session_id,
-            scholorship_remarks,creation_date,modified_by)
-            values(${input.student_id},${slips[i].fee_slip_id},${slips[i].amount},${session_id},
-            ${input.scholorship_remarks},${creation_date},${modified_by})`;
-
-                        connection.query(queryAdd, function(error2, results2) {
-                            if (error2) {
-                                return connection.rollback(function() {
-                                    throw error2;
-                                });
-                            } else {
-                                data.status = 's';
-                                data.scholarSlips = results2;
-
-                            }
-                        })
-
-                        //$statement->execute();
-                    } else if (updateCount == 1) { // update
-                        var queryUpdate = `update fee_scholorship set scholorship_amount=${slips[i].amount}
-           where student_id=${input.student_id}
-           and fee_slip_id=${slips[i].fee_slip_id}`;
-                        connection.query(queryUpdate, function(error3, results3) {
-                            if (error3) {
-                                return connection.rollback(function() {
-                                    throw error3;
-                                });
-                            } else {
-                                data.status = 's';
-                                data.scholarSlips = results3;
-
-                            }
-                        })
-
-                    }
-
-
-
-                }
-            }
-            res.send(JSON.stringify(data))
-
-        })
-    })
-
-    console.log('res')
+  
 });
 
 

@@ -5,7 +5,19 @@
 				<h2 class="title" style="color: #ff3860;">Students</h2>
 			</div>
 			<div class="level-right">
-				<button class="button is-warning is-rounded" onclick={add_new_student}>
+				<button class="button is-primary is-rounded" onclick={print_list}>
+				<span>Print List</span>
+				</button>
+
+				<button class="button is-primary is-rounded ml10" onclick={student_list}>
+				<span>Student List</span>
+				</button>
+
+				<button class="button is-primary is-rounded ml10" onclick={regenerate_roll_no}>
+				<span>Regenerate Roll No</span>
+				</button>
+
+				<button class="button is-warning is-rounded ml10" onclick={add_new_student}>
 				<span class="icon">
 					<span class="fas fa-plus"></span>
 				</span>
@@ -69,18 +81,602 @@
 					<td>{st.f_name}</td>
 					<td class="has-text-right">
 		            <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
-		              <span><a class="button is-small is-rounded has-text-success" onclick={edit.bind(this, st.student_id)}>Edit</a></span>
-		              <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+		              <span><a class="button is-small is-rounded " onclick={withdraw_student.bind(this, st.student_id)}>WithDraw Student</a></span>
+		              <span><a class="button is-small is-rounded" onclick={view_profile.bind(this, st.student_id)}>Profile</a></span>
+		              <span><a class="button is-small is-rounded " onclick={edit.bind(this, st.student_id)}>Edit</a></span>
+		              <span > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
 		            </div>
 		            <div class="table-buttons" if={st.confirmDelete}>
 		              <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
 		              <span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
 		            </div>
-          </td>
+          			</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
+
+	<!-- Open Grade Modal Start -->
+  	<div id="withdrawModal" class="modal ">
+    	<div class="modal-background"></div>
+    	<div class="modal-card">
+      		<header class="modal-card-head">
+        		<p class="modal-card-title">WithDraw</p>
+      		</header>
+		      	<section class="modal-card-body">
+		        	<div class="columns">
+		          		<div class="column">
+				            <div class="field">
+				              	<div class="control">
+				                	<label class="label" for="role">Date of Leaving</label>
+				                	<input class="input date" ref="withdraw_date" type="text">
+				              	</div>
+				            </div>
+				            <div class="field">
+				              	<div class="control">
+				               		<label class="label" for="role">TC No</label>
+				                	<input class="input" type="text" ref="tc_no" >
+				              	</div>
+				            </div>
+							<div class="control">
+								<label class="label" for="read_standard_id_for_withdraw">Standard</label>
+					        	<div class="select is-fullwidth">
+									<select ref="read_standard_id_for_withdraw" id="read_standard_id_for_withdraw" onchange={getReadSectionForWithdraw}>
+										<option>Choose Section</option>
+										<option each={standards} value={standard_id}>{standard}</option>
+									</select>
+								</div>
+					      	</div>
+							<div class="control">
+								<label class="label" for="read_section_id_for_withdraw">Section</label>
+					        	<div class="select is-fullwidth">
+									<select ref="read_section_id_for_withdraw" id="read_section_id_for_withdraw">
+										<option>Choose Class</option>
+										<option each={readwithdrawfilteredSections} value={section_id}>{section}</option>
+									</select>
+								</div>
+					      	</div>
+							<div class="control">
+								<label class="label" for="withdraw_remarks">Reason</label>
+					        	<textarea class="textarea" ref="withdraw_remarks" rows="2"></textarea>
+					      	</div>
+	    				</div>
+		        	</div>
+		        </section>
+	      	<footer class="modal-card-foot">
+	        	<button class="button is-danger" onclick={WithdrawStudent} >Add</button>
+	        	<button class="button" id="item-modal-close" onclick={closewithdrawModal}>Cancel</button>
+	      	</footer>
+    	</div>
+  	</div>
+  <!-- Grade Modal End -->
+
+	<!-- Print List view start -->
+	<section class=" is-fluid" show={student_view =='print_list'}>
+		<div class="level">
+			<div class="level-left">
+			</div>
+			<div class="level-right">
+				<div class="control no-print">
+	        		<div class="select is-fullwidth">
+						<select id="add_column" ref="add_column" onchange={AddColumn}>
+							<option value="0">Select Column</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+						</select>
+					</div>
+	      		</div>
+				<input type="checkbox" id="checkHouse" checked={e.done} 
+				onclick={viewHouse}  class="no-print ml10"> <b class="no-print">House</b>
+
+				<a class="button no-print ml10" onclick={close_print_list}>Back</a>
+			</div>
+		</div>
+		<center>
+			<table class=" table" style="border-style:none;">
+	      		<tr style="border-style:none;">
+	          		<td style="padding-left:5px;border:none;width:100px"><img src="/images/school_small.png" height="60"></td>
+	          		<td  style="text-align:center;border-style:none">
+	            		<h2>M. C. Kejriwal Vidyapeeth</h2>
+	            		<p style="text-align:center; font-size:12px;">243 G. T. Road(N) Liluah, Howrah - 711204, West Bengal, India
+	            		<br/> PHONE - (033) 2654-3387/89 - EMAIL - info@mckvie.edu.in - WEB - http://www.mckv.edu.in</p>
+	          		</td>
+	          		<td style="padding-right:5px;border:none;width:100px">
+	          			<img src="/images/nabet.JPG" height="60">
+	          		</td>
+	      		</tr>
+	    	</table>
+    		<hr style="border:none;border-top:solid #dd0000 2px;margin:10px 0;">
+    	
+    		<div style="">
+     			<div style="text-align:right;"> Printed on:{print_date} </div>
+    		</div>
+
+    		<table class="table is-fullwidth is-bordered" style="">
+    			<caption class="caption">Students List {pl.standard} - {pl.section} ({pl.session_name})  </caption>
+    		</table>	  
+	      	<div style="text-align:left;">
+		      	<table class="table is-fullwidth is-bordered" >
+			        <tr>
+			        	<th style="">Roll No</th>
+	          			<th style="">Enrol No</th>
+	          			<th style="">Name</th>
+	          			<th style="" show={house_column}>House</th>
+	          			<th show={column_one}></th>
+	          			<th show={column_two}></th>
+	          			<th show={column_three}></th>
+	          			<th show={column_four}></th>
+	          			<th show={column_five}></th>
+	          			<th show={column_six}></th>
+	          			<th show={column_seven}></th>
+	          			<th show={column_eight}></th>
+	          			<th show={column_nine}></th>
+			        </tr>     	
+					<tr each={pl, i in print_list}>
+						
+		           		<td >{pl.roll_number}</td> 
+		           		<td >{pl.enroll_number}</td> 
+		            	<td >{pl.name}</td>
+		            	<td show={house_column}>{pl.house}</td>
+		            	<td show={column_one}></td>
+		            	<td show={column_two}></td>
+		            	<td show={column_three}></td>
+		            	<td show={column_four}></td>
+		            	<td show={column_five}></td>
+		            	<td show={column_six}></td>
+		            	<td show={column_seven}></td>
+		            	<td show={column_eight}></td>
+		            	<td show={column_nine}></td>
+		           	</tr>
+		        </table>
+	    	</div>
+    	</center>
+	</section>
+
+	<!-- Print List view end -->
+
+	<!-- Student List view start -->
+	<section class=" is-fluid" show={student_view =='student_list'}>
+		<div class="level">
+			<div class="level-left">
+			</div>
+			<div class="level-right">
+				<a class="button no-print" onclick={close_student_list}>Back</a>
+			</div>
+		</div>
+		<center>
+		<table class=" " style="border-style:none;width:860px;">
+      		<tr style="border-style:none;">
+          		<td style="padding-left:5px;border:none;width:100px"><img src="/images/school_small.png" height="60"></td>
+          		<td  style="text-align:center;border-style:none">
+            		<h2>M. C. Kejriwal Vidyapeeth</h2>
+            		<p style="text-align:center; font-size:12px;">243 G. T. Road(N) Liluah, Howrah - 711204, West Bengal, India
+            		<br/> PHONE - (033) 2654-3387/89 - EMAIL - info@mckvie.edu.in - WEB - http://www.mckv.edu.in</p>
+          		</td>
+          		<td style="padding-right:5px;border:none;width:100px">
+          			<img src="/images/nabet.JPG" height="60">
+          		</td>
+      		</tr>
+    	</table>
+    	<hr style="border:none;border-top:solid #dd0000 2px;margin:10px 0;width:860px;">
+    	
+    	<div style="width:860px;">
+     		<div style="text-align:right;"> Printed on:{print_date} </div>
+    	</div>
+
+    	<table class="table is-fullwidth is-bordered" style="width:860px;"><caption class="caption">Student Listing of {sl.standard} {sl.section}[{total_student}]  </caption></table>	  
+      	<div style="text-align:left;width:860px;">
+	      	<table class="table is-fullwidth is-bordered" >
+		        <tr>
+		        	<th style="">Sl No</th>
+          			<th style="">Enrol No</th>
+          			<th style="">Name</th>
+		         	
+		        </tr>     	
+				<tr each={student, i in student_list}>
+					
+	           		<td >{i +1}</td> 
+	           		<td >{student.enroll_number}</td> 
+	            	<td >{student.name}</td>
+	            	
+	           	</tr>
+	   
+	        </table>
+    	</div></center>
+	</section>
+
+	<!-- Student List view end -->
+
+	<!-- profile view start -->
+	<section class=" is-fluid" show={student_view =='student_profile'}>
+		<div class="level">
+			<div class="level-left">
+				<h2 class="title">Profile of {st.first_name}{st.middle_name}{st.last_name}</h2>
+			</div>
+			<div class="level-right">
+				<a class="button no-print" onclick={close_student_profile}>Back</a>
+			</div>
+		</div>
+		
+		<table class="table is-fullwidth is-bordered">
+		<caption class="caption"> Student\'s Information ({st.session_name})</caption>
+			<tr>
+				<td rowspan="4" colspan=2 >
+					<img id="pp_box1" width="90" height="90" >
+				</td> 
+				<td colspan="2"  style="background-color:#efefef"><h>Student\'s Information</td>
+				<td colspan="3"><h>Contact Information</td>
+			</tr>
+			<tr>
+				<th>Date of Admission</th>
+				<td>{st.doa}</td>
+				<th>Father's Name</th>
+				<td colspan=2>{st.f_name}</td>
+			</tr>
+			<tr>
+				<th>Date of Joining</th>
+				<td>{st.doj} </td>
+				<th>Mother's Name</th>
+				<td colspan=2>{st.m_name}</td>
+			</tr>
+			<tr>
+				<th>Date of Birth</th>
+				<td>{st.dob}</td>
+				<th>Permanent Address </th>
+				<td colspan="2">{st.p_add_l1} {st.p_add_l2}</td>
+			</tr>
+ 			<tr>
+				<th> Name </th>
+				<td> {st.first_name}   {st.middle_name}   {st.last_name}</td>
+				<th>Nationality</th>
+				<td>{st.nationality}</td><th>city </th><td colspan=2> {st.p_city}</td>
+			</tr>
+			<tr>  
+				<th>Enroll No.</th>
+				<td> {st.enroll_number}</td>
+				<th>Gender</th>
+				<td>{st.gender}</td>
+				<th>State</th>
+				<td colspan=2>{st.p_state}</td> 
+			</tr>
+			<tr>
+				<th>Reg. No.</th>
+				<td> {st.reg_number}</td>
+				<th>Category</th>
+				<td>{st.category_name}</td>
+				<th>Country</th>
+				<td colspan=2>{st.p_country}</td>
+			</tr>
+			<tr>
+				<th>Class / Sec:</th>
+				<td> {st.standard} {st.section}</td>
+				<th>Mother Tongue</th>
+				<td>{st.mother_tongue}</td>
+				<th>Zip</th>
+				<td colspan=2>{st.p_zip} </td>
+			</tr>
+			<tr>
+				<th>House</th>
+				<td> {st.house_name}</td>
+				<th>Religion</th>
+				<td>{st.religion}</td>
+				<th> Correspondence Address </th>
+				<td colspan="2">{st.c_add_l1} {st.c_add_l2}, {st.c_city}-{st.c_zip}, {st.c_state}, {st.c_country}</td>
+			</tr>
+			<tr>
+				<th>Blood Group</th>
+				<td> {st.blood_group}</td>
+			    <th>Hobbies</th>
+			    <td> {st.hobby}</td>
+				<th>Residence Phone </th>
+				<td colspan="2">{st.residence_phone}</td>
+			</tr>
+			<tr>
+				<th>Roll No.</th>
+				<td>{st.roll_number}</td>
+				<th>Admission for Class</th>
+				<td>{st.admission_for_class}</td>
+			  	<th>SMS No</th>
+			  	<td colspan="2">{st.mobile}</td>
+			</tr>
+			<tr>
+				<th>Reference Enrol</th>
+				<td> {st.reference_enrol}</td>
+				<th>Last Class Attended</th>
+				<td>{st.last_class}</td>
+				<th>Emergency No.</th>
+				<td colspan="2">{st.fax}</td>
+			</tr>
+			<tr>
+				<th>Aadhar No.</th>
+			    <td>{st.aadhar_no}</td>
+			    <th>Second Language</th>
+			    <td  colspan="4">{st.second_language}</td>
+			</tr>
+			<tr>
+				<td rowspan="4" colspan="2">
+					<img id="f_pp_box1" width="90" height="90" >
+				</td>
+				<td colspan="5" style="background-color:#efefef"><h>Father\'s Information</td></tr> 
+			<tr>
+		    	<th>Examination Passed</th>
+		      	<td>{st.f_school_exam_passed}</td>
+		      	<th>Address</th>
+      			<td colspan="2">{st.f_add_l1} {st.f_add_l2}</td>
+    		</tr>
+			<tr>
+        		<th>Other Qualification</th>
+        		<td>{st.f_college_exam_passed}</td>
+        		<th>City</th>
+        		<td colspan="2">{st.f_city}</td>
+      		</tr>
+			<tr>
+				<th>Nationality</th>
+      			<td>{st.f_nationality}</td>
+				<th>State</th>
+				<td colspan="2">{st.f_state}</td>
+			</tr>
+			<tr>
+				<th>Name:</th>
+				<td colspan='3'> {st.f_name}</td>
+				<th>Country</th>
+			    <td colspan="2">{st.f_country}</td>
+			</tr>
+			<tr>
+				<th>Occupation:  </th>
+				<td>{st.f_occupation}</td>
+				<th>Work Detail</th>
+				<td>{st.f_work_profile}</td>
+				<th>Pin Code</th>
+				<td colspan="2"> {st.f_zip}</td> 
+			</tr>
+			<tr>
+				<th>Annual Income:</th>
+				<td> {st.f_annual_income}</td>
+				<th>Organisation's Name"</th>
+				<td>{st.f_organisation_name}</td>
+				<th>Residence Ph.</th>
+				<td colspan="2">{st.f_phone}</td>
+			</tr>
+			<tr> 
+				<th>Designation:"</th>
+				<td> {st.f_designation}</td>
+				<th>Office Address</th>
+				<td>{st.f_office_add_l1} {st.f_office_add_l2}</td>
+				<th>Office Ph.</th>
+				<td colspan="2">{st.f_office_phone} </td>
+			</tr>
+			<tr>
+				<th>Mobile</th>
+				<td> {st.f_mobile}</td>
+				<th></th>
+				<td></td>
+				<th>Email</th>
+				<td colspan="2">{st.f_email}</td>
+			</tr>
+			<tr>
+				<td rowspan="4" colspan="2">
+					<img id="m_pp_box1" width="90" height="90" >
+				</td>
+				<td colspan="5" style="background-color:#efefef"><h>Mother\'s Information</td>
+			</tr> 
+			<tr>
+			    <th>Examination Passed</th>
+			    <td>{st.m_school_exam_passed}</td>
+			    <th>Address</th>
+			    <td colspan="2">{st.m_add_l1} {st.m_add_l2}</td>
+			</tr>
+			<tr>
+		        <th>Other Qualification</th>
+		        <td>{st.m_college_exam_passed}</td>
+		        <th>City</th>
+		        <td colspan="2">{st.m_city}</td>
+      		</tr>
+			<tr>
+				<th>Nationality</th>
+			    <td>{st.m_nationality}</td>
+				<th>State</th>
+				<td colspan="2">{st.m_state}</td>
+			</tr>
+			<tr>
+				<th>Name:</th>
+				<td colspan="3"> {st.m_name}</td>
+				<th>Country</th>
+      			<td colspan="2">{st.m_country}</td>
+			</tr>
+			<tr>
+				<th>Occupation:  </th>
+				<td>{st.m_occupation}</td>
+				<th>Work Detail</th>
+				<td>{st.m_work_profile}</td>
+				<th>Pin Code</th>
+				<td colspan="2"> {st.m_zip}</td> 
+			</tr>
+			<tr>
+				<th>Annual Income:</th>
+				<td> {st.m_annual_income}</td>
+				<th>Organisation's Name"</th>
+				<td>{st.m_organisation_name}</td>
+				<th>Residence Ph.</th>
+				<td colspan="2">{st.m_phone}</td>
+			</tr>
+			<tr> 
+				<th>Designation:"</th>
+				<td> {st.m_designation}</td>
+				<th>Office Address</th>
+				<td>{st.m_office_add_l1} {st.m_office_add_l2}</td>
+				<th>Office Ph.</th>
+				<td colspan="2">{st.m_office_phone} </td>
+			</tr>
+			<tr>
+				<th>Mobile</th>
+				<td> {st.m_mobile}</td>
+				<th></th>
+				<td></td>
+				<th>Email</th>
+				<td colspan="2">{st.m_email}</td>
+			</tr>
+
+			<tr>
+				<td rowspan="4" colspan="2">
+					<img id="g_pp_box1" width="90" height="90" >
+				</td>
+				<td colspan="5" style="background-color:#efefef"><h>Guardian\'s Information</td>
+			</tr> 
+			<tr>
+		    	<th>Examination Passed</th>
+		      	<td>{st.g_school_exam_passed}</td>
+		      	<th>Address</th>
+		      	<td colspan=2>{st.g_add_l1} {st.g_add_l2}</td>
+			</tr>
+			<tr>
+        		<th>Other Qualification</th>
+        		<td>{st.g_college_exam_passed}</td>
+        		<th>City</th>
+        		<td colspan=2>{st.g_city}</td>
+      		</tr>
+			<tr>
+				<th>Nationality</th>
+      			<td>{st.g_nationality}</td>
+				<th>State</th>
+				<td colspan=2>{st.g_state}</td>
+			</tr>
+			<tr>
+				<th>Name:</th>
+				<td colspan='3'> {st.g_name}</td>
+				<th>Country</th>
+      			<td colspan=2>{st.g_country}</td>
+			</tr>
+			<tr>
+				<th>Occupation:  </th>
+				<td>{st.g_occupation}</td>
+				<th>Work Detail</th>
+				<td>{st.g_work_profile}</td>
+				<th>Pin Code</th>
+				<td colspan=2> {st.g_zip}</td> 
+			</tr>
+			<tr>
+				<th>Annual Income:</th>
+				<td> {st.g_annual_income}</td>
+				<th>Organisation's Name"</th>
+				<td>{st.g_organisation_name}</td>
+				<th>Residence Ph.</th>
+				<td colspan=2>{st.g_phone}</td>
+			</tr>
+			<tr> 
+				<th>Designation:</th>
+				<td> {st.g_designation}</td>
+				<th>Office Address</th>
+				<td>{st.g_office_add_l1} {st.g_office_add_l2}</td>
+				<th>Office Ph.</th>
+				<td colspan=2>{st.g_office_phone} </td>
+			</tr>
+			<tr>
+				<th>Mobile</th>
+				<td> {st.g_mobile}</td>
+				<th>Relation</th>
+				<td>{st.g_relation}</td>
+				<th>Email</th>
+				<td colspan=2>{st.g_email}</td>
+			</tr>
+			<tr>
+				<td colspan="7" style="background-color:#efefef"><h>Siblings Detail:</td>
+			</tr> 
+			<tr>
+		      	<th style='width:30px'>Sl.</th>
+		      	<th>Name</th>
+		      	<th>Age</th>
+		      	<th>Class</th>
+		      	<th>Sec</th>
+		      	<th>Enrol No</th>
+		      	<th>School</th>
+    		</tr>
+			<tr>
+        		<td>1</td>
+        		<td>{st.first_child_name}</td>
+       			<td>{st.first_child_age}</td>
+        		<td>{st.first_child_class}</td>
+        		<td>{st.first_child_section}</td>
+        		<td>{st.first_enrol}</td>
+        		<td>{st.first_child_school}</td>
+      		</tr>
+	      	<tr>
+	        	<td>2</td>
+	        	<td>{st.second_child_name}</td>
+	        	<td>{st.second_child_age}</td>
+	        	<td>{st.second_child_class}</td>
+	        	<td>{st.second_child_section}</td>
+	        	<td>{st.second_enrol}</td>
+	        	<td>{st.second_child_school}</td>
+	      	</tr>
+      		<tr>
+        		<td>3</td>
+        		<td>{st.third_child_name}</td>
+        		<td>{st.third_child_age}</td>
+        		<td>{st.third_child_class}</td>
+        		<td>{st.third_child_section}</td>
+        		<td>{st.third_enrol}</td>
+        		<td>{st.third_child_school}</td>
+      		</tr>
+      		<tr>
+        		<td>4</td>
+        		<td>{st.fourth_child_name}</td>
+        		<td>{st.fourth_child_age}</td>
+        		<td>{st.fourth_child_class}</td>
+        		<td>{st.fourth_child_section}</td>
+        		<td>{st.fourth_enrol}</td>
+        		<td>{st.fourth_child_school}</td>
+      		</tr>
+			<tr>
+				<td colspan=7 style='background-color:#efefef'><h>Areas Where Parent(Father or Mother) can contribute to the School</h></td>
+			</tr>
+			<tr>
+				<th colspan=4><input type="checkbox" id="music"> Music</th>
+				<th colspan=4><input type="checkbox"  id="academic"> Academic</th>
+			</tr>
+
+			<tr>
+				<th colspan=4><input type="checkbox" id="sports"> Sports</th>
+				<th colspan=4><input type="checkbox" id="community"> Community Programme </th>
+			</tr>
+			<tr>
+				<th colspan=4><input type="checkbox" id="social"> Social Skills</th>
+				<th colspan=4><input type="checkbox" id="medical"> Medical </th>
+			</tr>
+			<tr>
+				<th colspan=4><input type="checkbox" id="media"> Media/PR</th>
+				<th colspan=4><input type="checkbox" id="hr_training"> HR Training </th>
+			</tr>
+			<tr>
+				<th colspan=4><input type="checkbox" id="painting"> Painting/Sculpture </th>
+				<th colspan=4><input type="checkbox" id="career"> Career Counselling </th>
+			</tr>
+			<tr>
+				<th colspan=4><input type="checkbox" id="information"> Information Technology </th>
+				<th colspan=4><input type="checkbox" id="communication"> Public Communication / Communication Skills </th>
+			</tr>
+			<tr>
+				<td colspan=7><h>Extra Qualification Possessed by the Parent</h></td>
+			</tr>
+			<tr>
+				<th colspan=4><input type="checkbox" id="med" > M.Ed </th>
+				<th colspan=4><input type="checkbox" id="bed" > B.Ed </th>
+			</tr>
+			<tr>
+				<th colspan=4><input type="checkbox" id="ttc"> TTC </th>
+				<th colspan=3><input type="checkbox" id="montessori" > Montessori Trained </th>
+			</tr>
+		</table>
+	</section>
+
+	<!-- profile view end -->
 
 	<section class=" is-fluid" show={student_view =='add_student'}>
 	<div class="label">
@@ -92,12 +688,12 @@
 	<div class="box">
 		<div class="columns is-variable is-1 is-multiline">
 		    <div class="column is-half">
-			      <div id="pp_box" class="pp-box"
-			      onclick={trigger_file_input.bind(this,'student_picture')}>
+			    <div id="pp_box" class="pp-box" onclick={trigger_file_input.bind(this,'student_picture')}>
 			        <div class="icon has-text-danger" onclick=
-			        {remove_picture.bind(this, 'pp_box','student_picture')}><i class="fas fa-trash"></i></div>
-			      </div>
-			      <input accept="image/*" class="is-hidden" id="student_picture" name="student_picture" onchange={loadFile.bind(this, 'pp_box')} type="file">
+			        	{remove_picture.bind(this, 'pp_box','student_picture')}><i class="fas fa-trash"></i>
+			        </div>
+			    </div>
+			    <input accept="image/*" class="is-hidden" id="student_picture" name="student_picture" onchange={loadFile.bind(this, 'pp_box')} type="file">
 		    </div>
 		    <div class="column is-half">
 		      	<div class="column is-narrow">
@@ -185,8 +781,7 @@
 			</div>
 			<div class="column is-one-third">
 				<label class="label" for="dob">DOB</label>
-				<input class="date input flatpickr-input form-control input" 
-				ref="dob" placeholder="" tabindex="0" type="text" readonly="readonly">
+				<input class="input date" ref="dob" type="text">
 			</div>
     		<div class="column is-one-third">
 				<label class="label" for="blood_group">Blood Group</label>
@@ -299,23 +894,19 @@
 		    </div>
 		    <div class="column is-one-third">
 				<label class="label" for="doa">Date of Admission</label>
-				<input class="date input flatpickr-input form-control input" 
-				ref="doa" placeholder="" tabindex="0" type="text" readonly="readonly">
+				<input class="input date" ref="doa" type="text">
 			</div>
 			<div class="column is-one-third">
 				<label class="label" for="old_doa">Old Date of Admission</label>
-				<input class="date input flatpickr-input form-control input" 
-				ref="old_doa" placeholder="" tabindex="0" type="text" readonly="readonly">
+				<input class="input date" ref="old_doa" type="text">
 			</div>
 			<div class="column is-one-third">
 				<label class="label" for="doj">Date of Joining</label>
-				<input class="date input flatpickr-input form-control input" 
-				ref="doj" placeholder="" tabindex="0" type="text" readonly="readonly">
+				<input class="input date" ref="doj" type="text">
 			</div>
 			<div class="column is-one-third">
 				<label class="label" for="old_doj">Old Date of Joining</label>
-				<input class="date input flatpickr-input form-control input" 
-				ref="old_doj" placeholder="" tabindex="0" type="text" readonly="readonly">
+				<input class="input date" ref="old_doj" type="text">
 			</div>
 			<div class="column is-one-third">
 				<label class="label" for="mother_tongue">Mother Tongue</label>
@@ -1197,6 +1788,9 @@
 <script>
 	
 	var self = this
+	self.st={}
+	self.sl={}
+	self.pl={}
     self.on("mount", function(){
     	self.title='Add'
     	self.student_view = 'show_student'
@@ -1209,11 +1803,20 @@
     	self.readCategory()
     	self.readReligion()
     	self.staff_name = true
+    	self.house_column = false
+    	self.column_one = false
+    	self.column_two = false 
+    	self.column_three = false
+		self.column_four = false   		
+		self.column_five = false  		
+		self.column_six = false  		
+		self.column_seven = false  		
+		self.column_eight = false   		
+		self.column_nine = false
         self.update()
         flatpickr(".date", {
-	    	altInput: true,
-	    	altFormat: "d/m/Y",
-	    	dateFormat: "Y-m-d",
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
   		})
     })
 
@@ -1226,6 +1829,13 @@
       studentStore.off('read_student_changed',StudentChanged)
       studentStore.off('add_student_changed',AddStudentChanged)
       studentStore.off('read_for_edit_student_changed',ReadForEditStudentChanged)
+      studentStore.off('upload_student_image_changed',UploadStudentImage)
+      studentStore.off('upload_father_image_changed',UploadFatherImage)
+      studentStore.off('upload_mother_image_changed',UploadMotherImage)
+      studentStore.off('upload_guardian_image_changed',UploadGuardianImage)
+      studentStore.off('edit_student_changed',EditStudentChanged)
+      studentStore.off('read_student_profile_changed',StudentProfileChanged)
+      studentStore.off('student_list_changed',StudentListChanged)
     })
 
     self.getStudentData = () =>{
@@ -1339,6 +1949,31 @@
     	self.student_view = 'add_guardian_information'
     }
 
+    self.withdraw_student = (c,st) => {
+
+      self.student_id = c
+      console.log(self.student_id)
+      $("#withdrawModal").addClass("is-active");
+    }
+
+    self.closewithdrawModal = () => {
+      $("#withdrawModal").removeClass("is-active");
+    }
+
+    self.WithdrawStudent = () =>{
+    	console.log("addInformation")
+    	var obj={}
+    	var student={};
+    	student['withdraw_date']=convertDate(self.refs.withdraw_date.value)
+    	student['tc_no']=self.refs.tc_no.value
+    	student['withdraw_remarks']=self.refs.withdraw_remarks.value
+    	self.prev_class = $("#read_standard_id_for_withdraw option:selected").text() + ' -' + $("#read_section_id_for_withdraw option:selected").text()
+    	student['prev_class'] = self.prev_class
+    	obj['student']=student;
+    	studentStore.trigger('create_student_withdraw', obj,self.student_id)
+    	
+    }
+
     self.getGuardianInformation = () =>{
     	if(self.refs.is_guardian.value == 'Father'){
     		document.getElementById("g_title").disabled = true;
@@ -1370,6 +2005,11 @@
     		document.getElementById("g_email").disabled = true;
     		document.getElementById("g_nationality").disabled = true;
     		document.getElementById("g_relation").disabled = true;
+    		if(self.title == 'Add'){
+    			document.getElementById("g_pp_box").style.backgroundImage = 'url(' + self.f_image + ')';
+    		}else if(self.title == "Update"){
+    			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/father/'+self.student_id+'.jpg)';
+    		}
     		self.refs.g_title.value = self.refs.f_title.value
     		self.refs.g_name.value = self.refs.f_name.value
     		self.refs.g_occupation.value = self.refs.f_occupation.value
@@ -1397,7 +2037,7 @@
     		self.refs.g_mobile.value = self.refs.f_mobile.value
     		self.refs.g_email.value = self.refs.f_email.value
     		self.refs.g_nationality.value = self.refs.f_nationality.value
-    		self.refs.g_relation.value = self.refs.guardian.value
+    		self.refs.g_relation.value = self.refs.is_guardian.value
 
     	}else if(self.refs.is_guardian.value == 'Mother'){
     		document.getElementById("g_title").disabled = true;
@@ -1429,6 +2069,12 @@
     		document.getElementById("g_email").disabled = true;
     		document.getElementById("g_nationality").disabled = true;
     		document.getElementById("g_relation").disabled = true;
+    		
+    		if(self.title == 'Add'){
+    			document.getElementById("g_pp_box").style.backgroundImage = 'url(' + self.m_image + ')';
+    		}else if(self.title == "Update"){
+    			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/mother/'+self.student_id+'.jpg)';
+    		}
     		self.refs.g_title.value = self.refs.m_title.value
     		self.refs.g_name.value = self.refs.m_name.value
     		self.refs.g_occupation.value = self.refs.m_occupation.value
@@ -1456,7 +2102,7 @@
     		self.refs.g_mobile.value = self.refs.m_mobile.value
     		self.refs.g_email.value = self.refs.m_email.value
     		self.refs.g_nationality.value = self.refs.m_nationality.value
-    		self.refs.g_relation.value = self.refs.guardian.value
+    		self.refs.g_relation.value = self.refs.is_guardian.value
     	}else {
     		document.getElementById("g_title").disabled = false;
     		document.getElementById("g_name").disabled = false;
@@ -1466,7 +2112,7 @@
     		document.getElementById("g_work_profile").disabled = false;
     		document.getElementById("g_organisation_name").disabled = false;
     		document.getElementById("g_designation").disabled = false;
-    		document.getElemenis_tById("g_department").disabled = false;
+    		document.getElementById("g_department").disabled = false;
     		document.getElementById("g_office_add_l1").disabled = false;
     		document.getElementById("g_office_add_l2").disabled = false;
     		document.getElementById("g_office_city").disabled = false;
@@ -1487,6 +2133,12 @@
     		document.getElementById("g_email").disabled = false;
     		document.getElementById("g_nationality").disabled = false;
     		document.getElementById("g_relation").disabled = false;
+    		
+    		if(self.title == 'Add'){
+    			document.getElementById("g_pp_box").style.backgroundImage = "";
+    		}else if(self.title == "Update"){
+    			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/guardian/'+self.student_id+'.jpg)';
+    		}
     		self.refs.g_title.value = ''
     		self.refs.g_name.value = ''
     		self.refs.g_occupation.value = ''
@@ -1609,6 +2261,12 @@
 		self.student_picture = event.target.files[0]
 	}
 
+	self.uploadStudentImage = (student_id) => {
+		if(self.is_student_image == true){
+    		studentStore.trigger('upload_student_image', self.student_picture,student_id)
+		}
+    } 
+
 	/* End */
 
 	/* Start Upload Father Image*/
@@ -1632,6 +2290,7 @@
 			console.log(item)
 			document.getElementById(item).style.backgroundImage = 'url(' + e.target.result + ')';
 			console.log(e.target.result)
+			self.f_image=e.target.result
 			self.is_father_image=true
 		};
 		reader.readAsDataURL(event.target.files[0]);
@@ -1639,6 +2298,12 @@
 		console.log(event.target.files[0])
 		self.father_picture = event.target.files[0]
 	}
+
+	self.uploadFatherImage = (student_id) => {
+		if(self.is_father_image == true){
+    		studentStore.trigger('upload_father_image', self.father_picture,student_id)
+		}
+    }
 
 	/* End */
 
@@ -1663,6 +2328,7 @@
 			console.log(item)
 			document.getElementById(item).style.backgroundImage = 'url(' + e.target.result + ')';
 			console.log(e.target.result)
+			self.m_image=e.target.result
 			self.is_mother_image=true
 		};
 		reader.readAsDataURL(event.target.files[0]);
@@ -1670,6 +2336,12 @@
 		console.log(event.target.files[0])
 		self.mother_picture = event.target.files[0]
 	}
+
+	self.uploadMotherImage = (student_id) => {
+		if(self.is_mother_image == true){
+    		studentStore.trigger('upload_mother_image', self.mother_picture,student_id)
+		}
+    }
 
 	/* End */
 
@@ -1701,6 +2373,12 @@
 		console.log(event.target.files[0])
 		self.guardian_picture = event.target.files[0]
 	}
+
+	self.uploadGuardianImage = (student_id) => {
+		if(self.is_guardian_image == true){
+    		studentStore.trigger('upload_guardian_image', self.guardian_picture,student_id)
+		}
+    }
 
 	/* End */
 
@@ -1737,7 +2415,12 @@
     		return s.standard_id == self.refs.read_standard_id.value
     	})
     }
-
+    self.getReadSectionForWithdraw = () => {
+    	self.readwithdrawfilteredSections = []
+    	self.readwithdrawfilteredSections = self.sections.filter(s => {
+    		return s.standard_id == self.refs.read_standard_id_for_withdraw.value
+    	})
+    }
 
     self.addInformation = () =>{
     	console.log("addInformation")
@@ -1749,15 +2432,12 @@
     	student['first_name']=self.refs.first_name.value
     	student['middle_name']=self.refs.middle_name.value
     	student['last_name']=self.refs.last_name.value
-    	//student['standard_id']=self.refs.standard_id.value
-    	//student['section_id']=self.refs.section_id.value
-    	//student['house_id']=self.refs.house_id.value
     	student['enroll_number']=self.refs.enroll_number.value
     	student['roll_number']=self.refs.roll_number.value
     	student['reg_number']=self.refs.reg_number.value
     	student['gender']=self.refs.gender.value
     	student['category_id']=self.refs.category_id.value
-    	student['dob']=self.refs.dob.value
+    	student['dob']=convertDate(self.refs.dob.value)
     	student['blood_group']=self.refs.blood_group.value
     	student['p_add_l1']=self.refs.p_add_l1.value
     	student['p_add_l2']=self.refs.p_add_l2.value
@@ -1782,10 +2462,10 @@
     	student['fax']=self.refs.emergency_no.value
     	student['student_type']=self.refs.student_type.value
     	student['aadhar_no']=self.refs.aadhar_no.value
-    	student['doa']=self.refs.doa.value
-    	student['old_doa']=self.refs.old_doa.value
-    	student['doj']=self.refs.doj.value
-    	student['old_doj']=self.refs.old_doj.value
+    	student['doa']=convertDate(self.refs.doa.value)
+    	student['old_doa']=convertDate(self.refs.old_doa.value)
+    	student['doj']=convertDate(self.refs.doj.value)
+    	student['old_doj']=convertDate(self.refs.old_doj.value)
     	student['mother_tongue']=self.refs.mother_tongue.value
     	student['last_school']=self.refs.last_school.value
     	student['last_class']=self.refs.last_class.value
@@ -1820,8 +2500,11 @@
     	student_login['password']=self.refs.dob.value
     	student_login['parent_password']='123456'
     	student_login['is_active']='Y'
-
-    	obj['student_login'] = student_login
+    	if(self.title=='Add'){
+    		obj['student_login'] = student_login
+    	}else if(self.title=='Update'){
+    		obj['student_login']=""
+    	}
 
     	/*Father Information*/
         
@@ -1910,6 +2593,7 @@
     	}
     	if(self.refs.is_guardian.value == 'Father'){
     		parent['is_guardian'] = 'Father'
+
     	}else if(self.refs.is_guardian.value == 'Mother'){
     		parent['is_guardian'] = 'Mother'
     	}else{
@@ -2071,22 +2755,402 @@
     	}
 
     	obj['parent']=parent
-    	
-    	studentStore.trigger('add_student', obj)
+
+    	if(self.title=='Add'){
+          studentStore.trigger('add_student', obj)
+        }else if(self.title=='Update'){
+          studentStore.trigger('edit_student', obj,self.student_id)
+        }
     }
 
     self.edit = (c,st) => {
       console.log(c)
       self.student_id = c
       flatpickr(".date", {
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
+	    allowInput: true,
+        dateFormat: "d/m/Y",
   		})
       studentStore.trigger('read_for_edit_student',self.student_id)
+      document.getElementById('pp_box').style.backgroundImage = 'url(/images/7/student/'+c+'.jpg)';
+      document.getElementById('f_pp_box').style.backgroundImage = 'url(/images/7/father/'+c+'.jpg)';
+      document.getElementById('m_pp_box').style.backgroundImage = 'url(/images/7/mother/'+c+'.jpg)';
+      document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/guardian/'+c+'.jpg)';
+      if(self.refs.is_guardian.value == 'Father'){
+      	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/father/'+c+'.jpg)';
+      }else if(self.refs.is_guardian.value == 'Mother'){
+      	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/mother/'+c+'.jpg)';
+      }else{
+      	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/guardian/'+c+'.jpg)';
+      }
       self.add_new_student()
       self.title='Update'
       
+    }
+
+    self.cancelOperation = (st) => {
+      self.students.map(c => {
+          c.confirmDelete = false
+          c.confirmEdit = false
+      })
+    }
+    self.confirmDelete = (st) => {
+      self.students.map(c => {
+        if(c.student_id != st.item.st.student_id){
+          c.confirmDelete = false
+        }else{
+          c.confirmDelete = true
+        }
+      })
+    }
+
+    self.delete = (st) => {
+      self.loading = true
+      studentStore.trigger('delete_student', st.item.st.student_id)
+    }
+
+    self.regenerate_roll_no = () =>{
+    	studentStore.trigger('regenerate_roll_no', self.refs.read_section_id.value)
+    }
+
+    self.student_list = () =>{
+    	self.student_view = 'student_list'
+    	var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0!
+
+		var yyyy = today.getFullYear();
+		if(dd<10){
+    		dd='0'+dd;
+		} 
+		if(mm<10){
+    		mm='0'+mm;
+		} 
+		var today = dd+'/'+mm+'/'+yyyy;
+		self.print_date = today
+    	studentStore.trigger('student_list', self.refs.read_section_id.value)
+    }
+
+    self.close_student_list = () => {
+    	self.student_view = 'show_student'	
+    }
+
+    self.print_list = () =>{
+    	var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0!
+
+		var yyyy = today.getFullYear();
+		if(dd<10){
+    		dd='0'+dd;
+		} 
+		if(mm<10){
+    		mm='0'+mm;
+		} 
+		var today = dd+'/'+mm+'/'+yyyy;
+		self.print_date = today
+    	self.student_view = 'print_list'
+    	studentStore.trigger('print_list', self.refs.read_standard_id.value,self.refs.read_section_id.value)
+    }
+
+    self.close_print_list = () => {
+    	self.student_view = 'show_student'	
+    }
+
+    self.viewHouse = () => {
+    	if($('#checkHouse').is(":checked")){
+	        self.house_column = true
+    	}else{
+	        self.house_column = false
+    	}
+    }
+
+    self.AddColumn = () =>{
+
+    	if(self.refs.add_column.value == "0"){
+    		self.column_one = false
+    		self.column_two = false 
+    		self.column_three = false
+    		self.column_four = false   		
+    		self.column_five = false  		
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false 
+    	}else if(self.refs.add_column.value == "1"){
+    		self.column_one = true
+    		self.column_two = false
+    		self.column_three = false
+    		self.column_four = false   		
+    		self.column_five = false  		
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false 
+    	}else if(self.refs.add_column.value == "2"){
+			self.column_one = true
+    		self.column_two = true  
+    		self.column_three = false
+    		self.column_four = false   		
+    		self.column_five = false  		
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false   		
+    	}else if(self.refs.add_column.value == "3"){
+			self.column_one = true
+    		self.column_two = true    		
+    		self.column_three = true 
+    		self.column_four = false   		
+    		self.column_five = false  		
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false   		
+    	}else if(self.refs.add_column.value == "4"){
+			self.column_one = true
+    		self.column_two = true
+    		self.column_three = true
+    		self.column_four = true  
+    		self.column_five = false  		
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false		
+    	}else if(self.refs.add_column.value == "5"){
+			self.column_one = true
+    		self.column_two = true 
+    		self.column_three = true
+    		self.column_four = true   		
+    		self.column_five = true 
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false 		
+    	}else if(self.refs.add_column.value == "6"){
+			self.column_one = true
+    		self.column_two = true  
+    		self.column_three = true
+    		self.column_four = true   		
+    		self.column_five = true  		
+    		self.column_six = true 
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false  		
+    	}else if(self.refs.add_column.value == "7"){
+			self.column_one = true
+    		self.column_two = true  
+    		self.column_three = true
+    		self.column_four = true   		
+    		self.column_five = true  		
+    		self.column_six = true  		
+    		self.column_seven = true 
+    		self.column_eight = false   		
+    		self.column_nine = false  		
+    	}else if(self.refs.add_column.value == "8"){
+			self.column_one = true
+    		self.column_two = true  
+    		self.column_three = true
+    		self.column_four = true   		
+    		self.column_five = true  		
+    		self.column_six = true  		
+    		self.column_seven = true  		
+    		self.column_eight = true  
+    		self.column_nine = false 		
+    	}else if(self.refs.add_column.value == "9"){
+			self.column_one = true
+    		self.column_two = true 
+    		self.column_three = true
+    		self.column_four = true   		
+    		self.column_five = true  		
+    		self.column_six = true  		
+    		self.column_seven = true  		
+    		self.column_eight = true   		
+    		self.column_nine = true   		
+    	}
+    }
+
+    self.view_profile = (c,st) => {
+    	self.student_id = c
+    	self.student_view = 'student_profile'
+    	studentStore.trigger('read_student_profile', self.student_id)
+    	document.getElementById('pp_box1').src = '/images/7/student/'+c+'.jpg';
+    	document.getElementById('f_pp_box1').src = '/images/7/father/'+c+'.jpg';
+        document.getElementById('m_pp_box1').src = '/images/7/mother/'+c+'.jpg';
+        document.getElementById('g_pp_box1').src = '/images/7/guardian/'+c+'.jpg';
+   
+    }
+
+    self.close_student_profile = () => {
+    	self.student_view = 'show_student'	
+    }
+
+    self.clearForm = () => {
+    	self.refs.first_name.value = ""
+    	self.refs.middle_name.value = ""
+    	self.refs.last_name.value = ""
+    	self.refs.enroll_number.value = ""
+    	self.refs.roll_number.value = ""
+    	self.refs.reg_number.value = ""
+    	self.refs.gender.value = ""
+    	self.refs.category_id.value = ""
+    	self.refs.dob.value = ""
+    	self.refs.blood_group.value = ""
+    	self.refs.p_add_l1.value = ""
+    	self.refs.p_add_l2.value = ""
+    	self.refs.p_city.value = ""
+    	self.refs.p_zip.value = ""
+    	self.refs.p_state.value = ""
+    	self.refs.p_country.value = ""
+    	self.refs.c_add_l1.value = ""
+    	self.refs.c_add_l2.value = ""
+    	self.refs.c_city.value = ""
+    	self.refs.c_zip.value = ""
+    	self.refs.c_state.value = ""
+    	self.refs.c_country.value = ""
+    	self.refs.residence_phone.value = ""
+    	self.refs.mobile.value = ""
+    	self.refs.emergency_no.value = ""
+    	self.refs.student_type.value = ""
+    	self.refs.aadhar_no.value = ""
+    	self.refs.doa.value= ""
+    	self.refs.old_doa.value= ""
+    	self.refs.doj.value= ""
+    	self.refs.old_doj.value= ""
+    	self.refs.mother_tongue.value = ""
+    	self.refs.last_school.value = ""
+    	self.refs.last_class.value = ""
+    	self.refs.admission_for_class.value = ""
+    	self.refs.hobby.value = ""
+    	self.refs.cast.value = ""
+    	self.refs.religion_id.value = ""
+    	self.refs.staff_child.value = ""
+    	self.refs.staff_name.value = ""
+
+    	self.refs.transport_mode.value = ""
+    	self.refs.school_distance.value = ""
+    	self.refs.differently_abled.value = ""
+
+    	self.refs.section_id.value = ""
+    	self.refs.house_id.value = ""
+
+    	self.refs.enroll_number.value = ""
+    	self.refs.dob.value =""
+
+    	self.refs.f_title.value = ""
+    	self.refs.f_name.value = ""
+    	self.refs.f_occupation.value = ""
+    	self.refs.f_organisation_type.value = ""
+    	self.refs.f_annual_income.value = ""
+    	self.refs.f_work_profile.value = ""
+    	self.refs.f_organisation_name.value = ""
+    	self.refs.f_designation.value = ""
+    	self.refs.f_department.value = ""
+    	self.refs.f_office_add_l1.value = ""
+    	self.refs.f_office_add_l2.value = ""
+    	self.refs.f_office_city.value = ""
+    	self.refs.f_office_zip.value = ""
+    	self.refs.f_office_state.value = ""
+    	self.refs.f_office_country.value = ""
+    	self.refs.f_office_phone.value = ""
+    	self.refs.f_qualification.value = ""
+    	self.refs.f_other_qualification.value = ""
+
+    	self.refs.f_add_l1.value = ""
+    	self.refs.f_add_l2.value = ""
+    	self.refs.f_city.value = ""
+    	self.refs.f_zip.value = ""
+    	self.refs.f_state.value = ""
+    	self.refs.f_country.value = ""
+    	self.refs.f_mobile.value = ""
+    	self.refs.f_email.value = ""
+    	self.refs.f_nationality.value = ""
+
+    	self.refs.m_title.value = ""
+    	self.refs.m_name.value = ""
+    	self.refs.m_occupation.value = ""
+    	self.refs.m_organisation_type.value = ""
+    	self.refs.m_annual_income.value = ""
+    	self.refs.m_work_profile.value = ""
+    	self.refs.m_organisation_name.value = ""
+    	self.refs.m_designation.value = ""
+    	self.refs.m_department.value = ""
+    	self.refs.m_office_add_l1.value = ""
+    	self.refs.m_office_add_l2.value = ""
+    	self.refs.m_office_city.value = ""
+    	self.refs.m_office_zip.value = ""
+    	self.refs.m_office_state.value = ""
+    	self.refs.m_office_country.value = ""
+    	self.refs.m_office_phone.value = ""
+    	self.refs.m_qualification.value = ""
+    	self.refs.m_other_qualification.value = ""
+
+    	self.refs.m_add_l1.value = ""
+    	self.refs.m_add_l2.value = ""
+    	self.refs.m_city.value = ""
+    	self.refs.m_zip.value = ""
+    	self.refs.m_state.value = ""
+    	self.refs.m_country.value = ""
+    	self.refs.m_mobile.value = ""
+    	self.refs.m_email.value = ""
+    	self.refs.m_nationality.value = ""
+
+        self.refs.g_title.value = ""
+    	self.refs.g_name.value = ""
+    	self.refs.g_occupation.value = ""
+    	self.refs.g_organisation_type.value = ""
+    	self.refs.g_annual_income.value = ""
+    	self.refs.g_work_profile.value = ""
+    	self.refs.g_organisation_name.value = ""
+    	self.refs.g_designation.value = ""
+    	self.refs.g_department.value = ""
+    	self.refs.g_office_add_l1.value = ""
+    	self.refs.g_office_add_l2.value = ""
+    	self.refs.g_office_city.value = ""
+    	self.refs.g_office_zip.value = ""
+    	self.refs.g_office_state.value = ""
+    	self.refs.g_office_country.value = ""
+    	self.refs.g_office_phone.value = ""
+    	self.refs.g_qualification.value = ""
+    	self.refs.g_other_qualification.value = ""
+    	self.refs.g_add_l1.value = ""
+    	self.refs.g_add_l2.value = ""
+    	self.refs.g_city.value = ""
+    	self.refs.g_zip.value = ""
+    	self.refs.g_state.value = ""
+    	self.refs.g_country.value = ""
+    	self.refs.g_phone.value = ""
+    	self.refs.g_mobile.value = ""
+    	self.refs.g_email.value = ""
+    	self.refs.g_nationality.value = ""
+    	self.refs.g_relation.value = ""
+
+    	self.refs.first_child_name.value = ""
+    	self.refs.first_child_age.value = ""
+    	self.refs.first_child_class.value = ""
+    	self.refs.first_child_section.value = ""
+    	self.refs.first_enrol.value = ""
+    	self.refs.first_child_school.value = ""
+
+    	self.refs.second_child_name.value = ""
+    	self.refs.second_child_age.value = ""
+    	self.refs.second_child_class.value = ""
+    	self.refs.second_child_section.value = ""
+    	self.refs.second_enrol.value = ""
+    	self.refs.second_child_school.value = ""
+
+    	self.refs.third_child_name.value = ""
+    	self.refs.third_child_age.value = ""
+    	self.refs.third_child_class.value = ""
+    	self.refs.third_child_section.value = ""
+    	self.refs.third_enrol.value = ""
+    	self.refs.third_child_school.value = ""
+
+    	self.refs.fourth_child_name.value = ""
+    	self.refs.fourth_child_age.value = ""
+    	self.refs.fourth_child_class.value = ""
+    	self.refs.fourth_child_section.value = ""
+    	self.refs.fourth_enrol.value = ""
+    	self.refs.fourth_child_school.value = ""
     }
 
     studentStore.on('read_standard_changed',StandardChanged)
@@ -2102,6 +3166,7 @@
       self.sections = sections
       self.update()
       self.getReadSection()
+      self.getReadSectionForWithdraw()
     }
 
     studentStore.on('read_house_changed',HouseChanged)
@@ -2132,21 +3197,382 @@
       self.update()
     }
 
+    studentStore.on('read_student_profile_changed',StudentProfileChanged)
+    function StudentProfileChanged(student_profile_details){
+    	self.st=student_profile_details[0]
+    	console.log(student_profile_details) 
+      	self.student_profile_details = student_profile_details
+      	self.refs.first_name.value = student_profile_details[0].first_name
+      	self.refs.middle_name.value = student_profile_details[0].middle_name
+      	self.refs.last_name.value = student_profile_details[0].last_name
+      	self.refs.standard_id.value = student_profile_details[0].standard_id
+      	self.filteredSections = []
+    	self.filteredSections = self.sections.filter(s => {
+    		return s.standard_id == student_profile_details[0].standard_id
+    	})
+    	self.refs.house_id.value = student_profile_details[0].house_id
+    	self.refs.enroll_number.value = student_profile_details[0].enroll_number
+		self.refs.roll_number.value = student_profile_details[0].roll_number
+		self.refs.reg_number.value = student_profile_details[0].reg_number
+		self.refs.gender.value = student_profile_details[0].gender
+		self.refs.category_id.value = student_profile_details[0].category_id
+		self.refs.dob.value = student_profile_details[0].dob
+		self.refs.blood_group.value = student_profile_details[0].blood_group
+		self.refs.p_add_l1.value = student_profile_details[0].p_add_l1
+		self.refs.p_add_l2.value = student_profile_details[0].p_add_l2
+		self.refs.p_city.value = student_profile_details[0].p_city
+		self.refs.p_zip.value = student_profile_details[0].p_zip
+		self.refs.p_state.value = student_profile_details[0].p_state
+		self.refs.p_country.value = student_profile_details[0].p_country
+		
+		if(student_profile_details[0].is_permanent == 1){
+			$('#correspondenceCheckbox').prop('checked', true)
+		}
+		else{
+			$('#correspondenceCheckbox').prop('checked', false)
+		}
+		self.refs.c_add_l1.value=student_profile_details[0].c_add_l1
+    	self.refs.c_add_l2.value=student_profile_details[0].c_add_l2
+    	self.refs.c_city.value=student_profile_details[0].c_city
+    	self.refs.c_zip.value=student_profile_details[0].c_zip
+    	self.refs.c_state.value=student_profile_details[0].c_state
+    	self.refs.c_country.value=student_profile_details[0].c_country
+
+		self.refs.mobile.value = student_profile_details[0].mobile
+		self.refs.emergency_no.value = student_profile_details[0].fax
+		self.refs.student_type.value = student_profile_details[0].student_type
+		self.refs.aadhar_no.value = student_profile_details[0].aadhar_no
+		self.refs.doa.value = student_profile_details[0].doa
+		self.refs.old_doa.value = student_profile_details[0].old_doa
+		self.refs.doj.value = student_profile_details[0].doj
+		self.refs.old_doj.value = student_profile_details[0].old_doj
+		self.refs.mother_tongue.value = student_profile_details[0].mother_tongue
+		self.refs.last_school.value = student_profile_details[0].last_school
+		self.refs.last_class.value = student_profile_details[0].last_class
+		self.refs.admission_for_class.value = student_profile_details[0].admission_for_class
+		self.refs.hobby.value = student_profile_details[0].hobby
+		self.refs.cast.value = student_profile_details[0].cast
+		self.refs.religion_id.value = student_profile_details[0].religion_id
+		self.refs.staff_child.value = student_profile_details[0].staff_child
+		if(self.refs.staff_child.value == "Y"){
+    		self.staff_name = true
+    	}else{
+    		self.staff_name = false
+    	}
+    	self.refs.f_title.value = student_profile_details[0].f_title
+		self.refs.f_name.value = student_profile_details[0].f_name
+		self.refs.f_occupation.value = student_profile_details[0].f_occupation
+		self.refs.f_organisation_type.value = student_profile_details[0].f_organisation_type
+		self.refs.f_annual_income.value = student_profile_details[0].f_annual_income
+		self.refs.f_work_profile.value = student_profile_details[0].f_work_profile
+		self.refs.f_organisation_name.value = student_profile_details[0].f_organisation_name
+		self.refs.f_designation.value = student_profile_details[0].f_designation
+		self.refs.f_department.value = student_profile_details[0].f_department
+		self.refs.f_office_add_l1.value = student_profile_details[0].f_office_add_l1
+		self.refs.f_office_add_l2.value = student_profile_details[0].f_office_add_l2
+		self.refs.f_office_city.value = student_profile_details[0].f_office_city
+		self.refs.f_office_zip.value = student_profile_details[0].f_office_zip
+		self.refs.f_office_state.value = student_profile_details[0].f_office_state
+		self.refs.f_office_country.value = student_profile_details[0].f_office_country
+		self.refs.f_office_phone.value = student_profile_details[0].f_office_phone
+		self.refs.f_qualification.value = student_profile_details[0].f_school_exam_passed
+		self.refs.f_other_qualification.value = student_profile_details[0].f_college_exam_passed
+		self.refs.f_mobile.value = student_profile_details[0].f_mobile
+		self.refs.f_email.value = student_profile_details[0].f_email
+		self.refs.f_nationality.value = student_profile_details[0].f_nationality
+
+    	if(student_profile_details[0].is_caddress == 1){
+			$('#fatherCorrespondenceCheckbox').prop('checked', true)
+		}
+		else{
+			$('#fatherCorrespondenceCheckbox').prop('checked', false)
+		}
+		self.refs.f_add_l1.value=student_profile_details[0].f_add_l1
+		self.refs.f_add_l2.value=student_profile_details[0].f_add_l2
+		self.refs.f_city.value=student_profile_details[0].f_city
+		self.refs.f_zip.value=student_profile_details[0].f_zip
+		self.refs.f_state.value=student_profile_details[0].f_state
+		self.refs.f_country.value=student_profile_details[0].f_country
+
+		self.refs.m_title.value = student_profile_details[0].m_title
+		self.refs.m_name.value = student_profile_details[0].m_name
+		self.refs.m_occupation.value = student_profile_details[0].m_occupation
+		self.refs.m_organisation_type.value = student_profile_details[0].m_organisation_type
+		self.refs.m_annual_income.value = student_profile_details[0].m_annual_income
+		self.refs.m_work_profile.value = student_profile_details[0].m_work_profile
+		self.refs.m_organisation_name.value = student_profile_details[0].m_organisation_name
+		self.refs.m_designation.value = student_profile_details[0].m_designation
+		self.refs.m_department.value = student_profile_details[0].m_department
+		self.refs.m_office_add_l1.value = student_profile_details[0].m_office_add_l1
+		self.refs.m_office_add_l2.value = student_profile_details[0].m_office_add_l2
+		self.refs.m_office_city.value = student_profile_details[0].m_office_city
+		self.refs.m_office_zip.value = student_profile_details[0].m_office_zip
+		self.refs.m_office_state.value = student_profile_details[0].m_office_state
+		self.refs.m_office_country.value = student_profile_details[0].m_office_country
+		self.refs.m_office_phone.value = student_profile_details[0].m_office_phone
+		self.refs.m_qualification.value = student_profile_details[0].m_school_exam_passed
+		self.refs.m_other_qualification.value = student_profile_details[0].m_college_exam_passed
+
+		if(student_profile_details[0].is_motherAdd == 1){
+			$('#motherCorrespondenceCheckbox').prop('checked', true)
+		}
+		else{
+			$('#motherCorrespondenceCheckbox').prop('checked', false)
+		}
+
+		self.refs.m_add_l1.value = student_profile_details[0].m_add_l1
+		self.refs.m_add_l2.value = student_profile_details[0].m_add_l2
+		self.refs.m_city.value = student_profile_details[0].m_city
+		self.refs.m_zip.value = student_profile_details[0].m_zip
+		self.refs.m_state.value = student_profile_details[0].m_state
+		self.refs.m_country.value = student_profile_details[0].m_country
+		self.refs.m_mobile.value = student_profile_details[0].m_mobile
+		self.refs.m_email.value = student_profile_details[0].m_email
+		self.refs.m_nationality.value = student_profile_details[0].m_nationality
+
+		if(student_profile_details[0].is_guardian == 'Father'){
+			self.refs.is_guardian.value = 'Father'
+		}else if(student_profile_details[0].is_guardian == 'Mother'){
+			self.refs.is_guardian.value = 'Mother'
+		}else{
+			self.refs.is_guardian.value = 'Other'
+		}
+		self.refs.g_title.value = student_profile_details[0].g_title
+		self.refs.g_name.value = student_profile_details[0].g_name
+		self.refs.g_occupation.value = student_profile_details[0].g_occupation
+		self.refs.g_organisation_type.value = student_profile_details[0].g_organisation_type
+		self.refs.g_annual_income.value = student_profile_details[0].g_annual_income
+		self.refs.g_work_profile.value = student_profile_details[0].g_work_profile
+		self.refs.g_organisation_name.value = student_profile_details[0].g_organisation_name
+		self.refs.g_designation.value = student_profile_details[0].g_designation
+		self.refs.g_department.value = student_profile_details[0].g_department
+		self.refs.g_office_add_l1.value = student_profile_details[0].g_office_add_l1
+		self.refs.g_office_add_l2.value = student_profile_details[0].g_office_add_l2
+		self.refs.g_office_city.value = student_profile_details[0].g_office_city
+		self.refs.g_office_zip.value = student_profile_details[0].g_office_zip
+		self.refs.g_office_state.value = student_profile_details[0].g_office_state
+		self.refs.g_office_country.value = student_profile_details[0].g_office_country
+		self.refs.g_office_phone.value = student_profile_details[0].g_office_phone
+		self.refs.g_qualification.value = student_profile_details[0].g_school_exam_passed
+		self.refs.g_other_qualification.value = student_profile_details[0].g_college_exam_passed
+		self.refs.g_add_l1.value = student_profile_details[0].g_add_l1
+		self.refs.g_add_l2.value = student_profile_details[0].g_add_l2
+		self.refs.g_city.value = student_profile_details[0].g_city
+		self.refs.g_zip.value = student_profile_details[0].g_zip
+		self.refs.g_state.value = student_profile_details[0].g_state
+		self.refs.g_country.value = student_profile_details[0].g_country
+		self.refs.g_phone.value = student_profile_details[0].g_phone
+		self.refs.g_mobile.value = student_profile_details[0].g_mobile
+		self.refs.g_email.value = student_profile_details[0].g_email
+		self.refs.g_nationality.value = student_profile_details[0].g_nationality
+		self.refs.g_relation.value = student_profile_details[0].g_relation
+
+		self.refs.first_child_name.value = student_profile_details[0].first_child_name
+		self.refs.first_child_age.value = student_profile_details[0].first_child_age
+		self.refs.first_child_class.value = student_profile_details[0].first_child_class
+		self.refs.first_child_section.value = student_profile_details[0].first_child_section
+		self.refs.first_enrol.value = student_profile_details[0].first_enrol
+		self.refs.first_child_school.value = student_profile_details[0].first_child_school
+		self.refs.second_child_name.value = student_profile_details[0].second_child_name
+		self.refs.second_child_age.value = student_profile_details[0].second_child_age
+		self.refs.second_child_class.value = student_profile_details[0].second_child_class
+		self.refs.second_child_section.value = student_profile_details[0].second_child_section
+		self.refs.second_enrol.value = student_profile_details[0].second_enrol
+		self.refs.second_child_school.value = student_profile_details[0].second_child_school
+		self.refs.third_child_name.value = student_profile_details[0].third_child_name
+		self.refs.third_child_age.value = student_profile_details[0].third_child_age
+		self.refs.third_child_class.value = student_profile_details[0].third_child_class
+		self.refs.third_child_section.value = student_profile_details[0].third_child_section
+		self.refs.third_enrol.value = student_profile_details[0].third_enrol
+		self.refs.third_child_school.value = student_profile_details[0].third_child_school
+		self.refs.fourth_child_name.value = student_profile_details[0].fourth_child_name
+		self.refs.fourth_child_age.value = student_profile_details[0].fourth_child_age
+		self.refs.fourth_child_class.value = student_profile_details[0].fourth_child_class
+		self.refs.fourth_child_section.value = student_profile_details[0].fourth_child_section
+		self.refs.fourth_enrol.value = student_profile_details[0].fourth_enrol
+		self.refs.fourth_child_school.value = student_profile_details[0].fourth_child_school
+
+
+		if(student_profile_details[0].music == 1){
+			$('#music').prop('checked', true)
+		}
+		else{
+			$('#music').prop('checked', false)
+		}
+
+		if(student_profile_details[0].sports == 1){
+			$('#sports').prop('checked', true)
+		}
+		else{
+			$('#sports').prop('checked', false)
+		}
+
+		if(student_profile_details[0].social == 1){
+			$('#social').prop('checked', true)
+		}
+		else{
+			$('#social').prop('checked', false)
+		}
+
+		if(student_profile_details[0].media == 1){
+			$('#media').prop('checked', true)
+		}
+		else{
+			$('#media').prop('checked', false)
+		}
+
+		if(student_profile_details[0].academic == 1){
+			$('#academic').prop('checked', true)
+		}
+		else{
+			$('#academic').prop('checked', false)
+		}
+
+		if(student_profile_details[0].community == 1){
+			$('#community').prop('checked', true)
+		}
+		else{
+			$('#community').prop('checked', false)
+		}
+
+		if(student_profile_details[0].painting == 1){
+			$('#painting').prop('checked', true)
+		}
+		else{
+			$('#painting').prop('checked', false)
+		}
+
+		if(student_profile_details[0].information == 1){
+			$('#information').prop('checked', true)
+		}
+		else{
+			$('#information').prop('checked', false)
+		}
+
+		if(student_profile_details[0].hr_training == 1){
+			$('#hr_training').prop('checked', true)
+		}
+		else{
+			$('#hr_training').prop('checked', false)
+		}
+
+		if(student_profile_details[0].medical == 1){
+			$('#medical').prop('checked', true)
+		}
+		else{
+			$('#medical').prop('checked', false)
+		}
+
+		if(student_profile_details[0].career == 1){
+			$('#career').prop('checked', true)
+		}
+		else{
+			$('#career').prop('checked', false)
+		}
+
+		if(student_profile_details[0].communication == 1){
+			$('#communication').prop('checked', true)
+		}
+		else{
+			$('#communication').prop('checked', false)
+		}
+
+		if(student_profile_details[0].med == 1){
+			$('#med').prop('checked', true)
+		}
+		else{
+			$('#med').prop('checked', false)
+		}
+
+		if(student_profile_details[0].bed == 1){
+			$('#bed').prop('checked', true)
+		}
+		else{
+			$('#bed').prop('checked', false)
+		}
+
+		if(student_profile_details[0].ttc == 1){
+			$('#ttc').prop('checked', true)
+		}
+		else{
+			$('#ttc').prop('checked', false)
+		}
+
+		if(student_profile_details[0].montessori == 1){
+			$('#montessori').prop('checked', true)
+		}
+		else{
+			$('#montessori').prop('checked', false)
+		}
+
+		self.refs.transport_mode.value = student_profile_details[0].transport_mode
+		self.refs.school_distance.value = student_profile_details[0].school_distance
+		self.refs.differently_abled.value = student_profile_details[0].differently_abled
+		self.student_id = student_profile_details[0].student_id
+		self.refs.staff_name.value = student_profile_details[0].staff_name
+        self.refs.section_id.value = student_profile_details[0].section_id
+      	self.update()
+    }
+
     studentStore.on('add_student_changed',AddStudentChanged)
-    function AddStudentChanged(students){
+    function AddStudentChanged(students,student_id){
       console.log(students) 
       self.students = students
+      self.uploadStudentImage(student_id)
+      self.uploadFatherImage(student_id)
+      self.uploadMotherImage(student_id)
+      self.uploadGuardianImage(student_id)
+      self.read_student()
+      self.update()
+    }
+
+    studentStore.on('edit_student_changed',EditStudentChanged)
+    function EditStudentChanged(students){
+      console.log(students) 
+      self.students = students
+      console.log(self.student_id)
+      self.uploadStudentImage(self.student_id)
+      self.uploadFatherImage(self.student_id)
+      self.uploadMotherImage(self.student_id)
+      self.uploadGuardianImage(self.student_id)
+      self.clearForm()
+      self.read_student()
+      self.update()
+    }
+
+    studentStore.on('delete_student_changed',DeleteStudentChanged)
+    function DeleteStudentChanged(students){
+      console.log(students) 
+      self.students = students
+      self.update()
+    }
+
+    studentStore.on('student_list_changed',StudentListChanged)
+    function StudentListChanged(student_list,total){
+      console.log(student_list)
+      self.student_list = student_list
+      self.total_student = total
+      self.sl=student_list[0]
+      self.update()
+    }
+
+    studentStore.on('print_list_changed',PrintListChanged)
+    function PrintListChanged(print_list){
+      console.log(print_list)
+      self.print_list = print_list
+      self.pl=print_list[0]
+      self.update()
+    }
+
+    studentStore.on('create_student_withdraw_changed',WithDrawStudentChanged)
+    function WithDrawStudentChanged(withdraw_students){
+      self.closewithdrawModal();
       self.update()
     }
 
     studentStore.on('read_for_edit_student_changed',ReadForEditStudentChanged)
     function ReadForEditStudentChanged(student_details){
      	console.log(student_details) 
-      	flatpickr(".date", {
-    		allowInput: true,
-    		altFormat: "d/m/Y",
-    		dateFormat: "Y-m-d",
-  		})
       	self.student_details = student_details
       	self.refs.first_name.value = student_details[0].first_name
       	self.refs.middle_name.value = student_details[0].middle_name
@@ -2162,7 +3588,7 @@
 		self.refs.reg_number.value = student_details[0].reg_number
 		self.refs.gender.value = student_details[0].gender
 		self.refs.category_id.value = student_details[0].category_id
-		self.refs.dob.value = student_details[0].edit_dob
+		self.refs.dob.value = student_details[0].dob
 		self.refs.blood_group.value = student_details[0].blood_group
 		self.refs.p_add_l1.value = student_details[0].p_add_l1
 		self.refs.p_add_l2.value = student_details[0].p_add_l2
@@ -2188,10 +3614,10 @@
 		self.refs.emergency_no.value = student_details[0].fax
 		self.refs.student_type.value = student_details[0].student_type
 		self.refs.aadhar_no.value = student_details[0].aadhar_no
-		self.refs.doa.value = student_details[0].edit_doa
-		self.refs.old_doa.value = student_details[0].edit_old_doa
-		self.refs.doj.value = student_details[0].edit_doj
-		self.refs.old_doj.value = student_details[0].edit_old_doj
+		self.refs.doa.value = student_details[0].doa
+		self.refs.old_doa.value = student_details[0].old_doa
+		self.refs.doj.value = student_details[0].doj
+		self.refs.old_doj.value = student_details[0].old_doj
 		self.refs.mother_tongue.value = student_details[0].mother_tongue
 		self.refs.last_school.value = student_details[0].last_school
 		self.refs.last_class.value = student_details[0].last_class
@@ -2278,7 +3704,7 @@
 
 		if(student_details[0].is_guardian == 'Father'){
 			self.refs.is_guardian.value = 'Father'
-		}else if(student_details[0].is_guardian == 'Father'){
+		}else if(student_details[0].is_guardian == 'Mother'){
 			self.refs.is_guardian.value = 'Mother'
 		}else{
 			self.refs.is_guardian.value = 'Other'
@@ -2454,11 +3880,35 @@
 		self.refs.transport_mode.value = student_details[0].transport_mode
 		self.refs.school_distance.value = student_details[0].school_distance
 		self.refs.differently_abled.value = student_details[0].differently_abled
-
+		self.student_id = student_details[0].student_id
 		self.update()
 		self.refs.staff_name.value = student_details[0].staff_name
         self.refs.section_id.value = student_details[0].section_id
 
+    }
+
+    studentStore.on('upload_student_image_changed',UploadStudentImage)
+    function UploadStudentImage(image_name){
+      console.log(image_name) 
+      self.student_profile_picture = image_name
+    }
+
+    studentStore.on('upload_father_image_changed',UploadFatherImage)
+    function UploadFatherImage(image_name){
+      console.log(image_name) 
+      self.father_profile_picture = image_name
+    }
+
+    studentStore.on('upload_mother_image_changed',UploadMotherImage)
+    function UploadMotherImage(image_name){
+      console.log(image_name) 
+      self.mother_profile_picture = image_name
+    }
+
+    studentStore.on('upload_guardian_image_changed',UploadGuardianImage)
+    function UploadGuardianImage(image_name){
+      console.log(image_name) 
+      self.guardian_profile_picture = image_name
     }
 </script>
 </student>

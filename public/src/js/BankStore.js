@@ -5,7 +5,7 @@ function BankStore() {
   self.banks = []
 
   self.on('read_bank', function() {
-    console.log('i am in read_categories api call from ajax')
+    console.log('i am in read bank api call from ajax')
     let req = {}
     $.ajax({
       url:'/bank',

@@ -49,7 +49,7 @@
 			<tbody>
 				<tr each={ev, i in employeeRoles}>
 					<td>{ i+1 }</td>
-					<td>{ ev.name}</td>
+					<td>{ ev.employee_name}</td>
 					<td>{ ev.role}</td>
 		          	<td class="has-text-right">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>

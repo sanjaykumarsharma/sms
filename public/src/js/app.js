@@ -112,7 +112,14 @@ var feeSlipStore = new FeeSlipStore()
 RiotControl.addStore(feeSlipStore)
 
 var scholarshipStore = new ScholarshipStore() 
-RiotControl.addStore(scholarshipStore) 
+RiotControl.addStore(scholarshipStore)
+
+var feeReceivedStore = new FeeReceivedStore() 
+RiotControl.addStore(feeReceivedStore) 
+
+var feesReportStore = new FeesReportStore() 
+RiotControl.addStore(feesReportStore)
+
 
 
 //bodhi
@@ -155,8 +162,26 @@ RiotControl.addStore(disciplinedetailStore)
 var disciplineReportStore = new DisciplineReportStore() 
 RiotControl.addStore(disciplineReportStore)
 
+var activityReportStore = new ActivityReportStore() 
+RiotControl.addStore(activityReportStore)
+
 var studentStore = new StudentStore() 
 RiotControl.addStore(studentStore)
+
+var studentinfoupdateStore = new StudentInfoUpdateStore() 
+RiotControl.addStore(studentinfoupdateStore)
+
+var employeeNotificationStore = new EmployeeNotificationStore()
+RiotControl.addStore(employeeNotificationStore)
+
+var studentNotificationStore = new StudentNotificationStore()
+RiotControl.addStore(studentNotificationStore)
+
+var idSignatureStore = new IdSignatureStore()
+RiotControl.addStore(idSignatureStore)
+
+var idCardStore = new IdCardStore()
+RiotControl.addStore(idCardStore)
 
 //tarique
 var roleStore = new RoleStore() 
@@ -176,6 +201,9 @@ RiotControl.addStore(levelStore)
 
 var countryStore = new CountryStore() 
 RiotControl.addStore(countryStore) 
+
+var subjectStore = new SubjectStore() 
+RiotControl.addStore(subjectStore) 
 
 var cityStore = new CityStore() 
 RiotControl.addStore(cityStore) 
@@ -206,6 +234,9 @@ RiotControl.addStore(remarkStore) ;
 
 var inventorydepartmentStore = new InventoryDepartmentStore() 
 RiotControl.addStore(inventorydepartmentStore) ;
+
+var departmentStore = new DepartmentStore() 
+RiotControl.addStore(departmentStore) ;
 
 var employmentStatusStore = new EmploymentStatusStore() 
 RiotControl.addStore(employmentStatusStore) 
@@ -266,6 +297,25 @@ RiotControl.addStore(inventoryIssueStore)
 
 var inventorySaleStore  = new InventorySaleStore() 
 RiotControl.addStore(inventorySaleStore)
+
+var inventoryReportStore  = new InventoryReportStore() 
+RiotControl.addStore(inventoryReportStore)
+
+var staffStore  = new StaffStore() 
+RiotControl.addStore(staffStore)
+
+var studentSearchStore  = new StudentSearchStore() 
+RiotControl.addStore(studentSearchStore)
+
+var birthDayStore  = new BirthDayStore() 
+RiotControl.addStore(birthDayStore)
+
+var attendanceStore  = new AttendanceStore() 
+RiotControl.addStore(attendanceStore)
+
+var adminReportStore  = new AdminReportStore() 
+RiotControl.addStore(adminReportStore)
+
 
 var currentPage = null;
 
@@ -348,8 +398,29 @@ let goTo = (path1, path2, path3) => {
     case 'student-result-activation':
       currentPage = riot.mount('div#view', 'student-result-activation')[0];
     break;
+    case 'student-info-update':
+      currentPage = riot.mount('div#view', 'student-info-update')[0];
+    break;
+    case 'id-card':
+      currentPage = riot.mount('div#view', 'id-card')[0];
+    break;
+    case 'id-signature':
+      currentPage = riot.mount('div#view', 'id-signature')[0];
+    break;
+/*===========qadir start ==========*/
+case 'receive-fees':
+        currentPage = riot.mount('div#view', 'receive-fees', {selected_master: path1})[0];
+         switch(path2){
+          case 'receive-fees':
+            riot.mount("div#setting-view", 'receive-fees')
+          break;
+        }
+    break;
+    
     case 'fee-bill':
       currentPage = riot.mount('div#view', 'bill', {selected_master: path2})[0];
+      console.log("currentPage = ")
+      console.log(currentPage)
       switch(path2){
         case 'fee-head':
           riot.mount("div#bill-view", 'fee-head')
@@ -370,6 +441,78 @@ let goTo = (path1, path2, path3) => {
           riot.mount("div#bill-view", 'fee-head')
       }
     break;
+    case 'fees-report':
+      currentPage = riot.mount('div#view', 'fees-report', {selected_master: path2})[0];
+      console.log("currentPage = ")
+      console.log(currentPage)
+      switch(path2){
+        case 'month-wise':
+          riot.mount("div#fees-report-view", 'month-wise')
+        break;
+        case 'daily-collection':
+          riot.mount("div#fees-report-view", 'daily-collection')
+        break;
+        case 'daily-register':
+          riot.mount("div#fees-report-view", 'daily-register')
+        break;
+        case 'bank-wise':
+          riot.mount("div#fees-report-view", 'bank-wise')
+        break;
+        case 'date-wise':
+          riot.mount("div#fees-report-view", 'date-wise')
+        break;
+        case 'head-wise-summary':
+          riot.mount("div#fees-report-view", 'head-wise-summary')
+        break;
+        case 'head-wise':
+          riot.mount("div#fees-report-view", 'head-wise')
+        break;
+        case 'outstanding-fees':
+          riot.mount("div#fees-report-view", 'outstanding-fees')
+        break;
+        case 'outstanding-fees-class':
+          riot.mount("div#fees-report-view", 'outstanding-fees-class')
+        break;
+        case 'due-by-class':
+          riot.mount("div#fees-report-view", 'due-by-class')
+        break;
+        case 'fees-collection-summary':
+          riot.mount("div#fees-report-view", 'fees-collection-summary')
+        break;
+        case 'fees-collection-summary':
+          riot.mount("div#fees-report-view", 'fees-collection-summary')
+        break;
+        case 'estimated-fees':
+          riot.mount("div#fees-report-view", 'estimated-fees')
+        break;
+        case 'advance-by-class':
+          riot.mount("div#fees-report-view", 'advance-by-class')
+        break;
+        case 'advance-fees':
+          riot.mount("div#fees-report-view", 'advance-fees')
+        break;
+        case 'scholarship-list':
+          riot.mount("div#fees-report-view", 'scholarship-list')
+        break;
+        case 'issued-letter':
+          riot.mount("div#fees-report-view", 'issued-letter')
+        break;
+        case 'fees-scheme-report':
+          riot.mount("div#fees-report-view", 'fees-scheme-report')
+        break;
+        case 'fees-scheme-assigned':
+          riot.mount("div#fees-report-view", 'fees-scheme-assigned')
+        break;
+        case 'fees-scheme-unassigned':
+          riot.mount("div#fees-report-view", 'fees-scheme-unassigned')
+        break;
+        default:
+          riot.mount("div#fees-report-view", 'month-wise')
+      }
+    break;
+
+
+
     case 'scholarship':
         currentPage = riot.mount('div#view', 'scholarship', {selected_master: path1})[0];
          switch(path2){
@@ -378,6 +521,7 @@ let goTo = (path1, path2, path3) => {
           break;
         }
     break;
+
     case 'fees-setting':
       currentPage = riot.mount('div#view', 'fees-setting', {selected_master: path2})[0];
       switch(path2){
@@ -394,6 +538,7 @@ let goTo = (path1, path2, path3) => {
           riot.mount("div#setting-view", 'fine-setting')
       }
     break;
+    /*==============qadir end ======*/
     case 'activity-detail':
       currentPage = riot.mount('div#view', 'activity-detail')[0];
     break;
@@ -412,6 +557,34 @@ let goTo = (path1, path2, path3) => {
         default:
           riot.mount("div#activity-setting-view", 'activity-item')
       }
+    break;
+    case 'activity-report':
+     currentPage = riot.mount('div#view', 'activity-report', {selected_master: path2})[0];
+     switch(path2){
+       case 'activity-date-wise-report':
+         riot.mount("div#activity-report-view", 'activity-date-wise-report')
+       break;
+       case 'activity-session-wise-report':
+         riot.mount("div#activity-report-view", 'activity-session-wise-report')
+       break;
+       case 'activity-event-wise-report':
+         riot.mount("div#activity-report-view", 'activity-event-wise-report')
+       break;
+       case 'activity-student-event-report':
+         riot.mount("div#activity-report-view", 'activity-student-event-report')
+       break;
+       case 'activity-event-wise-graph-report':
+         riot.mount("div#activity-report-view", 'activity-event-wise-graph-report')
+       break;
+       default:
+         riot.mount("div#activity-report-view", 'activity-date-wise-report')
+     }
+    break;
+    case 'employee-notification':
+     currentPage = riot.mount('div#view', 'employee-notification')[0];
+    break;
+    case 'student-notification':
+     currentPage = riot.mount('div#view', 'student-notification')[0];
     break;
     case 'mentor-detail':
       currentPage = riot.mount('div#view', 'mentor-detail')[0];
@@ -481,6 +654,80 @@ let goTo = (path1, path2, path3) => {
       }
     break;
     //tarique
+    case 'staff':
+          riot.mount("div#view", 'staff')
+    break;
+    case 'ex-staff':
+          riot.mount("div#view", 'ex-staff')
+    break;
+    case 'browse-staff':
+          riot.mount("div#view", 'browse-staff')
+    break;
+    case 'student-search':
+          riot.mount("div#view", 'student-search')
+    break;
+    case 'student-browser':
+          riot.mount("div#view", 'student-browser')
+    break;
+    case 'occupation-report':
+          riot.mount("div#view", 'occupation-report')
+    break;
+    case 'birthday':
+          riot.mount("div#view", 'birthday')
+    break;
+    case 'attendance-entry':
+          riot.mount("div#view", 'attendance-entry')
+    break;
+    case 'daily-attendance':
+          riot.mount("div#view", 'daily-attendance')
+    break;
+    case 'admin-report':
+      currentPage = riot.mount('div#view', 'admin-report', {selected_admin_report: path2})[0];
+      switch(path2){
+        case 'student-summary-report':
+          riot.mount("div#admin-report-view", 'student-summary-report')
+        break;
+        case 'student-strength-report':
+          riot.mount("div#admin-report-view", 'student-strength-report')
+        break;
+        case 'student-category-summary-report':
+          riot.mount("div#admin-report-view", 'student-category-summary-report')
+        break;
+        case 'student-category-strength-report':
+          riot.mount("div#admin-report-view", 'student-category-strength-report')
+        break;
+        case 'student-religion-strength-report':
+          riot.mount("div#admin-report-view", 'student-religion-strength-report')
+        break;
+        case 'student-group-report':
+          riot.mount("div#admin-report-view", 'student-group-report')
+        break;
+        case 'student-house-report':
+          riot.mount("div#admin-report-view", 'student-house-report')
+        break;
+        case 'student-class-teacher-report':
+          riot.mount("div#admin-report-view", 'student-class-teacher-report')
+        break;
+        case 'new-admission-report':
+          currentPage = riot.mount('div#admin-report-view', 'new-admission-report', {selected_new_admission_report: path3})[0];
+          switch(path3){
+
+            case 'new-admission-category-report':
+              riot.mount("div#new-admission-report-view", 'new-admission-category-report')
+            break;
+            case 'new-admission-list-report':
+              riot.mount("div#new-admission-report-view", 'new-admission-list-report')
+            break;
+            default:
+              riot.mount("div#new-admission-report-view", 'new-admission-category-report')
+
+          }
+        break;
+        default:
+          riot.mount("div#admin-report-view", 'student-summary-report')
+      }
+    break;
+   
     case 'inventory-stock':
       currentPage = riot.mount('div#view', 'inventory-stock')[0];
     break; 
@@ -489,6 +736,9 @@ let goTo = (path1, path2, path3) => {
     break;
     case 'inventory-issue':
       currentPage = riot.mount('div#view', 'inventory-issue')[0];
+    break;
+     case 'inventory-returnable':
+      currentPage = riot.mount('div#view', 'inventory-returnable')[0];
     break;
     case 'setting':
       currentPage = riot.mount('div#view', 'setting', {selected_master: path2})[0];
@@ -504,8 +754,34 @@ let goTo = (path1, path2, path3) => {
         break;
         default:
           riot.mount("div#setting-view", 'item')
-      }
+        }
     break;
+    case 'inventory-report':
+      currentPage = riot.mount('div#view', 'inventory-report', {selected_inventory_report: path2})[0];
+      switch(path2){
+        case 'inventory-received-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-received-goods-report')
+        break;
+        case 'inventory-issued-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-issued-goods-report')
+        break;
+        case 'inventory-person-wise-issued-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-person-wise-issued-goods-report')
+        break;
+        case 'inventory-item-wise-issued-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-item-wise-issued-goods-report')
+        break;
+        case 'inventory-sales-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-sales-goods-report')
+        break;
+        case 'inventory-return-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-return-goods-report')
+        break;
+        default:
+          riot.mount("div#inventory-report-view", 'inventory-received-goods-report')
+        }
+    break;
+
     case 'infirmary-setting':
       currentPage = riot.mount('div#view', 'infirmary-setting', {selected_master: path2})[0];
       switch(path2){
@@ -541,7 +817,7 @@ let goTo = (path1, path2, path3) => {
           riot.mount("div#inventory-setting-view", 'inventory-rack')
       } 
       break;  
-    case 'master':
+     case 'master':
       currentPage = riot.mount('div#view', 'master', {selected_master: path2})[0];
       switch(path2){
         case 'employee-type':
@@ -559,9 +835,17 @@ let goTo = (path1, path2, path3) => {
         case 'employment-status':
           riot.mount("div#master-view", 'employment-status')
         break;
-
         case 'role':
           riot.mount("div#master-view", 'role')
+        break;
+        case 'category':
+          riot.mount("div#master-view", 'category')
+        break;
+        case 'subject':
+          riot.mount("div#master-view", 'subject')
+        break;
+         case 'class-teacher-master':
+          riot.mount("div#master-view", 'class-teacher-master')
         break;
         case 'country':
           riot.mount("div#master-view", 'country')
@@ -617,6 +901,7 @@ let goTo = (path1, path2, path3) => {
           riot.mount("div#master-view", 'employee-type')
       }
     break;
+
     case 'infirmary':
       currentPage = riot.mount('div#view', 'infirmary', {selected_master: path2})[0];
       switch(path2){

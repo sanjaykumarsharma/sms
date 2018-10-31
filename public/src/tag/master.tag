@@ -31,6 +31,16 @@
 		    </a>
 	  	</p>
 	  	<p class="control">
+		    <a class="button {is-active: selected_master == 'category'}" href="#/master/category">
+		      <span>Category</span>
+		    </a>
+	  	</p>
+	  	<p class="control">
+		    <a class="button {is-active: selected_master == 'subject'}" href="#/master/subject">
+		      <span>Subject</span>
+		    </a>
+	  	</p>
+	  	<p class="control">
 		    <a class="button {is-active: selected_master == 'country'}" href="#/master/country">
 		      <span>Country</span>
 		    </a>
@@ -55,19 +65,25 @@
 		      <span>Area</span>
 		    </a>
 	  	</p>
-	  	<p class="control">
+	 
+	  
+     </div>
+     <div class="field has-addons">
+     	 	<p class="control">
 		    <a class="button {is-active: selected_master == 'standard'}" href="#/master/standard">
 		      <span>New Class</span>
 		    </a>
 	  	</p>
-	  		<p class="control">
+	  	<p class="control">
 		    <a class="button {is-active: selected_master == 'section-master'}" href="#/master/section-master">
 		      <span>Section</span>
 		    </a>
 	  	</p>
-	  
-     </div>
-     <div class="field has-addons">
+     	<p class="control">
+		    <a class="button {is-active: selected_master == 'class-teacher-master'}" href="#/master/class-teacher-master">
+		      <span>Class Teacher</span>
+		    </a>
+	  	</p>
      	<p class="control">
 		    <a class="button {is-active: selected_master == 'club'}" href="#/master/club">
 		      <span>Club</span>

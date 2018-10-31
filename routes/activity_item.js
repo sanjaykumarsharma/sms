@@ -70,7 +70,7 @@ router.post('/edit/:item_id', function(req, res, next) {
         var data = {}
 
         var values = {
-            item_name    : input.item,
+            item_name    : input.item_name,
         };
         
         var query = connection.query("UPDATE item_master set ? WHERE item_id = ?",[values,item_id], function(err, rows)

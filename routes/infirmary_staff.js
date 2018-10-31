@@ -118,7 +118,7 @@ router.get('/read_staff_monthly_case_report/:month_id', function(req, res, next)
 
         }else{
           // res.render('customers',{page_title:"Customers - Node.js",data:rows});
-             data.status = 's';
+            data.status = 's';
             var std = Array();
             var prev_staff_id = "";        
             var prev_category_name = "";

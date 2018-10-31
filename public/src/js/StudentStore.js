@@ -165,9 +165,34 @@ function StudentStore() {
       })
   })
 
+  self.on('read_student_profile', function(student_id) {
+    console.log(student_id)
+    let req = {}
+    req.student_id=student_id
+
+    $.ajax({
+      url:'/student/read_student_profile/'+student_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.student_profile_details = data.student_profile_details
+            self.trigger('read_student_profile_changed', data.student_profile_details)
+          }else if(data.status == 'e'){
+            showToast("Student Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
   self.on('add_student', function(obj) {
     $.ajax({
-      url:'/student/add',
+      url:'/student/add_student',
         type:"POST",
         data: JSON.stringify(obj),
         contentType: "application/json",
@@ -178,10 +203,246 @@ function StudentStore() {
           if(data.status == 's'){
             console.log('add Student after')
             toastr.success("Successfully Inserted")
-            self.trigger('add_student_changed', self.students)
+            self.trigger('add_student_changed', self.students,data.student_id)
           }else if(data.status == 'e'){
             showToast("Error adding Student. Please try again.", data)
           }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('edit_student', function(obj,student_id) {
+    let req = {}
+    console.log(obj)
+    console.log(student_id)
+    req.student_id=student_id
+    $.ajax({
+      url:'/student/edit_student/'+student_id,
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully Update")
+            self.trigger('edit_student_changed', self.students)
+          }else if(data.status == 'e'){
+            showToast("Error Updating Student. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('create_student_withdraw', function(obj,student_id) {
+    /*let req = {}*/
+    console.log(obj)
+    console.log(student_id)
+    /*req.student_id=student_id*/
+    $.ajax({
+      url:'/student/create_student_withdraw/'+student_id,
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully Withdraw Student")
+            self.trigger('create_student_withdraw_changed', self.withdraw_students)
+          }else if(data.status == 'e'){
+            showToast("Error Updating Student. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('delete_student', function(student_id) {
+    console.log(student_id)
+    let req = {}
+    req.student_id=student_id
+    console.log(req.student_id)
+    $.ajax({
+      url:'/student/delete_student/'+student_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          if(data.status == 's'){
+            let tempstudents = self.students.filter(c => {
+              return c.student_id != student_id
+            })
+            self.students = tempstudents
+            self.trigger('delete_student_changed', self.students)
+          }else if(data.status == 'e'){
+            showToast("Error Deleting Student. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('regenerate_roll_no', function(read_section_id) {
+    let req = {}
+    console.log(read_section_id)
+    req.read_section_id=read_section_id
+    $.ajax({
+      url:'/student/regenerate_roll_no/'+read_section_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully Regenerate Roll No")
+            self.trigger('regenerate_roll_no_changed', self.students)
+          }else if(data.status == 'e'){
+            showToast("Error Updating Student. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('student_list', function(read_section_id) {
+    let req = {}
+    console.log(read_section_id)
+    req.read_section_id=read_section_id
+    $.ajax({
+      url:'/student/student_list/'+read_section_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('student_list_changed', data.student_list,data.total)
+          }else if(data.status == 'e'){
+            showToast("Error Listing Student. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('print_list', function(read_standard_id,read_section_id) {
+    let req = {}
+    console.log(read_section_id)
+    req.read_standard_id=read_standard_id
+    req.read_section_id=read_section_id
+    $.ajax({
+      url:'/student/print_list/'+read_standard_id+'/'+read_section_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('print_list_changed', data.print_list)
+          }else if(data.status == 'e'){
+            showToast("Error Listing Student. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('upload_student_image', function(student_image,student_id) {
+    var form_data = new FormData(); 
+    form_data.append("student_profile_picture", student_image);
+    $.ajax({
+      url:'/student/upload_student_image/student/'+student_id,
+        type:"POST",
+        dataType: 'script',
+        processData: false,
+        contentType: false,
+        data: form_data,
+        headers: {"Authorization": getCookie('token')},
+        success: function(image_name){
+          console.log(image_name)
+          self.trigger('upload_student_image_changed', image_name)
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('upload_father_image', function(father_image,student_id) {
+    var form_data = new FormData(); 
+    form_data.append("father_profile_picture", father_image);
+    $.ajax({
+      url:'/student/upload_father_image/father/'+student_id,
+        type:"POST",
+        dataType: 'script',
+        processData: false,
+        contentType: false,
+        data: form_data,
+        headers: {"Authorization": getCookie('token')},
+        success: function(image_name){
+          console.log(image_name)
+          self.trigger('upload_father_image_changed', image_name)
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('upload_mother_image', function(mother_image,student_id) {
+    var form_data = new FormData(); 
+    form_data.append("mother_profile_picture", mother_image);
+    $.ajax({
+      url:'/student/upload_mother_image/mother/'+student_id,
+        type:"POST",
+        dataType: 'script',
+        processData: false,
+        contentType: false,
+        data: form_data,
+        headers: {"Authorization": getCookie('token')},
+        success: function(image_name){
+          console.log(image_name)
+          self.trigger('upload_mother_image_changed', image_name)
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('upload_guardian_image', function(guardian_image,student_id) {
+    var form_data = new FormData(); 
+    form_data.append("guardian_profile_picture", guardian_image);
+    $.ajax({
+      url:'/student/upload_guardian_image/guardian/'+student_id,
+        type:"POST",
+        dataType: 'script',
+        processData: false,
+        contentType: false,
+        data: form_data,
+        headers: {"Authorization": getCookie('token')},
+        success: function(image_name){
+          console.log(image_name)
+          self.trigger('upload_guardian_image_changed', image_name)
         },
         error: function(data){
           showToast("", data)

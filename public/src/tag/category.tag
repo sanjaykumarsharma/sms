@@ -1,6 +1,6 @@
 <category>
 	<section class=" is-fluid">
-		<h2 class="title has-text-centered" style="color: #ff3860;">Activity Category Management</h2>
+		<h2 class="title has-text-centered" style="color: #ff3860;">Category</h2>
 		<div class="flex items-center mt-2 mb-6 no-print">
 			<div class="bg-green py-1 rounded w-10">
 				<div class="bg-grey h-px flex-auto"></div>
@@ -123,7 +123,7 @@
     self.edit = (c,e) => {
       console.log(c)
       self.title='Update'
-      self.refs.addCategoryInput.value = c.category
+      self.refs.addCategoryInput.value = c.category_name
       self.edit_id = c.category_id
     }
     
@@ -134,7 +134,7 @@
       self.refs.addCategoryInput.value = ''
       self.loading = false
       self.categories = categories
-       self.categoryDataItems = []
+      self.categoryDataItems = []
       self.categoryDataItems = categories
       self.update()
       console.log(self.categories)

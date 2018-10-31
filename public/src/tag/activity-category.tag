@@ -12,7 +12,7 @@
 					<div class="field">
 						<label class="label" for="role">Category</label>
 						<div class="control">
-							<input class="input" type="text" ref="addCategoryInput"
+							<input class="input" type="text" ref="addCategoryInput" id="addCategoryInput" 
 							onkeyup={addEnter}>
 						</div>
 					</div>
@@ -123,7 +123,8 @@
     self.edit = (c,e) => {
       console.log(c)
       self.title='Update'
-      self.refs.addCategoryInput.value = c.category
+      document.getElementById("addCategoryInput").focus()
+      self.refs.addCategoryInput.value = c.category_name
       self.edit_id = c.category_id
     }
     

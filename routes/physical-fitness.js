@@ -34,13 +34,13 @@ router.get('/exam-type/:standard_id', function(req, res, next) {
 });
 
 
-// reade physical fitness
+// reade maturity development
 router.get('/students/:section_id/:exam_term', function(req, res, next) {
 
   req.getConnection(function(err,connection){
        
      var data = {}
-     var qry = `select a.student_id, concat(standard,'-',section) as standard,b.standard_id,
+     var qry = `select a.student_id, concat(standard,'-',section) as standard, 
                 concat(first_name,' ',middle_name, ' ' ,last_name)as student_name,
                 enroll_number,if((exam_term = 'First' || exam_term = 'Final'), 'Y', 'N') as exam_term
                 from student_master a
@@ -58,7 +58,7 @@ router.get('/students/:section_id/:exam_term', function(req, res, next) {
      connection.query(qry,function(err,result)     {
             
         if(err){
-           console.log("Error reading physical fitness : %s ",err );
+           console.log("Error reading maturity development : %s ",err );
            data.status = 'e';
 
         }else{
@@ -79,68 +79,30 @@ router.get('/details/:student_id/:exam_term', function(req, res, next) {
   req.getConnection(function(err,connection){
        
      var data = {}
-     var qry = `select  concat(first_name,' ',middle_name,' ',last_name) as student_name, enroll_number,
-                first_skill, first_description, second_skill, second_description,
-                third_skill, third_description, fourth_skill, fourth_description,
-                fifth_skill, fifth_description
-                from student_fitness a
-                join student_master b on (a.student_id = b.student_id and b.current_session_id =${req.cookies.session_id})
-                where a.student_id in (${req.params.student_id})
-                and exam_term = '${req.params.exam_term}' 
-                and session_id = ${req.cookies.session_id}        
-                order by first_name, middle_name, last_name`;
+     var qry = `select id, initiative_first, initiative_second, initiative_third, initiative_fourth,
+                interest_first, interest_second, interest_third, interest_fourth,
+                use_time_first, use_time_second, use_time_third, use_time_fourth,
+                work_habit_first, work_habit_second, work_habit_third, work_habit_fourth,
+                participation_first, participation_second, participation_third, participation_fourth,
+                responsibility_first, responsibility_second, responsibility_third, responsibility_fourth
+                from  student_maturity_development
+                where student_id =${req.params.student_id}
+                and exam_term ='${req.params.exam_term}'
+                and session_id=${req.cookies.session_id}`;
 
          console.log(qry)
      
      connection.query(qry,function(err,result)     {
             
         if(err){
-           console.log("Error reading physical fitness details : ",err );
+           console.log("Error reading maturity development details : ",err );
            data.status = 'e';
            data.error = err
            data.messaage = err.sqlMessage
         }else{
-           data.status = 's';
-           data.details = result;
-           res.send(data)
-        }
-     
-     });
-       
-  });
-
-});
-
-// read details of class
-router.get('/details-all/:section_id/:exam_term', function(req, res, next) {
-
-  req.getConnection(function(err,connection){
-       
-     var data = {}
-     var qry = `select  concat(first_name,' ',middle_name,' ',last_name) as student_name, enroll_number,
-                first_skill, first_description, second_skill, second_description,
-                third_skill, third_description, fourth_skill, fourth_description,
-                fifth_skill, fifth_description
-                from student_fitness a
-                join student_master b on (a.student_id = b.student_id and b.current_session_id =${req.cookies.session_id})
-                where a.section_id in (${req.params.section_id})
-                and exam_term = '${req.params.exam_term}' 
-                and session_id = ${req.cookies.session_id}        
-                order by first_name, middle_name, last_name`;
-
-         console.log(qry)
-     
-     connection.query(qry,function(err,result)     {
-            
-        if(err){
-           console.log("Error reading physical fitness details : ",err );
-           data.status = 'e';
-           data.error = err
-           data.messaage = err.sqlMessage
-        }else{
-           data.status = 's';
-           data.details = result;
-           res.send(data)
+            data.status = 's';
+            data.details = result;
+            res.send(JSON.stringify(data))
         }
      
      });
@@ -163,26 +125,56 @@ router.post('/add', function(req, res, next) {
         values['modified_by']= req.cookies.user;
         values['session_id']= req.cookies.session_id;
 
-        var qry = `insert into student_fitness set ?`;
+        var qry = `insert into student_maturity_development set ?`;
         
         connection.query(qry,values, function(err, rows)
         {
   
           if(err){
-           console.log("Error inserting student_fitness : ",err );
+           console.log("Error inserting student_maturity_development : ",err );
            data.status = 'e';
            data.error = err
            data.messaage = err.sqlMessage
            res.send(JSON.stringify(data))
 	      }else{
-	         data.status = 's';
-	         data.marks_id = rows.insertId;
-	         res.send(JSON.stringify(data))
+	            data.status = 's';
+	            data.marks_id = rows.insertId;
+	            res.send(JSON.stringify(data))
 	      }
           
         });
 
 
+   });
+
+});
+ 
+
+// Edit maturity development listing. 
+router.post('/edit/:id', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+        var data = {}
+        var values = input;
+        values['modified_by']= req.cookies.user;
+        
+        var query = connection.query("UPDATE student_maturity_development set ? WHERE id = ?",[values,req.params.id], function(err, rows)
+        {
+  
+          if(err){
+           console.log("Error updating grade : %s ",err );
+           data.status = 'e';
+           data.error = err
+           data.messaage = err.sqlMessage
+           res.send(JSON.stringify(data))
+          }else{
+            data.status = 's';
+            res.send(JSON.stringify(data))
+         }
+          
+        });
    });
 
 });
@@ -193,7 +185,7 @@ router.get('/delete/:student_id/:exam_term', function(req, res, next) {
 
   req.getConnection(function(err,connection){
         var data = {}
-        var qry = `delete from student_fitness
+        var qry = `delete from student_maturity_development
                    where student_id =${req.params.student_id}
                    and exam_term ='${req.params.exam_term}'
                    and session_id =${req.cookies.session_id}`;
@@ -202,7 +194,7 @@ router.get('/delete/:student_id/:exam_term', function(req, res, next) {
         {
   
           if(err){
-           console.log("Error deleting physical fitness : %s ",err );
+           console.log("Error deleting maturity development : %s ",err );
            data.status = 'e';
            data.error = err
            data.messaage = err.sqlMessage
