@@ -121,7 +121,7 @@ router.post('/add', function(req, res, next) {
     var input = JSON.parse(JSON.stringify(req.body));
     var now = new Date();
     var jsonDate = now.toJSON();
-    var creation_date = '2018-10-10';
+    var creation_date = jsonDate;
 
     var modified_by = req.cookies.role;
     //console.log(input)
@@ -132,34 +132,113 @@ router.post('/add', function(req, res, next) {
 
     var fee_slip_id = '';
     var amount = 0;
-    var data = [];
-    console.log("====slips====")
-    console.log(slips)
-   
-     req.getConnection(function(err, connection) {
-         connection.beginTransaction(function(err) {
+    var data = {};
+    
+    var sql = ''
+    var query_array = []
 
-          if (err) { throw err; }
-            
-            async.eachSeries(slips,function iteratorOverElems(element,callback) {
-                console.log("------------")
-                 console.log(slips[index])
+ req.getConnection(function(err, connection) {
 
-                 
-                  })
-              },function finalCb(err){
-              if(err){
-                 //rollback
-              }else{
-              // commmit here when all the insertions have been successful            
-              }
+   connection.beginTransaction(function(err) {
+    if (err) { throw err; }
+    
+    async.forEachOf(slips, function (value, key, callback) {
+
+      var count=-1;
+      var updateCount=-2;
+      
+      
+      connection.query('select count(*) as total from fee_scholorship where student_id=? and fee_slip_id=?', [input.student_id,value.fee_slip_id], function (error, result1, fields) {
+        if (error) {
+          return connection.rollback(function() {
+            throw error;
           });
-            
-          //res.send(JSON.stringify(data))
+        }
+      
+      //console.log(result1[0].total)
+        count = result1[0].total;
+        if(result1[0].total > 0) updateCount=1;
 
-    });
+      connection.query("select count(*) as totals from fee_received where student_id=? and fee_slip_id=?",[input.student_id,value.fee_slip_id], function(error, result2)
+      {
+        if (error) {
+          return connection.rollback(function() {
+            throw error;
+          });
+        }
 
-  
+        if(result1[0].totals > 0) {
+          updateCount=2;
+          count = -999;
+        }
+      
+      });  
+
+      var qry = '';
+
+      if(count==0){                  // insert
+        qry = `insert into fee_scholorship(student_id,fee_slip_id,scholorship_amount,session_id,scholorship_remarks,creation_date,modified_by)
+          values(${input.student_id},${value.fee_slip_id},${value.amount},${req.cookies.session_id},'${input.scholorship_remarks}',curdate(),'${req.cookies.user}')`;
+      }else if(updateCount == 1 ){     // update
+        qry=`update fee_scholorship set scholorship_amount=${value.amount}
+             where student_id=${input.student_id} and fee_slip_id=${value.fee_slip_id}`;
+      } 
+      
+      query_array.push(qry)
+      callback()
+      
+      
+
+      }); //main connection query
+    
+
+    }, function (err) {
+        if (err) {
+          console.error(err.message);
+          data.status = 'e';
+          res.send(data)
+        }
+        console.log('sql')
+        var q = '';
+        query_array.map(c=>{
+          if (q==''){
+            q = c +';';
+          }else{
+            q = q + c +';';
+          }
+        })
+        console.log(q)
+
+
+        connection.query(q, function(error, rows)
+        {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+
+            connection.commit(function(err) {
+              if (err) {
+                return connection.rollback(function() {
+                  throw err;
+                });
+              }
+              data.status = 's';
+              console.log('success!');
+              res.send(data)
+              
+
+            });
+        });
+
+    });//end of async loop  
+
+  });//beginTransaction 
+
+});//getConnection
+
+
 });
 
 

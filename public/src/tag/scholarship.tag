@@ -163,8 +163,11 @@
       for(var i=0; i<self.slips.length; i++){
           var o ={}
           o.fee_slip_id = self.slips[i].fee_slip_id; 
-          o.amount = self.slips[i].amount; 
-          if(Number(self.slips[i].amount)>0){
+          //o.amount = self.slips[i].amount;
+          var sid = "#head_amount"+self.slips[i].fee_slip_id 
+          o.amount = $(sid).val()
+          console.log("amount at " + sid + " = "+ o.amount) 
+          if(Number($(sid).val())>0){
           assigned_slips.push(o);
         }
       }
@@ -200,13 +203,24 @@
     function ReadStudentChanged(scholarStudent){
       console.log(scholarStudent) 
       self.student = []
+      self.slips = []
+      self.student_name = ''
+      self.standard = ''
+      self.studentId = ''
+      if(scholarStudent.length>0){
+
       self.student = scholarStudent
+
       self.student_name = self.student[0].student_name;
       self.standard = self.student[0].standard;
       self.studentId = self.student[0].student_id;
-      self.update()
       self.getScholarshipByStudent()
-      console.log(self.scholarStudent)
+    }else{
+      console.log("-------")
+      showToast("No data found. Please try again.")
+    }
+      self.update()
+      
     }
     scholarshipStore.on('read_scholar_feeslip_changed',ReadScholarFeeSlipChanged)
     function ReadScholarFeeSlipChanged(scholarSlips){

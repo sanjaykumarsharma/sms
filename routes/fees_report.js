@@ -661,7 +661,7 @@ router.get('/read_outstanding_fees/:start_date/:end_date', function(req, res, ne
             } 
             
             
-           // fee_slip_name = result[i].fee_slip_name'];
+           // fee_slip_name = result[i].fee_slip_name
             var standard=result[i].standard
             var student_name = result[i].student_name
             var f_name = result[i].f_name
@@ -757,6 +757,429 @@ router.get('/read_outstanding_fees/:start_date/:end_date', function(req, res, ne
   });
 
 });
+//========== read fees register ===============
+router.get('/read_fees_register/:start_date/:end_date', function(req, res, next) {
+  var start_date = req.params.start_date;
+  var end_date = req.params.end_date;
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+     var qry = `select date_format(receipt_date, '%d/%m/%Y') as receipt_date, a.receipt_id, e.enroll_number,
+              concat(e.first_name, ' ', e.middle_name,' ',  e.last_name) as name,
+              concat(h.standard, ' ', g.section)as class, i.fee_slip_name, b.mode,item_no,      
+              amount_due , fine_recevied as fine,j.bank_name,   
+              if(scholorship_amount is not null, scholorship_amount, 0) as scholorship_amount,
+              if(scholorship_amount is not null,amount_due + fine_recevied -scholorship_amount ,amount_due + fine_recevied) as total
+              from fee_received a
+              LEFT JOIN  fee_received_details b on a.receipt_id = b.receipt_id
+              LEFT JOIN  fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+              LEFT JOIN  student_master e on (a.student_id = e.student_id and e.current_session_id =${session_id})
+              LEFT JOIN  student_current_standing f on ( a.student_id = f.student_id  and a.session_id = f.session_id)
+              LEFT JOIN  section_master g on f.section_id = g.section_id
+              LEFT JOIN  standard_master h on g.standard_id = h.standard_id
+              LEFT JOIN  fee_slip i on (a.fee_slip_id = i.fee_slip_id and a.fee_plan_id = i.fee_plan_id)   
+              LEFT JOIN  bank_account_master j on b.bank_id = j.bank_account_no   
+              where b.receipt_date between ? and ?  
+              and a.session_id=${session_id}
+              order by 1, mode,2,i.fee_slip_id`;
+     
+     connection.query(qry,[start_date,end_date], function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+          
+    var prev_receipt_id="";
+    var pre_mode="";
+    var prev_standard = "";
+    var prev_receipt_date = "";
+    var grand_amount = 0;
+    var grand_fine = 0;
+    var grand_scholorship = 0;
+    var grand_total = 0;
+    var count=0;
+    var slNo =0;
+    var error = 1;
+    var registerData = []
+
+   
+    //********************** blank fields *********************         
+    var obj = {}
+    obj['slNo'] = "SlNo";
+    obj["receipt_date"]="Date";
+    obj['receipt_id'] = "Recpt No";
+    obj["enroll_number"] = "Enrol No";
+    obj["name"] = "Name";
+    obj['fee_slip_name'] = "Month";
+    obj["class"] = "Class";
+    obj["bank_name"] = "Bank Name";
+    obj["item_no"] = "Cheq No";
+    obj["mode"] = "";
+    obj["amount_due"] = "Fee";
+    obj["fine"] = "Fine";
+    obj["scholorship_amount"] = "Scholarship";
+    obj["total"] = "Total";  
+    registerData.push(obj)
+    var step =0;
+   //////////////////////////////////////
+    for(var i=0; i<result.length; i++){
+      var error = 0;
+        if(step==0){
+          step=1;
+          var obj = {}
+          obj['slNo'] = "";
+          obj["receipt_date"]="";
+          obj['receipt_id'] = "";
+          obj["enroll_number"] = "";
+          if(result[i].mode =='Bank') obj["name"] = "Cash Collection By Bank";
+          if(result[i].mode =='Cash') obj["name"] = "Cash Collection By School" ;
+          if(result[i].mode =='Cheque') obj["name"] = "Cheque Collection By Bank";
+          if(result[i].mode =='Draft') obj["name"] = "Fees Collection by Draft";
+          if(result[i].mode =='Online') obj["name"] = "Online Fees Collection";
+          obj['fee_slip_name'] = "";
+          obj["class"] = "";
+          obj["bank_name"] = "";
+          obj["item_no"] = "";
+          obj["mode"] = "";
+          obj["amount_due"] = "-----";
+          obj["fine"] = "-----";
+          obj["scholorship_amount"] = "-----";
+          obj["total"] = "-----";  
+          registerData.push(obj)
+        }
+      if(result[i].receipt_id != prev_receipt_id){
+            if(prev_receipt_id != "" ){
+                 var obj = {}
+                 obj['slNo'] = ++slNo;
+                 obj["receipt_id"] = prev_receipt_id;
+                 obj["fee_slip_name"] = prev_fee_slip_name;
+                 obj["receipt_date"]=prev_receipt_date;
+                 obj["enroll_number"] = prev_enroll_number;
+                 obj["name"] = prev_name;
+                 obj["class"] = prev_class;
+                 obj["standard"] = prev_standard;
+                 obj["bank_name"] = prev_bank_name;
+                 obj["item_no"] = prev_item_no;
+                 obj["mode"] = prev_mode;
+                 obj["amount_due"] = prev_amount_due;
+                 obj["fine"] = prev_fine;
+                 obj["scholorship_amount"] = prev_scholorship_amount;
+                 obj["total"] = prev_total;           
+                 registerData.push(obj)
+            }
+        if(result[i].mode!= pre_mode || result[i].receipt_date != prev_receipt_date){
+              if(pre_mode != "" || prev_receipt_date!= ""){
+                  slNo=0;
+                  var obj = {}
+                  obj["fee_slip_name"] = "Sub Total";  
+                  obj["amount_due"] = prev_sub_amount ;
+                  obj["fine"] = prev_sub_fine;
+                  obj["scholorship_amount"] = prev_sub_scholorship;
+                  obj["total"] = prev_sub_total;
+                  grand_amount = Number(grand_amount) + Number(prev_sub_amount)
+                  grand_fine = Number(grand_fine) + Number(prev_sub_fine) 
+                  grand_scholorship = Number(grand_scholorship) + Number(prev_sub_scholorship)
+                  grand_total = Number(grand_total) + Number(prev_sub_total)
+                  registerData.push(obj)
+
+                  for(var j=0; j<=2; j++){
+                      var obj = {}
+                      obj['slNo'] = "";
+                      obj['receipt_id'] = "";
+                      obj['fee_slip_name'] = "";
+                      obj["receipt_date"]="";
+                      obj["enroll_number"] = "";
+                      obj["name"] = "";
+                      obj["class"] = "";
+                      obj["bank_name"] = "";
+                      obj["item_no"] = "";
+                      obj["mode"] = "";
+                      obj["amount_due"] = "-----";
+                      obj["fine"] = "-----";
+                      obj["scholorship_amount"] = "-----";
+                      obj["total"] = "-----";   
+                      registerData.push(obj)
+                      if(j==1 && count==0){
+                          var obj = {}
+                          obj['slNo'] = "";
+                          obj["receipt_date"]="";
+                          obj['receipt_id'] = "";
+                          obj["enroll_number"] = "";
+                          if(result[i].mode =='Bank') obj["name"] = "Cash Collection By Bank";
+                          if(result[i].mode =='Cash') obj["name"] = "Cash Collection By School";
+                          if(result[i].mode =='Cheque') obj["name"] = "Cheque Collection By Bank";
+                          if(result[i].mode =='Draft') obj["name"] = "Fees Collection by Draft";
+                          if(result[i].mode =='Online') obj["name"] = "Online Fees Collection";
+                          obj['fee_slip_name'] = "";
+                          obj["class"] = "";
+                          obj["bank_name"] = "";
+                          obj["item_no"] = "";
+                          obj["mode"] = "";
+                          obj["amount_due"] = "-----";
+                          obj["fine"] = "-----";
+                          obj["scholorship_amount"] = "-----";
+                          obj["total"] = "-----";  
+                          registerData.push(obj)
+                          
+                          var obj = {}
+                          obj['slNo'] = "SlNo";
+                          obj["receipt_date"]="Date";
+                          obj['receipt_id'] = "Recpt No";
+                          obj["enroll_number"] = "Enrol No";
+                          obj["name"] = "Name";
+                          obj['fee_slip_name'] = "Month";
+                          obj["class"] = "Class";
+                          obj["bank_name"] = "Bank Name";
+                          obj["item_no"] = "Cheq No";
+                          obj["mode"] = "";
+                          obj["amount_due"] = "Fee";
+                          obj["fine"] = "Fine";
+                          obj["scholorship_amount"] = "Scholorship";
+                          obj["total"] = "Total";  
+                          registerData.push(obj)  
+                      }
+                      if(j==1 && count==1){ 
+                          var obj = {}
+                          obj['slNo'] = "";
+                          obj["receipt_date"]="";
+                          obj['receipt_id'] = "";
+                          obj["enroll_number"] = "";
+                          if(result[i].mode =='Bank') obj["name"] = "Cash Collection By Bank";
+                          if(result[i].mode =='Cash') obj["name"] = "Cash Collection By School" ;
+                          if(result[i].mode =='Cheque') obj["name"] = "Cheque Collection By Bank" ;
+                          if(result[i].mode =='Draft') obj["name"] = "Fees Collection by Draft";
+                          if(result[i].mode =='Online') obj["name"] = "Online Fees Collection";
+                          obj['fee_slip_name'] = "";
+                          obj["class"] = "";
+                          obj["bank_name"] = "";
+                          obj["item_no"] = "";
+                          obj["mode"] = "";
+                          obj["amount_due"] = "-----";
+                          obj["fine"] = "-----";
+                          obj["scholorship_amount"] = "-----";
+                          obj["total"] = "-----";  
+                          registerData.push(obj)
+                          
+                          var obj = {}
+                          obj['slNo'] = "SlNo";
+                          obj["receipt_date"]="Date";
+                          obj['receipt_id'] = "Recpt No";
+                          obj["enroll_number"] = "Enrol No";
+                          obj["name"] = "Name";
+                          obj['fee_slip_name'] = "Month";
+                          obj["class"] = "Class";
+                          obj["bank_name"] = "Bank Name";
+                          obj["item_no"] = "Cheq No";
+                          obj["mode"] = "";
+                          obj["amount_due"] = "Fee";
+                          obj["fine"] = "Fine";
+                          obj["scholorship_amount"] = "Scholorship";
+                          obj["total"] = "Total";  
+                          registerData.push(obj)
+                         
+                      }
+                  }           
+                  count=1;
+                   //********************** blank fields *********************         
+                 }       
+                  pre_mode = result[i].mode
+                  prev_receipt_date = result[i].receipt_date
+                  prev_sub_amount=result[i].amount_due
+                  prev_sub_fine=result[i].fine
+                  prev_sub_scholorship=result[i].scholorship_amount
+                  prev_sub_total=result[i].total       
+                }else{   
+                  prev_sub_amount= Number(prev_sub_amount) + Number(result[i].amount_due)
+                  prev_sub_fine= Number(prev_sub_fine) + Number(result[i].fine)
+                  prev_sub_scholorship= Number(prev_sub_scholorship) +  Number(result[i].scholorship_amount)            
+                  prev_sub_total = Number(prev_sub_total) + Number(result[i].total)   
+               }
+        
+            prev_receipt_id = result[i].receipt_id
+            prev_fee_slip_name = result[i].fee_slip_name
+            prev_receipt_date = result[i].receipt_date
+            prev_enroll_number =  result[i].enroll_number
+            prev_name = result[i].name
+            prev_class= result[i].class
+            prev_bank_name = result[i].bank_name
+            prev_item_no=result[i].item_no
+            prev_mode= result[i].mode
+            prev_amount_due= result[i].amount_due
+            prev_fine= result[i].fine
+            prev_scholorship_amount= result[i].scholorship_amount
+            prev_total= result[i].total   
+
+      }else{
+              prev_fee_slip_name= Number(prev_fee_slip_name) + ", " + Number(result[i].fee_slip_name)
+              prev_amount_due= Number(prev_amount_due) + Number(result[i].amount_due) 
+              prev_fine = Number(prev_fine) +  Number(result[i].fine)
+              prev_scholorship_amount = Number(prev_scholorship_amount) + Number(result[i].scholorship_amount)
+              prev_total = Number(prev_total) +  Number(result[i].total)   
+                           
+              prev_sub_amount= Number(prev_sub_amount) + Number(result[i].amount_due)
+              prev_sub_fine= Number(prev_sub_fine) + Number(result[i].fine)
+              prev_sub_scholorship= Number(prev_sub_scholorship) +  Number(result[i].scholorship_amount)            
+              prev_sub_total = Number(prev_sub_total) + Number(result[i].total)   
+      }       
+      
+    }
+
+     if(error == 0){
+      var obj = {}
+      obj['slNo'] = ++slNo;
+      obj['receipt_id'] = prev_receipt_id;
+      obj['fee_slip_name'] = prev_fee_slip_name;
+      obj["receipt_date"]=prev_receipt_date;
+      obj["enroll_number"] = prev_enroll_number;
+      obj["name"] = prev_name;
+      obj["class"] = prev_class;
+      obj["bank_name"] = prev_bank_name;
+      obj["item_no"] = prev_item_no;
+      obj["mode"] = prev_mode;
+      obj["amount_due"] = prev_amount_due;
+      obj["fine"] = prev_fine;
+      obj["scholorship_amount"] = prev_scholorship_amount;
+      obj["total"] = prev_total;   
+      registerData.push(obj)
+    }             
+    //add the sub total for the last Class
+    var obj = {}
+    obj["fee_slip_name"] = "Sub Total"
+    obj["amount_due"] = prev_sub_amount
+    obj["fine"] = prev_sub_fine
+    obj["scholorship_amount"] = prev_sub_scholorship
+    obj["total"] = prev_sub_total
+    registerData.push(obj)
+
+    //add grand total
+    var obj = {}
+    obj["fee_slip_name"] = "Grand Total";
+    obj["amount_due"] = Number(grand_amount) + Number(prev_sub_amount)
+    obj["fine"] = Number(grand_fine) + Number(prev_sub_fine)
+    obj["scholorship_amount"] = Number(grand_scholorship) + Number(prev_sub_scholorship)
+    obj["total"] = Number(grand_total) + Number(prev_sub_total)  
+    registerData.push(obj)           
+
+
+    /*day total*/
+    data1= []
+    prev_date='';
+    total_amount_due=0;
+    total_fine=0;
+    total_scholorship_amount=0;
+    total=0;
+    // console.log("==========Registered Data ========")
+    //console.log(registerData)
+
+    registerData.map(k=>{
+
+      if(k.receipt_date!=undefined){
+
+        if(k.receipt_date !='' && k.receipt_date !='Date'){
+          if(prev_date==''){//loops runs the first time
+            prev_date=k.receipt_date
+            total_amount_due=k.amount_due
+            total_fine=k.fine
+            total_scholorship_amount=k.scholorship_amount
+            total=k.total
+            data1.push(k)
+          }else if(prev_date==k.receipt_date){
+            total_amount_due= Number(total_amount_due) + Number(k.amount_due)
+            total_fine=Number(total_fine) + Number(k.fine)
+            total_scholorship_amount= Number(total_scholorship_amount) + Number(k.scholorship_amount)
+            total=Number(total) + Number(k.total)
+            data1.push(k)
+          }else if(prev_date != k.receipt_date){
+
+            var obj = {}
+            obj["fee_slip_name"] = "Day Total";
+            obj["amount_due"] = total_amount_due
+            obj["fine"] = total_fine
+            obj["scholorship_amount"] = total_scholorship_amount
+            obj["total"] = total
+            data1.push(obj)
+
+            prev_date=k.receipt_date
+            total_amount_due=k.amount_due
+            total_fine=k.fine
+            total_scholorship_amount=k.scholorship_amount
+            total=k.total
+            data1.push(k)
+          }
+          
+        }else{
+            data1.push(k)
+        }
+      }else{
+        data1.push(k)
+      } 
+    })
+
+
+    var obj = {}
+    obj["fee_slip_name"] = "Day Total";
+    obj["amount_due"] = total_amount_due;
+    obj["fine"] = total_fine;
+    obj["scholorship_amount"] = total_scholorship_amount;
+    obj["total"] = total;
+    data1.push(obj)
+
+    var reversed = data1.reverse()
+    
+    var i=0;
+    var j=0;
+    var flag=0;
+    var data2=[]
+    var obj = {}
+
+    for( var m = 0; m<reversed.length; m++) {
+      if(reversed[m].fee_slip_name=='Day Total'){
+       var obj = {}
+       obj=reversed[m];
+       if( i>0){
+         j=0;
+       }
+       flag++;
+      }else{
+        if(i==1){
+          data2.push(obj)
+
+        }
+        
+        if(j==3 && flag>1){
+          data2.push(obj)
+        }
+   
+
+        data2.push(reversed[m])
+        i++;
+        if(i>1){
+          j++;
+        }
+      }
+      
+    }
+
+    data3 = data2.reverse()   
+
+            data.status = 's';
+            data.registerData = data3
+           //connection.end()
+            res.send(data)
+        }
+     
+     });
+       
+  });
+
+});
 //========== monthly fees report ===============
 router.get('/read_monthly_fees/:start_date/:end_date', function(req, res, next) {
   var start_date = req.params.start_date;
@@ -802,6 +1225,598 @@ router.get('/read_monthly_fees/:start_date/:end_date', function(req, res, next) 
   });
 
 });
+//============ read daily fees collection ===========
+//========== monthly fees report ===============
+router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
+  var start_date = req.params.start_date;
+  var end_date = req.params.end_date;
+  var session_id = req.cookies.session_id
+  var data = {}
+
+  req.getConnection(function(err,connection){
+    connection.beginTransaction(function(err) {
+      if (err) { throw err; }
+
+      var qry = `select date_format(receipt_date, '%d/%m/%Y') as receipt_date, a.receipt_id, e.enroll_number,
+                concat(e.first_name, ' ', e.middle_name,' ',  e.last_name) as name,
+                concat(h.standard, ' ', g.section)as class, i.fee_slip_name, b.mode,item_no,      
+                amount_due , fine_recevied as fine,j.bank_name,   
+                if(scholorship_amount is not null, scholorship_amount, 0) as scholorship_amount,
+                if(scholorship_amount is not null,amount_due + fine_recevied -scholorship_amount ,amount_due + fine_recevied) as total
+                from fee_received a
+                LEFT JOIN  fee_received_details b on a.receipt_id = b.receipt_id
+                LEFT JOIN  fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+                LEFT JOIN  student_master e on (a.student_id = e.student_id and e.current_session_id = ${session_id})
+                LEFT JOIN  student_current_standing f on (a.student_id = f.student_id  and a.session_id = f.session_id)
+                LEFT JOIN  section_master g on f.section_id = g.section_id
+                LEFT JOIN  standard_master h on g.standard_id = h.standard_id
+                LEFT JOIN  fee_slip i on (a.fee_slip_id = i.fee_slip_id and a.fee_plan_id = i.fee_plan_id)   
+                LEFT JOIN  bank_account_master j on b.bank_id = j.bank_account_no   
+                where b.receipt_date between '${start_date}' and '${end_date}'
+                and mode='Online'
+                and a.session_id=${session_id}
+                order by mode,2,i.fee_slip_id`;
+      console.log("==========q1========")
+      console.log(qry)
+      var qry1 = `select date_format(receipt_date, '%d/%m/%Y') as receipt_date, a.receipt_id, e.enroll_number,
+                concat(e.first_name, ' ', e.middle_name,' ',  e.last_name) as name,
+                concat(h.standard, ' ', g.section)as class, i.fee_slip_name, b.mode,item_no,      
+                amount_due , fine_recevied as fine,j.bank_name,   
+                if(scholorship_amount is not null, scholorship_amount, 0) as scholorship_amount,
+                if(scholorship_amount is not null,amount_due + fine_recevied -scholorship_amount ,amount_due + fine_recevied) as total
+                from fee_received a
+                LEFT JOIN  fee_received_details b on a.receipt_id = b.receipt_id
+                LEFT JOIN  fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+                LEFT JOIN  student_master e on (a.student_id = e.student_id and e.current_session_id = ${session_id})
+                LEFT JOIN  student_current_standing f on (a.student_id = f.student_id  and a.session_id = f.session_id)
+                LEFT JOIN  section_master g on f.section_id = g.section_id
+                LEFT JOIN  standard_master h on g.standard_id = h.standard_id
+                LEFT JOIN  fee_slip i on (a.fee_slip_id = i.fee_slip_id and a.fee_plan_id = i.fee_plan_id)   
+                LEFT JOIN  bank_account_master j on b.bank_id = j.bank_account_no   
+                where b.receipt_date between '${start_date}' and '${end_date}'  
+                and mode='Bank'
+                and a.session_id=${session_id}
+                order by mode,2,i.fee_slip_id`;
+      console.log("==========qry1========")
+      console.log(qry1)
+      var qry2 = `select date_format(receipt_date, '%d/%m/%Y') as receipt_date, a.receipt_id, e.enroll_number,
+                concat(e.first_name, ' ', e.middle_name,' ',  e.last_name) as name,
+                concat(h.standard, ' ', g.section)as class, i.fee_slip_name, b.mode,item_no,      
+                amount_due , fine_recevied as fine,j.bank_name,   
+                if(scholorship_amount is not null, scholorship_amount, 0) as scholorship_amount,
+                if(scholorship_amount is not null,amount_due + fine_recevied -scholorship_amount ,amount_due + fine_recevied) as total
+                from fee_received a
+                LEFT JOIN  fee_received_details b on a.receipt_id = b.receipt_id
+                LEFT JOIN  fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+                LEFT JOIN  student_master e on (a.student_id = e.student_id and e.current_session_id = ${session_id})
+                LEFT JOIN  student_current_standing f on (a.student_id = f.student_id  and a.session_id = f.session_id)
+                LEFT JOIN  section_master g on f.section_id = g.section_id
+                LEFT JOIN  standard_master h on g.standard_id = h.standard_id
+                LEFT JOIN  fee_slip i on (a.fee_slip_id = i.fee_slip_id and a.fee_plan_id = i.fee_plan_id)   
+                LEFT JOIN  bank_account_master j on b.bank_id = j.bank_account_no   
+                where b.receipt_date between '${start_date}' and '${end_date}'  
+                and mode='Cheque'
+                and a.session_id=${session_id}
+                order by mode,2,i.fee_slip_id`;
+       console.log("==========qry2========")
+      console.log(qry2)
+       var qry3=`select date_format(receipt_date, '%d/%m/%Y') as receipt_date, a.receipt_id, e.enroll_number,
+                concat(e.first_name, ' ', e.middle_name,' ',  e.last_name) as name,
+                concat(h.standard, ' ', g.section)as class, i.fee_slip_name, b.mode,item_no,      
+                amount_due , fine_recevied as fine,j.bank_name,   
+                if(scholorship_amount is not null, scholorship_amount, 0) as scholorship_amount,
+                if(scholorship_amount is not null,amount_due + fine_recevied -scholorship_amount ,amount_due + fine_recevied) as total
+                from fee_received a
+                LEFT JOIN  fee_received_details b on a.receipt_id = b.receipt_id
+                LEFT JOIN  fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+                LEFT JOIN  student_master e on (a.student_id = e.student_id and e.current_session_id = ${session_id})
+                LEFT JOIN  student_current_standing f on (a.student_id = f.student_id  and a.session_id = f.session_id)
+                LEFT JOIN  section_master g on f.section_id = g.section_id
+                LEFT JOIN  standard_master h on g.standard_id = h.standard_id
+                LEFT JOIN  fee_slip i on (a.fee_slip_id = i.fee_slip_id and a.fee_plan_id = i.fee_plan_id)   
+                LEFT JOIN  bank_account_master j on b.bank_id = j.bank_account_no   
+                where b.receipt_date between '${start_date}' and '${end_date}'  
+                and mode='Draft'
+                and a.session_id=${session_id}
+                order by mode,2,i.fee_slip_id`   
+         console.log("==========qry3========")
+      console.log(qry3)
+        var qry4=`select date_format(receipt_date, '%d/%m/%Y') as receipt_date, a.receipt_id, e.enroll_number,
+                concat(e.first_name, ' ', e.middle_name,' ',  e.last_name) as name,
+                concat(h.standard, ' ', g.section)as class, i.fee_slip_name, b.mode,item_no,      
+                amount_due , fine_recevied as fine,j.bank_name,   
+                if(scholorship_amount is not null, scholorship_amount, 0) as scholorship_amount,
+                if(scholorship_amount is not null,amount_due + fine_recevied -scholorship_amount ,amount_due + fine_recevied) as total
+                from fee_received a
+                LEFT JOIN  fee_received_details b on a.receipt_id = b.receipt_id
+                LEFT JOIN  fee_scholorship c on (a.student_id = c.student_id and a.fee_slip_id = c.fee_slip_id)
+                LEFT JOIN  student_master e on (a.student_id = e.student_id and e.current_session_id = ${session_id})
+                LEFT JOIN  student_current_standing f on (a.student_id = f.student_id  and a.session_id = f.session_id)
+                LEFT JOIN  section_master g on f.section_id = g.section_id
+                LEFT JOIN  standard_master h on g.standard_id = h.standard_id
+                LEFT JOIN  fee_slip i on (a.fee_slip_id = i.fee_slip_id and a.fee_plan_id = i.fee_plan_id)   
+                LEFT JOIN  bank_account_master j on b.bank_id = j.bank_account_no   
+                where b.receipt_date between '${start_date}' and '${end_date}'
+                and mode='Cash'
+                and a.session_id=${session_id}
+                order by mode,2,i.fee_slip_id`;  
+                   console.log("==========qry4========")
+      console.log(qry4)
+       connection.query(qry, function (error, result) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+
+          }else{
+           var dailyData = []
+          obj = {}
+          obj['slNo'] = "";
+          obj["receipt_date"]="";
+          obj['receipt_id'] = "";
+          obj["enroll_number"] = "";
+          obj["name"] = "Cash Collection By Bank";
+          obj['fee_slip_name'] = "";
+          obj["class"] = "";
+          obj["bank_name"] = "";
+          obj["item_no"] = "";
+          obj["mode"] = "";
+          obj["amount_due"] = "";
+          obj["fine"] = "";
+          obj["scholorship_amount"] = "";
+          obj["total"] = "";  
+          dailyData.push(obj)
+          obj = {}
+          obj['slNo'] = "SlNo";
+          obj["receipt_date"]="Date";
+          obj['receipt_id'] = "Recpt No";
+          obj["enroll_number"] = "Enrol No";
+          obj["name"] = "Name";
+          obj['fee_slip_name'] = "Month";
+          obj["class"] = "Class";
+          obj["bank_name"] = "Bank Name";
+          obj["item_no"] = "Cheq No";
+          obj["mode"] = "";
+          obj["amount_due"] = "Fee";
+          obj["fine"] = "Fine";
+          obj["scholorship_amount"] = "Scholorship";
+          obj["total"] = "Total";  
+          dailyData.push(obj)
+
+          var online_sub_total=0; 
+          var sub_total_amount_due=0; 
+          var sub_total_fine = 0;
+          var sub_total_scholorship_amount = 0;
+          var grand_amount_due = 0
+          var  grand_total_fine = 0
+          var  grand_scholorship_amount= 0
+          var grand_total=0
+
+          var slNo=1 
+          console.log("result")
+          console.log(result);
+          for (var i=0; i<result.length; i++) {
+            obj = {}
+            obj['slNo'] = slNo;
+            obj["receipt_date"]=result[i].receipt_date
+            obj['receipt_id'] = result[i].receipt_id
+            obj["enroll_number"] = result[i].enroll_number
+            obj["name"] = result[i].name
+            obj['fee_slip_name'] = result[i].fee_slip_name
+            obj["class"] = result[i].class
+            obj["bank_name"] = result[i].bank_name
+            obj["item_no"] = result[i].item_no
+            obj["mode"] = result[i].mode
+            obj["amount_due"] = result[i].amount_due
+            obj["fine"] = result[i].fine
+            obj["scholorship_amount"] = result[i].scholorship_amount
+            obj["total"] = result[i].total  
+
+           sub_total_amount_due=Number(sub_total_amount_due) + Number(result[i].amount_due) 
+           sub_total_fine = Number(sub_total_fine) +  Number(result[i].fine)
+           sub_total_scholorship_amount = Number(sub_total_scholorship_amount) + Number(result[i].scholorship_amount)
+           online_sub_total=Number(online_sub_total)+Number(result[i].total)
+           
+           grand_amount_due = Number(grand_amount_due) + Number(result[i].amount_due)
+           grand_total_fine = Number(grand_total_fine) + Number(result[i].fine)
+           grand_scholorship_amount= Number(grand_scholorship_amount) + Number(result[i].scholorship_amount)
+           grand_total=Number(grand_total)+Number(result[i].total)
+            
+            dailyData.push(obj)
+            slNo++;
+
+          }
+             
+      }
+//============ for quer1-------------------
+      connection.query(qry1, function (error, result) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+
+          }else{
+            
+          obj = {}
+          obj['slNo'] = "";
+          obj["receipt_date"]="";
+          obj['receipt_id'] = "";
+          obj["enroll_number"] = "";
+          obj["name"] = "Online Fees Collection";
+          obj['fee_slip_name'] = "";
+          obj["class"] = "";
+          obj["bank_name"] = "";
+          obj["item_no"] = "";
+          obj["mode"] = "";
+          obj["amount_due"] = "";
+          obj["fine"] = "";
+          obj["scholorship_amount"] = "";
+          obj["total"] = "";  
+          dailyData.push(obj)
+          obj = {}
+          obj['slNo'] = "SlNo";
+          obj["receipt_date"]="Date";
+          obj['receipt_id'] = "Recpt No";
+          obj["enroll_number"] = "Enrol No";
+          obj["name"] = "Name";
+          obj['fee_slip_name'] = "Month";
+          obj["class"] = "Class";
+          obj["bank_name"] = "Bank Name";
+          obj["item_no"] = "Cheq No";
+          obj["mode"] = "";
+          obj["amount_due"] = "Fee";
+          obj["fine"] = "Fine";
+          obj["scholorship_amount"] = "Scholorship";
+          obj["total"] = "Total";  
+          dailyData.push(obj)
+
+          var online_sub_total=0; 
+          var sub_total_amount_due=0; 
+          var sub_total_fine = 0;
+          var sub_total_scholorship_amount = 0;
+          var grand_amount_due = 0
+          var  grand_total_fine = 0
+          var  grand_scholorship_amount= 0
+          var grand_total=0
+
+          var slNo=1 
+          console.log("result")
+          console.log(result);
+          for (var i=0; i<result.length; i++) {
+            obj = {}
+            obj['slNo'] = slNo;
+            obj["receipt_date"]=result[i].receipt_date
+            obj['receipt_id'] = result[i].receipt_id
+            obj["enroll_number"] = result[i].enroll_number
+            obj["name"] = result[i].name
+            obj['fee_slip_name'] = result[i].fee_slip_name
+            obj["class"] = result[i].class
+            obj["bank_name"] = result[i].bank_name
+            obj["item_no"] = result[i].item_no
+            obj["mode"] = result[i].mode
+            obj["amount_due"] = result[i].amount_due
+            obj["fine"] = result[i].fine
+            obj["scholorship_amount"] = result[i].scholorship_amount
+            obj["total"] = result[i].total  
+
+           sub_total_amount_due=Number(sub_total_amount_due) + Number(result[i].amount_due) 
+           sub_total_fine = Number(sub_total_fine) +  Number(result[i].fine)
+           sub_total_scholorship_amount = Number(sub_total_scholorship_amount) + Number(result[i].scholorship_amount)
+           online_sub_total=Number(online_sub_total)+Number(result[i].total)
+           
+           grand_amount_due = Number(grand_amount_due) + Number(result[i].amount_due)
+           grand_total_fine = Number(grand_total_fine) + Number(result[i].fine)
+           grand_scholorship_amount= Number(grand_scholorship_amount) + Number(result[i].scholorship_amount)
+           grand_total=Number(grand_total)+Number(result[i].total)
+            
+            dailyData.push(obj)
+            slNo++;
+
+          }
+        
+          
+      } 
+
+    }); //second query end
+//========== FOR QUERY 3rd ===================
+      connection.query(qry2, function (error, result) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+
+          }else{
+            
+          obj = {}
+          obj['slNo'] = "";
+          obj["receipt_date"]="";
+          obj['receipt_id'] = "";
+          obj["enroll_number"] = "";
+          obj["name"] = "Cheque Collection By Bank";
+          obj['fee_slip_name'] = "";
+          obj["class"] = "";
+          obj["bank_name"] = "";
+          obj["item_no"] = "";
+          obj["mode"] = "";
+          obj["amount_due"] = "";
+          obj["fine"] = "";
+          obj["scholorship_amount"] = "";
+          obj["total"] = "";  
+          dailyData.push(obj)
+          obj = {}
+          obj['slNo'] = "SlNo";
+          obj["receipt_date"]="Date";
+          obj['receipt_id'] = "Recpt No";
+          obj["enroll_number"] = "Enrol No";
+          obj["name"] = "Name";
+          obj['fee_slip_name'] = "Month";
+          obj["class"] = "Class";
+          obj["bank_name"] = "Bank Name";
+          obj["item_no"] = "Cheq No";
+          obj["mode"] = "";
+          obj["amount_due"] = "Fee";
+          obj["fine"] = "Fine";
+          obj["scholorship_amount"] = "Scholorship";
+          obj["total"] = "Total";  
+          dailyData.push(obj)
+
+          var online_sub_total=0; 
+          var sub_total_amount_due=0; 
+          var sub_total_fine = 0;
+          var sub_total_scholorship_amount = 0;
+          var grand_amount_due = 0
+          var  grand_total_fine = 0
+          var  grand_scholorship_amount= 0
+          var grand_total=0
+
+          var slNo=1 
+          console.log("result")
+          console.log(result);
+          for (var i=0; i<result.length; i++) {
+            obj = {}
+            obj['slNo'] = slNo;
+            obj["receipt_date"]=result[i].receipt_date
+            obj['receipt_id'] = result[i].receipt_id
+            obj["enroll_number"] = result[i].enroll_number
+            obj["name"] = result[i].name
+            obj['fee_slip_name'] = result[i].fee_slip_name
+            obj["class"] = result[i].class
+            obj["bank_name"] = result[i].bank_name
+            obj["item_no"] = result[i].item_no
+            obj["mode"] = result[i].mode
+            obj["amount_due"] = result[i].amount_due
+            obj["fine"] = result[i].fine
+            obj["scholorship_amount"] = result[i].scholorship_amount
+            obj["total"] = result[i].total  
+
+           sub_total_amount_due=Number(sub_total_amount_due) + Number(result[i].amount_due) 
+           sub_total_fine = Number(sub_total_fine) +  Number(result[i].fine)
+           sub_total_scholorship_amount = Number(sub_total_scholorship_amount) + Number(result[i].scholorship_amount)
+           online_sub_total=Number(online_sub_total)+Number(result[i].total)
+           
+           grand_amount_due = Number(grand_amount_due) + Number(result[i].amount_due)
+           grand_total_fine = Number(grand_total_fine) + Number(result[i].fine)
+           grand_scholorship_amount= Number(grand_scholorship_amount) + Number(result[i].scholorship_amount)
+           grand_total=Number(grand_total)+Number(result[i].total)
+            
+            dailyData.push(obj)
+            slNo++;
+
+          }
+        
+          
+      } 
+
+    }); //third query end
+
+//========== FOR QUERY 4th ===================
+      connection.query(qry3, function (error, result) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+
+          }else{
+            
+          obj = {}
+          obj['slNo'] = "";
+          obj["receipt_date"]="";
+          obj['receipt_id'] = "";
+          obj["enroll_number"] = "";
+          obj["name"] = "Fees Collection by Draft";
+          obj['fee_slip_name'] = "";
+          obj["class"] = "";
+          obj["bank_name"] = "";
+          obj["item_no"] = "";
+          obj["mode"] = "";
+          obj["amount_due"] = "";
+          obj["fine"] = "";
+          obj["scholorship_amount"] = "";
+          obj["total"] = "";  
+          dailyData.push(obj)
+          obj = {}
+          obj['slNo'] = "SlNo";
+          obj["receipt_date"]="Date";
+          obj['receipt_id'] = "Recpt No";
+          obj["enroll_number"] = "Enrol No";
+          obj["name"] = "Name";
+          obj['fee_slip_name'] = "Month";
+          obj["class"] = "Class";
+          obj["bank_name"] = "Bank Name";
+          obj["item_no"] = "Cheq No";
+          obj["mode"] = "";
+          obj["amount_due"] = "Fee";
+          obj["fine"] = "Fine";
+          obj["scholorship_amount"] = "Scholorship";
+          obj["total"] = "Total";  
+          dailyData.push(obj)
+
+          var online_sub_total=0; 
+          var sub_total_amount_due=0; 
+          var sub_total_fine = 0;
+          var sub_total_scholorship_amount = 0;
+          var grand_amount_due = 0
+          var  grand_total_fine = 0
+          var  grand_scholorship_amount= 0
+          var grand_total=0
+
+          var slNo=1 
+          console.log("result")
+          console.log(result);
+          for (var i=0; i<result.length; i++) {
+            obj = {}
+            obj['slNo'] = slNo;
+            obj["receipt_date"]=result[i].receipt_date
+            obj['receipt_id'] = result[i].receipt_id
+            obj["enroll_number"] = result[i].enroll_number
+            obj["name"] = result[i].name
+            obj['fee_slip_name'] = result[i].fee_slip_name
+            obj["class"] = result[i].class
+            obj["bank_name"] = result[i].bank_name
+            obj["item_no"] = result[i].item_no
+            obj["mode"] = result[i].mode
+            obj["amount_due"] = result[i].amount_due
+            obj["fine"] = result[i].fine
+            obj["scholorship_amount"] = result[i].scholorship_amount
+            obj["total"] = result[i].total  
+
+           sub_total_amount_due=Number(sub_total_amount_due) + Number(result[i].amount_due) 
+           sub_total_fine = Number(sub_total_fine) +  Number(result[i].fine)
+           sub_total_scholorship_amount = Number(sub_total_scholorship_amount) + Number(result[i].scholorship_amount)
+           online_sub_total=Number(online_sub_total)+Number(result[i].total)
+           
+           grand_amount_due = Number(grand_amount_due) + Number(result[i].amount_due)
+           grand_total_fine = Number(grand_total_fine) + Number(result[i].fine)
+           grand_scholorship_amount= Number(grand_scholorship_amount) + Number(result[i].scholorship_amount)
+           grand_total=Number(grand_total)+Number(result[i].total)
+            
+            dailyData.push(obj)
+            slNo++;
+
+          }
+        
+          
+      } 
+
+    }); //fourth query end  
+
+//========== FOR QUERY 4th ===================
+      connection.query(qry4, function (error, result) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+
+          }else{
+            
+          obj = {}
+          obj['slNo'] = "";
+          obj["receipt_date"]="";
+          obj['receipt_id'] = "";
+          obj["enroll_number"] = "";
+          obj["name"] = "Fees Collection by School";
+          obj['fee_slip_name'] = "";
+          obj["class"] = "";
+          obj["bank_name"] = "";
+          obj["item_no"] = "";
+          obj["mode"] = "";
+          obj["amount_due"] = "";
+          obj["fine"] = "";
+          obj["scholorship_amount"] = "";
+          obj["total"] = "";  
+          dailyData.push(obj)
+          obj = {}
+          obj['slNo'] = "SlNo";
+          obj["receipt_date"]="Date";
+          obj['receipt_id'] = "Recpt No";
+          obj["enroll_number"] = "Enrol No";
+          obj["name"] = "Name";
+          obj['fee_slip_name'] = "Month";
+          obj["class"] = "Class";
+          obj["bank_name"] = "Bank Name";
+          obj["item_no"] = "Cheq No";
+          obj["mode"] = "";
+          obj["amount_due"] = "Fee";
+          obj["fine"] = "Fine";
+          obj["scholorship_amount"] = "Scholorship";
+          obj["total"] = "Total";  
+          dailyData.push(obj)
+
+          var online_sub_total=0; 
+          var sub_total_amount_due=0; 
+          var sub_total_fine = 0;
+          var sub_total_scholorship_amount = 0;
+          var grand_amount_due = 0
+          var  grand_total_fine = 0
+          var  grand_scholorship_amount= 0
+          var grand_total=0
+
+          var slNo=1 
+          console.log("result")
+          console.log(result);
+          for (var i=0; i<result.length; i++) {
+            obj = {}
+            obj['slNo'] = slNo;
+            obj["receipt_date"]=result[i].receipt_date
+            obj['receipt_id'] = result[i].receipt_id
+            obj["enroll_number"] = result[i].enroll_number
+            obj["name"] = result[i].name
+            obj['fee_slip_name'] = result[i].fee_slip_name
+            obj["class"] = result[i].class
+            obj["bank_name"] = result[i].bank_name
+            obj["item_no"] = result[i].item_no
+            obj["mode"] = result[i].mode
+            obj["amount_due"] = result[i].amount_due
+            obj["fine"] = result[i].fine
+            obj["scholorship_amount"] = result[i].scholorship_amount
+            obj["total"] = result[i].total  
+
+           sub_total_amount_due=Number(sub_total_amount_due) + Number(result[i].amount_due) 
+           sub_total_fine = Number(sub_total_fine) +  Number(result[i].fine)
+           sub_total_scholorship_amount = Number(sub_total_scholorship_amount) + Number(result[i].scholorship_amount)
+           online_sub_total=Number(online_sub_total)+Number(result[i].total)
+           
+           grand_amount_due = Number(grand_amount_due) + Number(result[i].amount_due)
+           grand_total_fine = Number(grand_total_fine) + Number(result[i].fine)
+           grand_scholorship_amount= Number(grand_scholorship_amount) + Number(result[i].scholorship_amount)
+           grand_total=Number(grand_total)+Number(result[i].total)
+            
+            dailyData.push(obj)
+            slNo++;
+
+          }
+        
+          data.status = 's';
+          data.dailyData = dailyData;
+          res.send(data)  
+      } 
+
+    }); //5th query end        
+         
+    
+     });  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    });     
+  });
+
+});
+
+
 //=========== read outstanding by class ===========
 
 router.post('/read_outstanding_classwise', function(req, res, next) {

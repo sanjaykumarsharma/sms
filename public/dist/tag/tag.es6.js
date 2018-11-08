@@ -2618,9 +2618,83 @@ riot.tag2('daily-attendance', '<section class=" is-fluid"> <div class="level"> <
     }
 
 });
-riot.tag2('daily-collection', '<h4>daily-collection fees</h4>', '', '', function(opts) {
+riot.tag2('daily-collection', '<section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Fees Transaction Report</h2> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">From Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="start_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column is-narrow"> <label class="label">To Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="end_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getDailyFees}"> GO </button> </div> </div> </div> <div class="columns is-full"> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <tbody> <tr each="{cd, i in dailyData}"> <td>{cd.slNo}</td> <td>{cd.receipt_date}</td> <td>{cd.receipt_id}</td> <td>{cd.enroll_number}</td> <td>{cd.name}</td> <td>{cd.fee_slip_name}</td> <td>{cd.class}</td> <td>{cd.bank_name}</td> <td>{cd.item_no}</td> <td>{cd.mode}</td> <td class="has-text-right amount">{cd.amount_due}</td> <td class="has-text-right amount">{cd.fine}</td> <td class="has-text-right amount">{cd.scholarship_amount}</td> <td class="has-text-right amount">{cd.total}</td> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
+	var self = this
+    self.on("mount", function(){
+      flatpickr(".date", {
+
+    	allowInput: true,
+    	altFormat: "d/m/Y",
+    	dateFormat: "Y-m-d",
+  		})
+      self.update();
+    })
+
+    self.on("unmount", function(){
+      feesReportStore.off('read_daily_fees_changed',ReadDailyFeesChanged)
+    })
+
+    self.getDailyFees = () => {
+    	var obj={}
+          obj['start_date']=self.refs.start_date.value
+          obj['end_date']=self.refs.end_date.value
+          self.loading = true
+          feesReportStore.trigger('read_daily_fees', obj)
+          console.log(obj)
+    }
+
+    feesReportStore.on('read_daily_fees_changed',ReadDailyFeesChanged)
+    function ReadDailyFeesChanged(dailyData){
+      self.totalFees = 0
+      self.totalFine = 0
+      self.totalScholarship = 0
+      self.totalGrandTotal = 0
+      console.log(dailyData)
+      self.dailyData = []
+      self.dailyData = dailyData
+
+      console.log("dailyData")
+      self.update()
+    }
 });
-riot.tag2('daily-register', '<h4>daily-register fees</h4>', '', '', function(opts) {
+riot.tag2('daily-register', '<section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Daily Fees Register</h2> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">From Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="start_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column is-narrow"> <label class="label">To Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="end_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getFeesRegisterData}"> GO </button> </div> </div> </div> <div class="columns is-full"> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <tbody> <tr each="{cd, i in registerData}"> <td>{cd.slNo}</td> <td>{cd.receipt_date}</td> <td>{cd.receipt_id}</td> <td>{cd.enroll_number}</td> <td>{cd.name}</td> <td>{cd.fee_slip_name}</td> <td>{cd.class}</td> <td>{cd.bank_name}</td> <td>{cd.item_no}</td> <td>{cd.mode}</td> <td class="has-text-right amount">{cd.amount_due}</td> <td class="has-text-right amount">{cd.fine}</td> <td class="has-text-right amount">{cd.scholarship_amount}</td> <td class="has-text-right amount">{cd.total}</td> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
+	var self = this
+    self.on("mount", function(){
+      flatpickr(".date", {
+
+    	allowInput: true,
+    	altFormat: "d/m/Y",
+    	dateFormat: "Y-m-d",
+  		})
+      self.update();
+    })
+
+    self.on("unmount", function(){
+      feesReportStore.off('read_fees_register_changed',ReadFeesRegisterChanged)
+    })
+
+    self.getFeesRegisterData = () => {
+    	var obj={}
+          obj['start_date']=self.refs.start_date.value
+          obj['end_date']=self.refs.end_date.value
+          self.loading = true
+          feesReportStore.trigger('read_fees_register', obj)
+          console.log(obj)
+    }
+
+    feesReportStore.on('read_fees_register_changed',ReadFeesRegisterChanged)
+    function ReadFeesRegisterChanged(registerData){
+      self.totalFees = 0
+      self.totalFine = 0
+      self.totalScholarship = 0
+      self.totalGrandTotal = 0
+      console.log(registerData)
+      self.registerData = []
+      self.registerData = registerData
+
+      console.log("registerData")
+      self.update()
+    }
 });
 riot.tag2('date-wise', '<section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Date Wise Fees Received</h2> <title>{selected_start_date} - {selected_end_date}</title> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">From Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="start_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column is-narrow"> <label class="label">To Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="end_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getDateWiseFees}"> GO </button> </div> </div> </div> <div class="columns is-full"> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <thead> <tr> <th class="slno">#</th> <th>Receipt Date</th> <th>Fees</th> <th>Fine</th> <th>Scholarship</th> <th>Total</th> </tr> </thead> <tbody> <tr each="{cd, i in dateWiseData}"> <td>{i + 1}</td> <td>{cd.receipt_date}</td> <td class="has-text-right amount">{cd.fees}</td> <td class="has-text-right amount">{cd.fine}</td> <td class="has-text-right amount">{cd.scholarship}</td> <td class="has-text-right amount">{cd.total}</td> </tr> <tr> <th class="has-text-right" colspan=" 2">Total</th> <th class="has-text-right amount">{totalFees}</th> <th class="has-text-right amount">{totalFine}</th> <th class="has-text-right amount">{totalScholarship}</th> <th class="has-text-right amount">{totalGrandTotal}</th> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
 	var self = this
@@ -4261,14 +4335,14 @@ riot.tag2('exam-scheme', '<loading-bar if="{loading}"></loading-bar> <section cl
       self.readExamSchemes()
     })
     self.on("unmount", function(){
-      examSchemeStore.off('exam_scheme_changed', ExamSchemesChanged)
-      examSchemeStore.off('add_exam_scheme_changed',AddExamSchemesChanged)
-      examSchemeStore.off('delete_exam_scheme_changed',DeleteExamSchemesChanged)
-      examSchemeStore.off('read_exams_changed',ExamSChanged)
-      examSchemeStore.off('add_exams_changed',ExamsAddChanged)
-      examSchemeStore.off('delete_exam_changed',ExamsDeleteChanged)
-      examSchemeStore.off('read_classes_changed',ReadClassesChanged)
-      examSchemeStore.off('assign_standard_changed',AssignStandardChanged)
+        examSchemeStore.off('exam_scheme_changed', ExamSchemesChanged)
+        examSchemeStore.off('add_exam_scheme_changed',AddExamSchemesChanged)
+        examSchemeStore.off('delete_exam_scheme_changed',DeleteExamSchemesChanged)
+        examSchemeStore.off('read_exams_changed',ExamSChanged)
+        examSchemeStore.off('add_exams_changed',ExamsAddChanged)
+        examSchemeStore.off('delete_exam_changed',ExamsDeleteChanged)
+        examSchemeStore.off('read_classes_changed',ReadClassesChanged)
+        examSchemeStore.off('assign_standard_changed',AssignStandardChanged)
     })
 
     self.readExamSchemes = () => {
@@ -9979,7 +10053,7 @@ riot.tag2('level', '<section class="is-fluid"> <h2 class="title" style="color: #
 });
 riot.tag2('loading-bar', '<div class="load-bar"> <div class="bar"></div> <div class="bar"></div> <div class="bar"></div> </div>', 'loading-bar .load-bar,[data-is="loading-bar"] .load-bar{ position: fixed; top: 68px; left: 0; width: 100%; height: 6px; background-color: #A5D6A7; } loading-bar .bar,[data-is="loading-bar"] .bar{ content: ""; display: inline; position: absolute; width: 0; height: 100%; left: 50%; text-align: center; } loading-bar .bar:nth-child(1),[data-is="loading-bar"] .bar:nth-child(1){ background-color: #00BCD4; animation: loading 3s linear infinite; } loading-bar .bar:nth-child(2),[data-is="loading-bar"] .bar:nth-child(2){ background-color: #FFEB3B; animation: loading 3s linear 1s infinite; } loading-bar .bar:nth-child(3),[data-is="loading-bar"] .bar:nth-child(3){ background-color: #FF5722; animation: loading 3s linear 2s infinite; } @keyframes loading { from {left: 50%; width: 0;z-index:100;} 33.3333% {left: 0; width: 100%;z-index: 10;} to {left: 0; width: 100%;} }', '', function(opts) {
 });
-riot.tag2('login', '<div class="login-banner"> <div class="columns is-gapless is-marginless"> <div class="column is-three-fifths is-hidden-mobile" style="height: 100vh;"> <div class="cover_image" style="background-image: url(\'img/classroom.jpg\'); height: 100%;"></div> </div> <div class="column is-two-fifths has-background-white"> <section class="section"> <div class="pad"> <h1 class="title is-spaced has-text-success is-size-1 has-text-weight-bold">Sarthak</h1> <p class="is-size-6 has-text-grey" style="margin-top: -1.5em; margin-bottom: 2em;">College Management simplified!</p> <div class="subtitle">Login</div> <div> <div class="field"> <label class="label" for="user_username">Username</label> <div class="control"> <input class="input is-medium" id="user_username" ref="username" type="text"> </div> </div> <div class="field"> <label class="label" for="user_password">Password</label> <div class="control"> <input class="input is-medium" id="user_password" ref="password" type="password"> </div> </div> <div class="field"> <label class="label" for="user_role">Role</label> <div class="control"> <div class="select is-fullwidth"> <select ref="role"> <option value="ADMIN">ADMIN</option> <option each="{roles}" riot-value="{id}">{role}</option> </select> </div> </div> </div> <div class="field"> <div class="control"> <button class="button is-danger is-medium" type="submit" onclick="{login}">Submit</button> </div> </div> </div> </div> </section> </div> </div> </div>', '', '', function(opts) {
+riot.tag2('login', '<div class="login-banner"> <div class="columns is-gapless is-marginless"> <div class="column is-three-fifths is-hidden-mobile" style="height: 100vh;"> <div class="cover_image" style="background-image: url(\'img/classroom.jpg\'); height: 100%;"></div> </div> <div class="column is-two-fifths has-background-white"> <section class="section"> <div class="pad"> <h1 class="title is-spaced has-text-success is-size-1 has-text-weight-bold">Sarthi</h1> <p class="is-size-6 has-text-grey" style="margin-top: -1.5em; margin-bottom: 2em;">School Management simplified!</p> <div class="subtitle">Login</div> <div> <div class="field"> <label class="label" for="user_username">Username</label> <div class="control"> <input class="input is-medium" id="user_username" ref="username" type="text"> </div> </div> <div class="field"> <label class="label" for="user_password">Password</label> <div class="control"> <input class="input is-medium" id="user_password" ref="password" type="password"> </div> </div> <div class="field"> <label class="label" for="user_role">Role</label> <div class="control"> <div class="select is-fullwidth"> <select ref="role"> <option value="ADMIN">ADMIN</option> <option each="{roles}" riot-value="{role}">{role}</option> </select> </div> </div> </div> <div class="field"> <div class="control"> <button class="button is-danger is-medium" type="submit" onclick="{login}">Submit</button> </div> </div> </div> </div> </section> </div> </div> </div>', '', '', function(opts) {
     var self = this
     self.login_warning = false
 
@@ -13759,8 +13833,11 @@ riot.tag2('scholarship', '<section class="container is-fluid" show="{scholar_shi
       for(var i=0; i<self.slips.length; i++){
           var o ={}
           o.fee_slip_id = self.slips[i].fee_slip_id;
-          o.amount = self.slips[i].amount;
-          if(Number(self.slips[i].amount)>0){
+
+          var sid = "#head_amount"+self.slips[i].fee_slip_id
+          o.amount = $(sid).val()
+          console.log("amount at " + sid + " = "+ o.amount)
+          if(Number($(sid).val())>0){
           assigned_slips.push(o);
         }
       }
@@ -13794,13 +13871,24 @@ riot.tag2('scholarship', '<section class="container is-fluid" show="{scholar_shi
     function ReadStudentChanged(scholarStudent){
       console.log(scholarStudent)
       self.student = []
+      self.slips = []
+      self.student_name = ''
+      self.standard = ''
+      self.studentId = ''
+      if(scholarStudent.length>0){
+
       self.student = scholarStudent
+
       self.student_name = self.student[0].student_name;
       self.standard = self.student[0].standard;
       self.studentId = self.student[0].student_id;
-      self.update()
       self.getScholarshipByStudent()
-      console.log(self.scholarStudent)
+    }else{
+      console.log("-------")
+      showToast("No data found. Please try again.")
+    }
+      self.update()
+
     }
     scholarshipStore.on('read_scholar_feeslip_changed',ReadScholarFeeSlipChanged)
     function ReadScholarFeeSlipChanged(scholarSlips){

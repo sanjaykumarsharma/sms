@@ -236,6 +236,58 @@ function FeesReportStore(){
         }
       })
   })
+  //========= read daily fees collection ======
+  self.dailyData = []
+  self.on('read_daily_fees', function(obj) {
+    console.log('i am in read daily fees api call from ajax')
+    let req = {}
+   /* req.start_date=obj.start_date
+    req.end_date=obj.end_date*/
+    $.ajax({
+      url:'/fees_report/read_daily_fees/'+obj.start_date+'/'+obj.end_date,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.dailyData = data.dailyData
+            self.trigger('read_daily_fees_changed', data.dailyData)
+          }else if(data.status == 'e'){
+            showToast("data read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+ //======= read fees register ================ 
+  self.registerData = []
+  self.on('read_fees_register', function(obj) {
+    console.log('i am in read fees register api call from ajax')
+    let req = {}
+   /* req.start_date=obj.start_date
+    req.end_date=obj.end_date*/
+    $.ajax({
+      url:'/fees_report/read_fees_register/'+obj.start_date+'/'+obj.end_date,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.registerData = data.registerData
+            self.trigger('read_fees_register_changed', data.registerData)
+          }else if(data.status == 'e'){
+            showToast("data read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
 //============ read month wise fees============
   self.monthlyData = []
   self.on('read_monthly_fees', function(obj) {
@@ -411,13 +463,12 @@ self.on('read_mode', function() {
       })
   })
 
-  self.dailyFees = []
+  /*self.dailyFees = []
 
   self.on('read_daily_fees', function(obj) {
     console.log('i am in read daily fees api call from ajax')
     let req = {}
-   /* req.start_date=obj.start_date
-    req.end_date=obj.end_date*/
+   
     $.ajax({
       url:'/fees_report/read_daily_fees/'+obj.start_date+'/'+obj.end_date,
         contentType: "application/json",
@@ -436,7 +487,7 @@ self.on('read_mode', function() {
           showToast("", data)
         }
       })
-  })
+  })*/
 
 
 

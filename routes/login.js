@@ -8,7 +8,7 @@ router.get('/roles', function(req, res, next) {
   req.getConnection(function(err,connection){
        
      var data = {}
-     connection.query('SELECT * FROM employee_role',function(err,result)     {
+     connection.query('SELECT distinct role FROM employee_role',function(err,result)     {
             
         if(err){
            console.log("Error reading roles : %s ",err );

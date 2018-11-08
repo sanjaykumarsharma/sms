@@ -6672,6 +6672,58 @@ function FeesReportStore() {
       }
     });
   });
+  //========= read daily fees collection ======
+  self.dailyData = [];
+  self.on('read_daily_fees', function (obj) {
+    console.log('i am in read daily fees api call from ajax');
+    var req = {};
+    /* req.start_date=obj.start_date
+     req.end_date=obj.end_date*/
+    $.ajax({
+      url: '/fees_report/read_daily_fees/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.dailyData = data.dailyData;
+          self.trigger('read_daily_fees_changed', data.dailyData);
+        } else if (data.status == 'e') {
+          showToast("data read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+  //======= read fees register ================ 
+  self.registerData = [];
+  self.on('read_fees_register', function (obj) {
+    console.log('i am in read fees register api call from ajax');
+    var req = {};
+    /* req.start_date=obj.start_date
+     req.end_date=obj.end_date*/
+    $.ajax({
+      url: '/fees_report/read_fees_register/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.registerData = data.registerData;
+          self.trigger('read_fees_register_changed', data.registerData);
+        } else if (data.status == 'e') {
+          showToast("data read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
   //============ read month wise fees============
   self.monthlyData = [];
   self.on('read_monthly_fees', function (obj) {
@@ -6847,32 +6899,30 @@ function FeesReportStore() {
     });
   });
 
-  self.dailyFees = [];
-
-  self.on('read_daily_fees', function (obj) {
-    console.log('i am in read daily fees api call from ajax');
-    var req = {};
-    /* req.start_date=obj.start_date
-     req.end_date=obj.end_date*/
+  /*self.dailyFees = []
+    self.on('read_daily_fees', function(obj) {
+    console.log('i am in read daily fees api call from ajax')
+    let req = {}
+   
     $.ajax({
-      url: '/fees_report/read_daily_fees/' + obj.start_date + '/' + obj.end_date,
-      contentType: "application/json",
-      dataType: "json",
-      headers: { "Authorization": getCookie('token') },
-      success: function success(data) {
-        console.log(data);
-        if (data.status == 's') {
-          self.dailyFees = data.dailyFees;
-          self.trigger('read_monthly_fees_changed', data.dailyFees);
-        } else if (data.status == 'e') {
-          showToast("Categories Read Error. Please try again.", data);
+      url:'/fees_report/read_daily_fees/'+obj.start_date+'/'+obj.end_date,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.dailyFees = data.dailyFees
+            self.trigger('read_monthly_fees_changed', data.dailyFees)
+          }else if(data.status == 'e'){
+            showToast("Categories Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
         }
-      },
-      error: function error(data) {
-        showToast("", data);
-      }
-    });
-  });
+      })
+  })*/
 }
 'use strict';
 

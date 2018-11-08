@@ -334,14 +334,14 @@
       self.readExamSchemes()
     })
     self.on("unmount", function(){
-      examSchemeStore.off('exam_scheme_changed', ExamSchemesChanged)
-      examSchemeStore.off('add_exam_scheme_changed',AddExamSchemesChanged)
-      examSchemeStore.off('delete_exam_scheme_changed',DeleteExamSchemesChanged)
-      examSchemeStore.off('read_exams_changed',ExamSChanged)
-      examSchemeStore.off('add_exams_changed',ExamsAddChanged)
-      examSchemeStore.off('delete_exam_changed',ExamsDeleteChanged)
-      examSchemeStore.off('read_classes_changed',ReadClassesChanged)
-      examSchemeStore.off('assign_standard_changed',AssignStandardChanged)
+        examSchemeStore.off('exam_scheme_changed', ExamSchemesChanged)
+        examSchemeStore.off('add_exam_scheme_changed',AddExamSchemesChanged)
+        examSchemeStore.off('delete_exam_scheme_changed',DeleteExamSchemesChanged)
+        examSchemeStore.off('read_exams_changed',ExamSChanged)
+        examSchemeStore.off('add_exams_changed',ExamsAddChanged)
+        examSchemeStore.off('delete_exam_changed',ExamsDeleteChanged)
+        examSchemeStore.off('read_classes_changed',ReadClassesChanged)
+        examSchemeStore.off('assign_standard_changed',AssignStandardChanged)
     })
 
     //read courses
