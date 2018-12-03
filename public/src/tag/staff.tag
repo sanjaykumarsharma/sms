@@ -1,4 +1,3 @@
-
 <staff>
 	<section class=" is-fluid" show={staff_view =='show_staff'}>
 		<div class="level">
@@ -38,6 +37,7 @@
 						<div class="select">
 							<select ref="r_emp_type_id">
 								<option>Type</option>
+								<option value={-1}>All</option>
 								<option each={employeeTypes} value={emp_type_id}>{emp_type}
 	                            </option>
 							</select>
@@ -137,8 +137,8 @@
 		<div class="level-right"></div>
 	</div>
 	<div class="box">
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-half">
+		<div class="columns is-multiline">
+		    <div class="column is-one-fifth">
 			    <div id="pp_box" class="pp-box" onclick={trigger_file_input.bind(this,'staff_picture')}>
 			        <div class="icon has-text-danger" onclick=
 			        	{remove_picture.bind(this, 'pp_box','staff_picture')}><i class="fas fa-trash"></i>
@@ -146,192 +146,280 @@
 			    </div>
 			    <input accept="image/*" class="is-hidden" id="staff_picture" name="staff_picture" onchange={loadFile.bind(this, 'pp_box')} type="file">
 		    </div>
-		    <div class="column is-half">
-		      	<div class="column is-narrow">
-				<label class="label" for="first_name">Title</label>
-					<input class="input" id="title" ref="title" type="text">
-		      	</div>
-		      	<div class="column is-narrow">
-				<label class="label" for="first_name">First Name</label>
-					<input class="input" id="first_name" ref="first_name" type="text">
-		      	</div>
-		      	<div class="column is-narrow">
-		      		<label class="label" for="middle_name">Middle Name</label>
-		      		<input class="input" ref="middle_name" type="text">
-		      	</div>
-		        <div class="column is-narrow">
-				 <label class="label" for="last_name">Last Name</label>
-					<input class="input" ref="last_name" type="text">
-		      	</div>
-		      	<div class="column is-narrow">
-				 <label class="label" for="last_name">Short Name</label>
-					<input class="input" ref="short_name" type="text">
-		      	</div>
+		    <div class="column ">
+		    	<div class="columns ">
+		    		<!-- <div class="column is-2">
+							<label class="label" for="title">Title</label>
+				      	</div>
+				      	<div class="column is-2">
+							<input class="input is-small" id="title" ref="title" type="text">
+				      	</div> -->
+			      	<div class="column is-2">
+						<label class="label is-small" for="first_name">First Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" id="first_name" ref="first_name" type="text">
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="middle_name">Middle Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="middle_name" type="text">
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="last_name">Last Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="last_name" type="text">
+			      	</div>
+		    	</div>
+
+		    	<div class="columns mt30">
+			      	<div class="column is-2">
+						<label class="label is-small" for="last_name">Short Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="short_name" type="text">
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="gender">Gender</label>
+			      	</div>
+			      	<div class="column is-2">
+						<div class="select is-fullwidth is-small">
+							<select id="gender" ref="gender">
+								<option value="M">Male</option>
+								<option value="F">Female</option>
+							</select>
+						</div>
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="">Identification Marks</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="id_mark" type="text">
+			      	</div>
+			    </div>
+
+			    <div class="columns mt30">
+			      	<div class="column is-2">
+						<label class="label is-small" for="blood_group">Blood Group</label>
+			      	</div>
+			      	<div class="column is-2">
+						<div class="select is-fullwidth is-small">
+							<select id="blood_group" ref="blood_group">
+								<option value="A+">A+</option>
+								<option value="A-">A-</option>
+								<option value="AB+">AB+</option>
+								<option value="AB-">AB-</option>
+								<option value="B+">B+</option>
+								<option value="B-">B-</option>
+								<option value="O+">O+</option>
+								<option value="O-">O-</option>
+							</select>
+						</div>
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="dob">Place of Birth</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="place_of_birth" type="text">
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="dob">Nationality</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="nationality" type="text">
+			      	</div>
+			    </div>
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="gender">Gender</label>
+		</div>
+		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="religion_id">Religion</label>
+	      	</div>
+	      	<div class="column is-2">
 				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select id="gender" ref="gender">
-							<option value="M">Male</option>
-							<option value="F">Female</option>
-						</select>
-					</div>
-	      		</div>
-			</div>
-			 <div class="column is-one-third">
-				<label class="label" for="">Identification Marks</label>
-				<input class="input" ref="id_mark" type="text">
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="blood_group">Blood Group</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select id="blood_group" ref="blood_group">
-							<option value="A+">A+</option>
-							<option value="A-">A-</option>
-							<option value="AB+">AB+</option>
-							<option value="AB-">AB-</option>
-							<option value="B+">B+</option>
-							<option value="B-">B-</option>
-							<option value="O+">O+</option>
-							<option value="O-">O-</option>
-						</select>
-					</div>
-	      		</div>
-			</div>
-			 <div class="column is-one-third">
-				<label class="label" for="dob">Place of Birth</label>
-				<input class="input" ref="place_of_birth" type="text">
-			</div>
-			 <div class="column is-one-third">
-				<label class="label" for="dob">Nationality</label>
-				<input class="input" ref="nationality" type="text">
-			</div>
-			  <div class="column is-one-third">
-				<label class="label" for="religion_id">Religion</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
+	        		<div class="select is-fullwidth is-small">
 						<select id="religion_id" ref="religion_id">
 							<option each={religion} value={religion_id}>{religion}
                             </option>
 						</select>
 					</div>
 	      		</div>
-			</div>
-			 <div class="column is-one-third">
-				<label class="label" for="">Language</label>
-				<input class="input" ref="language" type="text">
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="category_id">Cast Category</label>
-				<div class="control">
-				    <div class="select is-fullwidth">
-						<select ref="category_id">
-							<option each={cast} value={category_id}>{category_name}
-			                </option>
-						</select>
-					</div>
-				 </div>
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="dob">DOB</label>
-				<input class="input date" ref="dob" type="text">
-			</div>
-    		<div class="column is-one-third">
-				<label class="label" for="residence_phone">Phone(R)</label>
-				<input class="input" ref="residence_phone" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="Office_phone">Phone(O)</label>
-				<input class="input" ref="office_phone" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="Office_phone">Emp ID</label>
-				<input class="input" ref="employee_id" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="Moble">Mobile</label>
-				<input class="input" ref="mobile" type="number">
-		    </div>
-		      <div class="column is-one-third">
-				<label class="label" for="Office_phone">Email</label>
-				<input class="input" ref="email" type="text">
-		    </div>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Language</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="language" type="text">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="category_id">Cast Category</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<div class="select is-fullwidth is-small">
+					<select ref="category_id">
+						<option each={cast} value={category_id}>{category_name}
+		                </option>
+					</select>
+				</div>
+	      	</div>
+  		</div>
+
+  		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="dob">DOB</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input date is-small" ref="dob" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="residence_phone">Phone(R)</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="residence_phone" type="number">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="Office_phone">Phone(O)</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="office_phone" type="number">
+	      	</div>
+  		</div>
+
+  		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="Moble">Mobile</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="mobile" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="Office_phone">Email</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="email" type="text">
+	      	</div>
+  		</div>
+
+  		<div class="columns mt30">
 			<div class="column is-full">
-          		<h3 class="has-text-weight-bold is-size-4 has-text-link">Contact Information(Permanent Address)</h3>
-          		<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
-        	</div>
-			<div class="column is-one-third">
-				<label class="label" for="add_l1">Address Line 1</label>
-				<input class="input" ref="add_l1" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="add_l2">Address Line 2</label>
-				<input class="input" ref="add_l2" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="city">City</label>
-				<input class="input" ref="city" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="zip">Zip</label>
-				<input class="input" ref="zip" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="state">State</label>
-				<input class="input" ref="state" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="country">Country</label>
-				<input class="input" ref="country" type="text">
-		    </div>
-		    <div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-4 has-text-link"> Check if Correspondence Address is same as Permanent Address
+	          	<h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information(Permanent Address)</h3>
+	          	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+	        </div>
+	    </div>
+
+	    <div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="add_l1">Address Line 1</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="add_l1" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="add_l2">Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="add_l2" type="text">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="city">City</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="city" type="text">
+	      	</div>
+  		</div>
+
+  		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="zip">Zip</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="zip" type="number" maxlength="6">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="state" type="text">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="country">Country</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="country" type="text">
+	      	</div>
+  		</div> 
+
+  		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link"> Check if Correspondence Address is same as Permanent Address
 		    		<input type="checkbox" id="correspondenceCheckbox" name="correspondenceCheckbox" onclick={copyAddress.bind(this)}>
 		      	</h3>
 		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_add_l1">Address Line 1</label>
-				<input class="input" ref="c_add_l1" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_add_l2">Address Line 2</label>
-				<input class="input" ref="c_add_l2" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_city">City</label>
-				<input class="input" ref="c_city" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_zip">Zip</label>
-				<input class="input" ref="c_zip" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_state">State</label>
-				<input class="input" ref="c_state" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_country">Country</label>
-				<input class="input" ref="c_country" type="text">
-		    </div>
+		</div>
+		
+		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="c_add_l1">Address Line 1</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="c_add_l1" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="c_add_l2">Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="c_add_l2" type="text">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="c_city">City</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="c_city" type="text">
+	      	</div>
+  		</div>
+
+  		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="c_zip">Zip</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="c_zip" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="c_state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="c_state" type="text">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="c_country">Country</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="c_country" type="text">
+	      	</div>
+  		</div>
+
+  		<div class="columns mt30">
 		    <div class="column is-full">
-		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
-		    </div>
-		   
-			<div class="column is-full">
-			 <button class="button is-info has-text-weight-bold adjusted-top" onclick={addFamilyInformation}>
+			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addFamilyInformation}>
 			    	Next >>
-			</button>
+				</button>
 			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>    
-					</div>
-			  </div>
-		    </div> 
+		    </div>
+		</div>
+
+	</div>
+	
 </section>
-<!-- Start Father Information -->
+
+
+
+<!-- Start Family Information -->
 <section class=" is-fluid" show={staff_view =='add_family_information'}>
 	<div class="label">
 		<div class="level-left">
@@ -341,143 +429,198 @@
 		</div>
 	</div>
 	<div class="box">
-	    <div class="column is-one-third">
-			<label class="label" for="marital_status">Marital Status</label>
-			<div class="control">
-        		<div class="select is-fullwidth">
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="marital_status">Marital Status</label>
+			</div>
+			<div class="column is-2">
+				<div class="select is-fullwidth is-small">
 					<select id="marital_status" ref="marital_status">
 						<option value="S">Single</option>
 						<option value="M">Married</option>
 					</select>
 				</div>
-      		</div>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_occupation">Father Name</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="father_name" ref="father_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Father Occupation</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="father_occupation" ref="father_occupation" type="text">
+	      	</div>
 		</div>
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-			<label class="label" for="f_occupation">Father Name</label>
-				<input class="input" id="father_name" ref="father_name" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="">Father Occupation</label>
-				<input class="input" id="father_occupation" ref="father_occupation" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="">Spouse's Name</label>
-				<input class="input" id="" ref="spouse" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="">Spouse's Occupation</label>
-				<input class="input" id="" ref="spouse_occupation" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_organisation_name">Anniversary</label>
-				<input class="input date" ref="anniversary" type="date">
-		    </div>
-		  </div>
-		    
-		    <div class="label">
-				<div class="level-left">
-					<h2 class="title" style="color: #ff3860;">Child1</h2>
-				</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Spouse's Name</label>
 			</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">First Name</label>
-				<input class="input" ref="child1_first_name" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Last Name</label>
-				<input class="input" ref="child1_last_name" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="gender">Gender</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select id="sex" ref="child1_sex">
-							<option value="M">Male</option>
-							<option value="F">Female</option>
-						</select>
-					</div>
-	      		</div>
-			</div>
-			<div class="column is-one-third">
-			<label class="label" for="">Dob</label>
-				<input class="input date" ref="child1_dob" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">School</label>
-				<input class="input" ref="child1_school" type="text">
+			<div class="column is-2">
+				<input class="input is-small" id="" ref="spouse" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Spouse's Occupation</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="" ref="spouse_occupation" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_organisation_name">Anniversary</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input date is-small" ref="anniversary" type="date">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Child1</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
 		</div>
-		    <!-- Child @-->
-		    <div class="label">
-				<div class="level-left">
-					<h2 class="title" style="color: #ff3860;">Child2</h2>
+		
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="child1_first_name">First Name</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="child1_first_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Last Name</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="child1_last_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="gender">Gender</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<div class="select is-fullwidth is-small">
+					<select id="sex" ref="child1_sex">
+						<option value="M">Male</option>
+						<option value="F">Female</option>
+					</select>
 				</div>
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Dob</label>
 			</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">First Name</label>
-				<input class="input" ref="child2_first_name" type="text">
+			<div class="column is-2">
+				<input class="input date is-small" ref="child1_dob" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">School</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="child1_school" type="text">
+	      	</div>	      	
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Child2</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Last Name</label>
-				<input class="input" ref="child2_last_name" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="gender">Gender</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select id="sex" ref="child2_sex">
-							<option value="M">Male</option>
-							<option value="F">Female</option>
-						</select>
-					</div>
-	      		</div>
+		</div>
+		
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="child2_first_name">First Name</label>
 			</div>
-			<div class="column is-one-third">
-			<label class="label" for="">Dob</label>
-				<input class="input date" ref="child2_dob" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">School</label>
-				<input class="input" ref="child2_school" type="text">
-		    </div>
-		  </div>
-		    <!-- Child 3-->
-		    <div class="label">
-				<div class="level-left">
-					<h2 class="title" style="color: #ff3860;">Child3</h2>
+			<div class="column is-2">
+				<input class="input is-small" ref="child2_first_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Last Name</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="child2_last_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="gender">Gender</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<div class="select is-fullwidth is-small">
+					<select id="sex" ref="child2_sex">
+						<option value="M">Male</option>
+						<option value="F">Female</option>
+					</select>
 				</div>
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Dob</label>
 			</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">First Name</label>
-				<input class="input" ref="child3_first_name" type="text">
+			<div class="column is-2">
+				<input class="input date is-small" ref="child2_dob" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">School</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="child2_school" type="text">
+	      	</div>	      	
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Child3</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Last Name</label>
-				<input class="input" ref="child3_last_name" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="gender">Gender</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select id="sex" ref="child3_sex">
-							<option value="M">Male</option>
-							<option value="F">Female</option>
-						</select>
-					</div>
-	      		</div>
+		</div>
+		
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="child3_first_name">First Name</label>
 			</div>
-			<div class="column is-one-third">
-			<label class="label" for="">Dob</label>
-				<input class="input date" ref="child3_dob" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">School</label>
-				<input class="input" ref="child3_school" type="text">
-		    </div>
+			<div class="column is-2">
+				<input class="input is-small" ref="child3_first_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Last Name</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="child3_last_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="gender">Gender</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<div class="select is-fullwidth is-small">
+					<select id="sex" ref="child3_sex">
+						<option value="M">Male</option>
+						<option value="F">Female</option>
+					</select>
+				</div>
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Dob</label>
+			</div>
+			<div class="column is-2">
+				<input class="input date is-small" ref="child3_dob" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">School</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="child3_school" type="text">
+	      	</div>	      	
+		</div>
+
+		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeFamilyInformation}>
 			    	Previous
@@ -487,10 +630,11 @@
 			    </button>
 			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
-			    </button>    
+			    </button>   
 		    </div>
-  		</div>
+		</div>
 	</div>
+	
 </section>
 <!-- End Family  Information -->
 
@@ -504,142 +648,215 @@
 		</div>
 	</div>
 	<div class="box">
-	    <div class="column is-one-third">
-			<label class="label" for=""><h2>Academic Qualification</h2></label>
-		</div>
-	    <div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">X information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">X Subject </label>
-				<input class="input" ref="x_subject" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">X Instituition</label>
-				<input class="input" ref="x_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">X Board</label>
-				<input class="input" ref="x_board" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">X YOP</label>
-				<input class="input" ref="x_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">X Marks</label>
-				<input class="input" ref="x_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">X Division</label>
-				<input class="input" ref="x_div" type="text">
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Academic Qualification</h3>
 		    </div>
 		</div>
-		<div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">XII information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">XII Subject </label>
-				<input class="input" ref="xii_subject" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">XII Instituition</label>
-				<input class="input" ref="xii_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">XII Board</label>
-				<input class="input" ref="xii_board" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">XII YOP</label>
-				<input class="input" ref="xii_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">XII Marks</label>
-				<input class="input" ref="xii_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">XII Division</label>
-				<input class="input" ref="xii_div" type="text">
-		    </div>
-		</div>
-		<div class="column is-one-third">
-			<label class="label" for=""><h2>Professional Qualification</h2></label>
-		</div>
-	    <div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">UG information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">UG Course </label>
-				<input class="input" ref="ug_course" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">UG Instituition</label>
-				<input class="input" ref="ug_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">UG University</label>
-				<input class="input" ref="ug_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">UG YOP</label>
-				<input class="input" ref="ug_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">UG Marks</label>
-				<input class="input" ref="ug_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">UG Division</label>
-				<input class="input" ref="ug_div" type="text">
-		    </div>
-		</div>
-		<div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">PG information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">PG Course </label>
-				<input class="input" ref="pg_course" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">PG Instituition</label>
-				<input class="input" ref="pg_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">PG University</label>
-				<input class="input" ref="pg_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">PG YOP</label>
-				<input class="input" ref="pg_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">PG Marks</label>
-				<input class="input" ref="pg_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">PG Division</label>
-				<input class="input" ref="pg_div" type="text">
-		    </div>
-		</div>
-		</div>	
 
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-8 has-text-link">X information</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="x_subject">X Subject </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="x_subject" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">X Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="x_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">X Board</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="x_board" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">X YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="x_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">X Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="x_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">X Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="x_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-8 has-text-link">XII information</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="xii_subject">XII Subject </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="xii_subject" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">XII Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="xii_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">XII Board</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="xii_board" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">XII YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="xii_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">XII Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="xii_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">XII Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="xii_div" type="text">
+	      	</div>
+		</div>
+		
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Professional Qualification</h3>
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-8 has-text-link">UG information</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="ug_course">UG Course </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="ug_course" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">UG Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="ug_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">UG University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="ug_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">UG YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="ug_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">UG Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="ug_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">UG Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="ug_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-8 has-text-link">PG information</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="pg_course">PG Course </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="pg_course" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">PG Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="pg_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">PG University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="pg_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">PG YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="pg_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">PG Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="pg_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">PG Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="pg_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeQualificationInformation}>
 			    	Previous
@@ -651,10 +868,11 @@
 			    	Cancel
 			    </button>    
 		    </div>
-  		</div>
-	</div>
+		</div>
+	</div>	
 </section>
 <!-- End OF Qualifivcation Information-->
+
 <!-- Start professional Course-->
 <section class=" is-fluid" show={staff_view =='add_professional_course_information'}>
 	<div class="label">
@@ -665,136 +883,199 @@
 		</div>
 	</div>
 	<div class="box">
-	    <div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">B.Ed. information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">B.Ed. stream </label>
-				<input class="input" ref="bed_stream" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">B.Ed. Instituition</label>
-				<input class="input" ref="bed_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">B.Ed. University</label>
-				<input class="input" ref="bed_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">B.Ed. YOP</label>
-				<input class="input" ref="bed_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">B.Ed. Marks</label>
-				<input class="input" ref="bed_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">B.Ed. Division</label>
-				<input class="input" ref="bed_div" type="text">
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">B.Ed. information</h3>
 		    </div>
 		</div>
-		<div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">B.T. information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">B.T. Stream </label>
-				<input class="input" ref="bt_stream" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">B.T. Instituition</label>
-				<input class="input" ref="bt_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">B.T. University</label>
-				<input class="input" ref="bt_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">B.T. YOP</label>
-				<input class="input" ref="bt_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">B.T. Marks</label>
-				<input class="input" ref="bt_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">B.T. Division</label>
-				<input class="input" ref="bt_div" type="text">
-		    </div>
-		</div>
-		<div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">B.P.Ed. information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">B.P.Ed. stream </label>
-				<input class="input" ref="bped_stream" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">B.P.Ed. Instituition</label>
-				<input class="input" ref="bped_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">B.P.Ed. University</label>
-				<input class="input" ref="bped_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">B.P.Ed. YOP</label>
-				<input class="input" ref="bped_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">B.P.Ed. Marks</label>
-				<input class="input" ref="bped_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">B.P.Ed. Division</label>
-				<input class="input" ref="bped_div" type="text">
-		    </div>
-		</div>
-		<div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">D.P.Ed. information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">D.P.Ed. Stream </label>
-				<input class="input" ref="dped_stream" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">D.P.Ed. Instituition</label>
-				<input class="input" ref="dped_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">D.P.Ed. University</label>
-				<input class="input" ref="dped_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">D.P.Ed. YOP</label>
-				<input class="input" ref="dped_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">D.P.Ed. Marks</label>
-				<input class="input" ref="dped_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">D.P.Ed. Division</label>
-				<input class="input" ref="dped_div" type="text">
-		    </div>
-		</div>	
-		</div>	
 
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="bed_stream">B.Ed. stream </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="bed_stream" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.Ed. Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="bed_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.Ed. University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="bed_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">B.Ed. YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="bed_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.Ed. Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="bed_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.Ed. Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="bed_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">B.T. information</h3>
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="bt_stream">B.T. Stream </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="bt_stream" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.T. Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="bt_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.T. University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="bt_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">B.T. YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="bt_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.T. Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="bt_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.T. Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="bt_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">B.P.Ed. information</h3>
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="bped_stream">B.P.Ed. stream </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="bped_stream" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.P.Ed. Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="bped_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.P.Ed. University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="bped_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">B.P.Ed. YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="bped_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.P.Ed. Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="bped_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">B.P.Ed. Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="bped_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">D.P.Ed. information</h3>
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="dped_stream">D.P.Ed. stream </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="dped_stream" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">D.P.Ed. Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="dped_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">D.P.Ed. University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="dped_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">D.P.Ed. YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="dped_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">D.P.Ed. Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="dped_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">D.P.Ed. Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="dped_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeProfessionalCourseInformation}>
 			    	Previous
@@ -806,8 +1087,9 @@
 			    	Cancel
 			    </button>    
 		    </div>
-  		</div>
+		</div>
 	</div>
+	
 </section>
 <!-- Start professional Master Course-->
 <section class=" is-fluid" show={staff_view =='add_professional_master_course_information'}>
@@ -819,168 +1101,247 @@
 		</div>
 	</div>
 	<div class="box">
-	    <div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">M.P.Ed. information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">M.P.Ed. stream </label>
-				<input class="input" ref="mped_stream" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">M.P.Ed. Instituition</label>
-				<input class="input" ref="mped_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">M.P.Ed. University</label>
-				<input class="input" ref="mped_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">M.P.Ed. YOP</label>
-				<input class="input" ref="mped_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">M.P.Ed. Marks</label>
-				<input class="input" ref="mped_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">M.P.Ed. Division</label>
-				<input class="input" ref="mped_div" type="text">
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">M.P.Ed. information</h3>
 		    </div>
 		</div>
-		<div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">M.Ed. information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">M.Ed. Stream </label>
-				<input class="input" ref="med_stream" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">M.Ed. Instituition</label>
-				<input class="input" ref="med_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">M.Ed. University</label>
-				<input class="input" ref="med_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">M.Ed. YOP</label>
-				<input class="input" ref="med_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">M.Ed. Marks</label>
-				<input class="input" ref="med_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">M.Ed. Division</label>
-				<input class="input" ref="med_div" type="text">
-		    </div>
-		</div>
-		<div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">M.Phil information</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">M.Phil stream </label>
-				<input class="input" ref="mphil_stream" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">M.Phil Instituition</label>
-				<input class="input" ref="mphil_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">M.Phil University</label>
-				<input class="input" ref="mphil_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">M.Phil YOP</label>
-				<input class="input" ref="mphil_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">M.Phil Marks</label>
-				<input class="input" ref="mphil_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">M.Phil Division</label>
-				<input class="input" ref="mphil_div" type="text">
-		    </div>
-		</div>
-		<div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">Phd. information</h4>
-			</div>
-		</div>
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">Phd. Stream </label>
-				<input class="input" ref="phd_stream" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Phd. Instituition</label>
-				<input class="input" ref="phd_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">Phd. University</label>
-				<input class="input" ref="phd_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">Phd. YOP</label>
-				<input class="input" ref="phd_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">Phd. Marks</label>
-				<input class="input" ref="phd_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Phd. Division</label>
-				<input class="input" ref="phd_div" type="text">
-		    </div>
-		</div>
-		<div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">Other Qualification</h4>
-			</div>
-		</div>
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">Other Stream </label>
-				<input class="input" ref="other_stream" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Other Instituition</label>
-				<input class="input" ref="other_institution" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">Other University</label>
-				<input class="input" ref="other_university" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">Other YOP</label>
-				<input class="input" ref="other_yop" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">Other Marks</label>
-				<input class="input" ref="other_marks" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Other Division</label>
-				<input class="input" ref="other_div" type="text">
-		    </div>
-		</div>		
-		</div>	
 
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="mped_stream">M.P.Ed. stream </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="mped_stream" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.P.Ed. Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="mped_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.P.Ed. University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="mped_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">M.P.Ed. YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="mped_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.P.Ed. Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="mped_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.P.Ed. Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="mped_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">M.Ed. information</h3>
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="med_stream">M.Ed. Stream </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="med_stream" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.Ed. Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="med_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.Ed. University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="med_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">M.Ed. YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="med_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.Ed. Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="med_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.Ed. Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="med_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">M.Phil information</h3>
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="mphil_stream">M.Phil stream </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="mphil_stream" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.Phil Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="mphil_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.Phil University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="mphil_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">M.Phil YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="mphil_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.Phil Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="mphil_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">M.Phil Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="mphil_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Phd. information</h3>
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="phd_stream">Phd. Stream </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="phd_stream" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Phd. Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="phd_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Phd. University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="phd_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Phd. YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="phd_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Phd. Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="phd_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Phd. Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="phd_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Other information</h3>
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="other_stream">Other Stream </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="other_stream" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Other Instituition</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="other_institution" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Other University</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="other_university" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Other YOP</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="other_yop" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Other Marks</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="other_marks" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Other Division</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="other_div" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeProfessionalMasterCourseInformation}>
 			    	Previous
@@ -990,10 +1351,11 @@
 			    </button>
 			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
-			    </button>    
+			    </button>     
 		    </div>
-  		</div>
+		</div>
 	</div>
+	    
 </section>
 <!-- End Of Professional Course-->
 <!-- Start Extra Activity Information -->
@@ -1008,35 +1370,49 @@
 		</div>
 	</div>
 	<div class="box">
-	    <div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">Extra Activities</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">Scholarship Detail </label>
-				<input class="input" ref="details_scholarship" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Awards/Honours Detail</label>
-				<input class="input" ref="details_honours" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">Publication Detail</label>
-				<input class="input" ref="details_publication" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">Curricular Activities Detail</label>
-				<input class="input" ref="details_curricular_activities" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">Sports Detail</label>
-				<input class="input" ref="details_sport" type="text">
+	    <div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Other information</h3>
 		    </div>
 		</div>
-		</div>	
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="details_scholarship">Scholarship Detail </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="details_scholarship" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Awards/Honours Detail</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="details_honours" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Publication Detail</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="details_publication" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Curricular Activities Detail</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="details_curricular_activities" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Sports Detail</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="details_sport" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeExtraActivityInformation}>
 			    	Previous
@@ -1046,9 +1422,10 @@
 			    </button>    
 			   <button class="button is-info has-text-weight-bold adjusted-top" onclick={close}>
 			   Cancel
-			   </button>
+			   </button>     
 		    </div>
-  		</div>
+		</div>
+
 	</div>
 	<!-- <div each={w, i in workArray}><input type="text" name="" class="input" ref='w.name'>
 	<button class="button" onclick={addMoreArary.bind(this, w)}>Add</button></div> -->
@@ -1064,154 +1441,206 @@
 		</div>
 	</div>
 	<div class="box">
-	    <div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">Particulars of Previous Job</h4>
-			</div>
-		</div>
-			<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-				<label class="label" for="">Organization Name</label>
-				<input class="input" ref="organization_of_previous_job" type="text">
+	    <div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Particulars of Previous Job</h3>
 		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Address Line 1</label>
-				<input class="input" ref="add_l1_of_previous_job" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    <label class="label" for="">Address Line 2</label>
-				<input class="input" ref="add_l2_of_previous_job" type="text">
-			</div>
-			<div class="column is-one-third">
-		    <label class="label" for="">City</label>
-				<input class="input" ref="city_of_previous_job" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-			<label class="label" for="">Zip</label>
-				<input class="input" ref="zip_of_previous_job" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">State</label>
-				<input class="input" ref="state_of_previous_job" type="text">
-		    </div>
-		     <div class="column is-one-third">
-			<label class="label" for="">Country</label>
-				<input class="input" ref="country_of_previous_job" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Designation</label>
-				<input class="input" ref="designation_of_previous_job" type="text">
-		    </div>
-		     <div class="column is-one-third">
-			<label class="label" for="">Date of Joining</label>
-				<input class="input date" ref="doj_of_previous_job" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Salary</label>
-				<input class="input" ref="salary_of_previous_job" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Basic</label>
-				<input class="input" ref="basic_of_previous_job" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Allowances</label>
-				<input class="input" ref="allowances_of_previous_job" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Other Benefits</label>
-				<input class="input" ref="other_benefits_of_previous_job" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="">Bond Details</label>
-				<input class="input" ref="bond_details_of_previous_job" type="text">
-		    </div>
-		</div>
-		<div class="label">
-			<div class="level-left">
-				<h4 class="title" style="color: #ff3860;">Work Profile</h4>
-			</div>
-		</div>
-		<div class="columns is-variable is-1 is-multiline">
-			<div class="column is-one-third">
-			<label class="label" for="">Qualification</label>
-				<input class="input" ref="qualification" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="dob">Date of Joining</label>
-				<input class="input date" ref="doj" type="text">
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="category_id">Specialization</label>
-				<div class="control">
-				    <div class="select is-fullwidth">
-						<select ref="subject_id">
-							<option each={subjects} value={subject_id}>{subject_name}
-			                </option>
-						</select>
-					</div>
-				 </div>
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="">Employee Type</label>
-				<div class="control">
-				    <div class="select is-fullwidth">
-						<select ref="emp_type_id">
-							<option each={employeeTypes} value={emp_type_id}>{emp_type}
-			                </option>
-						</select>
-					</div>
-				 </div>
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="">Designation</label>
-				<div class="control">
-				    <div class="select is-fullwidth">
-						<select ref="designation_id">
-							<option each={designations} value={designation_id}>{designation}
-			                </option>
-						</select>
-					</div>
-				 </div>
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="">Department</label>
-				<div class="control">
-				    <div class="select is-fullwidth">
-						<select ref="department_id">
-							<option each={departments} value={department_id}>{department_name}
-			                </option>
-						</select>
-					</div>
-				 </div>
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="designation_id">Level</label>
-				<div class="control">
-				    <div class="select is-fullwidth">
-						<select ref="level_id">
-							<option each={levels} value={level_id}>{level}
-			                </option>
-						</select>
-					</div>
-				 </div>
-			</div>
-			
-			<div class="column is-one-third">
-				<label class="label" for="">Employment Status</label>
-				<div class="control">
-				    <div class="select is-fullwidth">
-						<select ref="employment_status_id">
-							<option each={employmentStatus} value={employment_status_id}>{employment_status}
-			                </option>
-						</select>
-					</div>
-				 </div>
-			</div>
 		</div>
 
-		     <div class="column is-full">
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Organization Name</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="organization_of_previous_job" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Address Line 1</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="add_l1_of_previous_job" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="add_l2_of_previous_job" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">City</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="city_of_previous_job" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Zip</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="zip_of_previous_job" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">State</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="state_of_previous_job" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Country</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="country_of_previous_job" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Designation</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="designation_of_previous_job" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Date of Joining</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input date is-small" ref="doj_of_previous_job" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Salary</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="salary_of_previous_job" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Basic</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="basic_of_previous_job" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Allowances</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="allowances_of_previous_job" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Other Benefits</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="other_benefits_of_previous_job" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Bond Details</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="bond_details_of_previous_job" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Profile</h3>
+		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Qualification</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="qualification" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="doj">Date of Joining</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input date is-small" ref="doj" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="subject_id">Specialization</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<div class="select is-fullwidth is-small">
+					<select ref="subject_id">
+						<option each={subjects} value={subject_id}>{subject_name}
+		                </option>
+					</select>
+				</div>
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Employee Type</label>
+			</div>
+			<div class="column is-2">
+				<div class="select is-fullwidth is-small">
+					<select ref="emp_type_id">
+						<option each={employeeTypes} value={emp_type_id}>{emp_type}
+		                </option>
+					</select>
+				</div>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Designation</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<div class="select is-fullwidth is-small">
+					<select ref="designation_id">
+						<option each={designations} value={designation_id}>{designation}
+		                </option>
+					</select>
+				</div>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Department</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<div class="select is-fullwidth is-small">
+					<select ref="department_id">
+						<option each={departments} value={department_id}>{department_name}
+		                </option>
+					</select>
+				</div>
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="level_id">Level</label>
+			</div>
+			<div class="column is-2">
+				<div class="select is-fullwidth is-small">
+					<select ref="level_id">
+						<option each={levels} value={level_id}>{level}
+		                </option>
+					</select>
+				</div>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Employment Status</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<div class="select is-fullwidth is-small">
+					<select ref="employment_status_id">
+						<option each={employmentStatus} value={employment_status_id}>{employment_status}
+		                </option>
+					</select>
+				</div>
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closePreviousJob}>
 			    	<< Previous
 			    </button>
@@ -1220,11 +1649,14 @@
 			    </button>
 			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
-			    </button>    
+			    </button>      
 		    </div>
-  		</div>
+		</div>
+
 	</div>
 </section>	
+
+
 <div id="statusModal" class="modal ">
     <div class="modal-background"></div>
     <div class="modal-card">

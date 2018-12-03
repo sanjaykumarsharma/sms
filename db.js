@@ -6,6 +6,7 @@ var pool      =    mysql.createPool({
     user     : 'root',
     password : '',
     database :'mckvieor_school',
-    debug    :  false
+    debug    :  false,
+    multipleStatements: true,
 });    
 module.exports = pool;

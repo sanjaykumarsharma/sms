@@ -104,12 +104,12 @@ router.get('/read_staff_monthly_case_report/:month_id', function(req, res, next)
           
           console.log(from_date);
          var qry=`select a.category_id,category_name, staff_id, concat(first_name,' ',middle_name,' ',last_name)as staff_name,
-                   date_format(treatment_date,'%d/%m/%Y') as treatment_date
+                   date_format(treatment_date,'%d/%m/%Y') as treatment_date, treatment_date as t_date
                    from staff_infirmary a
                    join infirmary_category_master b on a.category_id = b.category_id
                    join employee c on a.staff_id = c.emp_id
                    where a.treatment_date between '${from_date}' and '${to_date}'
-                   order by staff_id, category_name, treatment_date`;
+                   order by staff_id, category_name, t_date`;
         console.log(qry);
          connection.query(qry,function(err,result)     {
         if(err){

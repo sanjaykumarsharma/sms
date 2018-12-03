@@ -21,7 +21,7 @@ function StudentSearchStore() {
           console.log(data)
           if(data.status == 's'){
              self.searchStudents=data.searchStudents
-            toastr.success("Successfully Inserted")
+            toastr.success("Successfully")
             self.trigger('read_by_field_change', self.searchStudents)
           }else if(data.status == 'e'){
             showToast("Error search Student. Please try again.", data)
@@ -51,7 +51,7 @@ function StudentSearchStore() {
           console.log(data)
           if(data.status == 's'){
              self.browseStudents=data.browseStudents
-            toastr.success("Successfully Inserted")
+            toastr.success("Successfully")
             self.trigger('read_student_browser_change', self.browseStudents)
           }else if(data.status == 'e'){
             showToast("Error search Student. Please try again.", data)

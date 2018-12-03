@@ -163,7 +163,7 @@ router.get('/:id/:type', function(req, res, next) {
         var user_condition = "";
         //if(session_id['role'] != 'ADMINISTRATOR') user_condition =`and a.created_by = ${user}`;
        // and received_date between :dtf and :dto
-        var qry = `select issue_id, rate, c.category_id, a.issue_sub_category_id as sub_category_id, return_type,
+        var qry = `select issue_id,  c.category_id, a.issue_sub_category_id as sub_category_id, return_type,
                 a.issue_item_id as item_id, date_format(issue_date,'%d/%m/%Y') as issue_date, date_format(issue_date,'%Y-%m-%d') as iss_date,
                 item_name,category_name, concat(first_name,' ',middle_name,' ',last_name ) as staff_name,
                 issue_to, issue_type, issue_quantity, unit, concat(issue_quantity,' ',unit) as i_quantity, purpose,staff_id 

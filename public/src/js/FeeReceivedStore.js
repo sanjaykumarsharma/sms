@@ -4,6 +4,78 @@ function FeeReceivedStore() {
 
   self.students = []
 
+  self.on('read_standard', function() {
+    let req = {}
+    $.ajax({
+      url:'/receive_fees/read_standard/',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.standards = data.standards
+            self.trigger('read_standard_changed', data.standards)
+          }else if(data.status == 'e'){
+            showToast("Standard Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('read_section', function() {
+    let req = {}
+    $.ajax({
+      url:'/receive_fees/read_section/',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.sections = data.sections
+            self.trigger('read_section_changed', data.sections)
+          }else if(data.status == 'e'){
+            showToast("Section Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+  self.on('read_student_list', function(standard_id,section_id) {
+    console.log(standard_id)
+    console.log(section_id)
+    let req = {}
+    req.standard_id=standard_id
+    req.section_id=section_id
+    $.ajax({
+      url:'/receive_fees/read_student_list/'+standard_id+'/'+section_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+              self.students = data.students
+              self.trigger('read_student_list_changed', data.students)  
+            
+            
+          }else if(data.status == 'e'){
+            showToast("Student Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
 //========= read Fine ========
 self.on('read_fine', function() {
     console.log('i am in read_fine api call from ajax')
@@ -51,6 +123,30 @@ self.on('read_fee_plan', function(student_id) {
         }
       })
   })
+//========== read fees slips mpnth wise==========
+
+self.on('read_fee_slip_head', function(student_id, fee_slip_id, fee_plan_id) {
+    console.log('i am in read Fees Slip Heads api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/receive_fees/read_fee_slip_head/'+student_id+'/'+fee_slip_id+'/'+fee_plan_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+            console.log(data)
+          if(data.status == 's'){
+          
+            self.trigger('read_slip_head_changed', data.feeSlipHeads)
+          }else if(data.status == 'e'){
+            showToast("No tranaction available.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
 //========read_transaction========
 self.on('read_transaction', function(student_id) {
     console.log('i am in read Fees Trancation api call from ajax')
@@ -89,6 +185,30 @@ self.on('read_student', function(enrol) {
           if(data.status == 's'){
             self.students = data.students
             self.trigger('read_student_changed', data.students)
+          }else if(data.status == 'e'){
+            showToast("No data found Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  //=====read student  by Receipt No====
+self.on('read_student_by_receipt_no', function(receipt_id) {
+    console.log('i am in read Student for Receiving Fees api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/receive_fees/read_student_by_receipt_no/'+receipt_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.students = data.students
+            self.trigger('read_student_by_receipt_no_changed', data.students)
           }else if(data.status == 'e'){
             showToast("No data found Please try again.", data)
           }
@@ -151,16 +271,16 @@ self.on('read_fee_slip', function(student_id) {
   })
 
 
-  self.on('delete_transaction', function(id) {
+  self.on('delete_transaction', function(receipt_id) {
     $.ajax({
-      url:'/receive_fees/delete/'+id,
+      url:'/receive_fees/delete_transaction/'+receipt_id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           if(data.status == 's'){
             let tempTransaction = self.transactions.filter(c => {
-              return c.receipt_id != id
+              return c.receipt_id != receipt_id
             })
             self.transactions = tempTransaction
             toastr.info("transaction Deleted Successfully")

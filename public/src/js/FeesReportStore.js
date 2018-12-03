@@ -33,6 +33,37 @@ function FeesReportStore(){
         }
       })
   }) 
+  //====== read head category wise fees ======
+  
+   self.headCategoryWiseData = []
+  self.on('read_head_category_wise_fees', function(obj) {
+    console.log('i am in read head wise fees api call from ajax')
+    let req = {}
+   /* req.start_date=obj.start_date
+    req.end_date=obj.end_date*/
+    $.ajax({
+      url:'/fees_report/read_head_category_wise_fees/'+obj.start_date+'/'+obj.end_date,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+
+
+          if(data.status == 's'){
+            console.log("===================")
+            console.log(data.headCategoryWiseData)
+            self.headCategoryWiseData = data.headCategoryWiseData
+            self.trigger('read_head_category_wise_changed', data.headCategoryWiseData)
+          }else if(data.status == 'e'){
+            showToast("data read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
 //========= read un assigned students ============
  self.on('read_no_scheme', function() {
     console.log('i am in read_no_scheme api call from ajax')
@@ -367,6 +398,56 @@ self.on('read_outstanding_classwise', function(obj) {
         }
       })
   })
+//=========== read read_due_classwise =======
+self.on('read_due_classwise', function(obj) {
+    $.ajax({
+      url:'/fees_report/read_due_classwise',
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log("=========data =========")
+          console.log(data)
+          if(data.status == 's'){
+            self.classWiseDueFees = data.classWiseDueFees
+            self.trigger('read_due_classwise_changed', data.classWiseDueFees)
+          }else if(data.status == 'e'){
+            showToast("Error in reading data. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+//========== read advance classwise =========
+
+self.on('read_advance_classwise', function(obj) {
+    $.ajax({
+      url:'/fees_report/read_advance_classwise',
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log("=========data =========")
+          console.log(data)
+          if(data.status == 's'){
+            self.classWiseAdvanceFees = data.classWiseAdvanceFees
+            self.trigger('read_advance_classwise_changed', data.classWiseAdvanceFees)
+          }else if(data.status == 'e'){
+            showToast("Error in reading data. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
   //=============== read estimated fees =============
   
 self.on('read_estimated_fees', function(obj) {
@@ -396,6 +477,7 @@ self.on('read_estimated_fees', function(obj) {
 
 //======= read bank wise fees ==============
   self.on('read_bank_wise_fees', function(obj) {
+    
     $.ajax({
       url:'/fees_report/read_bank_wise_fees',
         type:"POST",

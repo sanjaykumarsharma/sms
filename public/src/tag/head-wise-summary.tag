@@ -39,26 +39,24 @@
 				    <th>Head</th>
 				    <th >Bank</th>
 				    <th >School</th>
-				    <th >Online</th>
 				    <th >Total</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr each={cd, i in headWiseData}>
-					<td>{i + 1}</td>
+					<td>{i+1}</td>
 					<td>{cd.head}</td>
 					<td class="has-text-right amount">{cd.bank}</td>
 					<td class="has-text-right amount">{cd.cash}</td>
-					<td class="has-text-right amount"></td>
 					<td class="has-text-right amount">{cd.total}</td>
 				</tr>
 				<tr>
 					<th class="has-text-right" colspan="
 					2">Total</th>
-					<th class="has-text-right amount">{totalFees}</th>
-					<th class="has-text-right amount">{totalFine}</th>
-					<th class="has-text-right amount">{totalScholarship}</th>
-					<th class="has-text-right amount">{totalGrandTotal}</th>
+					<th class="has-text-right amount">{totalBank}</th>
+					<th class="has-text-right amount">{totalCash}</th>
+				
+					<th class="has-text-right amount">{grandTotal}</th>
 				</tr>
 			</tbody>
 		</table>
@@ -93,21 +91,18 @@
 
     feesReportStore.on('read_head_wise_changed',ReadHeadWiseChanged)
     function ReadHeadWiseChanged(headWiseData){
-      self.totalFees = 0
-      self.totalFine = 0
-      self.totalScholarship = 0
-      self.totalGrandTotal = 0
+      self.totalBank = 0
+      self.totalCash = 0
+      self.grandTotal = 0
       //console.log(headWiseData) 
       self.headWiseData = []
       self.headWiseData = headWiseData
-       /*self.headWiseData.map(c => {
-          self.totalFees +=Number(c.fees)
-          self.totalFine +=Number(c.fine)
-          self.totalScholarship +=Number(c.scholarship)
-          self.totalGrandTotal +=Number(c.total)
-      })*/
+       self.headWiseData.map(c => {
+          self.totalBank +=Number(c.bank)
+          self.totalCash +=Number(c.cash)
+          self.grandTotal +=Number(c.total)
+      })
        
-      console.log("headWiseData")
       self.update()
     }
 </script> 

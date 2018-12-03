@@ -1,4 +1,5 @@
 <apply-fee-plan>
+	  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid" show={student_vew =='show_data'}>
 		<div class="box">
 			<div class="columns">
@@ -30,7 +31,7 @@
 					</div>
 				</div>
 				 <div class="column">
-					<button class="button is-danger has-text-weight-bold"
+					<button disabled={loading} class="button is-danger has-text-weight-bold"
 					onclick={getStudentData} >GO
 					</button>
 				</div> 
@@ -128,6 +129,7 @@
     self.on("mount", function(){
       self.role = getCookie('role')
       self.student_vew = 'show_data'
+      self.loading = false
       self.update()
       self.readSection()
       self.readStandard()
@@ -253,7 +255,7 @@
     }
 
     self.getStudentData =() =>{
-    	console.log(self.refs.section_id.value)
+    	self.loading = true
        applyPlanStore.trigger('read_students', self.refs.section_id.value)
     }
 
@@ -262,6 +264,7 @@
     function ApplyPlanChanged(students){
       console.log(students) 
       self.students = students
+      self.loading = false
       self.update()
       console.log(self.students)
     }
@@ -269,6 +272,7 @@
     function ReadPlanChanged(plans){
       console.log(plans) 
       self.plans = plans
+      self.loading = false
       self.update()
       console.log(self.plans)
     }
@@ -278,6 +282,8 @@
     function StandardChanged(standards){
       console.log(standards) 
       self.standards = standards
+      self.loading = false
+
       self.update()
       //self.readStandardSection()
       console.log(self.standards)
@@ -290,7 +296,7 @@
         i.selected = false;
       })*/
       self.section_id = sections[0].section_id
-
+      self.loading = false
       self.update()
       console.log(self.sections)
     }

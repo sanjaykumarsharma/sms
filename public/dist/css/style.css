@@ -1,17 +1,9 @@
 body{
   padding-top: 60px;
-  font-size: 14px;
+  font-size:14px;
 }
 
-.avatar {
-    border-radius: 288419px;
-    height: 24px;
-}
-.button.is-active, .button:active {
-    border-color: #fff;
-    color: #fff;
-    background-color: hsl(348, 100%, 61%);
-}
+
 
 html, body, *, .textarea, .input, .select, .button {
         font-family: 'Quicksand', sans-serif;
@@ -66,9 +58,25 @@ html, body, *, .textarea, .input, .select, .button {
       .footer{
         padding: 2em 1.5em;
       }
+      .mt20{
+        margin-top: -20px;
+      }
+      .mt30{
+        margin-top: -30px;
+      }
+
+      .mt35{
+        margin-top: -35px;
+      }
+      .mt60{
+        margin-top: -60px;
+      }
+      .no-border td{
+        border: none;
+      }
       .pp-box{
-        width: 12em;
-        height: 12em;
+        width: 8em;
+        height: 8em;
         border: solid #dbdbdb 1px;
         border-radius: .25em;
         cursor: pointer;
@@ -83,7 +91,59 @@ html, body, *, .textarea, .input, .select, .button {
         right: 0;
         z-index: 2;
       }
+      .f_pp-box{
+        width: 8em;
+        height: 8em;
+        border: solid #dbdbdb 1px;
+        border-radius: .25em;
+        cursor: pointer;
+        background-size: cover;
+        background-position: top center;
+        background-repeat: no-repeat;
+        position: relative;
+      }
+      .f_pp-box>.icon{
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+      }
+      .m_pp-box{
+        width: 8em;
+        height: 8em;
+        border: solid #dbdbdb 1px;
+        border-radius: .25em;
+        cursor: pointer;
+        background-size: cover;
+        background-position: top center;
+        background-repeat: no-repeat;
+        position: relative;
+      }
+      .m_pp-box>.icon{
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+      }
+      .g_pp-box{
+        width: 8em;
+        height: 8em;
+        border: solid #dbdbdb 1px;
+        border-radius: .25em;
+        cursor: pointer;
+        background-size: cover;
+        background-position: top center;
+        background-repeat: no-repeat;
+        position: relative;
+      }
+      .g_pp-box>.icon{
+        position: absolute;
+        top: 0;
+        right: 0;
+        z-index: 2;
+      }
       .preview-box-wide{
+        width: 12em;
         height: 6em;
         border: solid #dbdbdb 1px;
         border-radius: .25em;
@@ -103,9 +163,7 @@ html, body, *, .textarea, .input, .select, .button {
         border-radius: 288419px;
         height: 24px;
       }
-      .barcode{
-        font-family: 'Libre Barcode 39', cursive;
-      }
+      
       .idcard-header{
         border-bottom: solid #003da0 2px;
         margin-bottom: 1em;
@@ -126,7 +184,7 @@ html, body, *, .textarea, .input, .select, .button {
       .button{
         font-weight: bold;
       }
-      h2, h2.title{
+      h2, h2, h3,h4.title{
         color: #ff3860;
       }
       .column .label:last-child{
@@ -335,6 +393,9 @@ tr.input-row{
   display: flex;
   align-items: center;
 }
+.time_table_box{
+  width: 100px;
+}
 break{
   flex-basis: 100%;
   width: 0px; 
@@ -342,3 +403,92 @@ break{
   overflow: hidden;
 }
 /* css written by sanjay end */
+
+
+.principal{
+  text-align:right;
+  font-size:10px;
+  font-weight:bold;
+  line-height:4px;
+  }
+.header-student-id-card{
+  font-size: 10px;
+  font-weight: bold;
+  font-family: times;
+  padding: 2px;
+  width: 160px;
+  background-color: #9E1F1F;
+  color: #fff;
+  -webkit-print-color-adjust: exact;
+}
+.card-student-id{
+  width: 185px;
+    height: 253px;
+    position: relative;
+}
+.title-student-id-card{
+  color: #9E1F1F;
+  font-size: 10px;
+  font-family: Arial Black;
+  font-weight: bold;
+}
+.detail-student-id-card{
+  font-size: 10px;
+  font-family: Arial;
+  font-weight: bold;
+  padding: 0 4px 0 4px;
+  line-height: 10px;
+}
+.lower-student-id-card{
+  font-size: 10px;
+  font-family: Arial;
+  font-weight: bold;
+  text-align: left;
+}
+
+@font-face
+         {font-family:"Free 3 of 9 Extended";
+         panose-1:0 0 0 0 0 0 0 0 0 0;
+         mso-font-charset:0;
+         mso-generic-font-family:auto;
+         mso-font-pitch:variable;
+         mso-font-signature:3 0 0 0 1 0;}
+.barcode {
+         font-size:12.0pt;
+         mso-bidi-font-size:10.0pt;
+         /*line-height:115%;*/
+         font-family:"3 of 9 Barcode";
+         /*color:#00ff00*/
+      }
+
+.avatar {
+    border-radius: 288419px;
+    height: 24px;
+}
+.button.is-active, .button:active {
+    border-color: #fff;
+    color: #fff;
+    background-color: hsl(348, 100%, 61%);
+}
+
+.caption{
+    background-color:#F9ECB4;
+    font-family:Sans-serif;
+    font-weight:bold;
+    text-align:center;
+    text-transform:uppercase;
+    font-size:1.2em;
+    padding-top:3px;
+    padding-bottom:3px;
+    color:black;  
+  }
+
+.divider{
+
+text-align: center;
+
+width: 860;
+
+font-size: 1.5em;-webkit-print-color-adjust: exact;
+
+}    

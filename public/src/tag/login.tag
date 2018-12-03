@@ -8,7 +8,7 @@
     <div class="column is-two-fifths has-background-white">
       <section class="section">
         <div class="pad">
-          <h1 class="title is-spaced has-text-success is-size-1 has-text-weight-bold">Sarthi</h1>
+          <h1 class="title is-spaced has-text-success is-size-1 has-text-weight-bold">Sarathi</h1>
           <p class="is-size-6 has-text-grey" style="margin-top: -1.5em; margin-bottom: 2em;">School Management simplified!</p>
           <div class="subtitle">Login</div>
             <div>
@@ -33,7 +33,7 @@
                   <div class="select is-fullwidth">
                     <select ref="role">
                       <option value="ADMIN">ADMIN</option>
-                      <option each={roles} value={role}>{role}</option>
+                      <!-- <option each={roles} value={role}>{role}</option> -->
                     </select>
                   </div>
                 </div>

@@ -35,11 +35,11 @@
           <span>Summary</span>
         </a>
       </p>
-      <p class="control">
-        <a class="button {is-active: selected_inventory_report == 'inventory-return-goods-report' }" href="#/inventory-report/inventory-return-goods-report">
-          <span>Item Issued report</span>
-        </a>
-      </p>
+    <!--   <p class="control">
+      <a class="button {is-active: selected_inventory_report == 'inventory-return-goods-report' }" href="#/inventory-report/inventory-return-goods-report">
+        <span>Item Issued report</span>
+      </a>
+    </p> -->
 		
 </div>
 <div id="inventory-report-view"></div>

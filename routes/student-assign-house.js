@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
   //req.getConnection(function(err,connection){
        
      var data = {}
-     var qry = `select  a.house_id, house_name, detail,
+     /*var qry = `select  a.house_id, house_name, detail,
                 d.student_id as captain_id, concat(d.first_name,' ',d.middle_name,' ',d.last_name)as captain_name,
                 e.student_id as vice_captain_id, concat(e.first_name,' ',e.middle_name,' ',e.last_name)as vice_captain_name, 
                 count(b.house_id) as number_of_students 
@@ -20,7 +20,36 @@ router.get('/', function(req, res, next) {
                 LEFT JOIN student_master e on (a.vice_captain = e.student_id  and e.current_session_id = ${req.cookies.session_id})
                 where b.session_id= ${req.cookies.session_id}
                 and (c.withdraw='N' || c.withdraw_session > ${req.cookies.session_id})
-                group by a.house_name`;
+                group by a.house_name`;*/
+
+      var qry = `select  p.house_id, house_name, detail, captain_id, captain_name, vice_captain_id, vice_captain_name, 
+                number_of_students  from
+
+                ( select distinct a.house_id, house_name, detail,
+                d.student_id as captain_id, concat(d.first_name,' ',d.middle_name,' ',d.last_name)as captain_name,
+                e.student_id as vice_captain_id, concat(e.first_name,' ',e.middle_name,' ',e.last_name)as vice_captain_name
+                from house_master a 
+                LEFT JOIN student_current_standing b on (a.house_id=b.house_id  and b.session_id = ${req.cookies.session_id})
+                LEFT JOIN student_master c on (b.student_id=c.student_id  and c.current_session_id = ${req.cookies.session_id})
+                LEFT JOIN student_master d on (a.captain = d.student_id  and d.current_session_id = ${req.cookies.session_id})
+                LEFT JOIN student_master e on (a.vice_captain = e.student_id  and e.current_session_id = ${req.cookies.session_id})
+                where b.session_id= ${req.cookies.session_id}
+                and (c.withdraw='N' || c.withdraw_session > ${req.cookies.session_id}) ) as p
+
+                LEFT JOIN
+
+                ( select  a.house_id,
+                count(b.house_id) as number_of_students 
+                from house_master a 
+                LEFT JOIN student_current_standing b on (a.house_id=b.house_id  and b.session_id = ${req.cookies.session_id})
+                LEFT JOIN student_master c on (b.student_id=c.student_id  and c.current_session_id = ${req.cookies.session_id})
+                LEFT JOIN student_master d on (a.captain = d.student_id  and d.current_session_id = ${req.cookies.session_id})
+                LEFT JOIN student_master e on (a.vice_captain = e.student_id  and e.current_session_id = ${req.cookies.session_id})
+                where b.session_id= ${req.cookies.session_id}
+                and (c.withdraw='N' || c.withdraw_session > ${req.cookies.session_id})
+                group by a.house_id ) as q on p.house_id=q.house_id`;          
+
+                console.log(qry);
 
      pool.query(qry,function(err,result)     {
             

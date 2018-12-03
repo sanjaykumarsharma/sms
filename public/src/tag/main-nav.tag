@@ -4,7 +4,7 @@
           <div class="navbar-brand">
             
               <div class="navbar-item is-size-3 has-text-weight-bold has-text-wight">
-                SMS
+                Sarathi
               </div>
        
             <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
@@ -32,20 +32,40 @@
               </div>
 
               <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-item" >Student</a>
+                <a class="navbar-item" >Admin</a>
                 <div class="navbar-dropdown">
+                  <a class="navbar-item" href="#/id-card">ID Card</a>
+                  <a class="navbar-item {active: selected_nav_item == 'certificate'}" href="#/certificate/issue-certificate">Certificate</a>
+                  <a class="navbar-item " href="#/birthday">Bithday</a>
+                  <a class="navbar-item " href="#/occupation-report">Occupation Report</a>
+                  <a class="navbar-item" href="#/id-signature">Id Signature</a>
                   <a class="navbar-item" href="#/student-assign-house">Assign House</a>
                   <a class="navbar-item" href="#/student-group-student">Group Student</a>
                   <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a>
-                  <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a>
                   <a class="navbar-item" href="#/student-assign-section">Assign Section</a>
+                  <a class="navbar-item" href="#/student-result-activation">Result Activation</a>
+                </div>
+              </div>
+
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-item" >Time Table</a>
+                <div class="navbar-dropdown">
+                  <a class="navbar-item" href="#/teacher-time-table">Teacher Time Table</a>
+                </div>
+              </div>
+
+              <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-item" >Student</a>
+                <div class="navbar-dropdown">
+                  <a class="navbar-item" href="#/student">Student</a>
+                  <a class="navbar-item " href="#/student-search">Search</a>
+                  <a class="navbar-item " href="#/student-browser">Browser</a>
+                  <a class="navbar-item {active: selected_nav_item == 'admin-report'}" href="#/admin-report/student-summary-report">Report</a>
+                  <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a>
+                  <a class="navbar-item" href="#/promote">Promote Student</a>
                   <a class="navbar-item" href="#/student-login-slip">Login Slip</a>
                   <a class="navbar-item" href="#/student-school-leaving">Student Leaving Certificate</a>
-                  <a class="navbar-item" href="#/student-result-activation">Result Activation</a>
-                  <a class="navbar-item" href="#/student">Student</a>
                   <a class="navbar-item" href="#/student-info-update">Student Info Update</a>
-                  <a class="navbar-item" href="#/id-card">ID Card</a>
-                  <a class="navbar-item" href="#/id-signature">Id Signature</a>
                 </div>
               </div>
 
@@ -58,14 +78,14 @@
                 </div>
               </div>
 
-              <div class="navbar-item has-dropdown is-hoverable">
+              <!-- <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-item" >Activity</a>
                 <div class="navbar-dropdown">
                   <a class="navbar-item " href="#/activity-detail">Activity Detail</a>
                   <a class="navbar-item" href="#/activity-report">Report</a>
                   <a class="navbar-item {active: selected_nav_item == 'activity-setting'}" href="#/activity-setting/activity-item">Setting</a>
                 </div>
-              </div>
+              </div> -->
 
               <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-item">Fees</a> 
@@ -74,6 +94,7 @@
                   <a class="navbar-item {active: selected_nav_item == 'fee-bill'}" href="#/fee-bill/bill">Fee Head</a>
                   <a class="navbar-item {active: selected_nav_item == 'fees-report'}" href="#/fees-report/month-wise">Reports</a>
                   <a class="navbar-item {active: selected_nav_item == 'scholarship'}" href="#/scholarship">Scholarship</a>
+                   <a class="navbar-item {active: selected_nav_item == 'fees-withdraw'}" href="#/fees-withdraw">Withdraw</a>
                  
                   <a class="navbar-item {active: selected_nav_item == 'fees-setting'}" href="#/fees-setting/fine-setting">Setting</a>
                 </div>
@@ -105,17 +126,6 @@
                </div>
              </div>
 
-
-             <div class="navbar-item has-dropdown is-hoverable">
-                <a class="navbar-item" >Admin</a>
-                 <div class="navbar-dropdown">
-                  <a class="navbar-item " href="#/student-search">Search</a>
-                  <a class="navbar-item " href="#/student-browser">Browser</a>
-                  <a class="navbar-item " href="#/occupation-report">Occupation Report</a>
-                   <a class="navbar-item {active: selected_nav_item == 'admin-report'}" href="#/admin-report/student-summary-report">Report</a>
-                   <a class="navbar-item " href="#/birthday">Bithday</a>
-                </div>
-              </div>
               <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-item" >Attendance</a>
                 <div class="navbar-dropdown">

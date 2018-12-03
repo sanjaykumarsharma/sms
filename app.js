@@ -23,6 +23,10 @@ var studentAssignHouseRouter = require('./routes/student-assign-house');
 var studentGroupStudentRouter = require('./routes/student-group-student');
 var studentAssignSubjectRouter = require('./routes/student-assign-subject');
 var studentWithdrawnStudentRouter = require('./routes/student-withdrawn-student');
+var teacherTimeTableRouter = require('./routes/teacher-time-table');
+//======== qadir ==================
+
+var promoteRouter = require('./routes/promote');
 var studentAssignSectionRouter = require('./routes/student-assign-section');
 var studentLoginSlipRouter = require('./routes/student-login-slip');
 var studentSchoolLeavingRouter = require('./routes/student-school-leaving');
@@ -35,7 +39,7 @@ var coursesRouter = require('./routes/courses');
 var activityitemRouter = require('./routes/activity_item');
 var activitycategoryRouter = require('./routes/activity_category');
 var activityeventRouter = require('./routes/activity_event');
-var activityRouter = require('./routes/activity');
+var activityRouter = require('./routes/activity_detail');
 var classteacherRouter = require('./routes/classteacher');
 var mentorCategoryRouter = require('./routes/mentor_category');
 var mentorCaseRouter = require('./routes/mentor_case');
@@ -106,6 +110,7 @@ var staffBPWeightRouter = require('./routes/staff_bp_weight');
 var eventRouter = require('./routes/event');
 var newEventRouter = require('./routes/new_event');
 var classHolidayRouter = require('./routes/class_holiday');
+var certificateRouter = require('./routes/certificate');
 
 //ghulam
 var sessionRouter = require('./routes/fees_session');
@@ -118,6 +123,7 @@ var applyPlanRouter = require('./routes/apply_fee_plans');
 var scholarshipRouter = require('./routes/scholarship');
 var feeReceivedRouter = require('./routes/receive_fees');
 var feesReportRouter = require('./routes/fees_report');
+var feesWithdrawRouter = require('./routes/fees_withdraw');
 
 var app = express();
 
@@ -172,6 +178,9 @@ app.use('/student-assign-house', verifyToken, studentAssignHouseRouter);
 app.use('/student-group-student', verifyToken, studentGroupStudentRouter);
 app.use('/student-assign-subject', verifyToken, studentAssignSubjectRouter);
 app.use('/student-withdrawn-student', verifyToken, studentWithdrawnStudentRouter);
+app.use('/teacher-time-table', verifyToken, teacherTimeTableRouter);
+//==== promotion by qadir ========
+app.use('/promote', verifyToken, promoteRouter);
 app.use('/student-assign-section', verifyToken, studentAssignSectionRouter);
 app.use('/student-login-slip', verifyToken, studentLoginSlipRouter);
 app.use('/student-school-leaving', verifyToken, studentSchoolLeavingRouter);
@@ -183,7 +192,7 @@ app.use('/courses', verifyToken, coursesRouter);
 app.use('/activity_item', verifyToken, activityitemRouter);
 app.use('/activity_category', verifyToken, activitycategoryRouter);
 app.use('/activity_event', verifyToken, activityeventRouter);
-app.use('/activity', verifyToken, activityRouter);
+app.use('/activity_detail', verifyToken, activityRouter);
 app.use('/classteacher', verifyToken, classteacherRouter);
 app.use('/mentor_category', verifyToken, mentorCategoryRouter);
 app.use('/mentor_case', verifyToken, mentorCaseRouter);
@@ -251,6 +260,7 @@ app.use('/staff_bp_weight', verifyToken, staffBPWeightRouter);
 app.use('/event', verifyToken, eventRouter);
 app.use('/new_event', verifyToken, newEventRouter);
 app.use('/class_holiday', verifyToken, classHolidayRouter);
+app.use('/certificate', verifyToken, certificateRouter);
 
 
 //ghulam
@@ -264,5 +274,7 @@ app.use('/apply_fee_plans', verifyToken, applyPlanRouter);
 app.use('/scholarship', verifyToken, scholarshipRouter);
 app.use('/receive_fees', verifyToken, feeReceivedRouter);
 app.use('/fees_report', verifyToken, feesReportRouter);
+app.use('/fees_withdraw', verifyToken, feesWithdrawRouter);
+
 
 module.exports = app;

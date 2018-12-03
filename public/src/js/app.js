@@ -63,6 +63,9 @@ RiotControl.addStore(physicalFitnessStore)
 var examSubjectGroupMapStore = new ExamSubjectGroupMapStore() 
 RiotControl.addStore(examSubjectGroupMapStore)
 
+var examSubjectGroupMapStore = new ExamSubjectGroupMapStore() 
+RiotControl.addStore(examSubjectGroupMapStore)
+
 //student
 var studentAssignHouseStore = new StudentAssignHouseStore() 
 RiotControl.addStore(studentAssignHouseStore)
@@ -70,8 +73,8 @@ RiotControl.addStore(studentAssignHouseStore)
 var studentStudentGroupStore = new StudentStudentGroupStore() 
 RiotControl.addStore(studentStudentGroupStore)
 
-var studentAssignSubjectStore = new StudentAssignSubjectStore() 
-RiotControl.addStore(studentAssignSubjectStore)
+var teacherTimeTableStore = new TeacherTimeTableStore() 
+RiotControl.addStore(teacherTimeTableStore)
 
 var studentWithdrawnStudentStore = new StudentWithdrawnStudentStore() 
 RiotControl.addStore(studentWithdrawnStudentStore)
@@ -87,6 +90,9 @@ RiotControl.addStore(studentSchoolLeavingStore)
 
 var studentResultActivationStore = new StudentResultActivationStore() 
 RiotControl.addStore(studentResultActivationStore)
+
+var certificateStore  = new CertificateStore() 
+RiotControl.addStore(certificateStore)
 
 
 //****************************************************ghulam
@@ -119,6 +125,13 @@ RiotControl.addStore(feeReceivedStore)
 
 var feesReportStore = new FeesReportStore() 
 RiotControl.addStore(feesReportStore)
+
+var feeWithdrawStore = new FeeWithdrawStore() 
+RiotControl.addStore(feeWithdrawStore)
+
+var promoteStore = new PromoteStore() 
+RiotControl.addStore(promoteStore)
+
 
 
 
@@ -352,6 +365,9 @@ let goTo = (path1, path2, path3) => {
     case 'subject-group-map':
       currentPage = riot.mount('div#view', 'subject-group-map')[0];
     break;
+    case 'teacher-time-table':
+      currentPage = riot.mount('div#view', 'teacher-time-table')[0];
+    break;
     case 'marks-report':
       currentPage = riot.mount('div#view', 'marks-report', {selected_marks_report: path2})[0];
       switch(path2){
@@ -382,6 +398,9 @@ let goTo = (path1, path2, path3) => {
     break;
     case 'student-withdrawn-student':
       currentPage = riot.mount('div#view', 'student-withdrawn-student')[0];
+    break;
+    case 'promote':
+      currentPage = riot.mount('div#view', 'promote')[0];
     break;
     case 'student-assign-subject':
       currentPage = riot.mount('div#view', 'student-assign-subject')[0];
@@ -416,6 +435,9 @@ case 'receive-fees':
           break;
         }
     break;
+    case 'fees-withdraw':
+      currentPage = riot.mount('div#view', 'fees-withdraw')[0];
+    break;
     
     case 'fee-bill':
       currentPage = riot.mount('div#view', 'bill', {selected_master: path2})[0];
@@ -424,6 +446,8 @@ case 'receive-fees':
       switch(path2){
         case 'fee-head':
           riot.mount("div#bill-view", 'fee-head')
+
+          
         break;
         case 'fee-slip':
           riot.mount("div#bill-view", 'fee-slip')
@@ -899,6 +923,23 @@ case 'receive-fees':
         break;
         default:
           riot.mount("div#master-view", 'employee-type')
+      }
+    break;
+
+    case 'certificate':
+      currentPage = riot.mount('div#view', 'certificate', {selected_certificate: path2})[0];
+      switch(path2){
+        case 'issue-certificate':
+          riot.mount("div#certificate-view", 'issue-certificate')
+        break;
+        case 'manage-certificate':
+          riot.mount("div#certificate-view", 'manage-certificate')
+        break;
+        case 'issued-certificate':
+          riot.mount("div#certificate-view", 'issued-certificate')
+        break;
+        default:
+          riot.mount("div#certificate-view", 'issue-certificate')
       }
     break;
 

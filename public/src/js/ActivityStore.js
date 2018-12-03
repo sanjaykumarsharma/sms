@@ -4,19 +4,18 @@ function ActivityStore() {
 
   self.events = []
 
-  self.on('read_categories', function() {
+  self.on('read_activity_categories', function() {
     console.log('i am in read_categories api call from ajax')
     let req = {}
     $.ajax({
-      url:'/activity',
+      url:'/activity_detail',
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.categories = data.categories
-            self.trigger('read_categories_changed', data.categories)
+            self.trigger('read_activity_categories_changed', data.categories)
           }else if(data.status == 'e'){
             showToast("Categories Read Error. Please try again.", data)
           }
@@ -26,12 +25,35 @@ function ActivityStore() {
         }
       })
   })
+
+  self.on('read_activity_event', function() {
+    let req = {}
+  
+    $.ajax({
+      url:'/activity_detail/read_activity_event',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_activity_event_changed', data.activity_event)
+          }else if(data.status == 'e'){
+            showToast("Event Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
   self.on('read_activity_by_category', function(obj) {
     console.log('i am in read_activity_by_category api call from ajax')
     let req = {}
     req.category_id=obj.category_id
     $.ajax({
-      url:'/activity/read_activity_by_category/'+obj.category_id,
+      url:'/activity_detail/read_activity_by_category/'+obj.category_id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -50,35 +72,11 @@ function ActivityStore() {
       })
   })
 
-  self.on('read_events_by_category', function(category_id) {
-    console.log('i am in read_events_by_category api call from ajax')
-    console.log(category_id)
-    let req = {}
-    $.ajax({
-      url:'/activity/read_event/'+category_id,
-        contentType: "application/json",
-        dataType:"json",
-        headers: {"Authorization": getCookie('token')},
-        success: function(data){
-          console.log(data)
-          if(data.status == 's'){
-            self.events = data.events
-            self.trigger('read_events_by_category_changed', data.events)
-          }else if(data.status == 'e'){
-            showToast("Events Read Error. Please try again.", data)
-          }
-        },
-        error: function(data){
-          showToast("", data)
-        }
-      })
-  })
-
   self.on('read_items', function() {
     console.log('i am in read_events_by_category api call from ajax')
     let req = {}
     $.ajax({
-      url:'/activity/read_item',
+      url:'/activity_detail/read_item',
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -101,14 +99,13 @@ function ActivityStore() {
     console.log('i am in read_events_by_category api call from ajax')
     let req = {}
     $.ajax({
-      url:'/activity/read_staff',
+      url:'/activity_detail/read_staff',
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.staff = data.staff
             self.trigger('read_staff_changed', data.staff)
           }else if(data.status == 'e'){
             showToast("Staff Read Error. Please try again.", data)
@@ -120,33 +117,10 @@ function ActivityStore() {
       })
   })
 
-  self.on('read_categories', function() {
-    console.log('i am in read_categories api call from ajax')
-    let req = {}
-    $.ajax({
-      url:'/activity',
-        contentType: "application/json",
-        dataType:"json",
-        headers: {"Authorization": getCookie('token')},
-        success: function(data){
-          console.log(data)
-          if(data.status == 's'){
-            self.categories = data.categories
-            self.trigger('read_categories_changed', data.categories)
-          }else if(data.status == 'e'){
-            showToast("Categories Read Error. Please try again.", data)
-          }
-        },
-        error: function(data){
-          showToast("", data)
-        }
-      })
-  })
-
   self.on('add_activity', function(obj) {
     console.log(obj)
     $.ajax({
-      url:'/activity/add',
+      url:'/activity_detail/add',
         type:"POST",
         data: JSON.stringify(obj),
         contentType: "application/json",
@@ -173,7 +147,7 @@ function ActivityStore() {
     console.log(activity_id)
     let req = {}
     $.ajax({
-      url:'/activity/read_update_activity/'+activity_id,
+      url:'/activity_detail/read_update_activity/'+activity_id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -184,6 +158,119 @@ function ActivityStore() {
             self.trigger('read_data_for_update_changed', data.update_activity, data.update_employee_activity)
           }else if(data.status == 'e'){
             showToast("Events Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('read_classes', function() {
+    let req = {}
+    $.ajax({
+      url:'/standard',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_classes_changed', data.standards)
+          }else if(data.status == 'e'){
+            showToast("standards Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('read_section', function() {
+    let req = {}
+    $.ajax({
+      url:'/section',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_section_changed', data.sections)
+          }else if(data.status == 'e'){
+            showToast("section Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+  self.on('read_students', function(activity_id,standard_id,section_id) {
+    let req = {}
+    $.ajax({
+      url:'/activity_detail/students/'+activity_id+'/'+standard_id+'/'+section_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_students_changed', data.freeStudents, data.assignedStudents)
+          }else if(data.status == 'e'){
+            showToast("House Read Error. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('assign_students', function(activity_id,students) {
+    var obj = {}
+    obj['activity_id'] = activity_id
+    obj['students'] = students
+    $.ajax({
+      url:'/activity_detail/assign_students/',
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          if(data.status == 's'){
+            toastr.success("Students assigned successfully ")
+            self.trigger('assign_students_changed', students) 
+          }else if(data.status == 'e'){
+            showToast("Error assigning students. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('free_up_student', function(activity_id,students) {
+    var obj = {}
+    obj['activity_id'] = activity_id
+    obj['students'] = students
+    $.ajax({
+      url:'/activity_detail/free_up_student/',
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          if(data.status == 's'){
+            
+            toastr.success("Students freed successfully ")
+            self.trigger('assign_students_changed', students) 
+          }else if(data.status == 'e'){
+            showToast("Error while free up students. Please try again.", data.messaage)
           }
         },
         error: function(data){

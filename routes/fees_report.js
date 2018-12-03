@@ -5,14 +5,54 @@ var router = express.Router();
 router.get('/read_head_wise_fees/:start_date/:end_date', function(req, res, next) {
   var start_date = req.params.start_date;
   var end_date = req.params.end_date;
-
-  req.getConnection(function(err,connection){
        
      var data = {}
      var condition = "";
      var session_id = req.cookies.session_id
      
-     /*var qry = `SELECT head, sum(coalesce(c.amount,0)) as cash FROM
+  req.getConnection(function(err,connection){
+    connection.beginTransaction(function(err) {
+
+      var stdData = []
+    
+      if (err) { throw err; }   
+    var qry =`SELECT head, sum(coalesce(c.amount,0)) as bank FROM 
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode != 'Cash')
+        JOIN fee_slip_details c on a.fee_slip_id = c.fee_slip_id 
+        JOIN fee_head_master d on (d.head_id = c.head_id)   
+        where b.session_id=${session_id}
+        and b.tuition_fee_only != 'Y'
+        group by head
+        UNION 
+        select 'Fine Received' as head , sum(coalesce(a.fine_recevied, 0)) as bank from
+        fee_received a, fee_received_details b
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and b.mode != 'Cash'            
+        and b.session_id=${session_id}
+        UNION
+        SELECT 'Tuition Fees' as head, sum(coalesce(b.amounting_to,0)) as cash FROM
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode != 'Cash')
+        where b.session_id=${session_id}
+        and b.tuition_fee_only ='Y'
+        UNION 
+        select 'Scholarship' as head , sum(coalesce(c.scholorship_amount, 0)*-1) as bank from
+        fee_received a, fee_received_details b, fee_scholorship c
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and a.fee_slip_id = c.fee_slip_id
+        and a.student_id = c.student_id
+        and b.mode != 'Cash'         
+        and b.session_id=${session_id}
+        order by 1`;
+
+  //========== query 2====================
+
+    var qry2 =`SELECT head, sum(coalesce(c.amount,0)) as cash FROM
         fee_received a
         JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
         and b.receipt_date between '${start_date}' and '${end_date}' and mode = 'Cash')
@@ -44,85 +84,388 @@ router.get('/read_head_wise_fees/:start_date/:end_date', function(req, res, next
         and a.student_id = c.student_id
         and b.mode = 'Cash'
         and b.session_id=${session_id}
-        order by 1`;*/
-    var qry =`SELECT head, sum(coalesce(c.amount,0)) as bank FROM 
+        order by 1`;
+
+     connection.query(qry, function (error, result) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }else{
+            /*console.log("======result===============")
+            console.log(result)*/
+            for(var i=0; i<result.length;i++){
+              var count = 0;
+              var temp = {}
+              temp['head'] = result[i].head
+              temp['bank'] = result[i].bank != null ? result[i].bank : 0
+              temp['cash'] = 0
+              temp['total'] = Number(temp['cash']) + Number(temp['bank'])
+              
+              if(stdData[result[i].head]){
+                temp['bank'] = Number(stdData[result[i].head]['bank']) + Number(temp['bank'])
+                temp['cash'] = Number(stdData[result[i].head]['cash']) + Number(temp['cash'])
+                temp['total'] = Number(stdData[result[i].head]['cash']) + Number(stdData[result[i].head]['bank'])
+
+                stdData.push(temp)
+              }else{
+                stdData.push(temp)
+              }
+            }
+
+          }
+      //============= qry2========
+       connection.query(qry2, function (error, result2) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }else{
+            /*console.log("======result2========")
+            console.log(result2)*/
+            for(var i=0; i<result2.length;i++){
+          /*  $error = 0;
+            extract($std);*/
+            var temp = {}
+            temp['head'] = result2[i].head
+            temp['cash'] = result2[i].cash != null ? result2[i].cash : 0
+            temp['bank'] = 0
+            temp['total'] = Number(temp['cash']) + Number(temp['bank'])
+            if(stdData[result2[i].head]){
+              temp['cash'] = Number(stdData[result2[i].head]['cash']) + Number(result2[i].cash)
+              temp['total'] = Number(stdData[result2[i].head]['total']) + Number(result2[i].cash)
+              stdData.push(temp)
+            }else{
+              stdData.push(temp)
+            }
+          }
+
+          }
+
+            console.log("----------student data------")
+            console.log(stdData)
+            data.status = 's';
+            data.headWiseData = stdData;
+            res.send(data)
+    })
+       
+    })// end of qry1
+
+     })
+  })
+       
+
+});
+//============= read head category wise data =========
+
+router.get('/read_head_category_wise_fees/:start_date/:end_date', function(req, res, next) {
+  var start_date = req.params.start_date;
+  var end_date = req.params.end_date;
+       
+     var data = {}
+     var condition = "";
+     var session_id = req.cookies.session_id
+     
+  req.getConnection(function(err,connection){
+    connection.beginTransaction(function(err) {
+
+      var stdData = []
+    
+      if (err) { throw err; }   
+    // query for cash collection by Bank  
+    var qry =`SELECT head, sum(coalesce(c.amount,0)) as cash FROM 
         fee_received a
         JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
-        and b.receipt_date between '${start_date}' and '${end_date}' and mode != 'Cash')
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode = 'Bank')
         JOIN fee_slip_details c on a.fee_slip_id = c.fee_slip_id 
-        JOIN fee_head_master d on (d.head_id = c.head_id)   
-        where b.session_id=(select session_id from session_master where session_id = ${session_id})
-        and b.tuition_fee_only != 'Y'
+        JOIN fee_head_master d on (d.head_id = c.head_id)
+        where b.session_id=${session_id}
+        and b.tuition_fee_only !='Y'
         group by head
         UNION 
-        select 'Fine Received' as head , sum(coalesce(a.fine_recevied, 0)) as bank from
+        select 'Fine Received' as head , sum(coalesce(a.fine_recevied, 0)) as cash from
         fee_received a, fee_received_details b
         where a.receipt_id = b.receipt_id
         and b.receipt_date between '${start_date}' and '${end_date}'
-        and b.mode != 'Cash'            
-        and b.session_id=(select session_id from session_master where session_id = ${session_id})          
-        UNION
+        and b.mode = 'Bank'
+        and b.session_id=${session_id}
+        UNION 
         SELECT 'Tuition Fees' as head, sum(coalesce(b.amounting_to,0)) as cash FROM
         fee_received a
         JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
-        and b.receipt_date between '${start_date}' and '${end_date}' and mode != 'Cash')
-        where b.session_id=(select session_id from session_master where session_id = ${session_id})
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode = 'Bank')
+        where b.session_id=${session_id}
         and b.tuition_fee_only ='Y'
         UNION 
-        select 'Scholarship' as head , sum(coalesce(c.scholorship_amount, 0)*-1) as bank from
+        select 'Scholarship' as head , sum(coalesce(c.scholorship_amount, 0)*-1) as cash from
         fee_received a, fee_received_details b, fee_scholorship c
         where a.receipt_id = b.receipt_id
         and b.receipt_date between '${start_date}' and '${end_date}'
         and a.fee_slip_id = c.fee_slip_id
         and a.student_id = c.student_id
-        and b.mode != 'Cash'         
-        and b.session_id=(select session_id from session_master where session_id = ${session_id})           
+        and b.mode = 'Bank'
+        and b.session_id=${session_id}
         order by 1`;
-  console.log(qry)
-     connection.query(qry, function(err, result)     
-     {
-            
-        if(err){
-           console.log("Error reading event : %s ",err );
-           data.status = 'e';
 
-        }else{
-            var stdData =[];
-            for(var i=0; i<result.length; i++){
-                var o ={}
-                o['head'] = result[i].head;
-                o['bank'] = result[i].bank != null ? result[i].bank : 0;
-                o['cash'] = 0;
-                o['total'] = Number(o['cash']) + Number(o['bank']);
+  /// query for cash collection by Cheque
+      var qry2 = `SELECT head, sum(coalesce(c.amount,0)) as cash FROM 
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode not in ('Cash', 'Bank'))
+        JOIN fee_slip_details c on a.fee_slip_id = c.fee_slip_id 
+        JOIN fee_head_master d on (d.head_id = c.head_id)
+        where b.session_id=${session_id}
+        and b.tuition_fee_only !='Y'
+        group by head
+        UNION 
+        select 'Fine Received' as head , sum(coalesce(a.fine_recevied, 0)) as cash from
+        fee_received a, fee_received_details b
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and b.mode not in ('Cash', 'Bank')
+        and b.session_id=${session_id}
+        UNION 
+        SELECT 'Tuition Fees' as head, sum(coalesce(b.amounting_to,0)) as cash FROM
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and b.mode not in ('Cash', 'Bank'))
+        where b.session_id=${session_id}
+        and b.tuition_fee_only ='Y'
+        UNION 
+        select 'Scholarship' as head , sum(coalesce(c.scholorship_amount, 0)*-1) as cash from
+        fee_received a, fee_received_details b, fee_scholorship c
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and a.fee_slip_id = c.fee_slip_id
+        and a.student_id = c.student_id
+        and b.mode not in ('Cash', 'Bank','Online')
+        and b.session_id=${session_id}
+        order by 1`;
+//========= cash collection in school =====
+    var qry3 = `SELECT head, sum(coalesce(c.amount,0)) as cash FROM
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode = 'Cash')
+        JOIN fee_slip_details c on a.fee_slip_id = c.fee_slip_id 
+        JOIN fee_head_master d on (d.head_id = c.head_id)
+        where b.session_id=${session_id}
+        and b.tuition_fee_only !='Y'
+        group by head
+        UNION 
+        select 'Fine Received' as head , sum(coalesce(a.fine_recevied, 0)) as cash from
+        fee_received a, fee_received_details b
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and b.mode = 'Cash'
+        and b.session_id=${session_id}
+        UNION 
+        SELECT 'Tuition Fees' as head, sum(coalesce(b.amounting_to,0)) as cash FROM
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode = 'Cash')
+        where b.session_id=${session_id}
+        and b.tuition_fee_only ='Y'
+        UNION 
+        select 'Scholarship' as head , sum(coalesce(c.scholorship_amount, 0)*-1) as cash from
+        fee_received a, fee_received_details b, fee_scholorship c
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and a.fee_slip_id = c.fee_slip_id
+        and a.student_id = c.student_id
+        and b.mode = 'Cash'
+        and b.session_id=${session_id}
+        order by 1`;
+  //========= online fees collection =====
+    var qry4 = `SELECT head, sum(coalesce(c.amount,0)) as cash FROM
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode = 'Online')
+        JOIN fee_slip_details c on a.fee_slip_id = c.fee_slip_id 
+        JOIN fee_head_master d on (d.head_id = c.head_id)
+        where b.session_id=${session_id}
+        and b.tuition_fee_only !='Y'
+        group by head
+        UNION 
+        select 'Fine Received' as head , sum(coalesce(a.fine_recevied, 0)) as Online from
+        fee_received a, fee_received_details b
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and b.mode = 'Online'
+        and b.session_id=${session_id}
+        UNION 
+        SELECT 'Tuition Fees' as head, sum(coalesce(b.amounting_to,0)) as Online FROM
+        fee_received a
+        JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
+        and b.receipt_date between '${start_date}' and '${end_date}' and mode = 'Online')
+        where b.session_id=${session_id}
+        and b.tuition_fee_only ='Y'
+        UNION 
+        select 'Scholarship' as head , sum(coalesce(c.scholorship_amount, 0)*-1) as Online from
+        fee_received a, fee_received_details b, fee_scholorship c
+        where a.receipt_id = b.receipt_id
+        and b.receipt_date between '${start_date}' and '${end_date}'
+        and a.fee_slip_id = c.fee_slip_id
+        and a.student_id = c.student_id
+        and b.mode = 'Online'
+        and b.session_id=${session_id}
+        order by 1`;          
+      var stdData = [];
+      var slNo=0;
+      var subTotal=0;
+      var grandTotal=0;
+     connection.query(qry3, function (error, result3) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }else{
 
-                if(stdData[result[i].head]){
-                  stdData[result[i].head]['cash'] = Number(stdData[result[i].head]['cash']) + Number(o['cash']);
-                  stdData[result[i].head]['bank'] = Number(stdData[result[i].head]['bank']) + Number(o['bank']);
-                  stdData[result[i].head]['total'] = Number(stdData[result[i].head]['cash']) + Number(stdData[result[i].head]['bank']);
-                }else{
-                  stdData[result[i].head].push(o);
-                }
-                /*o['head'] = result[i].head; 
-                o['cash'] = result[i].cash != null ? result[i].cash : 0;  
-                o['bank'] = 0; 
-                o['total'] = result[i].cash;*/
-                /*if(result[i].head){
-                o['cash'] = Number(o['cash']) + Number(result[i].cash);
-                o['total'] = Number(o['tota']) + Number(result[i].cash);
-              }else{*/
-                //stdData.push(o);
-              //}
+            /*console.log("======result4========")
+            console.log(result4)*/
+            slNo=0;
+            subTotal=0;
+            var temp = {}
+            temp['slNo']="";
+            temp['head'] = "Head Wise Collection (Online)";
+            temp['cash'] = "-----";
+            stdData.push(temp)
+            for(var i=0; i<result3.length; i++){
+              
+              temp = {}
+              temp['slNo']=++slNo;
+              temp['head'] = result3[i].head;
+              temp['cash'] = result3[i].cash != null ? result3[i].cash : 0;
+              subTotal=Number(subTotal) +  Number(result3[i].cash)
+              stdData.push(temp)
             }
-            /*console.log("=======data=========")
+             temp = {}
+             temp['slNo']="";
+             temp['head'] = "Sub Total"
+             temp['cash'] = subTotal
+             stdData.push(temp)
+             grandTotal = Number(grandTotal) + Number(subTotal)
+          
+          
+          }
+      //============= qry1========
+       connection.query(qry2, function (error, result2) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }else{
+            /*console.log("======result2========")
+            console.log(result2)*/
+            slNo=0;
+            subTotal=0;
+            var temp = {}
+            temp['slNo']="";
+            temp['head'] = "Head Wise Collection (By Cheque)";
+            temp['cash'] = "-----";
+            stdData.push(temp)
+              for(var i=0; i<result2.length;i++){
+              temp = {}
+              temp['slNo']=++slNo;
+              temp['head'] = result2[i].head
+              temp['cash'] = result2[i].cash != null ? result2[i].cash : 0;
+              subTotal= Number(subTotal) +  Number(result2[i].cash)
+              stdData.push(temp)
+            }
+             temp = {}
+             temp['slNo']="";
+             temp['head'] = "Sub Total";
+             temp['cash'] = subTotal;
+             stdData.push(temp)
+             grandTotal = Number(grandTotal) + Number(subTotal)
+
+          }
+
+        //============= qry3========
+       connection.query(qry3, function (error, result3) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }else{
+            /*console.log("======result3========")
+            console.log(result3)*/
+            slNo=0;
+            subTotal=0;
+            var temp = {}
+            temp['slNo']="";
+            temp['head'] = "Head Wise Collection (By Cash)";
+            temp['cash'] = "-----";
+            stdData.push(temp)
+            for(var i=0; i<result3.length; i++){
+              
+              temp = {}
+              temp['slNo']=++slNo;
+              temp['head'] = result3[i].head;
+              temp['cash'] = result3[i].cash != null ? result3[i].cash : 0;
+              subTotal=Number(subTotal) +  Number(result3[i].cash)
+              stdData.push(temp)
+            }
+             temp = {}
+             temp['slNo']="";
+             temp['head'] = "Sub Total"
+             temp['cash'] = subTotal
+             stdData.push(temp)
+             grandTotal = Number(grandTotal) + Number(subTotal)
+          }
+
+          ////============= qry4========
+       connection.query(qry, function (error, result) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }else{
+            /*console.log("======result===============")
+            console.log(result)*/
+            var slNo=0;
+            var subTotal=0;
+            var temp = {}
+            temp['slNo']="";
+            temp['head'] = "Head Wise Collection (In Bank)";
+            temp['cash'] = "-----";
+            stdData.push(temp)
+            for(var i=0; i<result.length; i++){
+              
+              var temp = {}
+              temp['slNo']= ++slNo;
+              temp['head'] = result[i].head
+              temp['cash'] = result[i].cash != null ? result[i].cash : 0
+              subTotal=Number(subTotal) +  Number(result[i].cash)
+              stdData.push(temp)
+            }
+             var temp = {}
+             temp['slNo']="";
+             temp['head'] = "Sub Total";
+             temp['cash'] = subTotal
+             stdData.push(temp)
+             grandTotal = Number(grandTotal) + Number(subTotal)
+             temp = {}
+             temp['slNo']="";
+             temp['head'] = "Grand Total";
+             temp['cash'] = grandTotal
+             stdData.push(temp)
+
+          }
+
+           /* console.log("----------student data------")
             console.log(stdData)*/
-             data.status = 's';
-             data.headWiseData = stdData;
+            data.status = 's';
+            data.headCategoryWiseData = stdData;
             res.send(data)
-        }
-     
-     });
+        })// end of qry4    
+      })// end of qry3      
+    })// end of qry2
        
-  });
+    })// end of qry
+
+     })
+  })
+       
 
 });
 //======== read un-assigned students ==========
@@ -676,13 +1019,13 @@ router.get('/read_outstanding_fees/:start_date/:end_date', function(req, res, ne
           }else{  
                if(result[i].last_fee_slip_id == null){
                 var fee_slip_name = fee_slip_name + ", " + result[i].fee_slip_name
-                  fees=fees + result[i].fees
+                  fees=Number(fees) + Number(result[i].fees)
                }else if(result[i].last_fee_slip_id >= result[i].fee_slip_id){       
                   var fee_slip_name = fee_slip_name + ", " + result[i].fee_slip_name
-                  var fees=fees + result[i].fees
+                  var fees=Number(fees) + Number(result[i].fees)
                }else{
                   var fee_slip_name = "";
-                  var fees=fees + result[i].fees
+                  var fees=Number(fees) + Number(result[i].fees)
                }                      
           }      
                     
@@ -1256,8 +1599,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
                 and mode='Online'
                 and a.session_id=${session_id}
                 order by mode,2,i.fee_slip_id`;
-      console.log("==========q1========")
-      console.log(qry)
+      
       var qry1 = `select date_format(receipt_date, '%d/%m/%Y') as receipt_date, a.receipt_id, e.enroll_number,
                 concat(e.first_name, ' ', e.middle_name,' ',  e.last_name) as name,
                 concat(h.standard, ' ', g.section)as class, i.fee_slip_name, b.mode,item_no,      
@@ -1277,8 +1619,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
                 and mode='Bank'
                 and a.session_id=${session_id}
                 order by mode,2,i.fee_slip_id`;
-      console.log("==========qry1========")
-      console.log(qry1)
+      
       var qry2 = `select date_format(receipt_date, '%d/%m/%Y') as receipt_date, a.receipt_id, e.enroll_number,
                 concat(e.first_name, ' ', e.middle_name,' ',  e.last_name) as name,
                 concat(h.standard, ' ', g.section)as class, i.fee_slip_name, b.mode,item_no,      
@@ -1298,8 +1639,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
                 and mode='Cheque'
                 and a.session_id=${session_id}
                 order by mode,2,i.fee_slip_id`;
-       console.log("==========qry2========")
-      console.log(qry2)
+      
        var qry3=`select date_format(receipt_date, '%d/%m/%Y') as receipt_date, a.receipt_id, e.enroll_number,
                 concat(e.first_name, ' ', e.middle_name,' ',  e.last_name) as name,
                 concat(h.standard, ' ', g.section)as class, i.fee_slip_name, b.mode,item_no,      
@@ -1319,8 +1659,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
                 and mode='Draft'
                 and a.session_id=${session_id}
                 order by mode,2,i.fee_slip_id`   
-         console.log("==========qry3========")
-      console.log(qry3)
+      
         var qry4=`select date_format(receipt_date, '%d/%m/%Y') as receipt_date, a.receipt_id, e.enroll_number,
                 concat(e.first_name, ' ', e.middle_name,' ',  e.last_name) as name,
                 concat(h.standard, ' ', g.section)as class, i.fee_slip_name, b.mode,item_no,      
@@ -1340,8 +1679,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
                 and mode='Cash'
                 and a.session_id=${session_id}
                 order by mode,2,i.fee_slip_id`;  
-                   console.log("==========qry4========")
-      console.log(qry4)
+      
        connection.query(qry, function (error, result) {
           if (error) {
             return connection.rollback(function() {
@@ -1904,6 +2242,268 @@ router.post('/read_outstanding_classwise', function(req, res, next) {
  });    
   
 });
+//========== read classwise advance fees ==========
+router.post('/read_advance_classwise', function(req, res, next) {
+  var obj = JSON.parse(JSON.stringify(req.body));
+
+   var standard_id =  obj.standard_id;
+   var data = {}
+    req.getConnection(function(err,connection){
+     var condition = "";
+     var session_id = req.cookies.session_id
+      if(standard_id == -1)   condition = ``;
+      if(standard_id != -1)   condition = `and h.standard_id=${standard_id}`;
+      //else "Invalid class section combination selected";
+     var qry = `select concat(standard, ' ', section) as class, fee_slip_name, sum(total_amount) as fees
+      from    
+      fee_plan_student_map a
+      JOIN fee_slip b on a.fee_plan_id = b.fee_plan_id
+      JOIN fee_plan_master c on (a.fee_plan_id = c.fee_plan_id and c.session_id =  ${session_id})
+      LEFT JOIN fee_received d on (a.fee_plan_id = d.fee_plan_id and a.student_id = d.student_id 
+              and b.fee_slip_id = d.fee_slip_id)
+      join fee_received_details m on  d.receipt_id = m.receipt_id
+      JOIN student_master e on (a.student_id = e.student_id and e.current_session_id =${session_id})
+      JOIN student_current_standing f on a.student_id = f.student_id
+      JOIN section_master g on f.section_id = g.section_id
+      JOIN standard_master h on g.standard_id = h.standard_id
+      JOIN parent_master i on (a.student_id = i.student_id and i.current_session_id = ${session_id})
+      LEFT JOIN fee_scholorship j on (a.student_id = j.student_id and b.fee_slip_id = j.fee_slip_id)  
+      where receipt_date < b.last_date
+      and (e.withdraw='N' || e.withdraw_session > ${session_id})
+      and f.session_id= ${session_id}
+     ${condition}
+      group by class, fee_slip_name 
+      order by g.section_id, b.fee_slip_id`;
+
+    //console.log(qry)
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+        var prev_class="";
+        var prev_fee_slip_name="";
+        var row_total="";
+        var slNo=0;
+        var error = 1;
+        var total = 0
+        var row_data = Array();
+        var full_data = Array();
+        var colNames ={}
+        colNames['SlNo']='SlNo';
+        colNames['Class']='Class';
+        colNames['Apr']='Apr'; 
+        colNames['May']='May';   
+        colNames['Jun']='Jun';   
+        colNames['Jul']='Jul';   
+        colNames['Aug']='Aug';   
+        colNames['Sep']='Sep';   
+        colNames['Oct']='Oct';   
+        colNames['Nov']='Nov';   
+        colNames['Dec']='Dec';   
+        colNames['Jan']='Jan';   
+        colNames['FebMar']='FebMar';   
+        colNames['Total']='Total';
+        full_data.push(colNames);
+    
+    //totals
+    var totals = {};
+    var data={};
+     totals['Apr'] = 0; 
+     totals['May'] = 0;   
+     totals['Jun'] = 0;   
+     totals['Jul'] = 0;   
+     totals['Aug'] = 0;   
+     totals['Sep'] = 0;   
+     totals['Oct'] = 0;   
+     totals['Nov'] = 0;   
+     totals['Dec'] = 0;   
+     totals['Jan'] = 0;   
+     totals['FebMar'] = 0;   
+     totals['Total'] = 0;
+    for(var i=0; i<result.length ; i++){
+          error = 0;
+        if(result[i].class!= prev_class){
+          if(prev_class != "" ){
+            data['SlNo'] = ++slNo;
+            data["Total"] = Number(row_total)
+            totals['Total'] =Number(totals['Total']) + Number(row_total)
+            full_data.push(data);
+            var data = {};
+    
+
+            row_total = 0;                                        
+          }                         
+        }
+        prev_class = result[i].class;
+        prev_fees =Number(result[i].fees);
+        row_total =Number(row_total) + Number(result[i].fees)
+        data['Class'] = result[i].class; 
+        data[result[i].fee_slip_name] =result[i].fees;
+        total = Number(total) + Number(result[i].fees);
+        totals[result[i].fee_slip_name] =total
+      }
+       if(error == 0){  
+            console.log("inside error 0")       
+          data['SlNo'] = ++slNo;
+          data["Total"] = Number(row_total)
+          totals['Total'] =Number(totals['Total']) + Number(row_total)
+          full_data.push(data);
+          totals['SlNo'] = '';
+          totals['Class'] = "Grand Total";
+          full_data.push(totals);  
+       }       
+  
+            
+           
+            var ytz={}
+            ytz.status = 's';
+            ytz.classWiseAdvanceFees = full_data;
+            
+           //connection.end()
+            res.send(ytz)
+        }
+     
+     });
+       
+  
+    });    
+  
+});
+//====================read_due_classwise ==========
+router.post('/read_due_classwise', function(req, res, next) {
+  var obj = JSON.parse(JSON.stringify(req.body));
+
+   var standard_id =  obj.standard_id;
+   var data = {}
+    req.getConnection(function(err,connection){
+     var condition = "";
+     var session_id = req.cookies.session_id
+      if(standard_id == -1)   condition = ``;
+      if(standard_id != -1)   condition = `and h.standard_id=${standard_id}`;
+      //else "Invalid class section combination selected";
+     var qry = `select concat(standard, ' ', section) as class, fee_slip_name, sum(total_amount) as fees
+        from    
+        fee_plan_student_map a
+        JOIN fee_slip b on a.fee_plan_id = b.fee_plan_id
+        JOIN fee_plan_master c on (a.fee_plan_id = c.fee_plan_id and c.session_id =  ${session_id})
+        LEFT JOIN fee_received d on (a.fee_plan_id = d.fee_plan_id and a.student_id = d.student_id 
+                and b.fee_slip_id = d.fee_slip_id)
+        JOIN student_master e on (a.student_id = e.student_id and e.current_session_id =${session_id})
+        JOIN student_current_standing f on a.student_id = f.student_id
+        JOIN section_master g on f.section_id = g.section_id
+        JOIN standard_master h on g.standard_id = h.standard_id
+        JOIN parent_master i on (a.student_id = i.student_id and i.current_session_id =${session_id})
+        LEFT JOIN fee_scholorship j on (a.student_id = j.student_id and b.fee_slip_id = j.fee_slip_id)  
+        where receipt_id is null
+        and (b.fee_slip_id <= e.last_fee_slip_id or e.last_fee_slip_id is null)
+        and (e.withdraw='N' || e.withdraw_session > ${session_id})
+        and f.session_id= ${session_id}
+        ${condition}
+        group by standard, fee_slip_name 
+        order by g.section_id, b.fee_slip_id`;
+
+    //console.log(qry)
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+
+        }else{
+            /*console.log("========= result ==========");
+            console.log(result)*/
+            var prev_class="";
+        var prev_fee_slip_name="";
+        var row_total="";
+        var slNo=0;
+        var error = 1;
+        var total = 0;
+        var row_data = Array();
+        var full_data = Array();
+        var colNames ={}
+        colNames['SlNo']='SlNo';
+        colNames['Class']='Class';
+        colNames['Apr']='Apr'; 
+        colNames['May']='May';   
+        colNames['Jun']='Jun';   
+        colNames['Jul']='Jul';   
+        colNames['Aug']='Aug';   
+        colNames['Sep']='Sep';   
+        colNames['Oct']='Oct';   
+        colNames['Nov']='Nov';   
+        colNames['Dec']='Dec';   
+        colNames['Jan']='Jan';   
+        colNames['FebMar']='FebMar';   
+        colNames['Total']='Total';
+        full_data.push(colNames);
+    
+    //totals
+    var totals = {};
+    var data={};
+     totals['Apr'] = 0; 
+     totals['May'] = 0;   
+     totals['Jun'] = 0;   
+     totals['Jul'] = 0;   
+     totals['Aug'] = 0;   
+     totals['Sep'] = 0;   
+     totals['Oct'] = 0;   
+     totals['Nov'] = 0;   
+     totals['Dec'] = 0;   
+     totals['Jan'] = 0;   
+     totals['FebMar'] = 0;   
+     totals['Total'] = 0;
+    for(var i=0; i<result.length ; i++){
+          error = 0;
+        if(result[i].class!= prev_class){
+          if(prev_class != "" ){
+            data['SlNo'] = ++slNo;
+            data["Total"] = Number(row_total)
+            totals['Total'] =Number(totals['Total']) + Number(row_total)
+            full_data.push(data);
+            var data = {};
+    
+
+            row_total = 0;                                        
+          }                         
+        }
+        prev_class = result[i].class;
+        prev_fees =result[i].fees;
+        row_total =Number(row_total) + Number(result[i].fees)
+        data['Class'] = result[i].class; 
+        data[result[i].fee_slip_name] =result[i].fees;
+        total = Number(total) + Number(result[i].fees);
+        totals[result[i].fee_slip_name] =total
+      }
+       if(error == 0){  
+            console.log("inside error 0")       
+          data['SlNo'] = ++slNo;
+          data["Total"] = Number(row_total)
+          totals['Total'] = Number(totals['Total']) + Number(row_total);
+          full_data.push(data);
+          totals['SlNo'] = '';
+          totals['Class'] = "Grand Total";
+          full_data.push(totals);  
+       }       
+
+            var xyz = {}
+            xyz.status = 's';
+            xyz.classWiseDueFees = full_data;
+            
+           //connection.end()
+            res.send(xyz)
+        }
+     
+     });
+       
+  
+    });    
+  
+});
 //========== read estimated fees report ==============
 
 router.post('/read_estimated_fees', function(req, res, next) {
@@ -2054,6 +2654,8 @@ router.post('/read_bank_wise_fees', function(req, res, next) {
         }else{
           // res.render('customers',{page_title:"Customers - Node.js",data:rows});
           //var data ={}
+          console.log("result")
+          console.log(result)
             data.status = 's';
             data.bankWiseFees = result;
             

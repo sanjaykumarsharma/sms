@@ -334,128 +334,284 @@ router.get('/read_student_summary_report', function(req, res, next) {
 router.post('/read_student_category_summary_report', function(req, res, next) {
   var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
-  var castCategory=Array
-//  console.log(input.categories)
-   castCategory=input.categories
-   /*var date = moment().add(2,'d').toDate();
-   console.log(date)*/
-   
-  req.getConnection(function(err,connection){
-       
-    var data = {}
-      var qry =`SELECT a.standard_id, standard, b.section_id, section,e.category_id,
+  /*var castCategory=Array()
+   castCategory=input.categories*/
+    req.getConnection(function(err,connection){
+    var data = []
 
-                category_name,count(d.student_id) as strength 
+      connection.beginTransaction(function(err) {
+        if (err) { throw err; }
 
+        var qry =`SELECT d.first_name,d.enroll_number,a.standard_id, standard, b.section_id, section,e.category_id,
+                category_name,count(d.student_id)as strength 
                 FROM section_master b
-
                 JOIN standard_master a ON a.standard_id = b.standard_id
-
-                JOIN student_current_standing c ON (b.section_id = c.section_id  and c.session_id =${session_id}) 
-
-                LEFT JOIN student_master d on (c.student_id = d.student_id and d.current_session_id = ${session_id} AND (d.withdraw =  'N' || d.withdraw_session > ${session_id}))
-
+                JOIN student_current_standing c ON (b.section_id = c.section_id  and c.session_id =${req.cookies.session_id}) 
+                LEFT JOIN student_master d on (c.student_id = d.student_id and d.current_session_id = ${req.cookies.session_id} AND (d.withdraw =  'N' || d.withdraw_session > ${session_id}))
                 JOIN category_master e ON d.category_id = e.category_id 
+                group by a.standard_id,e.category_id, d.enroll_number, a.standard_id`;
 
-                group by a.standard_id , e.category_id`;
-          connection.query(qry,function(err,result)     {
-        // console.log(qry)   
-      if(err){
-        console.log("Error reading Student : %s ",err );
-        data.status = 'e';
+        var qry_one = `select category_name from category_master`;
 
-      }else{
-            data.status='s'
-            var stdData = Array();
-            var prev_standard_id = "";        
-            var grand_total = 0;
-            var total=Array()
-            castCategory.map(c=>{
+        var error = 1;
+        var prev_standard_id="";
+        var grand_total=0;
+        var c_name= [];
+        var total= [];
+
+        connection.query(qry_one, function (error, result1) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }
+          
+          result1.map(c=>{
             total[c.category_name] = 0;
-            })
-      for (var i = 0; i < result.length; i++) {
-          //console.log(result[i])
-           var error = 0;
+          })
+           
+          
 
-    if(prev_standard_id != result[i].standard_id){
+        connection.query(qry, function(error, result)
+          {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+            connection.commit(function(err) {
+                if (err) {
+                  return connection.rollback(function() {
+                    throw err;
+                  });
+                }
 
-         if(prev_standard_id == ""){
-            var student = {}
-            student["standard"] = result[i].standard;
-            student["category_name"] = result[i].strength;            
-            prev_standard_id=result[i].standard_id
 
-            //counting total
-             /*foreach($total as $k => $v){
-              if($k == $category_name){
-                $total[$category_name] = $v + $strength;
+            var stdData = [];
+            for(var i = 0; i < result.length; i++){
+
+              error = 0;
+              if(prev_standard_id != result[i].standard_id){
+
+                 if(prev_standard_id == ""){
+                    var student = {};
+                    student["standard"] = result[i].standard;
+                    student[result[i].category_name] = result[i].strength;            
+                    prev_standard_id=result[i].standard_id;
+
+                    //counting total
+                    total.map(c=>{
+                      if(c.category_name == result[i].category_name){
+                        total[result[i].category_name] = c + result[i].strength;
+                      }
+                    })
+
+                 }else{
+
+                     stdData.push(student);        
+                     var student = {};
+                     student["standard"] = result[i].standard;
+                     student[result[i].category_name] = result[i].strength;  
+                     prev_standard_id=result[i].standard_id;   
+
+                     //counting total
+
+                     total.map(c=>{
+                      if(c.category_name == result[i].category_name){
+                        total[result[i].category_name] = c + result[i].strength;
+                      }
+                     })  
+
+                 }
+
+              }else{  
+
+                  student[result[i].category_name] = result[i].strength;  
+                  prev_standard_id=result[i].standard_id;
+
+                  //counting total
+
+                   total.map(c=>{
+                    if(c.category_name == result[i].category_name){
+                      total[result[i].category_name] = c + result[i].strength;
+                    }
+                   }) 
+
               }
-             }*/
-             total.map(d=>{
-                    if(d.category_name == result[i].category_name){
-                        total[d.category_name] = d.category_name + result[i].strength;
-                      }
-                 })
+                
+            }
 
+            stdData.push(student);
 
-         }else{
+      
 
-             stdData.push(student)       
-             var student = {}
-             student["standard"] = result[i].standard;
+            // for last row
 
-             student["category_name"] = result[i].strength;  
-             prev_standard_id=result[i].standard_id;   
+             var student = {};
 
-             //counting total
+             student["standard"] = "Total";
+             total.map(c=>{
+              $student[c.category_name] = c;
+             })
 
-             total.map(d=>{
-                    if(d.category_name == result[i].category_name){
-                        total[d.category_name] = d.category_name + result[i].strength;
-                      }
-                 })   
+             stdData.push(student);
 
-         }
+                var r = {}
+                r.status = 's';
+                r.studentCategorySummaryReports = stdData 
+                console.log(stdData);
+                res.send(r)
 
-        }else{  
+              });
+          
+          });
 
-            student["category_name"] = result[i].strength;  
-            prev_standard_id=result[i].standard_id;
-
-            //counting total
-
-             total.map(d=>{
-                    if(d.category_name == result[i].category_name){
-                        total[d.category_name] = d.category_name + result[i].strength;
-                      }
-                 })  
-
-         }
-
-      }
-
-      // for last row
-
-       stdData.push(student)
-      // for last row
-       var student ={}
-       student["standard"] = "Total";
-        total.map(d=>{
-         total[d.category_name] = d.category_name;
-        })   
-        stdData.push(student)
-        data.studentCategorySummaryReports = stdData;
-           //connection.end()
-        res.send(JSON.stringify(data))
-
-      }
-     
-     });
-       
-  });
+        });//end of ection con
+      });
+    });
 
 });
- 
+
+ /* Student Religion Listing report */
+
+router.post('/read_student_religion_listing_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  var session_id = req.cookies.session_id
+    req.getConnection(function(err,connection){
+    var data = []
+
+      connection.beginTransaction(function(err) {
+        if (err) { throw err; }
+
+        var qry =`SELECT a.standard_id, standard, religion,count(d.student_id)as strength 
+                FROM section_master b
+                JOIN standard_master a ON a.standard_id = b.standard_id
+                LEFT JOIN student_current_standing c ON ( b.section_id = c.section_id  AND c.session_id = ${session_id} ) 
+                LEFT JOIN student_master d ON ( c.student_id = d.student_id and d.current_session_id = ${session_id}  
+                  and  (d.withdraw =  'N' || d.withdraw_session > ${session_id}))
+                JOIN religion_master e ON d.religion_id = e.religion_id 
+                group by a.standard_id,e.religion_id`;
+
+        var qry_one = `select religion from religion_master`;
+
+        var error = 1;
+        var prev_standard_id="";
+        var grand_total=0;
+        var c_name= [];
+        var total= [];
+
+        connection.query(qry_one, function (error, result1) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }
+          
+          result1.map(c=>{
+            total[c.religion] = 0;
+          })
+           
+          
+
+        connection.query(qry, function(error, result)
+          {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+            connection.commit(function(err) {
+                if (err) {
+                  return connection.rollback(function() {
+                    throw err;
+                  });
+                }
+
+
+            var stdData = [];
+            for(var i = 0; i < result.length; i++){
+
+              error = 0;
+              if(prev_standard_id != result[i].standard_id){
+
+                 if(prev_standard_id == ""){
+                    var student = {};
+                    student["standard"] = result[i].standard;
+                    student[result[i].religion] = result[i].strength;            
+                    prev_standard_id=result[i].standard_id;
+
+                    //counting total
+                    total.map(c=>{
+                      if(c.religion == result[i].religion){
+                        total[result[i].religion] = c + result[i].strength;
+                      }
+                    })
+
+                 }else{
+
+                     stdData.push(student);        
+                     var student = {};
+                     student["standard"] = result[i].standard;
+                     student[result[i].religion] = result[i].strength;  
+                     prev_standard_id=result[i].standard_id;   
+
+                     //counting total
+
+                     total.map(c=>{
+                      if(c.religion == result[i].religion){
+                        total[result[i].religion] = c + result[i].strength;
+                      }
+                     })  
+
+                 }
+
+              }else{  
+
+                  student[result[i].religion] = result[i].strength;  
+                  prev_standard_id=result[i].standard_id;
+
+                  //counting total
+
+                   total.map(c=>{
+                    if(c.religion == result[i].religion){
+                      total[result[i].religion] = c + result[i].strength;
+                    }
+                   }) 
+
+              }
+                
+            }
+
+            stdData.push(student);
+
+      
+
+            // for last row
+
+             var student = {};
+
+             student["standard"] = "Total";
+             total.map(c=>{
+              $student[c.religion] = c;
+             })
+
+             stdData.push(student);
+
+                var r = {}
+                r.status = 's';
+                r.studentReligionListingReports = stdData 
+                console.log(stdData);
+                res.send(r)
+
+              });
+          
+          });
+
+        });//end of ection con
+      });
+    });
+
+});
  // read New Student List Report
 
 router.get('/read_new_student_list_report', function(req, res, next) {

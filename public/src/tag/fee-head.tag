@@ -1,4 +1,5 @@
 <fee-head>
+  <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<h2 class="title has-text-centered" style="color: #ff3860;">Fee Head Management</h2>
 		<div class="flex items-center mt-2 mb-6 no-print">
@@ -20,7 +21,7 @@
 				<div class="column is-narrow">
 					<div class="field">
 						<div class="control">
-							<button class="button is-danger has-text-weight-bold adjusted-top"
+							<button disabled={loading} class="button is-danger has-text-weight-bold adjusted-top"
 					         onclick={add} >{title}</button>
 						</div>
 					</div>
@@ -58,6 +59,7 @@
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
+      self.loading = false
       self.update()
       self.readHeads()
     })
@@ -69,7 +71,7 @@
     self.readHeads = () => {
        feeHeadStore.trigger('read_heads')
     }
-
+    
     self.add = () => {
       if(!self.refs.addHeadInput.value){
         toastr.info("Please enter Head and try again")
@@ -137,6 +139,7 @@
       self.loading = false
        self.heads = []
       self.heads = heads
+      self.loading = false
       self.update()
       console.log(self.heads)
     }

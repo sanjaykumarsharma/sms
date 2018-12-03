@@ -124,35 +124,137 @@ riot.tag2('activity-date-wise-report', '<section class=" is-fluid"> <h2 class="t
       self.update();
     }
 });
-riot.tag2('activity-detail', '<section class="container is-fluid" show="{activity_view ==\'show_activity\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Activity Detail</h2> </div> <div class="level-right"> <button class="button is-warning is-rounded" onclick="{add_new_activity}"> <span class="icon"> <span class="fas fa-plus"></span> </span> <span>Add Activity</span> </button> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">Category</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="category_id"> <option value="-1">ALL</option> <option each="{categories}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getActivityData}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>SL No</th> <th>Type</th> <th>Date</th> <th>Event Name</th> <th>Organised By</th> <th>Venue</th> <th>Teacher Incharge</th> <th>Item Taken</th> <th>Result</th> <th></th> </tr> </thead> <tbody> <tr each="{ac, i in activities}"> <td>{i + 1}</td> <td>{ac.activity_type}</td> <td>{ac.activity_date}</td> <td>{ac.event_name}</td> <td>{ac.organised_by}</td> <td>{ac.venue}</td> <td>{ac.name}</td> <td>{ac.item_taken}</td> <td>{ac.result}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{ac.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, ac.activity_id)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{ac.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <section class="container is-fluid" show="{activity_view ==\'add_activity\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h2 class="title" style="color: #ff3860;">{title} Event</h2> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_activity}">Back</a> </div> </div> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"></div> <div class="bg-grey h-px flex-auto"></div> </div> <div class="columns"> <div class="column is-three-fifths"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="column is-half"> <div class="field"> <label class="label" for="activityTypeInput">Activity Type</label> <div class="control"> <div class="select is-fullwidth"> <select id="activityTypeInput" ref="activityTypeInput"> <option value="intra_school">Intra-School</option> <option value="inter_school">Inter-school</option> </select> </div> </div> </div> <div class="field"> <label class="label" for="add_category_id">Category</label> <div class="control"> <div class="select is-fullwidth"> <select ref="CategoryidInput" onchange="{readEvent}"> <option>Select Category</option> <option each="{categories}" riot-value="{category_id}">{category_name}</option> </select> </div> </div> </div> <div class="field"> <label class="label" for="organisedByInput">Organised By</label> <input class="input" ref="organisedByInput" type="text"> </div> <div class="field"> <label class="label" for="staffTakenInput">Employee</label> <input class="input" ref="staffTakenInput" type="text" id="staffModal" onclick="{ViewStaffList}"> </div> <div class="field"> <label class="label" for="inTimeInput">In Time</label> <input class="input" ref="inTimeInput" type="time"> </div> </div> <div class="column is-half"> <div class="field"> <label class="label" for="activityDateInput">Activity Date</label> <input class="date input flatpickr-input form-control input" ref="activityDateInput" placeholder="" tabindex="0" type="text" readonly="readonly"> </div> <div class="field"> <label class="label" for="eventIdInput">Event</label> <div class="control"> <div class="select is-fullwidth"> <select ref="eventIdInput"> <option each="{events}" riot-value="{event_id}">{event_name}</option> </select> </div> </div> </div> <div class="field"> <label class="label" for="venueInput">Venue</label> <input class="input" ref="venueInput" type="text"> </div> <div class="field"> <label class="label" for="itemTakenInput">Item Taken</label> <input class="input" ref="itemTakenInput" type="text" id="itemModal" onclick="{ViewItemList}"> </div> <div class="field"> <label class="label" for="outTimeInput">Out Time</label> <input class="input" ref="outTimeInput" type="time"> </div> </div> <div class="column is-full"> <label class="label" for="remarksInput">Remarks/Suggestion</label> <textarea class="textarea" ref="remarksInput" rows="2"></textarea> </div> <div class="column is-full"> <label class="label" for="resultInput">Result</label> <input class="input" ref="resultInput" type="text"> </div> <div class="column is-full"> <button class="button is-danger" onclick="{add}">Submit</button> </div> </div> </div> </div> </div> </section> <div id="showItemModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Select Item List</p> </header> <section class="modal-card-body"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>Item Name</th> <th></th> </tr> </thead> <tbody> <tr each="{r, i in items}"> <td>{r.item_name}</td> <td class="has-text-right"> <input type="checkbox" class="id_check_box" checked="{selected}" id="{\'AddItemName\' + r.item_id}" onclick="{selectItem.bind(this,r)}"> </td> </tr> </tbody> </table> </section> <footer class="modal-card-foot"> <button class="button is-danger" id="item-modal-close">Cancel</button> </footer> </div> </div> <div id="showStaffModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Select Staff</p> </header> <section class="modal-card-body"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th> Name</th> <th></th> </tr> </thead> <tbody> <tr each="{s, i in staff}"> <td>{s.name} ({s.employee_id})</td> <td class="has-text-right"> <input type="checkbox" class="id_check_box" checked="{selected}" id="{\'AddStaffName\' + s.emp_id}" onclick="{selectStaff.bind(this,s)}"> </td> </tr> </tbody> </table> </section> <footer class="modal-card-foot"> <button class="button is-danger" id="staff-modal-close">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
+riot.tag2('activity-detail', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid" show="{activity_view ==\'show_activity\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Activity Detail</h2> </div> <div class="level-right"> <button class="button is-warning is-rounded" onclick="{add_new_activity}"> <span class="icon"> <span class="fas fa-plus"></span> </span> <span>Add Activity</span> </button> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">Category</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="category_id" onchange="{getActivityData}"> <option value="-1">ALL</option> <option each="{categories}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>SL No</th> <th>Type</th> <th>Date</th> <th>Event Name</th> <th>Organised By</th> <th>Venue</th> <th>Teacher Incharge</th> <th>Item Taken</th> <th>Result</th> <th style="width: 260px;"></th> </tr> </thead> <tbody> <tr each="{ac, i in activities}"> <td>{i + 1}</td> <td>{ac.activity_type}</td> <td>{ac.activity_date}</td> <td>{ac.event_name}</td> <td>{ac.organised_by}</td> <td>{ac.venue}</td> <td>{ac.name}</td> <td>{ac.item_taken}</td> <td>{ac.result}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{ac.confirmDelete}"> <span><a class="button is-small is-rounded " onclick="{assign_student.bind(this, ac)}">Assign Student</a></span> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, ac.activity_id)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{ac.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <section class=" is-fluid" show="{activity_view ==\'add_activity\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h2 class="title" style="color: #ff3860;">{title} Activity</h2> </div> </div> <div class="level-right"> <button class="button is-warning is-rounded" onclick="{close_new_activity}"> <span class="icon"> <span class="fas fa-arrow-left"></span> </span> </button> </div> </div> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"></div> <div class="bg-grey h-px flex-auto"></div> </div> <div class="box"> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="activityTypeInput">Activity Type</label> <div class="control "> <div class="select is-fullwidth"> <select ref="activityTypeInput"> <option value="intra_school">Intra-School</option> <option value="inter_school">Inter-school</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="activityDateInput">Activity Date</label> <input class="input date" type="text" ref="activityDateInput" readonly> </div> <div class="column is-one-third"> <label class="label" for="activityCategoryidInput">Category</label> <div class="control "> <div class="select is-fullwidth"> <select ref="activityCategoryidInput" onchange="{readActivityEvent}"> <option each="{categories}" riot-value="{category_id}">{category_name}</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="activityEventIdInput">Event</label> <div class="control"> <div class="select is-fullwidth"> <select ref="activityEventIdInput"> <option each="{readfilteredEvents}" riot-value="{event_id}">{event_name}</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="organisedByInput">Organised By</label> <input class="input" ref="organisedByInput" type="text"> </div> <div class="column is-one-third"> <label class="label" for="venueInput">Venue</label> <input class="input" ref="venueInput" type="text"> </div> <div class="column is-one-third"> <label class="label" for="staffTakenInput">Employee</label> <input class="input" ref="staffTakenInput" type="text" id="staffModal" onclick="{ViewStaffList}"> </div> <div class="column is-one-third"> <label class="label" for="itemTakenInput">Item Taken</label> <input class="input" ref="itemTakenInput" type="text" id="itemModal" onclick="{ViewItemList}"> </div> <div class="column is-one-third"> <label class="label" for="outTimeInput">Out Time</label> <input class="input" ref="outTimeInput" type="time"> </div> <div class="column is-one-third"> <label class="label" for="inTimeInput">In Time</label> <input class="input" ref="inTimeInput" type="time"> </div> <div class="column is-half"> <label class="label" for="resultInput">Result</label> <input class="input" ref="resultInput" type="text"> </div> <div class="column is-half"> <label class="label" for="activityRemarksInput">Remarks/Suggestion</label> <textarea class="textarea" ref="activityRemarksInput" rows="2"></textarea> </div> <div class="column is-full"> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{add}">Submit</button> </div> </div> </div> </section> <section class=" is-fluid" show="{activity_view ==\'assign_student_view\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h2 class="title" style="color: #ff3860;">Assign Participants to Event</h2> </div> </div> <div class="level-right"> <button class="button is-warning is-rounded" onclick="{close_assign_student_view}"> <span class="icon"> <span class="fas fa-arrow-left"></span> </span> </button> <button class="button is-warning is-rounded ml5" onclick="{refreshStudents}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Standard</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="standardSelect" onchange="{changeSection}"> <option each="{classes}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"><label class="label">Section</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="sectionSelect"> <option each="{tempSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{refreshStudents}">Show Data </button> </div> </div> </div> <div class="columns is-multiline is-mobile"> <div class="column"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th class="slno">Roll</th> <th>Enroll No</th> <th>Free Students</th> <th></th> </tr> </thead> <tbody> <tr each="{c, i in freeStudents}"> <td>{c.roll_number}</td> <td>{c.enroll_number}</td> <td>{c.student_name}</td> <td class="has-text-right"> <input type="checkbox" checked="{selected}" id="{\'freeSubjectCheckBox\'+c.student_id}" onclick="{selectFreeSubject.bind(this,c)}"> </td> </tr> </tbody> </table> </div> <div class="column is-vertical-center is-narrow has-text-centered is-multiline"> <table> <tr> <td> <button class="button" onclick="{assignStudents}" style="margin-top:20px;">Assign students <span style="margin-left:10px" class="fas fa-angle-double-right"></span> </button> </td> </tr> <tr> <td> <button class="button" onclick="{freeUpStandard}" style="margin-top:20px;"><span style="margin-right:10px;" class="fas fa-angle-double-left"></span> Free up students</button> </td> </tr> </table> </div> <div class="column"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th></th> <th class="slno">Roll No</th> <th>Enroll No</th> <th>Assigned Students</th> </tr> </thead> <tbody> <tr each="{c, i in assignedStudents}"> <td class="has-text-right"> <input type="checkbox" checked="{selected}" id="{\'assignedSubjectCheckBox\'+c.activity_id}" onclick="{selectAssigndSubject.bind(this,c)}"> </td> <td>{c.roll_number}</td> <td>{c.enroll_number}</td> <td>{c.student_name}</td> </tr> </tbody> </table> </div> </div> </section> <div id="showItemModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Select Item List</p> </header> <section class="modal-card-body"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>Item Name</th> <th></th> </tr> </thead> <tbody> <tr each="{r, i in items}"> <td>{r.item_name}</td> <td class="has-text-right"> <input type="checkbox" class="id_check_box" checked="{selected}" id="{\'AddItemName\' + r.item_id}" onclick="{selectItem.bind(this,r)}"> </td> </tr> </tbody> </table> </section> <footer class="modal-card-foot"> <button class="button is-danger" id="item-modal-close">Cancel</button> </footer> </div> </div> <div id="showStaffModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Select Staff</p> </header> <section class="modal-card-body"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th> Name</th> <th></th> </tr> </thead> <tbody> <tr each="{s, i in staff}"> <td>{s.name} ({s.employee_id})</td> <td class="has-text-right"> <input type="checkbox" class="id_check_box" checked="{selected}" id="{\'AddStaffName\' + s.emp_id}" onclick="{selectStaff.bind(this,s)}"> </td> </tr> </tbody> </table> </section> <footer class="modal-card-foot"> <button class="button is-danger" id="staff-modal-close">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
 	var self = this
     self.on("mount", function(){
       self.title='Add'
       self.role = getCookie('role')
+      self.loading = false;
       self.activity_view = 'show_activity'
       self.update()
       flatpickr(".date", {
-
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
-  		})
+      	allowInput: true,
+      	dateFormat: "d/m/Y",
+      })
       self.readCategories()
+      self.readEvent()
       self.readItems()
       self.readStaff()
+      self.readClass()
+      self.readSection()
     })
 
     self.on("unmount", function(){
-      activityStore.off('read_categories_changed',CategoriesChanged)
-      activityStore.off('read_events_by_category_changed',EventsChanged)
+      activityStore.off('read_activity_categories_changed',ActivityCategoriesChanged)
+      activityStore.off('read_activity_event_changed',ActivityEventChanged)
       activityStore.off('read_items_changed',ItemsChanged)
       activityStore.off('read_staff_changed',StaffChanged)
       activityStore.off('add_activity_changed',ActivityChanged)
       activityStore.off('read_activity_by_category_changed',ActivitiesChanged)
       activityStore.off('read_data_for_update_changed',UpdateActivityDataChanged)
+      activityStore.off('read_students_changed',ReadStudentsChanged)
+      activityStore.off('assign_students_changed',AssignStandardChanged)
     })
 
+    self.readClass = () => {
+       self.loading = true;
+       activityStore.trigger('read_classes')
+    }
+
+    self.readSection = () => {
+       self.loading = true;
+       activityStore.trigger('read_section')
+    }
+    self.changeSection = () => {
+       if(self.refs.standardSelect.value==''){
+        toastr.info("Please select standard and try again")
+       }else{
+        self.tempSections = []
+        self.tempSections = self.sections.filter(s=>{
+          return s.standard_id==self.refs.standardSelect.value
+        })
+       }
+    }
+
+    self.assign_student = (ac) =>{
+    	self.activity_id = ac.activity_id
+    	self.activity_view='assign_student_view'
+    }
+
+    self.close_assign_student_view = ()=>{
+    	self.activity_view='show_activity'
+    }
+
+    self.refreshStudents = () =>{
+
+      let error = '';
+
+      if(self.refs.standardSelect.value==''){
+        error = error + "Please select standard, "
+      }
+
+      if(self.refs.sectionSelect.value==''){
+        error = error + "Please select section, "
+      }
+
+      if(error.length!=0){
+        toastr.error(error)
+        return
+      }else{
+        self.loading = true
+        activityStore.trigger('read_students', self.activity_id, self.refs.standardSelect.value, self.refs.sectionSelect.value)
+      }
+
+    }
+    self.selectFreeSubject = (student,e) => {
+        self.freeStudents.map(i=>{
+          if(student.student_id==i.student_id){
+            i.selected=!i.selected
+          }
+        })
+    }
+
+    self.selectAssigndSubject = (student,e) => {
+        self.assignedStudents.map(i=>{
+          if(student.student_id==i.student_id){
+            i.selected=!i.selected
+          }
+        })
+        console.log(self.assignedStudents)
+    }
+
+    self.assignStudents = () =>{
+      let students_to_assign = self.freeStudents.filter(c=>{
+        return c.selected == true
+      })
+      console.log(self.activity_id)
+      console.log(students_to_assign)
+
+      if(students_to_assign.length==0){
+        toastr.error('Please Select Student To Assign House.')
+        return
+      }else{
+        self.loading = true
+        activityStore.trigger('assign_students', self.activity_id, students_to_assign)
+      }
+    }
+
+    self.freeUpStandard = () =>{
+      let students_to_free = self.assignedStudents.filter(c=>{
+        return c.selected == true
+      })
+
+      if(students_to_free.length==0){
+        toastr.error('Please select students to free from house .')
+        return
+      }else{
+        self.loading = true
+        activityStore.trigger('free_up_student', self.activity_id, students_to_free)
+      }
+    }
+
     self.getActivityData = () => {
+    	self.loading = true
     	var obj={}
           obj['category_id']=self.refs.category_id.value
           activityStore.trigger('read_activity_by_category', obj)
@@ -160,8 +262,22 @@ riot.tag2('activity-detail', '<section class="container is-fluid" show="{activit
     }
 
     self.readCategories = () => {
-       activityStore.trigger('read_categories')
+       activityStore.trigger('read_activity_categories')
     }
+
+    self.readActivityEvent = () => {
+    	self.events = []
+    	self.readfilteredEvents = []
+    	self.readfilteredEvents = self.activity_events.filter(c => {
+          return c.category_id == self.refs.activityCategoryidInput.value
+        })
+        self.update()
+    }
+
+    self.readEvent = () => {
+       activityStore.trigger('read_activity_event')
+    }
+
     self.close_new_activity = () => {
     	self.activity_view='show_activity'
     	self.update()
@@ -172,11 +288,7 @@ riot.tag2('activity-detail', '<section class="container is-fluid" show="{activit
     	self.title='Add'
     	self.update()
     }
-    self.readEvent = () =>{
-    	activityStore.trigger('read_events_by_category', self.refs.CategoryidInput.value)
-    	console.log(self.refs.CategoryidInput.value)
 
-    }
     self.readItems = () => {
     	activityStore.trigger('read_items')
     }
@@ -251,6 +363,7 @@ riot.tag2('activity-detail', '<section class="container is-fluid" show="{activit
 		self.refs.staffTakenInput.value = name
 
     	})
+		console.log(self.teachers)
     }
     self.selectStaff = (name,e) => {
         self.staff.map(i=>{
@@ -270,39 +383,42 @@ riot.tag2('activity-detail', '<section class="container is-fluid" show="{activit
       console.log(ac)
       self.activity_view='add_activity'
       self.title='Update'
-      flatpickr(".date", {
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
-  		})
-
       activityStore.trigger('read_data_for_update', ac)
-
     }
 
-     self.add = () => {
-     	var obj={}
-     	obj['activity_type']=self.refs.activityTypeInput.value
-     	obj['category_id']=self.refs.CategoryidInput.value
-     	obj['organised_by']=self.refs.organisedByInput.value
-     	obj['time_in']=self.refs.inTimeInput.value
-     	obj['activity_date']=self.refs.activityDateInput.value
-     	obj['event_id']=self.refs.eventIdInput.value
-     	obj['venue']=self.refs.venueInput.value
-     	obj['item_taken']=self.refs.itemTakenInput.value
-     	obj['emp_id']=self.teachers
-     	obj['time_out']=self.refs.outTimeInput.value
-     	obj['remarks']=self.refs.remarksInput.value
-     	obj['result']=self.refs.resultInput.value
-     	console.log(obj)
-     	if(self.title=='Add'){
-           activityStore.trigger('add_activity', obj)
-
-          }else if(self.title=='Update'){
-           activityStore.trigger('edit_activity', obj)
-
-          }
-     }
+    self.add = () => {
+     	if(!self.refs.activityDateInput.value){
+       		toastr.info("Please enter Activity Date and try again")
+      	}else if(!self.refs.activityEventIdInput.value){
+        	toastr.info("Please Select Event and try again")
+      	}else if(!self.refs.organisedByInput.value){
+        	toastr.info("Please enter Organised By and try again")
+      	}else if(!self.refs.venueInput.value){
+        	toastr.info("Please enter Venue and try again")
+      	}else{
+	     	var obj={}
+	     	obj['activity_type']=self.refs.activityTypeInput.value
+	     	obj['activity_date']=convertDate(self.refs.activityDateInput.value)
+	     	obj['category_id']=self.refs.activityCategoryidInput.value
+	     	obj['event_id']=self.refs.activityEventIdInput.value
+	     	obj['organised_by']=self.refs.organisedByInput.value
+	     	obj['venue']=self.refs.venueInput.value
+	     	obj['emp_id']=self.teachers
+	     	obj['item_taken']=self.refs.itemTakenInput.value
+	     	obj['time_in']=self.refs.inTimeInput.value
+	     	obj['time_out']=self.refs.outTimeInput.value
+	     	obj['remarks']=self.refs.activityRemarksInput.value
+	     	obj['result']=self.refs.resultInput.value
+	     	console.log(obj)
+	     	if(self.title=='Add'){
+	           activityStore.trigger('add_activity', obj)
+	           self.activity_view = 'show_activity'
+	        }else if(self.title=='Update'){
+	           activityStore.trigger('edit_activity', obj)
+	           self.activity_view = 'show_activity'
+	        }
+	    }
+    }
 
     self.addEnter = (e) => {
       if(e.which == 13){
@@ -338,50 +454,52 @@ riot.tag2('activity-detail', '<section class="container is-fluid" show="{activit
       eventStore.trigger('delete_event', e.item.ev.id)
     }
 
-    activityStore.on('read_categories_changed',CategoriesChanged)
-    function CategoriesChanged(categories){
+    activityStore.on('read_activity_categories_changed',ActivityCategoriesChanged)
+    function ActivityCategoriesChanged(categories){
       console.log(categories)
       self.categories = categories
       self.update()
       console.log(self.categories)
     }
 
-    activityStore.on('read_events_by_category_changed',EventsChanged)
-    function EventsChanged(events){
-      console.log(events)
-      self.events = events
+    activityStore.on('read_activity_event_changed',ActivityEventChanged)
+    function ActivityEventChanged(activity_events){
+      console.log(activity_events)
+      self.activity_events = activity_events
       self.update()
+      self.readActivityEvent()
+      self.getActivityData()
     }
+
     activityStore.on('read_items_changed',ItemsChanged)
     function ItemsChanged(items){
       console.log(items)
       self.items = items
+      self.update()
       self.items.map(i=>{
         i.selected = false;
       })
-      self.update()
     }
 
     activityStore.on('read_staff_changed',StaffChanged)
     function StaffChanged(staff){
       console.log(staff)
       self.staff = staff
+      self.update()
       self.staff.map(i=>{
         i.selected = false;
       })
-      self.update()
     }
 
     activityStore.on('add_activity_changed',ActivityChanged)
-    function ActivityChanged(activities){
-      console.log(activities)
-      self.activities = activities
+    function ActivityChanged(){
       self.update()
     }
 
     activityStore.on('read_activity_by_category_changed',ActivitiesChanged)
     function ActivitiesChanged(activities){
       console.log(activities)
+      self.loading = false
       self.activities = activities
       self.name = name
       self.update()
@@ -395,11 +513,11 @@ riot.tag2('activity-detail', '<section class="container is-fluid" show="{activit
       self.update_employee_activity = update_employee_activity
       self.update_activity.map(i=>{
         self.activityTypeInput= i.activity_type
-        self.CategoryidInput= i.category_id
+        self.activityCategoryidInput= i.category_id
         self.organisedByInput= i.organised_by
         self.inTimeInput= i.time_in
         self.activityDateInput= i.activity_date
-        self.eventIdInput= i.event_id
+        self.activityEventIdInput= i.event_id
         self.venueInput= i.venue
         self.outTimeInput= i.time_out
         self.remarksInput= i.remarks
@@ -408,17 +526,57 @@ riot.tag2('activity-detail', '<section class="container is-fluid" show="{activit
       })
 
       self.refs.activityTypeInput.value= self.activityTypeInput
-	  self.refs.CategoryidInput.value = self.CategoryidInput
+	  self.refs.activityCategoryidInput.value = self.activityCategoryidInput
 	  self.refs.organisedByInput.value = self.organisedByInput
 	  self.refs.inTimeInput.value = self.inTimeInput
 	  self.refs.activityDateInput.value = self.activityDateInput
-	  self.refs.eventIdInput.value = self.eventIdInput
+	  self.refs.activityEventIdInput.value = self.activityEventIdInput
 	  self.refs.venueInput.value = self.venueInput
 
 	  self.refs.outTimeInput.value = self.outTimeInput
 	  self.refs.remarksInput.value = self.remarksInput
 	  self.refs.resultInput.value = self.resultInput
       self.update()
+
+    }
+    activityStore.on('read_classes_changed',ClassesChanged)
+    function ClassesChanged(classes){
+      self.loading = false
+      self.classes = []
+      self.classes = classes
+      self.update()
+      console.log(self.classes)
+    }
+
+    activityStore.on('read_section_changed',SectionChanged)
+    function SectionChanged(sections){
+      self.loading = false
+      self.sections = []
+      self.sections = sections
+      self.update()
+    }
+    activityStore.on('read_students_changed',ReadStudentsChanged)
+    function ReadStudentsChanged(freeStudents,assignedStudents){
+      self.loading = false
+      self.freeStudents = []
+      self.freeStudents = freeStudents
+      self.freeStudents.map(c => {
+          c.selected=false
+      })
+      console.log(freeStudents)
+      self.assignedStudents = []
+      self.assignedStudents = assignedStudents
+      self.assignedStudents.map(c => {
+          c.selected=false
+      })
+
+      self.update()
+    }
+    activityStore.on('assign_students_changed',AssignStandardChanged)
+    function AssignStandardChanged(students_assigned){
+      self.loading = false
+
+      self.refreshStudents()
 
     }
 
@@ -890,7 +1048,56 @@ riot.tag2('admin-report', '<div class="field has-addons"> <p class="control"> <a
 
 
 
-riot.tag2('advance-by-class', '<h4>advance-by-class fees</h4>', '', '', function(opts) {
+riot.tag2('advance-by-class', '<section class="is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Class Wise Advance Fees Detail</h2> <span class=" has-text-centered">Class:{selectedClass} </span> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">Standard</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{getAdvanceData}"> <option></option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getAdvanceData}"> GO </button> </div> </div> </div> <div class="columns is-full"> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <tbody> <tr each="{cd, i in classWiseAdvanceFees}"> <td>{cd.SlNo}</td> <td>{cd.Class}</td> <td class="has-text-right">{cd.Apr}</td> <td class="has-text-right">{cd.May}</td> <td class="has-text-right">{cd.Jun}</td> <td class="has-text-right">{cd.Jul}</td> <td class="has-text-right">{cd.Aug}</td> <td class="has-text-right">{cd.Sep}</td> <td class="has-text-right">{cd.Oct}</td> <td class="has-text-right">{cd.Nov}</td> <td class="has-text-right">{cd.Dec}</td> <td class="has-text-right">{cd.Jan}</td> <td class="has-text-right">{cd.FebMar}</td> <td class="has-text-right">{cd.Total}</td> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
+	var self = this
+    self.on("mount", function(){
+      flatpickr(".date", {
+
+    	allowInput: true,
+    	altFormat: "d/m/Y",
+    	dateFormat: "Y-m-d",
+  		})
+      self.readStandard()
+      self.update();
+    })
+
+    self.on("unmount", function(){
+      applyPlanStore.off('read_standard_changed',StandardChanged)
+      feesReportStore.off('read_advance_classwise_changed',ReadAdvanceClasswiseChanged)
+    })
+
+   self.readStandard = () => {
+       applyPlanStore.trigger('read_standards')
+    }
+
+    applyPlanStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      console.log(standards)
+      self.standards = standards
+      self.update()
+
+    }
+
+    self.getAdvanceData = () => {
+    	var obj={}
+    	  obj.standard_id = self.refs.standard_id.value
+
+          self.loading = true
+          feesReportStore.trigger('read_advance_classwise', obj)
+    }
+
+    feesReportStore.on('read_advance_classwise_changed',ReadAdvanceClasswiseChanged)
+    function ReadAdvanceClasswiseChanged(classWiseAdvanceFees){
+      self.grand_total = 0
+      self.classWiseAdvanceFees = []
+      self.classWiseAdvanceFees = classWiseAdvanceFees
+      console.log("=====advance fees detail fees =====")
+      console.log(classWiseAdvanceFees)
+
+          self.selectedClass = $("#standard_id option:selected").text()
+
+      self.update()
+    }
 });
 riot.tag2('advance-fees', '<section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Advance Fees Report</h2> <span class="has-text-centered">{selected_start_date} to {selected_end_date}</span> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">From Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="start_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column is-narrow"> <label class="label">To Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="end_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{advanceFeesReport}"> GO </button> </div> </div> </div> <div class="columns is-full"> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <thead> <tr> <th class="slNo">#</th> <th>Enrol No.</th> <th>Student\'s Name</th> <th>Class</th> <th>Month</th> <th>Fee</th> <th>Scholarship</th> <th>Amount</th> </tr> </thead> <tbody> <tr each="{cd, i in advanceFees}"> <td>{i + 1}</td> <td>{cd.enroll_number}</td> <td>{cd.name}</td> <td>{cd.standard}</td> <td>{cd.fee_slip_name}</td> <td class="has-text-right amount">{cd.amount_due}</td> <td class="has-text-right amount">{cd.scholorship_amount}</td> <td class="has-text-right amount">{cd.total}</td> </tr> <tr> <th class="has-text-right" colspan="5">Grand Total</th> <th class="has-text-right amount">{total_amount}</th> <th class="has-text-right amount">{total_scholarship}</th> <th class="has-text-right amount">{grand_total}</th> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
 	var self = this
@@ -937,11 +1144,12 @@ riot.tag2('advance-fees', '<section class=" is-fluid"> <h2 class="title has-text
       self.update()
     }
 });
-riot.tag2('apply-fee-plan', '<section class=" is-fluid" show="{student_vew ==\'show_data\'}"> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">Standard</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{readStandardSection}"> <option></option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Section</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="section_id" onchange="{getStudentData}"> <option each="{filteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getStudentData}">GO </button> </div> </div> </div> </section> <div class="level"> <div class="level-left"> <div class="level-item"> <h2 class="title" style="color: #ff3860;">Apply Fee Plan</h2> </div> </div> </div> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"></div> <div class="bg-grey h-px flex-auto"></div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="column is-full"> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th class="has-text-right"> <input type="checkbox" id="checkStudent" onclick="{selectAll}"> </th> <th>#</th> <th>Enrol No.</th> <th>Student\'s Name</th> <th>Plan</th> </tr> </thead> <tbody> <tr each="{r, i in students}"> <td class="has-text-right"> <input type="checkbox" class="check_box" checked="{r.done}" id="{\'studentId\' + r.student_id}" onclick="{selectStudents.bind(this,r)}"> </td> <td>{i+1}</td> <td>{r.enroll_number}</td> <td>{r.student_name}</td> <td>{r.fee_plan_name}</td> </tr> </tbody> </table> </div> <div class="columns"> <div class="column is-narrow"> <label class="label">Select Fee Plan</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="fee_plan_id"> <option each="{plans}" riot-value="{fee_plan_id}">{fee_plan_name}</option> </select> </div> </div> </div> </div> <div class="column is-full"> <button class="button is-danger" onclick="{add}">Apply Plan</button> <button class="button is-info" id="showModal" onclick="{removeModal}">Remove Plan</button> </div> </div> </div> </div> </div> </section> <div class="modal" id="deleteModel"> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Delete Confirmation</p> </header> <section class="modal-card-body"> <h4>Are you Sure?</h4> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{remove}">Delete</button> <button class="button " id="modal-close">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
+riot.tag2('apply-fee-plan', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid" show="{student_vew ==\'show_data\'}"> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">Standard</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{readStandardSection}"> <option></option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Section</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="section_id" onchange="{getStudentData}"> <option each="{filteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column"> <button disabled="{loading}" class="button is-danger has-text-weight-bold" onclick="{getStudentData}">GO </button> </div> </div> </div> </section> <div class="level"> <div class="level-left"> <div class="level-item"> <h2 class="title" style="color: #ff3860;">Apply Fee Plan</h2> </div> </div> </div> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"></div> <div class="bg-grey h-px flex-auto"></div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="column is-full"> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th class="has-text-right"> <input type="checkbox" id="checkStudent" onclick="{selectAll}"> </th> <th>#</th> <th>Enrol No.</th> <th>Student\'s Name</th> <th>Plan</th> </tr> </thead> <tbody> <tr each="{r, i in students}"> <td class="has-text-right"> <input type="checkbox" class="check_box" checked="{r.done}" id="{\'studentId\' + r.student_id}" onclick="{selectStudents.bind(this,r)}"> </td> <td>{i+1}</td> <td>{r.enroll_number}</td> <td>{r.student_name}</td> <td>{r.fee_plan_name}</td> </tr> </tbody> </table> </div> <div class="columns"> <div class="column is-narrow"> <label class="label">Select Fee Plan</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="fee_plan_id"> <option each="{plans}" riot-value="{fee_plan_id}">{fee_plan_name}</option> </select> </div> </div> </div> </div> <div class="column is-full"> <button class="button is-danger" onclick="{add}">Apply Plan</button> <button class="button is-info" id="showModal" onclick="{removeModal}">Remove Plan</button> </div> </div> </div> </div> </div> </section> <div class="modal" id="deleteModel"> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Delete Confirmation</p> </header> <section class="modal-card-body"> <h4>Are you Sure?</h4> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{remove}">Delete</button> <button class="button " id="modal-close">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
 	var self = this
     self.on("mount", function(){
       self.role = getCookie('role')
       self.student_vew = 'show_data'
+      self.loading = false
       self.update()
       self.readSection()
       self.readStandard()
@@ -1063,7 +1271,7 @@ riot.tag2('apply-fee-plan', '<section class=" is-fluid" show="{student_vew ==\'s
     }
 
     self.getStudentData =() =>{
-    	console.log(self.refs.section_id.value)
+    	self.loading = true
        applyPlanStore.trigger('read_students', self.refs.section_id.value)
     }
 
@@ -1071,6 +1279,7 @@ riot.tag2('apply-fee-plan', '<section class=" is-fluid" show="{student_vew ==\'s
     function ApplyPlanChanged(students){
       console.log(students)
       self.students = students
+      self.loading = false
       self.update()
       console.log(self.students)
     }
@@ -1078,6 +1287,7 @@ riot.tag2('apply-fee-plan', '<section class=" is-fluid" show="{student_vew ==\'s
     function ReadPlanChanged(plans){
       console.log(plans)
       self.plans = plans
+      self.loading = false
       self.update()
       console.log(self.plans)
     }
@@ -1086,6 +1296,8 @@ riot.tag2('apply-fee-plan', '<section class=" is-fluid" show="{student_vew ==\'s
     function StandardChanged(standards){
       console.log(standards)
       self.standards = standards
+      self.loading = false
+
       self.update()
 
       console.log(self.standards)
@@ -1096,7 +1308,7 @@ riot.tag2('apply-fee-plan', '<section class=" is-fluid" show="{student_vew ==\'s
       self.sections = sections
 
       self.section_id = sections[0].section_id
-
+      self.loading = false
       self.update()
       console.log(self.sections)
     }
@@ -1184,6 +1396,136 @@ riot.tag2('area', '<section class="is-fluid"> <h2 class="title" style="color: #f
       self.refs.addAreaInput.value = ''
       self.loading = false
       self.areas = areas
+      self.update()
+    }
+
+});
+riot.tag2('attendance-entry', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Attendance</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getReadSection}"> <option>Select Standard</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="section_id"> <option>Select Section</option> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Date</label> </div> <div class="column is-narrow"> <div class="control"> <input class="input date flatpickr-input form-control input" ref="start_date" placeholder="" tabindex="0" type="text"> </div> </div> <div class="column is-narrow"> <div class="control"> <button class="button is-danger has-text-weight-bold" onclick="{readAttendanceData}">Go</button> </div> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Enroll Number</th> <th>Name</th> <th style="text-align:center;"> <input type="checkbox" id="checkStudentName" onclick="{selectAll}"> </th> </tr> </thead> <tbody> <tr each="{st, i in attendanceData}"> <td>{i+1}</td> <td>{st.enroll_number}</td> <td>{st.name} </td> <td style="width:2%; text-align:center;"><input type="checkbox" checked="{st.done}" id="{\'addStudentName\' + st.student_id}" onclick="{selectStudent.bind(this,st)}"> </td> </tr> </tbody> </table> <button class="button is-danger" onclick="{addAttendance}">Add</button> </section>', '', '', function(opts) {
+
+	var self = this
+    self.on("mount", function(){
+    	self.title='Add'
+    	self.role = getCookie('role')
+    	self.readStandard()
+    	self.readSection()
+        self.update()
+        flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "Y-m-d",
+  		})
+    })
+
+    self.on("unmount", function(){
+       attendanceStore.off('read_attendance_data_changed',ReadAttendanceDataChanged)
+       attendanceStore.off('add_attendance_data_changed',AddAttendanceDataChanged)
+       studentStore.off('read_standard_changed',StandardChanged)
+       studentStore.off('read_section_changed',SectionChanged)
+    })
+    self.readStandard = () => {
+       studentStore.trigger('read_standard')
+    }
+
+    self.addAttendance=()=>{
+    	let studentData=[]
+        self.attendanceData.map( q => {
+        	let a={}
+	        if(q.done==true){
+	        	a.attendance='1'
+	        	a.student_id=q.student_id
+	            studentData.push(a)
+	          }else{
+	          	a.attendance='0'
+	        	a.student_id=q.student_id
+	            studentData.push(a)
+	          }
+        })
+        console.log(studentData)
+        attendanceStore.trigger('add_attendance_data', studentData,self.refs.start_date.value)
+    }
+
+    self.readSection = () => {
+       studentStore.trigger('read_section')
+    }
+
+    self.getReadSection = () => {
+    	self.readfilteredSections = []
+    	self.readfilteredSections = self.sections.filter(s => {
+    		return s.standard_id == self.refs.standard_id.value
+    	})
+    }
+
+    self.readAttendanceData = () => {
+       attendanceStore.trigger('read_attendance_data', self.refs.standard_id.value,self.refs.section_id.value,self.refs.start_date.value)
+    }
+
+    self.selectAll = () => {
+      self.studentArray = []
+      if($('#checkStudentName').is(":checked")){
+        self.attendanceData.map(i=>{
+            i.done = true;
+            $('addStudentName'+i.student_id).prop('checked', true);
+            self.studentArray.push(i.student_id);
+            console.log(self.studentArray)
+          })
+      }else{
+        self.attendanceData.map(i=>{
+            i.done = false;
+            $('addStudentName'+i.student_id).prop('checked', false);
+        })
+     }
+
+    }
+    self.selectStudent = (item,event) => {
+      item.done=!event.item.st.done
+      self.studentArray.push(item.student_id)
+      console.log(self.studentArray)
+    }
+
+    studentStore.on('read_standard_changed',StandardChanged)
+      function StandardChanged(standards){
+      console.log(standards)
+      self.standards = standards
+      self.update()
+    }
+
+    studentStore.on('read_section_changed',SectionChanged)
+    function SectionChanged(sections){
+      console.log(sections)
+      self.sections = sections
+      self.update()
+      self.getReadSection()
+    }
+
+    attendanceStore.on('read_attendance_data_changed',ReadAttendanceDataChanged)
+    function ReadAttendanceDataChanged(attendanceData){
+
+      self.title='Create'
+      self.loading = false
+      self.attendanceData = attendanceData
+      self.attendanceData.map(i=>{
+      if(i.attendance==0){
+        i.done = false;
+
+        $('addStudentName' + i.student_id ).prop('checked', false);
+      }else{
+        i.done = true;
+        $('addStudentName' + i.student_id ).prop('checked', true);
+      }
+      })
+      self.update()
+
+    }
+
+    attendanceStore.on('add_attendance_data_changed',AddAttendanceDataChanged)
+    function AddAttendanceDataChanged(){
+
+      self.loading = false
+
+      self.attendanceData.map(i=>{
+        i.done = false;
+        $('addStudentName' + i.student_id ).prop('checked', false);
+
+      })
       self.update()
     }
 
@@ -1602,6 +1944,19 @@ riot.tag2('category', '<section class=" is-fluid"> <h2 class="title has-text-cen
     }
 
 });
+riot.tag2('certificate', '<div class="field has-addons"> <p class="control"> <a class="button {is-active: selected_cartificate == \'issue-certificate\'}" href="#/certificate/issue-certificate"> <span>Issue Certificate</span> </a> </p> <p class="control"> <a class="button {is-active: selected_cartificate == \'manage-certificate\'}" href="#/certificate/manage-certificate"> <span>Manage Certificate</span> </a> </p> <p class="control"> <a class="button {is-active: selected_cartificate == \'issued-certificate\'}" href="#/certificate/issued-certificate"> <span>Issued Certificate</span> </a> </p> </div> <div id="certificate-view"></div>', '', '', function(opts) {
+    var self = this
+    console.log('opts.selected_cartificate')
+    console.log(opts.selected_cartificate)
+    if(!opts.selected_cartificate){
+      self.selected_cartificate = 'issue-certificate'
+    }else{
+      self.selected_cartificate = opts.selected_cartificate
+    }
+});
+
+
+
 riot.tag2('city', '<section class="is-fluid"> <h2 class="title" style="color: #ff3860;">Cities</h2> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">City</label> </div> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="addCityInput" type="text"> </div> </div> <div class="column is-narrow"> <label class="label">Code</label> </div> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="addCodeInput" type="text"> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{add}">{title} </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>#</th> <th>city</th> <th>Code</th> <th></th> </tr> </thead> <tbody> <tr each="{d, i in cities}"> <td>{i + 1}</td> <td>{d.city}</td> <td>{d.code}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{d.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, d)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{d.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <soan disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
   var self = this
     self.on("mount", function(){
@@ -3618,7 +3973,56 @@ riot.tag2('discipline-setting', '<div class="field has-addons"> <p class="contro
       self.selected_master = opts.selected_master
     }
 });
-riot.tag2('due-by-class', '<h4>due-by-class fees</h4>', '', '', function(opts) {
+riot.tag2('due-by-class', '<section class="is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Class Wise Due Detail</h2> <span class=" has-text-centered">Class:{selectedClass} </span> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">Standard</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{getStudentData}"> <option></option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getDueByClassMonth}"> GO </button> </div> </div> </div> <div class="columns is-full"> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <tbody> <tr each="{cd, i in classWiseDueFees}"> <td>{cd.SlNo}</td> <td>{cd.Class}</td> <td class="has-text-right">{cd.Apr}</td> <td class="has-text-right">{cd.May}</td> <td class="has-text-right">{cd.Jun}</td> <td class="has-text-right">{cd.Jul}</td> <td class="has-text-right">{cd.Aug}</td> <td class="has-text-right">{cd.Sep}</td> <td class="has-text-right">{cd.Oct}</td> <td class="has-text-right">{cd.Nov}</td> <td class="has-text-right">{cd.Dec}</td> <td class="has-text-right">{cd.Jan}</td> <td class="has-text-right">{cd.FebMar}</td> <td class="has-text-right">{cd.Total}</td> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
+	var self = this
+    self.on("mount", function(){
+      flatpickr(".date", {
+
+    	allowInput: true,
+    	altFormat: "d/m/Y",
+    	dateFormat: "Y-m-d",
+  		})
+      self.readStandard()
+      self.update();
+    })
+
+    self.on("unmount", function(){
+      applyPlanStore.off('read_standard_changed',StandardChanged)
+      feesReportStore.off('read_due_classwise_changed',ReadDueClasswiseChanged)
+    })
+
+   self.readStandard = () => {
+       applyPlanStore.trigger('read_standards')
+    }
+
+    applyPlanStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      console.log(standards)
+      self.standards = standards
+      self.update()
+
+    }
+
+    self.getDueByClassMonth = () => {
+    	var obj={}
+    	  obj.standard_id = self.refs.standard_id.value
+
+          self.loading = true
+          feesReportStore.trigger('read_due_classwise', obj)
+    }
+
+    feesReportStore.on('read_due_classwise_changed',ReadDueClasswiseChanged)
+    function ReadDueClasswiseChanged(classWiseDueFees){
+      self.grand_total = 0
+      self.classWiseDueFees = []
+      self.classWiseDueFees = classWiseDueFees
+      console.log("=====due fees detail fees =====")
+      console.log(classWiseDueFees)
+
+          self.selectedClass = $("#standard_id option:selected").text()
+
+      self.update()
+    }
 });
 riot.tag2('employee-notification', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Employees</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">Staff Type</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="emp_type_id" onchange="{getEmployeeData}"> <option>Select Staff Type</option> <option value="-1">ALL</option> <option each="{staffDepartments}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="get_message_type" onchange="{getMessageType}"> <option>Select Message Type</option> <option value="SMS">SMS</option> <option value="Email">Email</option> <option value="Both">Both</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" show="{choose_button}" onclick="{getStaffManually}">Choose Staff Manually </button> <button class="button has-text-weight-bold" onclick="{closeStaffManually}" show="{close_button}">Close </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow" show="{employee_table}"> <thead> <tr> <th>#</th> <th>Emp Id</th> <th>Name</th> <th>Department</th> <th>Designation</th> <th>Mobile</th> <th>Email</th> <th style="text-align:center;"> <input type="checkbox" id="checkFacultyName" onclick="{selectAll}"> </th> </tr> </thead> <tbody> <tr each="{emp, i in employees}"> <td>{i+1}</td> <td>{emp.employee_id}</td> <td>{emp.employee_name}</td> <td>{emp.department_name}</td> <td>{emp.designation}</td> <td>{emp.mobile}</td> <td>{emp.email}</td> <td style="width:2%; text-align:center;"><input type="checkbox" checked="{emp.done}" id="{\'addEmployeeName\' + emp.employee_id}" onclick="{selectEmployee.bind(this,emp)}"></td> </tr> </tbody> </table> <input class="input" style="margin-bottom: 12px;" type="text" id="employee_subject" ref="employee_subject" show="{employee_subject}" placeholder="SUBJECT"><br> <textarea class="textarea" id="employee_message" ref="employee_message" placeholder="MESSAGE"></textarea><br> <button class="button is-info is-pulled-right ml5" onclick="{clear}">Reset</button> <button class="button is-danger is-pulled-right" onclick="{sendEmployeeNotification}">Send</button> </section>', '', '', function(opts) {
   var self = this
@@ -4848,11 +5252,12 @@ riot.tag2('subject-group-map', '<loading-bar if="{loading}"></loading-bar> <sect
     }
 
 });
-riot.tag2('fee-head', '<section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Fee Head Management</h2> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-half"> <div class="field"> <label class="label" for="role">Head</label> <div class="control"> <input class="input" type="text" ref="addHeadInput" onkeyup="{addEnter}"> </div> </div> </div> <div class="column is-narrow"> <div class="field"> <div class="control"> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{add}">{title}</button> </div> </div> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>#</th> <th>Head</th> <th></th> </tr> </thead> <tbody> <tr each="{c, i in heads}"> <td>{i+1}</td> <td>{c.head}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{c.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, c)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{c.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('fee-head', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Fee Head Management</h2> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-half"> <div class="field"> <label class="label" for="role">Head</label> <div class="control"> <input class="input" type="text" ref="addHeadInput" onkeyup="{addEnter}"> </div> </div> </div> <div class="column is-narrow"> <div class="field"> <div class="control"> <button disabled="{loading}" class="button is-danger has-text-weight-bold adjusted-top" onclick="{add}">{title}</button> </div> </div> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>#</th> <th>Head</th> <th></th> </tr> </thead> <tbody> <tr each="{c, i in heads}"> <td>{i+1}</td> <td>{c.head}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{c.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, c)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{c.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
  var self = this
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
+      self.loading = false
       self.update()
       self.readHeads()
     })
@@ -4930,12 +5335,13 @@ riot.tag2('fee-head', '<section class=" is-fluid"> <h2 class="title has-text-cen
       self.loading = false
        self.heads = []
       self.heads = heads
+      self.loading = false
       self.update()
       console.log(self.heads)
     }
 
 });
-riot.tag2('fee-plan', '<section class="container is-fluid" show="{fee_plan_view ==\'show_fee_plan\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Fee Plan Management</h2> </div> <div class="level-right"> <button class="button is-warning is-rounded" onclick="{add_new_fee_plan}"> <span class="icon"> <span class="fas fa-plus"></span> </span> <span>Add Fee Plan</span> </button> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>SL</th> <th>Fee Plan Name</th> <th>Standard</th> <th></th> </tr> </thead> <tbody> <tr each="{s, i in feePlans}"> <td>{i+1}</td> <td>{s.fee_plan_name}</td> <td>{s.standard}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{s.confirmDelete}"> <span><a class="button is-small is-rounded " onclick="{viewFeeSlip.bind(this, s)}">View/Edit/Del Slips</a></span> <span><a class="button is-small is-rounded is-success" onclick="{mapHead.bind(this, s.fee_plan_id)}">Map Fee Head</a></span> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{s.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" title="Delete" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" title="Cancel" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <section class="container is-fluid" show="{fee_plan_view ==\'add_fee_plan\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h2 class="title" style="color: #ff3860;">{title} Fee Plan</h2> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_fee_plan}">Back</a> </div> </div> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"></div> <div class="bg-grey h-px flex-auto"></div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="column is-two-fifths"> <div class="field"> <label class="label">Plan Name</label> <input class="input" ref="fee_plan_name" type="text"> </div> </div> <div class="column is-three-fifths"> <div class="field"> <label class="label">Description</label> <input class="input" ref="fee_plan_description" type="text"> </div> </div> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50">Select</th> <th>Standard</th> </tr> </thead> <tbody> <tr each="{r, i in standards}"> <td class="has-text-right"> <input type="checkbox" class="id_check_box" checked="{r.done}" id="{\'standardId\' + r.standard_id}" onclick="{selectStandard.bind(this,r)}"> </td> <td>{r.standard}</td> </tr> </tbody> </table> </div> <div class="column is-full"> <button class="button is-danger" onclick="{add}">Submit</button> </div> </div> </div> </div> </div> </section> <section class="container is-fluid" show="{fee_plan_view ==\'map_fee_head\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h2 class="title" style="color: #ff3860;">Map Fee Plan with Fee Heads by Fee Slip</h2> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_fee_plan}">Back</a> </div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="columns"> <div class="column is-narrow"> <label class="label">Select Fee Slip</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="fee_slip_name"> <option value=""></option> <option each="{slips}" riot-value="{fee_slip_name}">{fee_slip_name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Last Date</label> </div> <div class="column is-narrow"> <div class="control"> <input class="date input flatpickr-input form-control input" ref="lastDateInput" placeholder="" tabindex="0" type="text" readonly="readonly"> </div> </div> </div> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50">Head</th> <th style="width:100px">Amount</th> </tr> </thead> <tbody> <tr each="{r, i in heads}"> <td>{r.head}</td> <td><input class="input" id="head_amount{r.head_id}" type="text" value="0" onkeyup="{getTotal}"></td> </tr> </tbody> <thead> <tr> <th width="50" class="has-text-right">Total</th> <th>{grandTotal}</th> </tr> </thead> </table> </div> <div class="column is-full"> <button class="button is-danger" style="float:right" onclick="{addHeadAmount}">Submit</button> </div> </div> </div> </div> </div> </section> <section class="container is-fluid" show="{fee_plan_view ==\'edit_fee_head\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h4 class="title" style="color: #ff3860;">Edit Fee Slip Heads</h4> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_fee_plan}">Back</a> </div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="columns"> <div class="column is-narrow"> <label class="label">Selected {selectedFeeSlip}</label> </div> <div class="column is-narrow"> <label class="label">Last Date</label> </div> <div class="column is-narrow"> <div class="control"> <input class="date input flatpickr-input form-control input" ref="lastDateEdit" placeholder="" tabindex="0" type="text" readonly="readonly"> </div> </div> </div> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50">Head</th> <th style="width:100px">Amount</th> </tr> </thead> <tbody> <tr each="{r, i in feeSlipEditHeads}"> <td>{r.head}</td> <td><input class="input" id="head_edit{r.head_id}" type="text" riot-value="{r.head_amount}" onkeyup="{getEditTotal}"></td> </tr> </tbody> <thead> <tr> <th width="50" class="has-text-right">Total</th> <th>{grandTotal}</th> </tr> </thead> </table> </div> <div class="column is-full"> <button class="button is-danger" style="float:right" onclick="{editHeadAmount}">Submit</button> </div> </div> </div> </div> </div> </section> <section class="container is-fluid" show="{fee_plan_view ==\'viewFeeSlipDetail\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h4 class="title" style="color: #ff3860;">Selected Plan: {selectedPlan}</h4> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_fee_plan}">Back</a> </div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>Particulars</th> <th class="has-text-right">Amount</th> </tr> </thead> <tbody> <tr each="{f, i in feeSlipHeads}" class="{header:f.amount==\'\'}"> <td class="{texRight:f.head==\'Sub Total\' || f.head==\'Grand Total\'}">{f.head}</td> <td style="text-align: right"> <span class="{texBold:f.head==\'Sub Total\' || f.head==\'Grand Total\'}" show="{f.fee_slip_id==\'\'}">{f.amount} </span> <span show="{f.fee_slip_id!=\'\'}"> <span><a class="button is-small is-rounded" onclick="{editFeeSlip.bind(this, f)}">Edit</a></span> <span> <a class="button is-small has-text-danger is-rounded" id="showModal" onclick="{confirmDeleteFeeSlip.bind(e, f.fee_slip_id)}">Delete</a></span> </span> </td> </tr> </tbody> </table> </div> </div> </div> </div> </section> <section class="container is-fluid" show="{fee_plan_view ==\'editFeeSlipDetail\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h4 class="title" style="color: #ff3860;">Edit Fee Slip Under:{selectedPlan} for the month of {selectedSlip}</h4> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_fee_plan}">Back</a> </div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="columns"> <div class="column is-narrow"> <label class="label">Select Fee Slip</label> </div> </div> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50">Head</th> <th style="width:100px">Amount</th> </tr> </thead> <tbody> <tr each="{r, i in heads}"> <td>{r.head}</td> <td><input class="input" id="head_amount{r.head_id}" type="text" value="0" onkeyup="{getTotal}"></td> </tr> </tbody> <thead> <tr> <th width="50" class="has-text-right">Total</th> <th>{grandTotal}</th> </tr> </thead> </table> </div> <div class="column is-full"> <button class="button is-danger" style="float:right" onclick="{addHeadAmount}">Submit</button> </div> </div> </div> </div> </div> </section> <div class="modal" id="deleteFeeSlipModel"> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Delete Confirmation</p> </header> <section class="modal-card-body"> <h4>Are you Sure?</h4> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{deleteFeeSlip}">Delete</button> <button class="button " id="modal-close" onclick="{removeDeleteFeeSlip}">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
+riot.tag2('fee-plan', '<loading-bar if="{loading}"></loading-bar> <section class="container is-fluid" show="{fee_plan_view ==\'show_fee_plan\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Fee Plan Management</h2> </div> <div class="level-right"> <button class="button is-warning is-rounded" onclick="{add_new_fee_plan}"> <span class="icon"> <span class="fas fa-plus"></span> </span> <span>Add Fee Plan</span> </button> <button disabled="{loading}" class="button is-warning is-rounded" onclick="{readFeePlans}" style="margin-left:2px"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>SL</th> <th>Fee Plan Name</th> <th>Standard</th> <th></th> </tr> </thead> <tbody> <tr each="{s, i in feePlans}"> <td>{i+1}</td> <td>{s.fee_plan_name}</td> <td>{s.standard}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{s.confirmDelete}"> <span><a class="button is-small is-rounded " onclick="{viewFeeSlip.bind(this, s)}">View/Edit/Del Slips</a></span> <span><a class="button is-small is-rounded is-success" onclick="{mapHead.bind(this, s.fee_plan_id)}">Map Fee Head</a></span> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{s.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" title="Delete" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" title="Cancel" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <section class="container is-fluid" show="{fee_plan_view ==\'add_fee_plan\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h2 class="title" style="color: #ff3860;">{title} Fee Plan</h2> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_fee_plan}">Back</a> </div> </div> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"></div> <div class="bg-grey h-px flex-auto"></div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="column is-two-fifths"> <div class="field"> <label class="label">Plan Name</label> <input class="input" ref="fee_plan_name" type="text"> </div> </div> <div class="column is-three-fifths"> <div class="field"> <label class="label">Description</label> <input class="input" ref="fee_plan_description" type="text"> </div> </div> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50">Select</th> <th>Standard</th> </tr> </thead> <tbody> <tr each="{r, i in standards}"> <td class="has-text-right"> <input type="checkbox" class="id_check_box" checked="{r.done}" id="{\'standardId\' + r.standard_id}" onclick="{selectStandard.bind(this,r)}"> </td> <td>{r.standard}</td> </tr> </tbody> </table> </div> <div class="column is-full"> <button class="button is-danger" onclick="{add}">Submit</button> </div> </div> </div> </div> </div> </section> <section class="container is-fluid" show="{fee_plan_view ==\'map_fee_head\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h2 class="title" style="color: #ff3860;">Map Fee Plan with Fee Heads by Fee Slip</h2> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_fee_plan}">Back</a> </div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="columns"> <div class="column is-narrow"> <label class="label">Select Fee Slip</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="fee_slip_name"> <option value=""></option> <option each="{slips}" riot-value="{fee_slip_name}">{fee_slip_name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Last Date</label> </div> <div class="column is-narrow"> <div class="control"> <input class="date input flatpickr-input form-control input" ref="lastDateInput" placeholder="" tabindex="0" type="text" readonly="readonly"> </div> </div> </div> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50">Head</th> <th style="width:100px">Amount</th> </tr> </thead> <tbody> <tr each="{r, i in heads}"> <td>{r.head}</td> <td><input class="input" id="head_amount{r.head_id}" type="text" value="0" onkeyup="{getTotal}"></td> </tr> </tbody> <thead> <tr> <th width="50" class="has-text-right">Total</th> <th>{grandTotal}</th> </tr> </thead> </table> </div> <div class="column is-full"> <button class="button is-danger" style="float:right" onclick="{addHeadAmount}">Submit</button> </div> </div> </div> </div> </div> </section> <section class="container is-fluid" show="{fee_plan_view ==\'edit_fee_head\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h4 class="title" style="color: #ff3860;">Edit Fee Slip Heads</h4> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_fee_plan}">Back</a> </div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="columns"> <div class="column is-narrow"> <label class="label">Selected=== {selectedFeeSlip}</label> </div> <div class="column is-narrow"> <label class="label">Last Date</label> </div> <div class="column is-narrow"> <div class="control"> <input class="date input flatpickr-input form-control input" ref="lastDateEdit" placeholder="" tabindex="0" type="text" readonly="readonly"> </div> </div> </div> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50">Head</th> <th style="width:100px">Amount</th> </tr> </thead> <tbody> <tr each="{r, i in feeSlipEditHeads}"> <td>{r.head}</td> <td><input class="input" id="head_edit{r.head_id}" type="text" riot-value="{r.head_amount}" onkeyup="{getEditTotal}"></td> </tr> </tbody> <thead> <tr> <th width="50" class="has-text-right">Total</th> <th>{grandTotal}</th> </tr> </thead> </table> </div> <div class="column is-full"> <button class="button is-danger" style="float:right" onclick="{editHeadAmount}">Submit</button> </div> </div> </div> </div> </div> </section> <section class="container is-fluid" show="{fee_plan_view ==\'viewFeeSlipDetail\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h4 class="title" style="color: #ff3860;">Selected Plan: {selectedPlan}</h4> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_fee_plan}">Back</a> </div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>Particulars</th> <th class="has-text-right">Amount</th> </tr> </thead> <tbody> <tr each="{f, i in feeSlipHeads}" class="{header:f.amount==\'\'}"> <td class="{texRight:f.head==\'Sub Total\' || f.head==\'Grand Total\'}">{f.head}</td> <td style="text-align: right"> <span class="{texBold:f.head==\'Sub Total\' || f.head==\'Grand Total\'}" show="{f.fee_slip_id==\'\'}">{f.amount} </span> <span show="{f.fee_slip_id!=\'\'}"> <span><a class="button is-small is-rounded" onclick="{editFeeSlip.bind(this, f)}">Edit</a></span> <span> <a class="button is-small has-text-danger is-rounded" id="showModal" onclick="{confirmDeleteFeeSlip.bind(e, f.fee_slip_id)}">Delete</a></span> </span> </td> </tr> </tbody> </table> </div> </div> </div> </div> </section> <section class="container is-fluid" show="{fee_plan_view ==\'editFeeSlipDetail\'}"> <div class="level"> <div class="level-left"> <div class="level-item"> <h4 class="title" style="color: #ff3860;">Edit Fee Slip Under:{selectedPlan} for the month of {selectedSlip}</h4> </div> </div> <div class="level-right"> <a class="button" onclick="{close_new_fee_plan}">Back</a> </div> </div> <div class="columns"> <div class="column is-full"> <div class="box max-w-md"> <div class="columns is-multiline"> <div class="columns"> <div class="column is-narrow"> <label class="label">Select Fee Slip</label> </div> </div> <div class="column is-full"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50">Head</th> <th style="width:100px">Amount</th> </tr> </thead> <tbody> <tr each="{r, i in heads}"> <td>{r.head}</td> <td><input class="input" id="head_amount{r.head_id}" type="text" value="0" onkeyup="{getTotal}"></td> </tr> </tbody> <thead> <tr> <th width="50" class="has-text-right">Total</th> <th>{grandTotal}</th> </tr> </thead> </table> </div> <div class="column is-full"> <button class="button is-danger" style="float:right" onclick="{addHeadAmount}">Submit</button> </div> </div> </div> </div> </div> </section> <div class="modal" id="deleteFeeSlipModel"> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Delete Confirmation</p> </header> <section class="modal-card-body"> <h4>Are you Sure?</h4> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{deleteFeeSlip}">Delete</button> <button class="button " id="modal-close" onclick="{removeDeleteFeeSlip}">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
 
  var self = this
     self.on("mount", function(){
@@ -4948,6 +5354,7 @@ riot.tag2('fee-plan', '<section class="container is-fluid" show="{fee_plan_view 
       self.title='Add'
       self.role = getCookie('role')
       self.fee_plan_view = 'show_fee_plan'
+      self.loading = false
       self.update()
       self.readFeePlans()
       self.readStandards()
@@ -4997,6 +5404,7 @@ riot.tag2('fee-plan', '<section class="container is-fluid" show="{fee_plan_view 
     }
 
     self.readFeePlans = () => {
+      self.loading=true
        feePlanStore.trigger('read_fee_plans')
     }
     self.readStandards = () =>{
@@ -5181,11 +5589,15 @@ self.editFeeSlip = (c,e)=>{
     }
 
     self.removeDeleteFeeSlip = () =>{
+      console.log("")
       $("#deleteFeeSlipModel").removeClass("is-active");
     }
     self.deleteFeeSlip = () => {
       self.loading = true
       feePlanStore.trigger('delete_fee_slip', self.selected_fee_slip_id)
+    }
+    self.cancelOperation = () =>{
+      c.confirmDelete = false
     }
 
     self.confirmDelete = (s) => {
@@ -5228,7 +5640,7 @@ self.editFeeSlip = (c,e)=>{
     function FeeSlipDeleteChanged(){
       self.loading = false
       $("#deleteFeeSlipModel").removeClass("is-active");
-      feePlanStore.trigger('read_fee_slip_head', c.fee_plan_id)
+
       self.update()
     }
     feePlanStore.on('add_fee_plan_changed',AddFeePlansChanged)
@@ -5259,11 +5671,12 @@ self.editFeeSlip = (c,e)=>{
       console.log(self.heads)
     }
 });
-riot.tag2('fee-slip', '<section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Fee Slip Management</h2> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-half"> <div class="field"> <label class="label" for="role">Slip Name</label> <div class="control"> <input class="input" type="text" ref="addSlipName" onkeyup="{addEnter}"> </div> </div> </div> <div class="column is-narrow"> <div class="field"> <div class="control"> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{add}">{title}</button> </div> </div> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>#</th> <th>Slip Name</th> <th></th> </tr> </thead> <tbody> <tr each="{c, i in slips}"> <td>{i+1}</td> <td>{c.fee_slip_name}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{c.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, c)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{c.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('fee-slip', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Fee Slip Management</h2> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-half"> <div class="field"> <label class="label" for="role">Slip Name</label> <div class="control"> <input class="input" type="text" ref="addSlipName" id="addSlipName" onkeyup="{addEnter}"> </div> </div> </div> <div class="column is-narrow"> <div class="field"> <div class="control"> <button disabled="{loading}" class="button is-danger has-text-weight-bold adjusted-top" onclick="{add}">{title}</button> </div> </div> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>#</th> <th>Slip Name</th> <th></th> </tr> </thead> <tbody> <tr each="{c, i in slips}"> <td>{i+1}</td> <td>{c.fee_slip_name}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{c.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, c)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{c.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
  var self = this
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
+      self.loading = false
       self.update()
       self.readSlips()
     })
@@ -5307,6 +5720,7 @@ riot.tag2('fee-slip', '<section class=" is-fluid"> <h2 class="title has-text-cen
    	  console.log("here");
       console.log(c)
       self.title='Update'
+      document.getElementById("addSlipName").focus()
       self.refs.addSlipName.value = c.fee_slip_name
       self.old_fee_slip_name = c.fee_slip_name
     }
@@ -5338,9 +5752,9 @@ riot.tag2('fee-slip', '<section class=" is-fluid"> <h2 class="title has-text-cen
       console.log(slips)
       self.title='Create'
       self.refs.addSlipName.value = ''
-      self.loading = false
        self.slips = []
       self.slips = slips
+      self.loading = false
       self.update()
       console.log(self.slips)
     }
@@ -5557,6 +5971,101 @@ riot.tag2('fees-setting', '<div class="field has-addons"> <p class="control"> <a
       self.selected_master = 'fine-setting'
     }else{
       self.selected_master = opts.selected_master
+    }
+});
+riot.tag2('fees-withdraw', '<loading-bar if="{loading}"></loading-bar> <section class="is-fluid"> <div class="columns is-multiline is-mobile"> <div class="column"> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="enrolNumberText" type="text" placeholder="Enrol Number"> </div> </div> <div class="column"> <button class="button is-danger" onclick="{getStudentDetail}">Go</button> </div> </div> <div class="columns"> <div class="column "> <img src="https://bulma.io/images/placeholders/128x128.png"> <p class="label">Name: {student_name}</p> <p class="label">Class: {standard}</p> </div> </div> </div> </div> <div class="column"> <div class="box"> <h4 class="title has-text-centered" style="color: #ff3860;">Active Fee slip</h4> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>SL No.</th> <th>Fee Slips</th> <th>Amount</th> <th></th> </tr> </thead> <tbody> <tr each="{c, i in activeFeeSlips}"> <td>{i+1}</td> <td>{c.fee_slip_name}</td> <td>{c.amount}</td> <td class="has-text-right"> <a class="button is-small" onclick="{activeFees.bind(this,c.fee_slip_id)}"> <span class="fas fa-angle-double-right"></span> </a> </td> </tr> </tbody> </table> </div> </div> <div class="column"> <div class="box"> <h4 class="title has-text-centered" style="color: #ff3860;">InActive Fee slip</h4> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>SL No.</th> <th>Fee Slips</th> <th>Amount</th> <th></th> </tr> </thead> <tbody> <tr each="{c, i in removefeeSlips}"> <td>{i+1}</td> <td>{c.fee_slip_name}</td> <td>{c.amount}</td> <td class="has-text-right"> <a class="button is-small" onclick="{removeFees.bind(this,c.fee_slip_id)}"> <span class="fas fa-angle-double-left"></span> </a> </td> </tr> </tbody> </table> </div> </div> </div> </section>', '', '', function(opts) {
+var self = this
+    self.on("mount", function(){
+      self.role = getCookie('role')
+      self.loading = false
+      self.update()
+    })
+    self.on("unmount", function(){
+      feeWithdrawStore.off('read_student_changed',ReadStudentChanged)
+      feeWithdrawStore.off('read_feeslip_changed',ReadFeeSlipChanged)
+      feeWithdrawStore.off('active_fees_changed',ActiveFeeSlipChanged)
+    })
+
+	self.getStudentDetail = () =>{
+      var enrol = self.refs.enrolNumberText.value
+      if(enrol.length==0){
+        toastr.info("Please enter an enrol numbar")
+        return
+      }else if(enrol.length<8){
+        toastr.info("Please enter an valid enrol numbar")
+        return
+      }else{
+      	self.loading = true
+        feeWithdrawStore.trigger('read_student', self.refs.enrolNumberText.value)
+      }
+    }
+
+    self.readFeeSlipBYEnrollNumber = () =>{
+    	self.loading = true
+      	feeWithdrawStore.trigger('read_fee_slip', self.studentId)
+    }
+
+    self.activeFees = (c,st) =>{
+	    self.fee_slip_id = c
+	    console.log(self.studentId)
+	    console.log(self.fee_slip_id)
+	    feeWithdrawStore.trigger('active_fees', self.fee_slip_id, self.studentId)
+    }
+    self.removeFees = (c,st) =>{
+	    self.fee_slip_id = c
+	    console.log(self.studentId)
+	    console.log(self.fee_slip_id)
+	    feeWithdrawStore.trigger('active_fees', self.fee_slip_id, self.studentId)
+    }
+
+    feeWithdrawStore.on('read_student_changed',ReadStudentChanged)
+    function ReadStudentChanged(students){
+      console.log(students)
+      self.students = []
+      self.students = students
+      self.enroll_number = self.students[0].enroll_number;
+      self.student_name = self.students[0].student_name;
+      self.standard = self.students[0].standard;
+      self.studentId = self.students[0].student_id;
+      self.last_fee_slip_id = self.students[0].last_fee_slip_id;
+      self.loading = false
+      self.update()
+      self.readFeeSlipBYEnrollNumber()
+
+    }
+    feeWithdrawStore.on('read_feeslip_changed',ReadFeeSlipChanged)
+    function ReadFeeSlipChanged(feeSlips){
+      console.log(feeSlips)
+      self.feeSlips = []
+      self.feeSlips = feeSlips
+      self.last_month_id = self.last_fee_slip_id
+      self.loading = false
+      self.activeFeeSlips = Array()
+      self.removefeeSlips = Array()
+
+      if (self.last_fee_slip_id == 0) {
+      	self.feeSlips.map(c => {
+      		var obj = {}
+			self.activeFeeSlips.push(c);
+
+      		})
+		}else if (self.last_fee_slip_id != 0){
+			self.feeSlips.map(c => {
+      		var obj = {}
+			if(c.fee_slip_id <= self.last_month_id){
+				self.activeFeeSlips.push(c)
+			}else if (c.fee_slip_id > self.last_month_id) {
+				self.removefeeSlips.push(c)
+			}
+
+      	 })
+		}
+		self.update()
+    }
+    feeWithdrawStore.on('active_fees_changed',ActiveFeeSlipChanged)
+    function ActiveFeeSlipChanged(){
+      self.getStudentDetail()
+
     }
 });
 riot.tag2('final-assessment-report-card', '<h4>final-assessment-report-card</h4>', '', '', function(opts) {
@@ -5815,7 +6324,7 @@ riot.tag2('grade', '<loading-bar if="{loading}"></loading-bar> <section class=" 
     }
 
 });
-riot.tag2('head-wise-summary', '<section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Head Wise Fees Collection</h2> <title>{selected_start_date} - {selected_end_date}</title> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">From Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="start_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column is-narrow"> <label class="label">To Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="end_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getHeadWise}"> GO </button> </div> </div> </div> <div class="columns is-full"> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <thead> <tr> <th class="slno">#</th> <th>Head</th> <th>Bank</th> <th>School</th> <th>Online</th> <th>Total</th> </tr> </thead> <tbody> <tr each="{cd, i in headWiseData}"> <td>{i + 1}</td> <td>{cd.head}</td> <td class="has-text-right amount">{cd.bank}</td> <td class="has-text-right amount">{cd.cash}</td> <td class="has-text-right amount"></td> <td class="has-text-right amount">{cd.total}</td> </tr> <tr> <th class="has-text-right" colspan=" 2">Total</th> <th class="has-text-right amount">{totalFees}</th> <th class="has-text-right amount">{totalFine}</th> <th class="has-text-right amount">{totalScholarship}</th> <th class="has-text-right amount">{totalGrandTotal}</th> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
+riot.tag2('head-wise-summary', '<section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Head Wise Fees Collection</h2> <title>{selected_start_date} - {selected_end_date}</title> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">From Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="start_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column is-narrow"> <label class="label">To Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="end_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getHeadWise}"> GO </button> </div> </div> </div> <div class="columns is-full"> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <thead> <tr> <th class="slno">#</th> <th>Head</th> <th>Bank</th> <th>School</th> <th>Total</th> </tr> </thead> <tbody> <tr each="{cd, i in headWiseData}"> <td>{i+1}</td> <td>{cd.head}</td> <td class="has-text-right amount">{cd.bank}</td> <td class="has-text-right amount">{cd.cash}</td> <td class="has-text-right amount">{cd.total}</td> </tr> <tr> <th class="has-text-right" colspan=" 2">Total</th> <th class="has-text-right amount">{totalBank}</th> <th class="has-text-right amount">{totalCash}</th> <th class="has-text-right amount">{grandTotal}</th> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
 	var self = this
     self.on("mount", function(){
       flatpickr(".date", {
@@ -5843,19 +6352,55 @@ riot.tag2('head-wise-summary', '<section class=" is-fluid"> <h2 class="title has
 
     feesReportStore.on('read_head_wise_changed',ReadHeadWiseChanged)
     function ReadHeadWiseChanged(headWiseData){
-      self.totalFees = 0
-      self.totalFine = 0
-      self.totalScholarship = 0
-      self.totalGrandTotal = 0
+      self.totalBank = 0
+      self.totalCash = 0
+      self.grandTotal = 0
 
       self.headWiseData = []
       self.headWiseData = headWiseData
+       self.headWiseData.map(c => {
+          self.totalBank +=Number(c.bank)
+          self.totalCash +=Number(c.cash)
+          self.grandTotal +=Number(c.total)
+      })
 
-      console.log("headWiseData")
       self.update()
     }
 });
-riot.tag2('head-wise', '<h2 class="title has-text-centered" style="color: #ff3860;">Head Wise Fees Collection</h2>', '', '', function(opts) {
+riot.tag2('head-wise', '<section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Head Wise Collection Detail</h2> <title class="title has-text-centered">{selected_start_date} - {selected_end_date}</title> <div class="flex items-center mt-2 mb-6 no-print"> <div class="bg-green py-1 rounded w-10"> <div class="bg-grey h-px flex-auto"></div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">From Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="start_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column is-narrow"> <label class="label">To Date</label> </div> <div class="column is-narrow"> <input class="date input flatpickr-input form-control input" placeholder="" ref="end_date" tabindex="0" type="text" readonly="readonly"> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getHeadWise}"> GO </button> </div> </div> </div> <div class="columns is-full"> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <tr each="{cd, i in headCategoryWiseData}"> <td>{cd.slNo}</td> <td>{cd.head}</td> <td class="has-text-right amount">{cd.cash}</td> </tr> </table> </div> </section>', '', '', function(opts) {
+	var self = this
+    self.on("mount", function(){
+      flatpickr(".date", {
+
+    	allowInput: true,
+    	altFormat: "d/m/Y",
+    	dateFormat: "Y-m-d",
+  		})
+      self.update();
+    })
+
+    self.on("unmount", function(){
+      feesReportStore.off('read_head_category_wise_changed',ReadHeadCategoryWiseChanged)
+    })
+
+    self.getHeadWise = () => {
+    	var obj={}
+          obj['start_date']=self.refs.start_date.value
+          obj['end_date']=self.refs.end_date.value
+          self.loading = true
+          feesReportStore.trigger('read_head_category_wise_fees', obj)
+       self.selected_start_date = self.refs.start_date.value
+       self.selected_end_date = self.refs.end_date.value
+    }
+
+    feesReportStore.on('read_head_category_wise_changed',ReadHeadCategoryWiseChanged)
+    function ReadHeadCategoryWiseChanged(headCategoryWiseData){
+
+      self.headCategoryWiseData = []
+      self.headCategoryWiseData = headCategoryWiseData
+
+      self.update()
+    }
 });
 riot.tag2('id-card', '<section class=" is-fluid" show="{student_view ==\'show_student_list_view\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Print Cards</h2> </div> <div class="level-right"> <button class="button is-small is-rounded" onclick="{id_card_print_preview}"> <span>Issue Id Card</span> </button> <button class="button is-small is-rounded ml5" onclick="{}"> <span>Issue Escort Card</span> </button> <button class="button is-small is-rounded ml5" onclick="{duplicate_id_card_print_preview}"> <span>Duplicate Id Card</span> </button> <button class="button is-small is-rounded ml5" onclick="{}"> <span>Duplicate Escort Card</span> </button> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">Standard</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getSection}"> <option>Choose Section</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Section</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option>Choose Class</option> <option each="{filteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getStudentData}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>SL no</th> <th>Enroll No</th> <th>Roll no</th> <th>Student Name</th> <th class="has-text-right"> <input type="checkbox" id="checkStudent" onclick="{selectAll}"> </th> </tr> </thead> <tbody> <tr each="{st, i in students}"> <td>{i+1}</td> <td>{st.enroll_number}</td> <td>{st.roll_number}</td> <td>{st.name}</td> <td class="has-text-right"> <input type="checkbox" class="id_check_box" checked="{st.done}" id="{\'StudentId\' + st.student_id}" onclick="{selectStudent.bind(this,st)}"> </td> </tr> </tbody> </table> </section> <section class="container is-fluid " show="{student_view ==\'show_student_print_view\'}"> <div class="level no-print"> <div class="level-left"></div> <div class="level-right" style="margin-bottom: 5px;"> <button class="button is-warning is-rounded no-print" onclick="{close_print_view}" style="margin-right: 5px;"> <span class="icon"> <span class="fas fa-arrow-left"></span> </span> </button> <button class="button is-warning is-rounded no-print" onclick="window.print()"> <span class="icon"> <span class="fas fa-print"></span> </span> </button> </div> </div> <div each="{st, i in students_id_card_details}" style="font-size: 0.9rem; font-family: \'Open Sans\', sans-serif;"> <center> <div class="card-student-id schoolbg"> <div class="header-student-id-card">Student Identity Card {st.session_name}</div> <div style="padding:2px;"><img style="border:solid Black 1px;height:75px;" riot-src="images/7/student/{st.student_id}.jpg"></div> <div class="title-student-id-card is-uppercase">{st.student_name}</div> <div class="title-student-id-card">{st.standard} - {st.section}</div> <div padding: 2px><span class="barcode">{st.enroll_number}</span></div> <table class="detail-student-id-card"> <tr> <td colspan="2">Enrolment No.: {st.enroll_number}</td> </tr> <tr> <td colspan="2" class="is-uppercase">Fathers\'Name: {st.f_name}</td> </tr> <tr> <td align="baseline">Address:</td> <td>{st.c_add_l1} {st.c_add_l2} {st.c_city} {st.c_zip}</td> </tr> <tr> <td colspan="2">Mob. No.: {st.mobile}</td> </tr> <tr> <td colspan="2">Mode of Transport: {st.transport_mode}</td> </tr> </table> <div style="width:50%;float:left" class="lower-student-id-card">Blood Group:<span style="color:#ff0000">{st.blood_group}</span></div> <div style="width:45%;right: 10px; position:absolute; bottom:10px" class="principal"> <p><img src="images/7/signature/Principal.jpg" style="height: 24px"></p> <p>Principal</p> </div> </div> </center> <div class="" style="margin-top:65px;"></div> <div class="page-break w-full flex-auto" id="id_card_pb_back_16"></div> </div> </section>', '', '', function(opts) {
 
@@ -8482,7 +9027,7 @@ inventoryReportStore.on('read_inventory_received_goods_report_changed',ReadInven
     }
 
 });
-riot.tag2('inventory-report', '<div class="field has-addons"> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-received-goods-report\'}" href="#/inventory-report/inventory-received-goods-report"> <span>Received Goods</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-issued-goods-report\'}" href="#/inventory-report/inventory-issued-goods-report"> <span>Issued Goods</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-person-wise-issued-goods-report\'}" href="#/inventory-report/inventory-person-wise-issued-goods-report"> <span>Person Wise Issue</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-item-wise-issued-goods-report\'}" href="#/inventory-report/inventory-item-wise-issued-goods-report"> <span>Item Wise Issue</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-sales-goods-report\'}" href="#/inventory-report/inventory-sales-goods-report"> <span>Sale Goods</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-return-goods-report\'}" href="#/inventory-report/inventory-return-goods-report"> <span>Return Goods</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-summary-report\'}" href="#/inventory-report/inventory-summary-report"> <span>Summary</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-return-goods-report\'}" href="#/inventory-report/inventory-return-goods-report"> <span>Item Issued report</span> </a> </p> </div> <div id="inventory-report-view"></div>', '', '', function(opts) {
+riot.tag2('inventory-report', '<div class="field has-addons"> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-received-goods-report\'}" href="#/inventory-report/inventory-received-goods-report"> <span>Received Goods</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-issued-goods-report\'}" href="#/inventory-report/inventory-issued-goods-report"> <span>Issued Goods</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-person-wise-issued-goods-report\'}" href="#/inventory-report/inventory-person-wise-issued-goods-report"> <span>Person Wise Issue</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-item-wise-issued-goods-report\'}" href="#/inventory-report/inventory-item-wise-issued-goods-report"> <span>Item Wise Issue</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-sales-goods-report\'}" href="#/inventory-report/inventory-sales-goods-report"> <span>Sale Goods</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-return-goods-report\'}" href="#/inventory-report/inventory-return-goods-report"> <span>Return Goods</span> </a> </p> <p class="control"> <a class="button {is-active: selected_inventory_report == \'inventory-summary-report\'}" href="#/inventory-report/inventory-summary-report"> <span>Summary</span> </a> </p> </div> <div id="inventory-report-view"></div>', '', '', function(opts) {
     var self = this
     console.log('opts.selected_inventory_report')
     console.log(opts.selected_inventory_report)
@@ -9851,6 +10396,224 @@ riot.tag2('inventory-unit', '<section class=" is-fluid"> <h2 class="title has-te
     }
 
 });
+riot.tag2('issue-certificate', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Print Certificate</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getReadSection}"> <option>Choose Standard</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option>Choose Section</option> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column is-narrow"> <button class="button is-danger has-text-weight-bold" onclick="{readStudent}">GO </button> </div> </div> </div> <div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;"> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th style="width:40px">#</th> <th style="width:40px"> <input type="checkbox" id="checkStudent" onclick="{selectAll}"> </th> <th>Enroll no</th> <th>Roll no</th> <th>Name</th> </tr> </thead> <tbody> <tr each="{st, i in students}"> <td>{i+1}</td> <td> <input type="checkbox" class="id_check_box" checked="{st.done}" id="{\'StudentId\' + st.student_id}" onclick="{selectStudent.bind(this,st)}"> </td> <td>{st.enroll_number}</td> <td>{st.roll_number}</td> <td>{st.student_name}</td> </tr> </tbody> </table> </div> <div class="columns" style="margin-top:5px"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="c_id"> <option>Choose Certificate</option> <option each="{certificates}" riot-value="{c_id}">{certificate_name} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <button class="button" onclick="{printOriginalCertificate}">Print</button> <button class="button" onclick="{printDuplicateCertificate}">Duplicate Print</button> </div> </div> </div> </section>', '', '', function(opts) {
+
+	var self = this
+    self.on("mount", function(){
+    	self.title='Add'
+    	self.report_view = 'show_old_text_box'
+    	self.readStandard()
+    	self.readSection()
+    	self.readCertificate()
+    	self.role = getCookie('role')
+
+        self.update()
+        flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
+    })
+
+    self.on("unmount", function(){
+      studentStore.off('read_standard_changed',StandardChanged)
+      studentStore.off('read_section_changed',SectionChanged)
+      certificateStore.off('read_student_change',ReadStudentChanged)
+      certificateStore.off('read_certificate_change',ReadCertificateChanged)
+      certificateStore.off('print_certificate_change',PrintCertificateChanged)
+    })
+
+    self.selectAll = () => {
+    	if($('#checkStudent').is(":checked")){
+    		self.students.map(i=>{
+	          i.done = true;
+	          $('StudentId'+i.student_id).prop('checked', true);
+
+	        })
+    	}else{
+    		self.students.map(i=>{
+	          i.done = false;
+	          $('StudentId'+i.student_id).prop('checked', false);
+	          self.student_id = i.student_id;
+            console.log(self.student_id)
+	        })
+    	}
+      console.log(self.students)
+    }
+
+     self.selectStudent = (item,event) => {
+    	item.done=!event.item.st.done
+        self.student_id = item.student_id;
+        console.log(self.student_id)
+    }
+
+     self.viewTable = () => {
+    	if($('#checkTable').is(":checked")){
+	        self.report_view = 'show_text_box'
+    	}else{
+	        self.report_view = 'show_old_text_box'
+    	}
+    }
+
+	self.readCertificate = () => {
+       certificateStore.trigger('read_certificate')
+    }
+
+    self.readStandard = () => {
+       studentStore.trigger('read_standard')
+    }
+
+    self.readSection = () => {
+       studentStore.trigger('read_section')
+    }
+
+    self.getReadSection = () => {
+    	self.readfilteredSections = []
+    	self.readfilteredSections = self.sections.filter(s => {
+    		return s.standard_id == self.refs.standard_id.value
+    	})
+    }
+    self.readStudent= () => {
+       certificateStore.trigger('read_student',self.refs.standard_id.value,self.refs.section_id.value)
+    }
+
+    self.printOriginalCertificate=()=>{
+    	var now = new Date();
+		var jsonDate = now.toJSON();
+		var dt = new Date(jsonDate);
+    	var certificateKey = "MCKV/" + dt.getHours() + dt.getDay() + dt.getMinutes() + dt.getMonth() + dt.getSeconds() + dt.getFullYear();
+    	console.log("Key")
+    	console.log(certificateKey)
+
+    	let studentData=[]
+        self.students.map( q => {
+        	let a={}
+	        if(q.done==true){
+	        	a.student_id=q.student_id
+	            studentData.push(a)
+	          }
+        })
+        console.log(studentData)
+        self.c_type='O'
+        certificateStore.trigger('add_issue_certificate', studentData,self.refs.c_id.value,self.refs.standard_id.value,self.refs.section_id.value,certificateKey,self.c_type)
+    }
+
+    certificateStore.on('read_certificate_changed',ReadCertificateChanged)
+    function ReadCertificateChanged(certificates){
+      console.log(certificates)
+      self.certificates = certificates
+      self.update()
+    }
+
+    certificateStore.on('print_certificate_changed',PrintCertificateChanged)
+    function PrintCertificateChanged(){
+      console.log()
+      self.certificates.map(i=>{
+	      if(i.c_id==self.refs.c_id.value){
+	      	self.certificate_text=i.certificate_text
+		      var str=self.certificate_text
+		       var res = str.replace("|name|", "Tarique");
+		       self.res1 = res.replace("|hesheCaps|", "HE");
+
+		      console.log("inside chnage method")
+
+	      }
+      })
+
+      self.update()
+    }
+
+   studentStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      console.log(standards)
+      self.standards = standards
+      self.update()
+    }
+
+    studentStore.on('read_section_changed',SectionChanged)
+    function SectionChanged(sections){
+      console.log(sections)
+      self.sections = sections
+      self.update()
+      self.getReadSection()
+    }
+    certificateStore.on('read_student_change',ReadStudentChanged)
+    function ReadStudentChanged(students){
+
+      self.title='Create'
+      self.loading = false
+      self.students = students
+       self.students.map(i=>{
+	      i.done = false;
+      })
+      self.update()
+
+    }
+
+});
+riot.tag2('issued-certificate', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Issued Certificate</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getReadSection}"> <option>Choose Standard</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option>Choose Section</option> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column is-narrow"> <button class="button is-danger has-text-weight-bold" onclick="{readIssuedCertificateStudent}">GO </button> </div> </div> </div> <div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;"> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th style="width:40px">#</th> <th>Student Name</th> <th>Certiifcate Key</th> <th>Class</th> <th>Certificate</th> <th>Type</th> </tr> </thead> <tbody> <tr each="{st, i in issuedCertificates}"> <td>{i+1}</td> <td>{st.name}</td> <td>{st.c_key}</td> <td>{st.standard}</td> <td>{st.certificate_name}</td> <td>{st.type}</td> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
+
+	var self = this
+    self.on("mount", function(){
+    	self.title='Add'
+    	self.report_view = 'show_old_text_box'
+    	self.readStandard()
+    	self.readSection()
+    	self.role = getCookie('role')
+
+        self.update()
+        flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
+    })
+
+    self.on("unmount", function(){
+      studentStore.off('read_standard_changed',StandardChanged)
+      studentStore.off('read_section_changed',SectionChanged)
+      certificateStore.off('read_issued_certificate_change',ReadIssuedCertificateChanged)
+    })
+
+    self.readStandard = () => {
+       studentStore.trigger('read_standard')
+    }
+
+    self.readSection = () => {
+       studentStore.trigger('read_section')
+    }
+
+    self.getReadSection = () => {
+    	self.readfilteredSections = []
+    	self.readfilteredSections = self.sections.filter(s => {
+    		return s.standard_id == self.refs.standard_id.value
+    	})
+    }
+    self.readIssuedCertificateStudent= () => {
+       certificateStore.trigger('read_issued_certificate',self.refs.standard_id.value,self.refs.section_id.value)
+    }
+
+    certificateStore.on('read_issued_certificate_change',ReadIssuedCertificateChanged)
+    function ReadIssuedCertificateChanged(issuedCertificates){
+      console.log(issuedCertificates)
+      self.issuedCertificates = issuedCertificates
+      self.update()
+    }
+
+   studentStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      console.log(standards)
+      self.standards = standards
+      self.update()
+    }
+
+    studentStore.on('read_section_changed',SectionChanged)
+    function SectionChanged(sections){
+      console.log(sections)
+      self.sections = sections
+      self.update()
+      self.getReadSection()
+    }
+
+});
 riot.tag2('issued-letter', '<section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Issued Letter Report</h2> <div class="box"> <div class="columns"> <div class="column is-narrow"> <label class="label">Month</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="monthList"> <option value="1">January</option> <option value="2">February</option> <option value="3">March</option> <option value="4">April</option> <option value="5">May</option> <option value="6">June</option> <option value="7">July</option> <option value="8">August</option> <option value="9">September</option> <option value="10">October</option> <option value="11">November</option> <option value="12">December</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getLetterStudent}"> GO </button> </div> </div> </div> <div class="columns is-full"> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <thead> <tr> <th class="slno">#</th> <th>Enrol No.</th> <th>Student\'s Name</th> <th>Class</th> <th>Issued Date</th> <th>Letter Key</th> <th>Letter</th> <th>Issued by</th> </tr> </thead> <tbody> <tr each="{cd, i in letter_students}"> <td>{i + 1}</td> <td>{cd.enroll_number}</td> <td>{cd.name}</td> <td>{cd.standard}</td> <td>{cd.issue_date}</td> <td>{cd.letter_key}</td> <td>{cd.letter_name}</td> <td>{cd.modified_by}</td> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
 	var self = this
     self.on("mount", function(){
@@ -10053,7 +10816,7 @@ riot.tag2('level', '<section class="is-fluid"> <h2 class="title" style="color: #
 });
 riot.tag2('loading-bar', '<div class="load-bar"> <div class="bar"></div> <div class="bar"></div> <div class="bar"></div> </div>', 'loading-bar .load-bar,[data-is="loading-bar"] .load-bar{ position: fixed; top: 68px; left: 0; width: 100%; height: 6px; background-color: #A5D6A7; } loading-bar .bar,[data-is="loading-bar"] .bar{ content: ""; display: inline; position: absolute; width: 0; height: 100%; left: 50%; text-align: center; } loading-bar .bar:nth-child(1),[data-is="loading-bar"] .bar:nth-child(1){ background-color: #00BCD4; animation: loading 3s linear infinite; } loading-bar .bar:nth-child(2),[data-is="loading-bar"] .bar:nth-child(2){ background-color: #FFEB3B; animation: loading 3s linear 1s infinite; } loading-bar .bar:nth-child(3),[data-is="loading-bar"] .bar:nth-child(3){ background-color: #FF5722; animation: loading 3s linear 2s infinite; } @keyframes loading { from {left: 50%; width: 0;z-index:100;} 33.3333% {left: 0; width: 100%;z-index: 10;} to {left: 0; width: 100%;} }', '', function(opts) {
 });
-riot.tag2('login', '<div class="login-banner"> <div class="columns is-gapless is-marginless"> <div class="column is-three-fifths is-hidden-mobile" style="height: 100vh;"> <div class="cover_image" style="background-image: url(\'img/classroom.jpg\'); height: 100%;"></div> </div> <div class="column is-two-fifths has-background-white"> <section class="section"> <div class="pad"> <h1 class="title is-spaced has-text-success is-size-1 has-text-weight-bold">Sarthi</h1> <p class="is-size-6 has-text-grey" style="margin-top: -1.5em; margin-bottom: 2em;">School Management simplified!</p> <div class="subtitle">Login</div> <div> <div class="field"> <label class="label" for="user_username">Username</label> <div class="control"> <input class="input is-medium" id="user_username" ref="username" type="text"> </div> </div> <div class="field"> <label class="label" for="user_password">Password</label> <div class="control"> <input class="input is-medium" id="user_password" ref="password" type="password"> </div> </div> <div class="field"> <label class="label" for="user_role">Role</label> <div class="control"> <div class="select is-fullwidth"> <select ref="role"> <option value="ADMIN">ADMIN</option> <option each="{roles}" riot-value="{role}">{role}</option> </select> </div> </div> </div> <div class="field"> <div class="control"> <button class="button is-danger is-medium" type="submit" onclick="{login}">Submit</button> </div> </div> </div> </div> </section> </div> </div> </div>', '', '', function(opts) {
+riot.tag2('login', '<div class="login-banner"> <div class="columns is-gapless is-marginless"> <div class="column is-three-fifths is-hidden-mobile" style="height: 100vh;"> <div class="cover_image" style="background-image: url(\'img/classroom.jpg\'); height: 100%;"></div> </div> <div class="column is-two-fifths has-background-white"> <section class="section"> <div class="pad"> <h1 class="title is-spaced has-text-success is-size-1 has-text-weight-bold">Sarathi</h1> <p class="is-size-6 has-text-grey" style="margin-top: -1.5em; margin-bottom: 2em;">School Management simplified!</p> <div class="subtitle">Login</div> <div> <div class="field"> <label class="label" for="user_username">Username</label> <div class="control"> <input class="input is-medium" id="user_username" ref="username" type="text"> </div> </div> <div class="field"> <label class="label" for="user_password">Password</label> <div class="control"> <input class="input is-medium" id="user_password" ref="password" type="password"> </div> </div> <div class="field"> <label class="label" for="user_role">Role</label> <div class="control"> <div class="select is-fullwidth"> <select ref="role"> <option value="ADMIN">ADMIN</option> </select> </div> </div> </div> <div class="field"> <div class="control"> <button class="button is-danger is-medium" type="submit" onclick="{login}">Submit</button> </div> </div> </div> </div> </section> </div> </div> </div>', '', '', function(opts) {
     var self = this
     self.login_warning = false
 
@@ -10099,7 +10862,7 @@ riot.tag2('login', '<div class="login-banner"> <div class="columns is-gapless is
 
 });
 
-riot.tag2('main-nav', '<nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if="{showNavItems}"> <div class="container is-fluid"> <div class="navbar-brand"> <div class="navbar-item is-size-3 has-text-weight-bold has-text-wight"> SMS </div> <div class="navbar-burger burger" data-target="navbarExampleTransparentExample"> <span aria-hidden="true"></span> <span aria-hidden="true"></span> <span aria-hidden="true"></span> </div> </div> <div id="navbarExampleTransparentExample" class="navbar-menu has-text-weight-bold"> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Exam</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/exam-scheme">Exam Scheme</a> <a class="navbar-item" href="#/grade">Grade</a> <a class="navbar-item" href="#/marks-manager">Marks Manager</a> <a class="navbar-item" href="#/marks-entry">Marks Entry</a> <a class="navbar-item" href="#/marks-report">Marks Report</a> <a class="navbar-item" href="#/maturity-development">Maturity Development</a> <a class="navbar-item" href="#/result-activation">Result Activation</a> <a class="navbar-item" href="#/physical-fitness">Physical Fitness</a> <a class="navbar-item" href="#/subject-group-map">Subject Group Map</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Student</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/student-assign-house">Assign House</a> <a class="navbar-item" href="#/student-group-student">Group Student</a> <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a> <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a> <a class="navbar-item" href="#/student-assign-section">Assign Section</a> <a class="navbar-item" href="#/student-login-slip">Login Slip</a> <a class="navbar-item" href="#/student-school-leaving">Student Leaving Certificate</a> <a class="navbar-item" href="#/student-result-activation">Result Activation</a> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item" href="#/student-info-update">Student Info Update</a> <a class="navbar-item" href="#/id-card">ID Card</a> <a class="navbar-item" href="#/id-signature">Id Signature</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Notification</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/student-notification">Student Email & Sms</a> <a class="navbar-item" href="#/employee-notification">Employee Email & Sms</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Activity</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/activity-detail">Activity Detail</a> <a class="navbar-item" href="#/activity-report">Report</a> <a class="navbar-item {active: selected_nav_item == \'activity-setting\'}" href="#/activity-setting/activity-item">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Fees</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'receive-fees\'}" href="#/receive-fees">Receive Fees</a> <a class="navbar-item {active: selected_nav_item == \'fee-bill\'}" href="#/fee-bill/bill">Fee Head</a> <a class="navbar-item {active: selected_nav_item == \'fees-report\'}" href="#/fees-report/month-wise">Reports</a> <a class="navbar-item {active: selected_nav_item == \'scholarship\'}" href="#/scholarship">Scholarship</a> <a class="navbar-item {active: selected_nav_item == \'fees-setting\'}" href="#/fees-setting/fine-setting">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Mentor</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/mentor-detail">Mentor Detail</a> <a class="navbar-item" href="#/mentor-report">Report</a> <a class="navbar-item {active: selected_nav_item == \'mentor-setting\'}" href="#/mentor-setting/mentor-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Discipline</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/discipline-detail">Discipline Detail</a> <a class="navbar-item" href="#/discipline-report">Report</a> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item {active: selected_nav_item == \'discipline-setting\'}" href="#/discipline-setting/discipline-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Activity</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/activity-detail">Activity Detail</a> <a class="navbar-item" href="#/report">Report</a> <a class="navbar-item {active: selected_nav_item == \'activity-setting\'}" href="#/activity-setting/item">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Admin</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/student-search">Search</a> <a class="navbar-item " href="#/student-browser">Browser</a> <a class="navbar-item " href="#/occupation-report">Occupation Report</a> <a class="navbar-item {active: selected_nav_item == \'admin-report\'}" href="#/admin-report/student-summary-report">Report</a> <a class="navbar-item " href="#/birthday">Bithday</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Attendance</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/attendance-entry">Attendance Entry</a> <a class="navbar-item " href="#/daily-attendance">Daily Attendance</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Staff</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/staff">Staff</a> <a class="navbar-item " href="#/ex-staff">EX-Staff</a> <a class="navbar-item " href="#/browse-staff">Browse</a> </div> </div> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Master</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'master\'}" href="#/master/employee-type">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Infirmary</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'infirmary-setting\'}" href="#/infirmary-setting/infirmary-category">Setting</a> <a class="navbar-item {active: selected_nav_item == \'infirmary\'}" href="#/infirmary/infirmary-student">Infirmary Detail</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Inventory</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'inventory-setting\'}" href="#/inventory-setting/inventory-rack">Setting</a> <a class="navbar-item" href="#/inventory-stock">Stock Inwards Entry</a> <a class="navbar-item" href="#/inventory-issue">Issue</a> <a class="navbar-item" href="#/inventory-sale">Sale</a> <a class="navbar-item" href="#/inventory-returnable">Returnable</a> <a class="navbar-item {active: selected_nav_item == \'inventory-report\'}" href="#/inventory-report/inventory-received-goods-report">Report</a> </div> </div> <a class="navbar-item has-text-danger" onclick="{logout}"><i class="fas fa-power-off"></i></a> </div> </div> </div> </nav>', '', '', function(opts) {
+riot.tag2('main-nav', '<nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if="{showNavItems}"> <div class="container is-fluid"> <div class="navbar-brand"> <div class="navbar-item is-size-3 has-text-weight-bold has-text-wight"> Sarathi </div> <div class="navbar-burger burger" data-target="navbarExampleTransparentExample"> <span aria-hidden="true"></span> <span aria-hidden="true"></span> <span aria-hidden="true"></span> </div> </div> <div id="navbarExampleTransparentExample" class="navbar-menu has-text-weight-bold"> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Exam</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/exam-scheme">Exam Scheme</a> <a class="navbar-item" href="#/grade">Grade</a> <a class="navbar-item" href="#/marks-manager">Marks Manager</a> <a class="navbar-item" href="#/marks-entry">Marks Entry</a> <a class="navbar-item" href="#/marks-report">Marks Report</a> <a class="navbar-item" href="#/maturity-development">Maturity Development</a> <a class="navbar-item" href="#/result-activation">Result Activation</a> <a class="navbar-item" href="#/physical-fitness">Physical Fitness</a> <a class="navbar-item" href="#/subject-group-map">Subject Group Map</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Admin</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/id-card">ID Card</a> <a class="navbar-item {active: selected_nav_item == \'certificate\'}" href="#/certificate/issue-certificate">Certificate</a> <a class="navbar-item " href="#/birthday">Bithday</a> <a class="navbar-item " href="#/occupation-report">Occupation Report</a> <a class="navbar-item" href="#/id-signature">Id Signature</a> <a class="navbar-item" href="#/student-assign-house">Assign House</a> <a class="navbar-item" href="#/student-group-student">Group Student</a> <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a> <a class="navbar-item" href="#/student-assign-section">Assign Section</a> <a class="navbar-item" href="#/student-result-activation">Result Activation</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Time Table</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/teacher-time-table">Teacher Time Table</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Student</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item " href="#/student-search">Search</a> <a class="navbar-item " href="#/student-browser">Browser</a> <a class="navbar-item {active: selected_nav_item == \'admin-report\'}" href="#/admin-report/student-summary-report">Report</a> <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a> <a class="navbar-item" href="#/promote">Promote Student</a> <a class="navbar-item" href="#/student-login-slip">Login Slip</a> <a class="navbar-item" href="#/student-school-leaving">Student Leaving Certificate</a> <a class="navbar-item" href="#/student-info-update">Student Info Update</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Notification</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/student-notification">Student Email & Sms</a> <a class="navbar-item" href="#/employee-notification">Employee Email & Sms</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Fees</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'receive-fees\'}" href="#/receive-fees">Receive Fees</a> <a class="navbar-item {active: selected_nav_item == \'fee-bill\'}" href="#/fee-bill/bill">Fee Head</a> <a class="navbar-item {active: selected_nav_item == \'fees-report\'}" href="#/fees-report/month-wise">Reports</a> <a class="navbar-item {active: selected_nav_item == \'scholarship\'}" href="#/scholarship">Scholarship</a> <a class="navbar-item {active: selected_nav_item == \'fees-withdraw\'}" href="#/fees-withdraw">Withdraw</a> <a class="navbar-item {active: selected_nav_item == \'fees-setting\'}" href="#/fees-setting/fine-setting">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Mentor</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/mentor-detail">Mentor Detail</a> <a class="navbar-item" href="#/mentor-report">Report</a> <a class="navbar-item {active: selected_nav_item == \'mentor-setting\'}" href="#/mentor-setting/mentor-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Discipline</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/discipline-detail">Discipline Detail</a> <a class="navbar-item" href="#/discipline-report">Report</a> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item {active: selected_nav_item == \'discipline-setting\'}" href="#/discipline-setting/discipline-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Activity</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/activity-detail">Activity Detail</a> <a class="navbar-item" href="#/report">Report</a> <a class="navbar-item {active: selected_nav_item == \'activity-setting\'}" href="#/activity-setting/item">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Attendance</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/attendance-entry">Attendance Entry</a> <a class="navbar-item " href="#/daily-attendance">Daily Attendance</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Staff</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/staff">Staff</a> <a class="navbar-item " href="#/ex-staff">EX-Staff</a> <a class="navbar-item " href="#/browse-staff">Browse</a> </div> </div> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Master</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'master\'}" href="#/master/employee-type">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Infirmary</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'infirmary-setting\'}" href="#/infirmary-setting/infirmary-category">Setting</a> <a class="navbar-item {active: selected_nav_item == \'infirmary\'}" href="#/infirmary/infirmary-student">Infirmary Detail</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Inventory</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'inventory-setting\'}" href="#/inventory-setting/inventory-rack">Setting</a> <a class="navbar-item" href="#/inventory-stock">Stock Inwards Entry</a> <a class="navbar-item" href="#/inventory-issue">Issue</a> <a class="navbar-item" href="#/inventory-sale">Sale</a> <a class="navbar-item" href="#/inventory-returnable">Returnable</a> <a class="navbar-item {active: selected_nav_item == \'inventory-report\'}" href="#/inventory-report/inventory-received-goods-report">Report</a> </div> </div> <a class="navbar-item has-text-danger" onclick="{logout}"><i class="fas fa-power-off"></i></a> </div> </div> </div> </nav>', '', '', function(opts) {
     var self = this
     console.log('opts.selected_nav_item')
     console.log(opts.selected_nav_item)
@@ -10190,6 +10953,65 @@ riot.tag2('main-nav', '<nav class="navbar is-fixed-top is-light no-print" role="
     });
 });
 
+riot.tag2('manage-certificate', '<section> <div class="box"> <div class="columns"> <div class="column is-narrow" show="{report_view ==\'show_old_text_box\'}"> <div class="control"> <div class="select"> <select ref="certificate_name"> <option>Choose Certificate</option> <option each="{certificates}" riot-value="{certificate_name}">{certificate_name} </option> </select> </div> </div> </div> <div class="column is-narrow"> <input type="checkbox" id="checkTable" checked="{e.done}" onclick="{viewTable}" style="margin-top: 12px;"> Add New </div> <div class="column is-narrow" show="{report_view ==\'show_text_box\'}"> <input class="input" ref="new_certificate_name" type="text"> </div> </div> </div> <div class="box"> <div class="columns"> <div class="column"> <input id="x" type="hidden" name="content"> <trix-editor input="x" ref="certificate_text" class="HI"> </trix-editor> </div> <div class="column"> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>Key</th> <th>Meaning</th> </tr> <tbody> <tr> <td>|child|</td> <td>Son/Daughter</td> </tr> <tr> <td>|heshe|</td> <td>he/she</td> </tr> <tr> <td>|hesheCaps|</td> <td>He/She</td> </tr> <tr> <td>|hisher|</td> <td>his/her</td> </tr> <tr> <td>|hisherCaps|</td> <td>His/Her</td> </tr> <tr> <td>|himher|</td> <td>him/her</td> </tr> <tr> <td>|session|</td> <td>Student Acedamic Year</td> </tr> <tr> <td>|rollno|</td> <td>Student Roll\'s Number</td> </tr> <tr> <td>|enrollno|</td> <td>Student Enroll\'s Number</td> </tr> <tr> <td>|name|</td> <td>Student\'s Name</td> </tr> <tr> <td>|father|</td> <td>Student\'s Father Name</td> </tr> <tr> <td>|address|</td> <td>Student\'s Permanent Address</td> </tr> </tbody> </thead> </table> </div> </div> </div> <div class="column is-narrow"> <button class="button is-danger has-text-weight-bold" onclick="{addCertificate}">Save </button> <button class="button has-text-weight-bold" onclick="{deleteCertificate}">Delete </button> </div> </section>', '', '', function(opts) {
+
+	var self = this
+    self.on("mount", function(){
+    	self.title='Add'
+    	self.report_view = 'show_old_text_box'
+    	self.role = getCookie('role')
+    	 self.readCertificate()
+
+        self.update()
+        flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
+    })
+
+    self.on("unmount", function(){
+    	 certificateStore.off('read_certificate_change',ReadCertificateChanged)
+         certificateStore.off('add_certificate_change',AddCertificateChanged)
+    })
+
+    self.addCertificate=()=>{
+    	if($('#checkTable').is(":checked")){
+    		self.certificate_name=self.refs.new_certificate_name.value
+    	}else{
+	        self.certificate_name=self.refs.certificate_name.value
+    	}
+    	 certificateStore.trigger('add_certificate',self.refs.certificate_text.value,self.certificate_name,self.new_certificate)
+    }
+
+    self.viewTable = () => {
+    	if($('#checkTable').is(":checked")){
+    		self.certificate_name=self.refs.new_certificate_name.value
+	        self.report_view = 'show_text_box'
+    	}else{
+	        self.report_view = 'show_old_text_box'
+	        self.certificate_name=self.refs.certificate_name.value
+    	}
+    }
+
+    self.readCertificate = () => {
+       certificateStore.trigger('read_certificate')
+    }
+
+    certificateStore.on('read_certificate_changed',ReadCertificateChanged)
+    function ReadCertificateChanged(certificates){
+      console.log(certificates)
+      self.certificates = certificates
+      self.update()
+    }
+
+    certificateStore.on('add_certificate_change',AddCertificateChanged)
+    function AddCertificateChanged(id){
+      console.log(id)
+      self.c_id = id
+      self.update()
+    }
+
+});
 riot.tag2('marks-entry', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Marks Entry</h2> </div> <div class="level-right"> <button class="button is-warning is-rounded ml5" onclick="{readMarksEntry}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Standard</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="standardSelect" onchange="{changeSection}"> <option value="">Select Standard</option> <option each="{classes}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"><label class="label">Section</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="sectionSelect" onchange="{readClassSubject}"> <option value="">Select Section</option> <option each="{tempSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column is-narrow"><label class="label">Subjects</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth" onchange="{readMarksLimit}"> <select ref="subjectSelect"> <option value="">Select Subject</option> <option each="{subjects}" riot-value="{subject_id}">{subject_name}</option> </select> </div> </div> </div> <div class="column is-narrow"><label class="label">Exam Type</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="examTypeSelect" onchange="{readMarksLimit}"> <option value="">Select Exam Type</option> <option each="{examTypes}" riot-value="{exam_type_id}">{exam_type}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readMarksEntry}">GO </button> </div> </div> </div> <div class="box"> <div class="columns"> <div class="column"> <div><i>Roll No:</i> <strong>{roll_number}</strong></div> <div><i>Enroll No:</i> <strong>{enroll_number}</strong></div> </div> <div class="column"> <div><i>Name:</i> <strong>{name}</strong></div> </div> <div class="column"> <div><i>Marks:</i> <input class="input" type="text" ref="marksInput" id="marksInput" style="width:100px;font-weight:bold; text-transform: uppercase;" onkeyup="{addEnter}"> <button class="button is-danger has-text-weight-bold" onclick="{add}">{title}</button> </div> <div><i>Absent:</i> <input type="checkbox" class="checkbox" ref="absentCheckBox" id="absentCheckBoxId"></div> </div> <div class="column" hide="{marksLimit.marking_type==\'G\'}"> <div><i>Max Marks:</i> <strong>{marksLimit.max_marks}</strong> <strong style="color:#FF0000">({marksLimit.marking_type})</strong> </div> <div><i>Min Marks:</i> <strong>{marksLimit.min_marks}</strong></div> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th style="width:200px;">Roll No</th> <th>Enroll No</th> <th>Student Name</th> <th hide="{marksLimit.marking_type==\'G\'}">Marks</th> <th>Grade</th> <th></th> </tr> </thead> <tbody> <tr each="{c, i in marksEntries}"> <td>{c.roll_number}</td> <td>{c.enroll_number}</td> <td>{c.name}</td> <td hide="{marksLimit.marking_type==\'G\'}">{c.marks}</td> <td>{c.marks_grade}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{c.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, c)}">Edit</a></span> <span><a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{c.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
 	var self = this
   self.marksLimit = {}
@@ -12984,17 +13806,213 @@ riot.tag2('physical-fitness', '<loading-bar if="{loading}"></loading-bar> <secti
     }
 
 });
-riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div class="column is-three-fifths is-multiline"> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="enrolNumberText" type="text" placeholder="Enrol Number"> </div> </div> <div class="column"> <button class="button is-danger" onclick="{getStudentDetail}">Go</button> </div> </div> <div class="columns"> <div class="column is-one-quarter"> <img src="https://bulma.io/images/placeholders/128x128.png"> </div> <div class="column"> <p class="label"><span style="color: #ff3860;">{student_name} </span>({standard})</p> <p class="label">Father: {f_name}</p> <p class="label">Mother: {m_name}</p> <p class="title" style="color: #ff3860;">{student_plan}</p> </div> </div> <div class="field has-addons"> <p class="control"> <button class="button is-primary" onclick="{getStudentTransactions}">Transactions</button> </p> <p class="control"> <button class="button is-link"> <span>Search By Receipt No.</span> </button> </p> <p class="control"> <button class="button is-info"> <span>Select Student</span> </button> </p> <p class="control"> <button class="button is-warning"> <span>Hide Receipt No.</span> </button> </p> </div> </div> <div class="box" show="{fees_vew ==\'DueFeeSlips\'}"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50"></th> <th>Fee Slip Name</th> <th style="width:120px">Due Date</th> <th class="has-text-right" style="width:110px">Amount</th> <th class="has-text-right" style="width:100px">Scholarship</th> </tr> </thead> <tbody> <tr each="{r, i in feeSlips}"> <td class="has-text-right"> <input type="checkbox" class="id_check_box" checked="{r.done}" id="{\'feeslipId\' + r.fee_slip_id}" onclick="{calculateFees.bind(this,r)}"> </td> <td>{r.fee_slip_name}</td> <td>{r.last_date}</td> <td class="has-text-right">{r.amount}</td> <td class="has-text-right">{r.scholorship_amount}</td> </tr> </tbody> </table> </div> <div class="box" show="{fees_vew ==\'PaidFeeSlips\'}"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50">Rcpt No.</th> <th>Fee Slip </th> <th style="width:100px">Mode</th> <th style="width:120px">Paid On</th> <th class="has-text-right" style="width:110px">Fees</th> <th class="has-text-right" style="width:110px">Fine</th> <th class="has-text-right" style="width:100px">Scholarship</th> <th> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{hideTransaction}" title="Close Transaction">Close</a></span> </th> </tr> </thead> <tbody> <tr each="{r, i in transactions}"> <td class="has-text-right"> {r.receipt_id} </td> <td>{r.fee_slip_name}</td> <td>{r.mode}</td> <td>{r.receipt_date}</td> <td class="has-text-right">{r.amount_due}</td> <td class="has-text-right">{r.fine_recevied}</td> <td class="has-text-right">{r.scholorship_amount}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{r.confirmDelete}"> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{r.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </div> </div> <div class="column"> <div class="box"> <table class="fees-table"> <tr> <th class="fieldLabel">Fees Due</th> <td><input class="input textWidth" ref="feesDueText" readonly type="number"></td> <th class="fieldLabel">Date</th> <td><input class="input textWidth date" type="text" ref="feesReceiveDate" onchange="{fineCalculation}"></td> </tr> <tr> <th class="fieldLabel">Scholarship</th> <td><input class="input textWidth " type="text" ref="scholorshipText" readonly></td> <th colspan="2"></th> </tr> <tr> <th class="fieldLabel">Fine Due</th> <td><input class="input textWidth" ref="fineDueText" readonly type="number"></td> <th class="fieldLabel">Fine Paid</th> <td><input class="input textWidth" ref="finePaidText" onkeyup="{fineAdjustedChangeHandler}" type="number"></td> </tr> <tr> <th class="fieldLabel">Fine Adjust</th> <td><input class="input textWidth " type="text" ref="fineAdjustedText" readonly></td> <th class="fieldLabel">Amount Due</th> <td><input class="input textWidth " type="text" ref="amountDueText" readonly></td> </tr> <tr> <th class="fieldLabel">Remarks</th> <td colspan="3"> <textarea class="textarea" rows="2" type="text" ref="remarksText"></textarea></td> </tr> <tr> <th class="fieldLabel">Mode</th> <td colspan="3"> <div class="control"> <label class="radio"><input type="radio" name="modeRadioGroup" value="Cash" onclick="{getRadioValue}" checked>Cash</label> <label class="radio"><input type="radio" name="modeRadioGroup" value="Cheque" onclick="{getRadioValue}">Cheque</label> <label class="radio"><input type="radio" name="modeRadioGroup" value="Bank" onclick="{getRadioValue}">Bank</label> <label class="radio"><input type="radio" name="modeRadioGroup" value="Draft" onclick="{getRadioValue}">Draft</label> </div> </td> </tr> <tr> <th class="fieldLabel">Drawn On</th> <td colspan="3"><input class="input" type="text" ref="drawnOnText"></td> </tr> <tr> <th class="fieldLabel">Number</th> <td><input class="input textWidth " type="text" ref="itemNumberText"></td> <th class="fieldLabel">Dated</th> <td><input class="input textWidth date" type="text" ref="itemDate"></td> </tr> <tr> <th class="fieldLabel">Received In</th> <td colspan="3" class="select is-fullwidth"> <select ref="bankNameList"> <option class="fieldLabel">Select Bank</option> <option each="{banks}" riot-value="{bank_account_no}">{bank_name}</option> </select> </td> <td colspan="2"><button class="button is-danger" onclick="{submitFees}">Submit</button></td> </tr> </table> </div> </div> </div> </section>', '', '', function(opts) {
- var self = this
+riot.tag2('promote', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-item"> <h2 class="title has-text-centered" style="color: #ff3860; ">Promote Student Console</h2> </div> </div> <div class="columns is-multiline is-mobile"> <div class="column"> <div class="columns"> <div class="column is-narrow"><label class="label">Standard</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="standardSelect" onchange="{changeSection}"> <option each="{classes}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"><label class="label">Section</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="sectionSelect" onchange="{readFreeStudents}"> <option each="{tempSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-warning is-rounded ml5" style="margin-bottom:12px;" onclick="{readFreeStudents}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th class="slno">Roll</th> <th>Enroll No</th> <th>Free Students</th> <th></th> </tr> </thead> <tbody> <tr each="{c, i in freeStudents}"> <td>{c.roll_number}</td> <td>{c.enroll_number}</td> <td>{c.name}</td> <td class="has-text-right"> <input type="checkbox" checked="{selected}" id="{\'freeSubjectCheckBox\'+c.student_id}" onclick="{selectFreeStudents.bind(this,c)}"> </td> </tr> </tbody> </table> </div> <div class="column is-vertical-center is-narrow has-text-centered is-multiline"> <table> <tr> <td> <button class="button" onclick="{assignStudents}" style="margin-top:20px;">Assign students <span style="margin-left:10px" class="fas fa-angle-double-right"></span> </button> </td> </tr> <tr> <td> <button class="button" onclick="{freeUpStudents}" style="margin-top:20px;"><span style="margin-right:10px;" class="fas fa-angle-double-left"></span> Free up students</button> </td> </tr> </table> </div> <div class="column"> <div class="columns"> <div class="column is-narrow"><label class="label">Standard</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="assignedStandard" onchange="{changeAssignedSection}"> <option each="{classes}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"><label class="label">Section</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="assignedSection" onchange="{readPromotedStudents}"> <option each="{tempAssignedSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-warning is-rounded ml5" style="margin-bottom:12px;" onclick="{readPromotedStudents}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th></th> <th class="slno">Roll No</th> <th>Enroll No</th> <th>Assigned Students</th> </tr> </thead> <tbody> <tr each="{c, i in promotedStudents}"> <td class="has-text-right"> <input type="checkbox" checked="{selected}" id="{\'assignedSubjectCheckBox\'+c.student_id}" onclick="{selectAssigndStudents.bind(this,c)}"> </td> <td>{c.roll_number}</td> <td>{c.enroll_number}</td> <td>{c.name}</td> </tr> </tbody> </table> </div> </div> </section>', '', '', function(opts) {
+  var self = this
     self.on("mount", function(){
-      self.fees_vew = 'DueFeeSlips'
+      self.title='Add'
       self.role = getCookie('role')
-      self.payment_mode = 'Cash'
+      self.loading = false;
       self.update()
       flatpickr(".date", {
         allowInput: true,
         dateFormat: "d/m/Y",
       })
+      self.readClass()
+      self.readSection()
+    })
+
+    self.on("unmount", function(){
+
+      activityStore.off('read_classes_changed',ClassesChanged)
+      activityStore.off('read_section_changed',SectionChanged)
+      PromoteStore.off('read_students_changed',ReadStudentsChanged)
+      PromoteStore.off('read_promoted_student_changed',ReadPromotedStudentsChanged)
+      PromoteStore.off('assign_students_changed',AssignStudentChanged)
+      PromoteStore.off('free_students_changed',FreeStudentChanged)
+    })
+    self.readClass = () => {
+       self.loading = true;
+       activityStore.trigger('read_classes')
+    }
+    self.readSection = () => {
+       self.loading = true;
+       activityStore.trigger('read_section')
+    }
+
+     self.changeSection = () => {
+        self.tempSections = []
+        self.tempSections = self.sections.filter(s=>{
+          return s.standard_id==self.refs.standardSelect.value
+        })
+        self.update()
+       }
+
+    self.changeAssignedSection = () => {
+        self.tempAssignedSections = []
+        self.tempAssignedSections = self.sections.filter(s=>{
+          return s.standard_id==self.refs.assignedStandard.value
+        })
+        self.update()
+       }
+
+  self.readFreeStudents = () =>{
+        self.loading = true
+        promoteStore.trigger('read_students',self.refs.standardSelect.value, self.refs.sectionSelect.value)
+    }
+
+  self.readPromotedStudents = () =>{
+        self.loading = true
+        promoteStore.trigger('read_promoted',self.refs.assignedStandard.value, self.refs.assignedSection.value)
+    }
+
+    self.selectFreeStudents = (student,e) => {
+        self.freeStudents.map(i=>{
+          if(student.student_id==i.student_id){
+            i.selected=!i.selected
+          }
+        })
+    }
+
+    self.selectAssigndStudents = (student,e) => {
+        self.promotedStudents.map(i=>{
+          if(student.student_id==i.student_id){
+            i.selected=!i.selected
+          }
+        })
+        console.log(self.promotedStudents)
+    }
+
+    self.assignStudents = () =>{
+      let students_to_assign = self.freeStudents.filter(c=>{
+        return c.selected == true
+      })
+      console.log(self.student_id)
+      console.log(students_to_assign)
+
+      if(students_to_assign.length==0){
+        toastr.error('Please Select Student To Assign House.')
+        return
+      }else{
+        self.loading = true
+        promoteStore.trigger('assign_students', self.refs.assignedSection.value, students_to_assign)
+      }
+    }
+
+    self.freeUpStudents = () =>{
+      let students_to_free = self.promotedStudents.filter(c=>{
+        return c.selected == true
+      })
+      console.log("students_to_free")
+      console.log(students_to_free)
+
+      if(students_to_free.length==0){
+        toastr.error('Please select students to free from house .')
+        return
+      }else{
+        self.loading = true
+        promoteStore.trigger('free_up_student',self.refs.assignedSection.value, students_to_free)
+      }
+    }
+
+    activityStore.on('read_classes_changed',ClassesChanged)
+    function ClassesChanged(classes){
+      self.loading = false
+      self.classes = []
+      self.classes = classes
+      self.update()
+      self.readSection()
+      console.log(self.classes)
+    }
+
+    activityStore.on('read_section_changed',SectionChanged)
+    function SectionChanged(sections){
+      self.loading = false
+      self.sections = []
+      self.sections = sections
+      self.update()
+      self.changeSection()
+      self.changeAssignedSection()
+      self.readPromotedStudents()
+      self.readFreeStudents()
+
+    }
+
+    promoteStore.on('read_students_changed',ReadStudentsChanged)
+    function ReadStudentsChanged(freeStudents){
+      console.log("reading free students")
+      self.loading = false
+      self.freeStudents = []
+      if(freeStudents.length>0){
+      self.freeStudents = freeStudents
+      self.freeStudents.map(c => {
+          c.selected=false
+      })
+     }else{
+      toastr.info("All students has been promoted from select class")
+     }
+      self.update()
+    }
+   promoteStore.on('read_promoted_student_changed',ReadPromotedStudentsChanged)
+    function ReadPromotedStudentsChanged(promotedStudents){
+      console.log("reading promoted students")
+      console.log(promotedStudents)
+      self.loading = false
+      self.promotedStudents = []
+      if(promotedStudents.length>0){
+      self.promotedStudents = promotedStudents
+      self.promotedStudents.map(c => {
+          c.selected=false
+      })
+     }else{
+      toastr.info("No students has been promoted Yet!")
+     }
+      self.update()
+    }
+
+    promoteStore.on('free_students_changed',FreeStudentChanged)
+    function FreeStudentChanged(students_assigned,error_msg){
+
+      if(error_msg != ""){
+        toastr.info("You Can't delete this student. His fees has been received in this session ")
+      }
+      self.loading = false
+      self.update()
+
+    }
+
+    promoteStore.on('assign_students_changed',AssignStudentChanged)
+    function AssignStudentChanged(students_assigned,error_msg){
+
+      self.loading = false
+      self.update()
+
+    }
+
+});
+riot.tag2('receive-fees', '<loading-bar if="{loading}"></loading-bar> <section class="is-fluid" show="{fees_view ==\'ReceiveFees\'}"> <div class="columns"> <div class="column is-three-fifths is-multiline"> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="enrolNumberText" type="text" placeholder="Enrol Number"> </div> </div> <div class="column"> <button class="button is-danger" onclick="{getStudentDetail}">Go</button> </div> </div> <div class="columns"> <div class="column is-one-quarter"> <img src="https://bulma.io/images/placeholders/128x128.png"> </div> <div class="column"> <p class="label"><span style="color: #ff3860;">{student_name} </span>({standard})</p> <p class="label">Father: {f_name}</p> <p class="label">Mother: {m_name}</p> <h4 class="title" style="color: #ff3860; font-size: 1.5rem;">{student_plan}</h4> </div> </div> <div class="field has-addons"> <p class="control"> <button class="button is-primary" onclick="{getStudentTransactions}">Transactions</button> </p> <p class="control"> <button class="button is-link" onclick="{openSearchModal}"> <span>Search By Receipt No.</span> </button> </p> <p class="control"> <button class="button is-warning" onclick="{selectStudent}"> <span>Select Student</span> </button> </p> </div> </div> <div class="box" show="{DueFeeSlips}"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50"></th> <th>Fee Slip Name</th> <th style="width:120px">Due Date</th> <th class="has-text-right" style="width:110px">Amount</th> <th class="has-text-right" style="width:100px">Scholarship</th> <th></th> </tr> </thead> <tbody> <tr each="{r, i in feeSlips}"> <td class="has-text-right"> <input type="checkbox" class="id_check_box" checked="{r.done}" id="{\'feeslipId\' + r.fee_slip_id}" onclick="{calculateFees.bind(this,r)}"> </td> <td>{r.fee_slip_name}</td> <td>{r.last_date}</td> <td class="has-text-right">{r.amount}</td> <td class="has-text-right">{r.scholorship_amount}</td> <td> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{feeSlip.bind(this, r)}">View Slip</a></span> </td> </tr> </tbody> </table> </div> <div class="box" show="{PaidFeeSlips}"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th width="50">Rcpt No.</th> <th>Fee Slip </th> <th style="width:100px">Mode</th> <th style="width:120px">Paid On</th> <th class="has-text-right" style="width:110px">Fees</th> <th class="has-text-right" style="width:110px">Fine</th> <th class="has-text-right" style="width:100px">Scholarship</th> <th><span> <a class="button is-danger is-small has-text-weight-bold is-rounded" onclick="{hideTransaction}" title="Close Transaction">Close</a></span></th> </tr> </thead> <tbody> <tr each="{r, i in transactions}"> <td class="has-text-right"> {r.receipt_id} </td> <td>{r.fee_slip_name}</td> <td>{r.mode}</td> <td>{r.receipt_date}</td> <td class="has-text-right">{r.amount_due}</td> <td class="has-text-right">{r.fine_recevied}</td> <td class="has-text-right">{r.scholorship_amount}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{r.confirmDelete}"> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{r.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </div> </div> <div class="column"> <div class="box"> <table class="fees-table" style="border-spacing:10px !important"> <tr> <th class="fieldLabel">Fees Due</th> <td><input class="input textWidth" ref="feesDueText" readonly style="margin-bottom:8px" type="number"></td> <th class="fieldLabel">Date</th> <td><input class="input textWidth date" type="text" ref="feesReceiveDate" onchange="{fineCalculation}"></td> </tr> <tr> <th class="fieldLabel">Fees Paid</th> <td><input class="input textWidth" id="feesPaidText" ref="feesPaidText" onkeyup="{adjustedChangeHandler}" type="number"></td> <th class="fieldLabel">Scholarship</th> <td><input class="input textWidth " type="text" ref="scholorshipText" readonly></td> <th colspan="2"></th> </tr> <tr> <th class="fieldLabel">Fine Due</th> <td><input class="input textWidth" ref="fineDueText" readonly type="number"></td> <th class="fieldLabel">Fine Paid</th> <td><input class="input textWidth" ref="finePaidText" onkeyup="{fineAdjustedChangeHandler}" type="number"></td> </tr> <tr> <th class="fieldLabel">Fine Adjust</th> <td><input class="input textWidth " type="text" ref="fineAdjustedText" readonly></td> <th class="fieldLabel">Amount Due</th> <td><input class="input textWidth " type="text" ref="amountDueText" readonly></td> </tr> <tr> <th class="fieldLabel">Remarks</th> <td colspan="3"> <textarea class="textarea" rows="2" type="text" ref="remarksText"></textarea></td> </tr> <tr> <th class="fieldLabel">Mode</th> <td colspan="3"> <div class="control"> <label class="radio"><input type="radio" name="modeRadioGroup" value="Cash" onclick="{getRadioValue}" checked>Cash</label> <label class="radio"><input type="radio" name="modeRadioGroup" value="Cheque" onclick="{getRadioValue}">Cheque</label> <label class="radio"><input type="radio" name="modeRadioGroup" value="Bank" onclick="{getRadioValue}">Bank</label> <label class="radio"><input type="radio" name="modeRadioGroup" value="Draft" onclick="{getRadioValue}">Draft</label> </div> </td> </tr> <tr> <th class="fieldLabel">Drawn On</th> <td colspan="3"><input class="input" type="text" id="drawnOnText" ref="drawnOnText"></td> </tr> <tr> <th class="fieldLabel">Number</th> <td><input class="input textWidth " type="text" id="itemNumberText" ref="itemNumberText"></td> <th class="fieldLabel">Dated</th> <td><input class="input textWidth date" type="text" id="itemDate" ref="itemDate"></td> </tr> <tr> <th class="fieldLabel">Received In</th> <td colspan="3" class="select is-fullwidth"> <select id="bankNameList" ref="bankNameList"> <option class="fieldLabel">Select Bank</option> <option each="{banks}" riot-value="{bank_account_no}">{bank_name}</option> </select> </td> <td><button class="button is-danger" onclick="{submitFees}">Submit</button></td> <td> <input type="checkbox" id="checkTable" checked="{e.done}" onclick="{tutionFeesOnly}" style="margin-top: 12px;"> If Only Tution Fees </td> </tr> </table> </div> <div class="box" show="{FeeSlipHead}"> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>Head</th> <th style="width:120px">Amount</th> </tr> </thead> <tbody> <tr each="{r, i in feeSlipHeads}"> <td>{r.head}</td> <td class="has-text-right">{r.amount}</td> </tr> </tbody> </table> </div> </div> </div> </section> <section class=" is-fluid" show="{fees_view ==\'show_student_list\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Students</h2> </div> <div class="level-right"> <button class="button is-warning is-rounded" onclick="{closeStudentlist}"> <span class="icon"> <span class="fas fa-arrow-left"></span> </span> </button> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getSection}"> <option>Choose Section</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option>Choose Class</option> <option each="{filteredSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getStudentData}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>Roll no</th> <th>Student Name</th> <th>Enroll No</th> <th>Registration No</th> <th>SMS</th> <th>Father\'s Name</th> <th></th> </tr> </thead> <tbody> <tr each="{st, i in studentList}"> <td>{st.roll_number}</td> <td>{st.name}</td> <td>{st.enroll_number}</td> <td>{st.reg_number}</td> <td>{st.mobile}</td> <td>{st.f_name}</td> <td class="has-text-right"> <span><a class="button is-small is-rounded " onclick="{addStudent.bind(this, st.enroll_number)}">Select</a></span> </td> </tr> </tbody> </table> </section> <div id="SearchModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Search By Receipt Number</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <label class="label" for="role">Receipt Number</label> <div class="control"> <input class="input" ref="receiptNumberInput" id="receiptNumberInput" type="number"> </div> </div> </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{searchByReceiptNo}">Search</button> <button class="button" id="item-modal-close" onclick="{closeSearchModal}">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
+ var self = this
+    self.on("mount", function(){
+      document.getElementById("drawnOnText").disabled=true
+      document.getElementById("itemNumberText").disabled=true
+      document.getElementById("itemDate").disabled=true
+      document.getElementById("bankNameList").disabled=true
+      document.getElementById("feesPaidText").readOnly = true
+
+      self.fees_view = 'ReceiveFees'
+      self.PaidFeeSlips = false
+      self.DueFeeSlips = true
+      self.FeeSlipHead = false
+      self.role = getCookie('role')
+      self.readStandard()
+      self.readSection()
+      self.payment_mode = 'Cash'
+      self.loading = false
+      self.update()
+      flatpickr(".date", {
+        allowInput: true,
+        dateFormat: "d/m/Y",
+      })
+
       self.refs.scholorshipText.value = 0;
       self.readBank()
       self.readFine()
@@ -13005,30 +14023,78 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
 
       feeReceivedStore.off('read_student_changed', ReadStudentChanged)
       feeReceivedStore.off('read_transaction_changed', ReadTransactionChanged)
+      feeReceivedStore.off('read_slip_head_changed', ReadSlipHeadChanged)
       feeReceivedStore.off('add_fees_changed', AddFeesChanged)
       feeReceivedStore.off('delete_transaction_changed',DeleteTransactionChanged)
 
       feeReceivedStore.off('read_feeslip_changed', ReadFeeSlipChanged)
       feeReceivedStore.off('read_fee_plan_changed', ReadFeePlanChanged)
+      feeReceivedStore.off('read_student_by_receipt_no_changed',ReadStudentReceiptNoChanged)
 
     })
 
-    self.hideTransaction = (e) => {
-      self.fees_vew = 'DueFeeSlips'
+    self.readStandard = () => {
+       feeReceivedStore.trigger('read_standard')
     }
 
-    self.cancelOperation = (e) => {
-      self.transactions.map(c => {
-          c.confirmDelete = false
-          c.confirmEdit = false
+    self.readSection = () => {
+       feeReceivedStore.trigger('read_section')
+    }
+
+    self.getSection = () => {
+      self.filteredSections = []
+      self.filteredSections = self.sections.filter(s => {
+        return s.standard_id == self.refs.standard_id.value
       })
     }
 
-    self.confirmDelete = (e) => {
+    self.getStudentData = () =>{
+      self.students = []
+
+      feeReceivedStore.trigger('read_student_list', self.refs.standard_id.value,self.refs.section_id.value)
+    }
+
+    self.selectStudent = () =>{
+      self.fees_view ='show_student_list'
+    }
+
+    self.closeStudentlist = () =>{
+      self.fees_view ='ReceiveFees'
+    }
+
+    self.openSearchModal = () => {
+      $("#SearchModal").addClass("is-active");
+      document.getElementById("receiptNumberInput").focus()
+    }
+
+    self.closeSearchModal = () => {
+      $("#SearchModal").removeClass("is-active");
+    }
+    self.searchByReceiptNo = () =>{
+      console.log("Hello");
+      feeReceivedStore.trigger('read_student_by_receipt_no', self.refs.receiptNumberInput.value)
+      self.closeSearchModal();
+    }
+
+    self.addStudent = (c,st) => {
+      self.enroll_number = c
+      console.log(self.enroll_number)
+      self.refs.enrolNumberText.value = self.enroll_number
+      feeReceivedStore.trigger('read_student', self.enroll_number)
+      self.fees_view ='ReceiveFees'
+    }
+
+    self.cancelOperation = (r) => {
+      self.transactions.map(c => {
+          c.confirmDelete = false
+      })
+    }
+
+    self.confirmDelete = (r) => {
       console.log("------------delete---------")
       console.log(e)
       self.transactions.map(c => {
-        if(c.receipt_id != e.item.r.receipt_id){
+        if(c.receipt_id != r.item.r.receipt_id){
           c.confirmDelete = false
         }else{
           c.confirmDelete = true
@@ -13036,15 +14102,44 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
       })
     }
 
-    self.delete = (e) => {
+    self.delete = (r) => {
       self.loading = true
-      feeHeadStore.trigger('delete_transaction', e.item.r.receipt_id)
+      feeReceivedStore.trigger('delete_transaction', r.item.r.receipt_id)
     }
 
     self.getRadioValue = (e) =>{
       self.payment_mode = e.target.value;
+      if(self.payment_mode=='Cash'){
+        document.getElementById("drawnOnText").disabled=true
+        document.getElementById("itemNumberText").disabled=true
+        document.getElementById("itemDate").disabled=true
+        document.getElementById("bankNameList").disabled=true
+      }else if(self.payment_mode=='Bank'){
+        document.getElementById("drawnOnText").disabled=true
+        document.getElementById("itemNumberText").disabled=true
+        document.getElementById("itemDate").disabled=true
+        document.getElementById("bankNameList").disabled=false
+
+      }else{
+        document.getElementById("drawnOnText").disabled=false
+        document.getElementById("itemNumberText").disabled=false
+        document.getElementById("itemDate").disabled=false
+        document.getElementById("bankNameList").disabled=false
+      }
       self.update()
       console.log(self.payment_mode )
+    }
+    self.tutionFeesOnly = () =>{
+      if($('#checkTable').is(":checked")){
+        console.log("checked")
+        document.getElementById("feesPaidText").readOnly = false
+
+      }else{
+        console.log("un-checked")
+
+         document.getElementById("feesPaidText").readOnly = true
+      }
+
     }
 
     self.calculateFees = (slip,event) => {
@@ -13068,7 +14163,7 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
         })
 
        self.refs.feesDueText.value = total_fees
-
+       self.refs.feesPaidText.value = total_fees
        self.refs.scholorshipText.value = total_scholorship
        self.fineCalculation();
 
@@ -13079,22 +14174,27 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
       var total_fine = 0;
         var feeDate = new Date(convertDate(self.refs.feesReceiveDate.value));
         var fine = 0;
+        console.log("=========fine========")
+        console.log(self.feeSlips)
         self.feeSlips.map(o=>{
+
           if(o.selected==true){
 
              var fineStart =  new Date(convertDate(o.last_date));
              var diff  = new Date(feeDate - fineStart);
              var fineDays =  Math.round(diff/1000/60/60/24);
             if (self.fine_type == 'Daily') {
-              if ( fineDays< self.fine_grace_preiod) {
-                  fine = fine_days * self.fine_amount;
+              if (fineDays < self.fine_grace_preiod) {
+                  fine = Number(fine_days) * Number(self.fine_amount);
+                  o['fine'] = fine
                   }else{
-                    total_fine = 0;
+                    fine = 0;
+                    o['fine'] = fine
                   }
                  total_fine = total_fine + fine;
               }else if(self.fine_type == 'Slab'){
                 if(fineStart >= feeDate){
-
+                  o['fine'] = fine
                   total_fine = 0;
                 }else{
                     var due_dt = o.last_date.split('/');
@@ -13126,7 +14226,9 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
                     monthCount = 0;
                   }
                 }
+                 fine = Number(monthCount*50) + Number(self.fine_amount);
                  total_fine = total_fine + (monthCount*50) + self.fine_amount;
+                 o['fine'] = fine
               }
 
             }
@@ -13142,11 +14244,15 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
         self.refs.fineAdjustedText.value = self.refs.fineDueText.value;
         return
       }
-      console.log("fine ="+self.refs.fineDueText.value+ " fine Paid"+ self.refs.finePaidText.value);
+
       self.refs.fineAdjustedText.value = Number(self.refs.fineDueText.value) - Number(self.refs.finePaidText.value);
-      console.log("adjusted" +self.refs.fineAdjustedText.value)
+
       self.refs.amountDueText.value = Number(self.refs.feesDueText.value) - Number(self.refs.scholorshipText.value) + Number(self.refs.finePaidText.value);
-      console.log("after calculationg fee slip")
+
+  }
+  self.adjustedChangeHandler = () =>{
+    self.refs.feesDueText.value = self.refs.feesPaidText.value;
+    self.refs.amountDueText.value = Number(self.refs.feesDueText.value) - Number(self.refs.scholorshipText.value) + Number(self.refs.finePaidText.value);
   }
 
     self.readBank = () => {
@@ -13157,6 +14263,7 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
     }
 
     self.getStudentDetail = () =>{
+      self.FeeSlipHead = false;
       var enrol = self.refs.enrolNumberText.value
       if(enrol.length==0){
         toastr.info("Please enter an enrol numbar")
@@ -13165,18 +14272,27 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
         toastr.info("Please enter an valid enrol numbar")
         return
       }else{
-      feeReceivedStore.trigger('read_student', self.refs.enrolNumberText.value)
+        self.loading = true
+        feeReceivedStore.trigger('read_student', self.refs.enrolNumberText.value)
       }
     }
+
+    self.feeSlip = (c, r) =>{
+      console.log("clicked to view")
+      console.log(c);
+      self.fee_slip_id = c.fee_slip_id
+      self.fee_plan_id = c.fee_plan_id
+      feeReceivedStore.trigger('read_fee_slip_head', self.studentId, self.fee_slip_id, self.fee_plan_id)
+    }
     self.getStudentTransactions = () =>{
-      var students = self.students
-      if(students.length==0){
-        toastr.info("Please load student information first and try again")
-        return
-      }else{
-          console.log('Transactions')
-          feeReceivedStore.trigger('read_transaction', self.studentId)
-      }
+      self.PaidFeeSlips = true
+      self.DueFeeSlips = false
+      feeReceivedStore.trigger('read_transaction', self.studentId)
+
+    }
+    self.hideTransaction = () => {
+      self.PaidFeeSlips = false
+      self.DueFeeSlips = true
     }
 
     self.readPlanBYEnrollNumber = () =>{
@@ -13204,29 +14320,35 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
       obj.item_no = self.refs.itemNumberText.value ='' ? self.refs.itemNumberText.value : null;
       obj.drawn_on = self.refs.drawnOnText.length ='' ? self.refs.drawnOnText.value : null;
       obj.amounting_to = self.refs.amountDueText.value > 0 ? self.refs.amountDueText.value : null;
-      obj.dated = self.refs.itemDate.value;
+      var converted_date = ''
+      if(self.refs.itemDate.value!=''){
+         converted_date = convertDate(self.refs.itemDate.value)
+      }
+      obj.dated = converted_date
       obj.bank_id = self.refs.bankNameList.value != 'Select Bank' ? self.refs.bankNameList.value : null;
-      obj.receipt_date = self.refs.feesReceiveDate.value;
+      obj.receipt_date = convertDate(self.refs.feesReceiveDate.value)
       obj.remarks = self.refs.remarksText.value;
 
       obj.amount_due = self.refs.amountDueText.value
       obj.fine_due = self.refs.fineDueText.value
       obj.fine_recevied = self.refs.finePaidText.value
       obj.fine_adjusted = self.refs.fineAdjustedText.value
-      obj.tuition_fee_only = 'tf'
+      if($('#checkTable').is(":checked")){
+      obj.tuition_fee_only = 'Y'
+    }else{
+      obj.tuition_fee_only = 'N'
+    }
 
       obj.fee_plan_id = self.student_plan_id
       obj.student_id = self.studentId
 
-      console.log(obj)
-      console.log("======Array======")
-      console.log(self.feeSlips);
       self.selectedfeeSlips = [];
       self.feeSlips.map(o=>{
         if(o.selected==true){
           var i = {}
           i.fee_slip_id = o.fee_slip_id
           i.a_due = o.amount
+          i.fine_by_slip = o.fine
           i.tf = 'N'
           i.totalFineRemaining = 0
           self.selectedfeeSlips.push(i)
@@ -13281,8 +14403,38 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
    feeReceivedStore.on('read_student_changed',ReadStudentChanged)
     function ReadStudentChanged(students){
       console.log(students)
+      self.loading = false
+      self.students = []
+      if(students.length>0){
+      self.students = students
+      self.enroll_number = self.students[0].enroll_number;
+      self.student_name = self.students[0].student_name;
+      self.standard = self.students[0].standard;
+      self.f_name = self.students[0].f_name;
+      self.m_name = self.students[0].m_name;
+      self.studentId = self.students[0].student_id;
+
+      self.readPlanBYEnrollNumber()
+      self.readFeeSlipBYEnrollNumber()
+    }else{
+      toastr.info("Invalid Enrol Number")
+      self.enroll_number =''
+      self.student_name = ''
+      self.standard = ''
+      self.f_name = ''
+      self.m_name = ''
+      self.studentId = ''
+      self.feeSlips = []
+    }
+    self.update()
+    }
+
+    feeReceivedStore.on('read_student_by_receipt_no_changed',ReadStudentReceiptNoChanged)
+    function ReadStudentReceiptNoChanged(students){
+      console.log(students)
       self.students = []
       self.students = students
+      self.enroll_number = self.students[0].enroll_number;
       self.student_name = self.students[0].student_name;
       self.standard = self.students[0].standard;
       self.f_name = self.students[0].f_name;
@@ -13290,6 +14442,7 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
       self.studentId = self.students[0].student_id;
 
       self.update()
+      self.refs.enrolNumberText.value = self.enroll_number
       self.readPlanBYEnrollNumber()
       self.readFeeSlipBYEnrollNumber()
 
@@ -13302,12 +14455,22 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
       self.transactions = transactions
       console.log("------read transacrions----")
       console.log(self.transactions)
-      self.fees_vew = 'PaidFeeSlips'
+
       if(length.transactions>0){
         console.log("transactions");
       }
+     self.update()
+     self.PaidFeeSlips = true
+     self.DueFeeSlips = false
 
       console.log(self.students)
+    }
+    feeReceivedStore.on('read_slip_head_changed',ReadSlipHeadChanged)
+    function ReadSlipHeadChanged(feeSlipHeads){
+      self.feeSlipHeads = []
+      self.feeSlipHeads = feeSlipHeads
+      self.FeeSlipHead =true;
+      self.update()
     }
 
     feeReceivedStore.on('read_fee_plan_changed',ReadFeePlanChanged)
@@ -13337,10 +14500,32 @@ riot.tag2('receive-fees', '<section class="is-fluid"> <div class="columns"> <div
 
     }
 
-feeReceivedStore.on('delete_transaction_changed',DeleteTransactionChanged)
-    function DeleteTransactionChanged(banks){
+    feeReceivedStore.on('delete_transaction_changed',DeleteTransactionChanged)
+    function DeleteTransactionChanged(transactions){
       console.log(transactions)
       self.transactions = transactions
+      self.loading = false
+      self.update()
+    }
+
+    feeReceivedStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      console.log(standards)
+      self.standards = standards
+      self.update()
+    }
+
+    feeReceivedStore.on('read_section_changed',SectionChanged)
+    function SectionChanged(sections){
+      console.log(sections)
+      self.sections = sections
+      self.update()
+      self.getSection()
+    }
+    feeReceivedStore.on('read_student_list_changed',StudentListChanged)
+    function StudentListChanged(students){
+      self.studentList = students
+      self.FeeSlipHead = false;
       self.update()
     }
 
@@ -14239,8 +15424,7 @@ riot.tag2('setting', '<div class="field has-addons"> <p class="control"> <a clas
       self.selected_master = opts.selected_master
     }
 });
-
-riot.tag2('staff', '<section class=" is-fluid" show="{staff_view ==\'show_staff\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Staff</h2> </div> <div class="level-right"> <div> <button class="button is-small" onclick="{add_new_staff}"> <span class="icon"> <span class="fas fa-plus"></span> </span> <span>New Staff</span> </button> </div> <div> <button class="button is-small" onclick="{update_staff_status}"> Leaving Status </button> </div> <div> <button class="button is-small" onclick="{allowBlockStaff}"> Allow/Block </button> </div> <div> <button class="button is-small" onclick="{resetStaffPassword}"> Reset Password </button> </div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="r_emp_type_id"> <option>Type</option> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_designation_id"> <option>Designation</option> <option each="{designations}" riot-value="{designation_id}">{designation} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_level_id"> <option>Level</option> <option each="{levels}" riot-value="{level_id}">{level} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_department_id"> <option>Department</option> <option each="{departments}" riot-value="{department_id}">{department_name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getStaffData}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Emp ID</th> <th>Name</th> <th>Department</th> <th>Designation</th> <th>Mobile</th> <th>Status</th> <th>Email</th> <th>Active</th> <th></th> </tr> </thead> <tbody> <tr each="{st, i in staffs}"> <td><input type="checkbox" class="id_check_box" id="{\'EmpId\' + st.emp_id}" onclick="{selectStaff.bind(this,st)}"> </td> <td>{st.employee_id}</td> <td>{st.first_name} {st.middle_name} {st.last_name}</td> <td>{st.department_name}</td> <td>{st.designation}</td> <td>{st.mobile}</td> <td>{st.employment_status}</td> <td>{st.email}</td> <td>{st.is_active}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{st.confirmDelete}"> <span><a class="button is-small is-rounded has-text-success" onclick="{printProfile.bind(this, st.emp_id)}">Profile</a></span> <span><a class="button is-small is-rounded has-text-success" onclick="{edit.bind(this, st.emp_id)}">Edit</a></span> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{st.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <section class=" is-fluid" show="{staff_view ==\'add_staff\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Staff</h2> </div> <div class="level-right"></div> </div> <div class="box"> <div class="columns is-variable is-1 is-multiline"> <div class="column is-half"> <div id="pp_box" class="pp-box" onclick="{trigger_file_input.bind(this,\'staff_picture\')}"> <div class="icon has-text-danger" onclick="{remove_picture.bind(this, \'pp_box\',\'staff_picture\')}"><i class="fas fa-trash"></i> </div> </div> <input accept="image/*" class="is-hidden" id="staff_picture" name="staff_picture" onchange="{loadFile.bind(this, \'pp_box\')}" type="file"> </div> <div class="column is-half"> <div class="column is-narrow"> <label class="label" for="first_name">Title</label> <input class="input" id="title" ref="title" type="text"> </div> <div class="column is-narrow"> <label class="label" for="first_name">First Name</label> <input class="input" id="first_name" ref="first_name" type="text"> </div> <div class="column is-narrow"> <label class="label" for="middle_name">Middle Name</label> <input class="input" ref="middle_name" type="text"> </div> <div class="column is-narrow"> <label class="label" for="last_name">Last Name</label> <input class="input" ref="last_name" type="text"> </div> <div class="column is-narrow"> <label class="label" for="last_name">Short Name</label> <input class="input" ref="short_name" type="text"> </div> </div> <div class="column is-one-third"> <label class="label" for="gender">Gender</label> <div class="control"> <div class="select is-fullwidth"> <select id="gender" ref="gender"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="">Identification Marks</label> <input class="input" ref="id_mark" type="text"> </div> <div class="column is-one-third"> <label class="label" for="blood_group">Blood Group</label> <div class="control"> <div class="select is-fullwidth"> <select id="blood_group" ref="blood_group"> <option value="A+">A+</option> <option value="A-">A-</option> <option value="AB+">AB+</option> <option value="AB-">AB-</option> <option value="B+">B+</option> <option value="B-">B-</option> <option value="O+">O+</option> <option value="O-">O-</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="dob">Place of Birth</label> <input class="input" ref="place_of_birth" type="text"> </div> <div class="column is-one-third"> <label class="label" for="dob">Nationality</label> <input class="input" ref="nationality" type="text"> </div> <div class="column is-one-third"> <label class="label" for="religion_id">Religion</label> <div class="control"> <div class="select is-fullwidth"> <select id="religion_id" ref="religion_id"> <option each="{religion}" riot-value="{religion_id}">{religion} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="">Language</label> <input class="input" ref="language" type="text"> </div> <div class="column is-one-third"> <label class="label" for="category_id">Cast Category</label> <div class="control"> <div class="select is-fullwidth"> <select ref="category_id"> <option each="{cast}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="dob">DOB</label> <input class="input date" ref="dob" type="text"> </div> <div class="column is-one-third"> <label class="label" for="residence_phone">Phone(R)</label> <input class="input" ref="residence_phone" type="number"> </div> <div class="column is-one-third"> <label class="label" for="Office_phone">Phone(O)</label> <input class="input" ref="office_phone" type="number"> </div> <div class="column is-one-third"> <label class="label" for="Office_phone">Emp ID</label> <input class="input" ref="employee_id" type="text"> </div> <div class="column is-one-third"> <label class="label" for="Moble">Mobile</label> <input class="input" ref="mobile" type="number"> </div> <div class="column is-one-third"> <label class="label" for="Office_phone">Email</label> <input class="input" ref="email" type="text"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Contact Information(Permanent Address)</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="add_l1">Address Line 1</label> <input class="input" ref="add_l1" type="text"> </div> <div class="column is-one-third"> <label class="label" for="add_l2">Address Line 2</label> <input class="input" ref="add_l2" type="text"> </div> <div class="column is-one-third"> <label class="label" for="city">City</label> <input class="input" ref="city" type="text"> </div> <div class="column is-one-third"> <label class="label" for="zip">Zip</label> <input class="input" ref="zip" type="number"> </div> <div class="column is-one-third"> <label class="label" for="state">State</label> <input class="input" ref="state" type="text"> </div> <div class="column is-one-third"> <label class="label" for="country">Country</label> <input class="input" ref="country" type="text"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link"> Check if Correspondence Address is same as Permanent Address <input type="checkbox" id="correspondenceCheckbox" name="correspondenceCheckbox" onclick="{copyAddress.bind(this)}"> </h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="c_add_l1">Address Line 1</label> <input class="input" ref="c_add_l1" type="text"> </div> <div class="column is-one-third"> <label class="label" for="c_add_l2">Address Line 2</label> <input class="input" ref="c_add_l2" type="text"> </div> <div class="column is-one-third"> <label class="label" for="c_city">City</label> <input class="input" ref="c_city" type="text"> </div> <div class="column is-one-third"> <label class="label" for="c_zip">Zip</label> <input class="input" ref="c_zip" type="number"> </div> <div class="column is-one-third"> <label class="label" for="c_state">State</label> <input class="input" ref="c_state" type="text"> </div> <div class="column is-one-third"> <label class="label" for="c_country">Country</label> <input class="input" ref="c_country" type="text"> </div> <div class="column is-full"> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-full"> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addFamilyInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_family_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Family</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="column is-one-third"> <label class="label" for="marital_status">Marital Status</label> <div class="control"> <div class="select is-fullwidth"> <select id="marital_status" ref="marital_status"> <option value="S">Single</option> <option value="M">Married</option> </select> </div> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_occupation">Father Name</label> <input class="input" id="father_name" ref="father_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Father Occupation</label> <input class="input" id="father_occupation" ref="father_occupation" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Spouse\'s Name</label> <input class="input" id="" ref="spouse" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Spouse\'s Occupation</label> <input class="input" id="" ref="spouse_occupation" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_organisation_name">Anniversary</label> <input class="input date" ref="anniversary" type="date"> </div> </div> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Child1</h2> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">First Name</label> <input class="input" ref="child1_first_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Last Name</label> <input class="input" ref="child1_last_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="gender">Gender</label> <div class="control"> <div class="select is-fullwidth"> <select id="sex" ref="child1_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="">Dob</label> <input class="input date" ref="child1_dob" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">School</label> <input class="input" ref="child1_school" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Child2</h2> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">First Name</label> <input class="input" ref="child2_first_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Last Name</label> <input class="input" ref="child2_last_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="gender">Gender</label> <div class="control"> <div class="select is-fullwidth"> <select id="sex" ref="child2_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="">Dob</label> <input class="input date" ref="child2_dob" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">School</label> <input class="input" ref="child2_school" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Child3</h2> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">First Name</label> <input class="input" ref="child3_first_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Last Name</label> <input class="input" ref="child3_last_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="gender">Gender</label> <div class="control"> <div class="select is-fullwidth"> <select id="sex" ref="child3_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="">Dob</label> <input class="input date" ref="child3_dob" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">School</label> <input class="input" ref="child3_school" type="text"> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeFamilyInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addQualificationInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_qualification_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Qualification</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="column is-one-third"> <label class="label" for=""><h2>Academic Qualification</h2></label> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">X information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">X Subject </label> <input class="input" ref="x_subject" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">X Instituition</label> <input class="input" ref="x_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">X Board</label> <input class="input" ref="x_board" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">X YOP</label> <input class="input" ref="x_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">X Marks</label> <input class="input" ref="x_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">X Division</label> <input class="input" ref="x_div" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">XII information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">XII Subject </label> <input class="input" ref="xii_subject" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">XII Instituition</label> <input class="input" ref="xii_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">XII Board</label> <input class="input" ref="xii_board" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">XII YOP</label> <input class="input" ref="xii_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">XII Marks</label> <input class="input" ref="xii_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">XII Division</label> <input class="input" ref="xii_div" type="text"> </div> </div> <div class="column is-one-third"> <label class="label" for=""><h2>Professional Qualification</h2></label> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">UG information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">UG Course </label> <input class="input" ref="ug_course" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">UG Instituition</label> <input class="input" ref="ug_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">UG University</label> <input class="input" ref="ug_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">UG YOP</label> <input class="input" ref="ug_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">UG Marks</label> <input class="input" ref="ug_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">UG Division</label> <input class="input" ref="ug_div" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">PG information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">PG Course </label> <input class="input" ref="pg_course" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">PG Instituition</label> <input class="input" ref="pg_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">PG University</label> <input class="input" ref="pg_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">PG YOP</label> <input class="input" ref="pg_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">PG Marks</label> <input class="input" ref="pg_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">PG Division</label> <input class="input" ref="pg_div" type="text"> </div> </div> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeQualificationInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addProfessionalCourseInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_professional_course_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">B.Ed. information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">B.Ed. stream </label> <input class="input" ref="bed_stream" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.Ed. Instituition</label> <input class="input" ref="bed_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.Ed. University</label> <input class="input" ref="bed_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.Ed. YOP</label> <input class="input" ref="bed_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.Ed. Marks</label> <input class="input" ref="bed_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.Ed. Division</label> <input class="input" ref="bed_div" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">B.T. information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">B.T. Stream </label> <input class="input" ref="bt_stream" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.T. Instituition</label> <input class="input" ref="bt_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.T. University</label> <input class="input" ref="bt_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.T. YOP</label> <input class="input" ref="bt_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.T. Marks</label> <input class="input" ref="bt_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.T. Division</label> <input class="input" ref="bt_div" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">B.P.Ed. information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">B.P.Ed. stream </label> <input class="input" ref="bped_stream" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.P.Ed. Instituition</label> <input class="input" ref="bped_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.P.Ed. University</label> <input class="input" ref="bped_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.P.Ed. YOP</label> <input class="input" ref="bped_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.P.Ed. Marks</label> <input class="input" ref="bped_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">B.P.Ed. Division</label> <input class="input" ref="bped_div" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">D.P.Ed. information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">D.P.Ed. Stream </label> <input class="input" ref="dped_stream" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">D.P.Ed. Instituition</label> <input class="input" ref="dped_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">D.P.Ed. University</label> <input class="input" ref="dped_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">D.P.Ed. YOP</label> <input class="input" ref="dped_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">D.P.Ed. Marks</label> <input class="input" ref="dped_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">D.P.Ed. Division</label> <input class="input" ref="dped_div" type="text"> </div> </div> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeProfessionalCourseInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addProfessionalMasterCourseInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_professional_master_course_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">M.P.Ed. information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">M.P.Ed. stream </label> <input class="input" ref="mped_stream" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.P.Ed. Instituition</label> <input class="input" ref="mped_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.P.Ed. University</label> <input class="input" ref="mped_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.P.Ed. YOP</label> <input class="input" ref="mped_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.P.Ed. Marks</label> <input class="input" ref="mped_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.P.Ed. Division</label> <input class="input" ref="mped_div" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">M.Ed. information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">M.Ed. Stream </label> <input class="input" ref="med_stream" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.Ed. Instituition</label> <input class="input" ref="med_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.Ed. University</label> <input class="input" ref="med_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.Ed. YOP</label> <input class="input" ref="med_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.Ed. Marks</label> <input class="input" ref="med_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.Ed. Division</label> <input class="input" ref="med_div" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">M.Phil information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">M.Phil stream </label> <input class="input" ref="mphil_stream" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.Phil Instituition</label> <input class="input" ref="mphil_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.Phil University</label> <input class="input" ref="mphil_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.Phil YOP</label> <input class="input" ref="mphil_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.Phil Marks</label> <input class="input" ref="mphil_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">M.Phil Division</label> <input class="input" ref="mphil_div" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">Phd. information</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">Phd. Stream </label> <input class="input" ref="phd_stream" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Phd. Instituition</label> <input class="input" ref="phd_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Phd. University</label> <input class="input" ref="phd_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Phd. YOP</label> <input class="input" ref="phd_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Phd. Marks</label> <input class="input" ref="phd_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Phd. Division</label> <input class="input" ref="phd_div" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">Other Qualification</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">Other Stream </label> <input class="input" ref="other_stream" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Other Instituition</label> <input class="input" ref="other_institution" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Other University</label> <input class="input" ref="other_university" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Other YOP</label> <input class="input" ref="other_yop" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Other Marks</label> <input class="input" ref="other_marks" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Other Division</label> <input class="input" ref="other_div" type="text"> </div> </div> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeProfessionalMasterCourseInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addExtraActivityInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_extra_activity_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">Extra Activities</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="f_designation">Scholarship Detail </label> <input class="input" ref="details_scholarship" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Awards/Honours Detail</label> <input class="input" ref="details_honours" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Publication Detail</label> <input class="input" ref="details_publication" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Curricular Activities Detail</label> <input class="input" ref="details_curricular_activities" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Sports Detail</label> <input class="input" ref="details_sport" type="text"> </div> </div> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeExtraActivityInformation}"> Previous </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{addPrevoiusJob}"> Next </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_previous_job_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">Particulars of Previous Job</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="">Organization Name</label> <input class="input" ref="organization_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Address Line 1</label> <input class="input" ref="add_l1_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Address Line 2</label> <input class="input" ref="add_l2_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">City</label> <input class="input" ref="city_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Zip</label> <input class="input" ref="zip_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">State</label> <input class="input" ref="state_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Country</label> <input class="input" ref="country_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Designation</label> <input class="input" ref="designation_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Date of Joining</label> <input class="input date" ref="doj_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Salary</label> <input class="input" ref="salary_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Basic</label> <input class="input" ref="basic_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Allowances</label> <input class="input" ref="allowances_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Other Benefits</label> <input class="input" ref="other_benefits_of_previous_job" type="text"> </div> <div class="column is-one-third"> <label class="label" for="">Bond Details</label> <input class="input" ref="bond_details_of_previous_job" type="text"> </div> </div> <div class="label"> <div class="level-left"> <h4 class="title" style="color: #ff3860;">Work Profile</h4> </div> </div> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label" for="">Qualification</label> <input class="input" ref="qualification" type="text"> </div> <div class="column is-one-third"> <label class="label" for="dob">Date of Joining</label> <input class="input date" ref="doj" type="text"> </div> <div class="column is-one-third"> <label class="label" for="category_id">Specialization</label> <div class="control"> <div class="select is-fullwidth"> <select ref="subject_id"> <option each="{subjects}" riot-value="{subject_id}">{subject_name} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="">Employee Type</label> <div class="control"> <div class="select is-fullwidth"> <select ref="emp_type_id"> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="">Designation</label> <div class="control"> <div class="select is-fullwidth"> <select ref="designation_id"> <option each="{designations}" riot-value="{designation_id}">{designation} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="">Department</label> <div class="control"> <div class="select is-fullwidth"> <select ref="department_id"> <option each="{departments}" riot-value="{department_id}">{department_name} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="designation_id">Level</label> <div class="control"> <div class="select is-fullwidth"> <select ref="level_id"> <option each="{levels}" riot-value="{level_id}">{level} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="">Employment Status</label> <div class="control"> <div class="select is-fullwidth"> <select ref="employment_status_id"> <option each="{employmentStatus}" riot-value="{employment_status_id}">{employment_status} </option> </select> </div> </div> </div> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closePreviousJob}"> << Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addInformation}"> Submit </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <div id="statusModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Update Status</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <label class="label" for="role">Leaving Date</label> <div class="control"> <input class="input date" type="text" ref="leaving_date"> </div> </div> </div> <div class="column"> <div class="field"> <label class="label" for="role">Remarks</label> <div class="control"> <textarea class="input" type="text" ref="remark" rows="3"></textarea> </div> </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{updateEmployeeStatus}">{title}</button> <button class="button" id="item-modal-close" onclick="{closeStatusUpdateModal}">Cancel</button> </footer> </div> </div> <section class=" is-fluid" show="{staff_view ==\'staff_profile\'}"> <div class="level"> <div class="level-left"> <h2 class="title">Profile of {first_name} {middle_name} {last_name}</h2> </div> <div class="level-right"> <a class="button no-print" onclick="{close_staff_profile}">Back</a> </div> </div> <table class="table is-fullwidth is-bordered"> <tr> <td rowspan="4" colspan="2"> <img id="pp_box1" width="90" height="90"> </td> <td colspan="2" style="background-color:#efefef"><b>Login ID</b></td> <td colspan="3">{employee_id}</td> </tr> <tr> <th>Name</th> <td>{first_name} {middle_name} {last_name}</td> <th>Short Name</th> <td colspan="2">{st.short_name}</td> </tr> <tr> <th>Gender</th> <td>{gender} </td> <th>Blood Group</th> <td colspan="2">{blood_group}</td> </tr> <tr> <th>Category</th> <td colspan="2">{category_name}</td> <th>Date of Birth</th> <td>{dob}</td> </tr> <tr> <th>Marital Status</th> <td>{marital_status}</td> <th>Date of Marriage</th> <td>{dom}</td> <th colspan="2">Husband/Wife Name</th> <td>{spouse}</td> </tr> <tr> <th colspan="2">Permanent Address</th> <td colspan="5">{add_l1} , {add_l2}, {city} , {state}-{zip}, {country}</td> </tr> <tr> <th colspan="2">Correspondence Address</th> <td colspan="5">{c_add_l1} , {c_add_l2}, {c_city} , {c_state}-{c_zip}, {c_country}</td> </tr> <tr> <th colspan="2">Phone(O)</th> <td>{office_phoe}</td> <th colspan="2">Mobile</th> <td>{mobile}</td> </tr> <tr> <th colspan="2">Email</th> <td colspan="5">{email}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Work Profile</th> </tr> <tr> <th colspan="2">Phone(O)</th> <td>{office_phoe}</td> <th colspan="2">Mobile</th> <td>{mobile}</td> </tr> <tr> <th>Qulaification</th> <td colspan="2">{qualification}</td> <th colspan="2">Date of Joining</th> <td>{doj}</td> </tr> <tr> <th colspan="2">Specialization</th> <td>{specialization}</td> <th colspan="2">Employee Type</th> <td>{emp_type}</td> </tr> <tr> <th colspan="2">Designation</th> <td>{designation}</td> <th colspan="2">Department</th> <td>{department_name}</td> </tr> <tr> <th colspan="2">Level</th> <td>{level_name}</td> <th colspan="2">Employment Status</th> <td>{employment_status}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7"><b>Academic Qualification</b></th> </tr> <tr><th colspan="7">X Infrmation</th></tr> <tr> <th>Subject</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{x_subject}</td> <td>{x_institution}</td> <td>{x_board}</td> <td>{x_yop}</td> <td>{x_marks}</td> <td>{x_div}</td> </tr> <tr><th colspan="7">XII Infrmation</th></tr> <tr> <th>Subject</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{xii_subject}</td> <td>{xii_institution}</td> <td>{xii_board}</td> <td>{xii_yop}</td> <td>{xii_marks}</td> <td>{xii_div}</td> </tr> <tr><th colspan="7">UG Infrmation</th></tr> <tr> <th>Course</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{ug_course}</td> <td>{ug_institution}</td> <td>{ug_board}</td> <td>{ug_yop}</td> <td>{ug_marks}</td> <td>{ug_div}</td> </tr> <tr><th colspan="7">PG Infrmation</th></tr> <tr> <th>Course</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{pg_course}</td> <td>{pg_institution}</td> <td>{pg_board}</td> <td>{pg_yop}</td> <td>{pg_marks}</td> <td>{pg_div}</td> </tr> <tr><th colspan="7">B.Ed Infrmation</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bed_stream}</td> <td>{bed_institution}</td> <td>{bed_board}</td> <td>{bed_yop}</td> <td>{bed_marks}</td> <td>{bed_div}</td> </tr> <tr><th colspan="7">B.T Infrmation</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bt_stream}</td> <td>{bt_institution}</td> <td>{bt_board}</td> <td>{bt_yop}</td> <td>{bt_marks}</td> <td>{bt_div}</td> </tr> <tr><th colspan="7">B. P. Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bped_stream}</td> <td>{bped_institution}</td> <td>{bped_board}</td> <td>{bped_yop}</td> <td>{bped_marks}</td> <td>{bped_div}</td> </tr> <tr><th colspan="7">D.P.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{dped_stream}</td> <td>{dped_institution}</td> <td>{dped_board}</td> <td>{dped_yop}</td> <td>{dped_marks}</td> <td>{dped_div}</td> </tr> <tr><th colspan="7">M.P.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{mped_stream}</td> <td>{mped_institution}</td> <td>{mped_board}</td> <td>{mped_yop}</td> <td>{mped_marks}</td> <td>{mped_div}</td> </tr> <tr><th colspan="7">M.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{med_stream}</td> <td>{med_institution}</td> <td>{med_board}</td> <td>{med_yop}</td> <td>{med_marks}</td> <td>{med_div}</td> </tr> <tr><th colspan="7">M.Phil. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{mphil_stream}</td> <td>{mphil_institution}</td> <td>{mphil_board}</td> <td>{mphil_yop}</td> <td>{mphil_marks}</td> <td>{mphil_div}</td> </tr> <tr><th colspan="7">Phd. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{phd_stream}</td> <td>{phd_institution}</td> <td>{phd_board}</td> <td>{phd_yop}</td> <td>{phd_marks}</td> <td>{phd_div}</td> </tr> <tr><th colspan="7">Other Qualification</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{other_stream}</td> <td>{other_institution}</td> <td>{other_board}</td> <td>{other_yop}</td> <td>{other_marks}</td> <td>{other_div}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Extra Activities</th> </tr> <tr> <th colspan="2">Scholarship Details</th> <td colspan="2">{details_scholarship}</td> <th colspan="2">Awards/honours Details</th> <td>{details_honours}</td> </tr> <tr> <th colspan="2">Publication Details</th> <td>{details_publication}</td> <th colspan="3">Curricular Activities Details</th> <td>{details_curricular_activities}</td> </tr> <tr> <th colspan="3">Sports Detail</th> <td colspan="4">{details_sport}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Working Experience</th> </tr> <tr> <th>Institution</th> <th>DOJ</th> <th>DOL</th> <th>Position</th> <th>Subject Taught</th> </tr> <tr> <td>{work_institution}</td> <td>{doj}</td> <td>{dol}</td> <td>{position}</td> <td>{subject_taught}</td> </tr> </table> </section>', '', '', function(opts) {
+riot.tag2('staff', '<section class=" is-fluid" show="{staff_view ==\'show_staff\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Staff</h2> </div> <div class="level-right"> <div> <button class="button is-small" onclick="{add_new_staff}"> <span class="icon"> <span class="fas fa-plus"></span> </span> <span>New Staff</span> </button> </div> <div> <button class="button is-small" onclick="{update_staff_status}"> Leaving Status </button> </div> <div> <button class="button is-small" onclick="{allowBlockStaff}"> Allow/Block </button> </div> <div> <button class="button is-small" onclick="{resetStaffPassword}"> Reset Password </button> </div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="r_emp_type_id"> <option>Type</option> <option riot-value="{-1}">All</option> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_designation_id"> <option>Designation</option> <option each="{designations}" riot-value="{designation_id}">{designation} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_level_id"> <option>Level</option> <option each="{levels}" riot-value="{level_id}">{level} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_department_id"> <option>Department</option> <option each="{departments}" riot-value="{department_id}">{department_name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getStaffData}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Emp ID</th> <th>Name</th> <th>Department</th> <th>Designation</th> <th>Mobile</th> <th>Status</th> <th>Email</th> <th>Active</th> <th></th> </tr> </thead> <tbody> <tr each="{st, i in staffs}"> <td><input type="checkbox" class="id_check_box" id="{\'EmpId\' + st.emp_id}" onclick="{selectStaff.bind(this,st)}"> </td> <td>{st.employee_id}</td> <td>{st.first_name} {st.middle_name} {st.last_name}</td> <td>{st.department_name}</td> <td>{st.designation}</td> <td>{st.mobile}</td> <td>{st.employment_status}</td> <td>{st.email}</td> <td>{st.is_active}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{st.confirmDelete}"> <span><a class="button is-small is-rounded has-text-success" onclick="{printProfile.bind(this, st.emp_id)}">Profile</a></span> <span><a class="button is-small is-rounded has-text-success" onclick="{edit.bind(this, st.emp_id)}">Edit</a></span> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{st.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <section class=" is-fluid" show="{staff_view ==\'add_staff\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Staff</h2> </div> <div class="level-right"></div> </div> <div class="box"> <div class="columns is-multiline"> <div class="column is-one-fifth"> <div id="pp_box" class="pp-box" onclick="{trigger_file_input.bind(this,\'staff_picture\')}"> <div class="icon has-text-danger" onclick="{remove_picture.bind(this, \'pp_box\',\'staff_picture\')}"><i class="fas fa-trash"></i> </div> </div> <input accept="image/*" class="is-hidden" id="staff_picture" name="staff_picture" onchange="{loadFile.bind(this, \'pp_box\')}" type="file"> </div> <div class="column "> <div class="columns "> <div class="column is-2"> <label class="label is-small" for="first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" id="first_name" ref="first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="middle_name">Middle Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="middle_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="last_name">Last Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="last_name" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="last_name">Short Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="short_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="gender" ref="gender"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Identification Marks</label> </div> <div class="column is-2"> <input class="input is-small" ref="id_mark" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="blood_group">Blood Group</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="blood_group" ref="blood_group"> <option value="A+">A+</option> <option value="A-">A-</option> <option value="AB+">AB+</option> <option value="AB-">AB-</option> <option value="B+">B+</option> <option value="B-">B-</option> <option value="O+">O+</option> <option value="O-">O-</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="dob">Place of Birth</label> </div> <div class="column is-2"> <input class="input is-small" ref="place_of_birth" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="dob">Nationality</label> </div> <div class="column is-2"> <input class="input is-small" ref="nationality" type="text"> </div> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="religion_id">Religion</label> </div> <div class="column is-2"> <div class="control"> <div class="select is-fullwidth is-small"> <select id="religion_id" ref="religion_id"> <option each="{religion}" riot-value="{religion_id}">{religion} </option> </select> </div> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Language</label> </div> <div class="column is-2"> <input class="input is-small" ref="language" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="category_id">Cast Category</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="category_id"> <option each="{cast}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="dob">DOB</label> </div> <div class="column is-2"> <input class="input date is-small" ref="dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="residence_phone">Phone(R)</label> </div> <div class="column is-2"> <input class="input is-small" ref="residence_phone" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="Office_phone">Phone(O)</label> </div> <div class="column is-2"> <input class="input is-small" ref="office_phone" type="number"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="Moble">Mobile</label> </div> <div class="column is-2"> <input class="input is-small" ref="mobile" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="Office_phone">Email</label> </div> <div class="column is-2"> <input class="input is-small" ref="email" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information(Permanent Address)</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" ref="add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="add_l2">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" ref="zip" maxlength="6" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="state" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link"> Check if Correspondence Address is same as Permanent Address <input type="checkbox" id="correspondenceCheckbox" name="correspondenceCheckbox" onclick="{copyAddress.bind(this)}"> </h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="c_add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_add_l2">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="c_zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_zip" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="c_state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_state" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addFamilyInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_family_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Family</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="marital_status">Marital Status</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="marital_status" ref="marital_status"> <option value="S">Single</option> <option value="M">Married</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="f_occupation">Father Name</label> </div> <div class="column is-2 "> <input class="input is-small" id="father_name" ref="father_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Father Occupation</label> </div> <div class="column is-2"> <input class="input is-small" id="father_occupation" ref="father_occupation" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Spouse\'s Name</label> </div> <div class="column is-2"> <input class="input is-small" id="" ref="spouse" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Spouse\'s Occupation</label> </div> <div class="column is-2 "> <input class="input is-small" id="" ref="spouse_occupation" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_organisation_name">Anniversary</label> </div> <div class="column is-2"> <input class="input date is-small" ref="anniversary" type="date"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Child1</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="child1_first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="child1_first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Last Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child1_last_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="sex" ref="child1_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Dob</label> </div> <div class="column is-2"> <input class="input date is-small" ref="child1_dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">School</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child1_school" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Child2</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="child2_first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="child2_first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Last Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child2_last_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="sex" ref="child2_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Dob</label> </div> <div class="column is-2"> <input class="input date is-small" ref="child2_dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">School</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child2_school" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Child3</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="child3_first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="child3_first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Last Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child3_last_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="sex" ref="child3_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Dob</label> </div> <div class="column is-2"> <input class="input date is-small" ref="child3_dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">School</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child3_school" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeFamilyInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addQualificationInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_qualification_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Qualification</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Academic Qualification</h3> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">X information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="x_subject">X Subject </label> </div> <div class="column is-2"> <input class="input is-small" ref="x_subject" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="x_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Board</label> </div> <div class="column is-2"> <input class="input is-small" ref="x_board" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">X YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="x_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="x_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="x_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">XII information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="xii_subject">XII Subject </label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_subject" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="xii_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Board</label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_board" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">XII YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="xii_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Professional Qualification</h3> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">UG information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="ug_course">UG Course </label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_course" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="ug_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG University</label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">UG YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="ug_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">PG information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="pg_course">PG Course </label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_course" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="pg_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG University</label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">PG YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="pg_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeQualificationInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addProfessionalCourseInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_professional_course_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">B.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="bed_stream">B.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bed_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">B.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bed_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">B.T. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="bt_stream">B.T. Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bt_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">B.T. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bt_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">B.P.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="bped_stream">B.P.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bped_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bped_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">D.P.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="dped_stream">D.P.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="dped_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="dped_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeProfessionalCourseInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addProfessionalMasterCourseInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_professional_master_course_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">M.P.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="mped_stream">M.P.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mped_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mped_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">M.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="med_stream">M.Ed. Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="med_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="med_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="med_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">M.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="med_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="med_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="med_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">M.Phil information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="mphil_stream">M.Phil stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mphil_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil University</label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">M.Phil YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mphil_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Phd. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="phd_stream">Phd. Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="phd_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Phd. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="phd_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Other information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="other_stream">Other Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="other_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="other_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other University</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Other YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="other_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeProfessionalMasterCourseInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addExtraActivityInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_extra_activity_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Other information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="details_scholarship">Scholarship Detail </label> </div> <div class="column is-2"> <input class="input is-small" ref="details_scholarship" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Awards/Honours Detail</label> </div> <div class="column is-2 "> <input class="input is-small" ref="details_honours" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Publication Detail</label> </div> <div class="column is-2"> <input class="input is-small" ref="details_publication" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Curricular Activities Detail</label> </div> <div class="column is-2"> <input class="input is-small" ref="details_curricular_activities" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Sports Detail</label> </div> <div class="column is-2 "> <input class="input is-small" ref="details_sport" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeExtraActivityInformation}"> Previous </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{addPrevoiusJob}"> Next </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_previous_job_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Particulars of Previous Job</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Organization Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="organization_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Address Line 1</label> </div> <div class="column is-2 "> <input class="input is-small" ref="add_l1_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="add_l2_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="city_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Zip</label> </div> <div class="column is-2 "> <input class="input is-small" ref="zip_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="state_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="country_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Designation</label> </div> <div class="column is-2 "> <input class="input is-small" ref="designation_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Date of Joining</label> </div> <div class="column is-2"> <input class="input date is-small" ref="doj_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Salary</label> </div> <div class="column is-2"> <input class="input is-small" ref="salary_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Basic</label> </div> <div class="column is-2 "> <input class="input is-small" ref="basic_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Allowances</label> </div> <div class="column is-2"> <input class="input is-small" ref="allowances_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Other Benefits</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_benefits_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Bond Details</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bond_details_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Work Profile</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Qualification</label> </div> <div class="column is-2"> <input class="input is-small" ref="qualification" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="doj">Date of Joining</label> </div> <div class="column is-2 "> <input class="input date is-small" ref="doj" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="subject_id">Specialization</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="subject_id"> <option each="{subjects}" riot-value="{subject_id}">{subject_name} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Employee Type</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="emp_type_id"> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Designation</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select ref="designation_id"> <option each="{designations}" riot-value="{designation_id}">{designation} </option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Department</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="department_id"> <option each="{departments}" riot-value="{department_id}">{department_name} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="level_id">Level</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="level_id"> <option each="{levels}" riot-value="{level_id}">{level} </option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Employment Status</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select ref="employment_status_id"> <option each="{employmentStatus}" riot-value="{employment_status_id}">{employment_status} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closePreviousJob}"> << Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addInformation}"> Submit </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <div id="statusModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Update Status</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <label class="label" for="role">Leaving Date</label> <div class="control"> <input class="input date" type="text" ref="leaving_date"> </div> </div> </div> <div class="column"> <div class="field"> <label class="label" for="role">Remarks</label> <div class="control"> <textarea class="input" type="text" ref="remark" rows="3"></textarea> </div> </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{updateEmployeeStatus}">{title}</button> <button class="button" id="item-modal-close" onclick="{closeStatusUpdateModal}">Cancel</button> </footer> </div> </div> <section class=" is-fluid" show="{staff_view ==\'staff_profile\'}"> <div class="level"> <div class="level-left"> <h2 class="title">Profile of {first_name} {middle_name} {last_name}</h2> </div> <div class="level-right"> <a class="button no-print" onclick="{close_staff_profile}">Back</a> </div> </div> <table class="table is-fullwidth is-bordered"> <tr> <td rowspan="4" colspan="2"> <img id="pp_box1" width="90" height="90"> </td> <td colspan="2" style="background-color:#efefef"><b>Login ID</b></td> <td colspan="3">{employee_id}</td> </tr> <tr> <th>Name</th> <td>{first_name} {middle_name} {last_name}</td> <th>Short Name</th> <td colspan="2">{st.short_name}</td> </tr> <tr> <th>Gender</th> <td>{gender} </td> <th>Blood Group</th> <td colspan="2">{blood_group}</td> </tr> <tr> <th>Category</th> <td colspan="2">{category_name}</td> <th>Date of Birth</th> <td>{dob}</td> </tr> <tr> <th>Marital Status</th> <td>{marital_status}</td> <th>Date of Marriage</th> <td>{dom}</td> <th colspan="2">Husband/Wife Name</th> <td>{spouse}</td> </tr> <tr> <th colspan="2">Permanent Address</th> <td colspan="5">{add_l1} , {add_l2}, {city} , {state}-{zip}, {country}</td> </tr> <tr> <th colspan="2">Correspondence Address</th> <td colspan="5">{c_add_l1} , {c_add_l2}, {c_city} , {c_state}-{c_zip}, {c_country}</td> </tr> <tr> <th colspan="2">Phone(O)</th> <td>{office_phoe}</td> <th colspan="2">Mobile</th> <td>{mobile}</td> </tr> <tr> <th colspan="2">Email</th> <td colspan="5">{email}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Work Profile</th> </tr> <tr> <th colspan="2">Phone(O)</th> <td>{office_phoe}</td> <th colspan="2">Mobile</th> <td>{mobile}</td> </tr> <tr> <th>Qulaification</th> <td colspan="2">{qualification}</td> <th colspan="2">Date of Joining</th> <td>{doj}</td> </tr> <tr> <th colspan="2">Specialization</th> <td>{specialization}</td> <th colspan="2">Employee Type</th> <td>{emp_type}</td> </tr> <tr> <th colspan="2">Designation</th> <td>{designation}</td> <th colspan="2">Department</th> <td>{department_name}</td> </tr> <tr> <th colspan="2">Level</th> <td>{level_name}</td> <th colspan="2">Employment Status</th> <td>{employment_status}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7"><b>Academic Qualification</b></th> </tr> <tr><th colspan="7">X Infrmation</th></tr> <tr> <th>Subject</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{x_subject}</td> <td>{x_institution}</td> <td>{x_board}</td> <td>{x_yop}</td> <td>{x_marks}</td> <td>{x_div}</td> </tr> <tr><th colspan="7">XII Infrmation</th></tr> <tr> <th>Subject</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{xii_subject}</td> <td>{xii_institution}</td> <td>{xii_board}</td> <td>{xii_yop}</td> <td>{xii_marks}</td> <td>{xii_div}</td> </tr> <tr><th colspan="7">UG Infrmation</th></tr> <tr> <th>Course</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{ug_course}</td> <td>{ug_institution}</td> <td>{ug_board}</td> <td>{ug_yop}</td> <td>{ug_marks}</td> <td>{ug_div}</td> </tr> <tr><th colspan="7">PG Infrmation</th></tr> <tr> <th>Course</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{pg_course}</td> <td>{pg_institution}</td> <td>{pg_board}</td> <td>{pg_yop}</td> <td>{pg_marks}</td> <td>{pg_div}</td> </tr> <tr><th colspan="7">B.Ed Infrmation</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bed_stream}</td> <td>{bed_institution}</td> <td>{bed_board}</td> <td>{bed_yop}</td> <td>{bed_marks}</td> <td>{bed_div}</td> </tr> <tr><th colspan="7">B.T Infrmation</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bt_stream}</td> <td>{bt_institution}</td> <td>{bt_board}</td> <td>{bt_yop}</td> <td>{bt_marks}</td> <td>{bt_div}</td> </tr> <tr><th colspan="7">B. P. Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bped_stream}</td> <td>{bped_institution}</td> <td>{bped_board}</td> <td>{bped_yop}</td> <td>{bped_marks}</td> <td>{bped_div}</td> </tr> <tr><th colspan="7">D.P.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{dped_stream}</td> <td>{dped_institution}</td> <td>{dped_board}</td> <td>{dped_yop}</td> <td>{dped_marks}</td> <td>{dped_div}</td> </tr> <tr><th colspan="7">M.P.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{mped_stream}</td> <td>{mped_institution}</td> <td>{mped_board}</td> <td>{mped_yop}</td> <td>{mped_marks}</td> <td>{mped_div}</td> </tr> <tr><th colspan="7">M.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{med_stream}</td> <td>{med_institution}</td> <td>{med_board}</td> <td>{med_yop}</td> <td>{med_marks}</td> <td>{med_div}</td> </tr> <tr><th colspan="7">M.Phil. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{mphil_stream}</td> <td>{mphil_institution}</td> <td>{mphil_board}</td> <td>{mphil_yop}</td> <td>{mphil_marks}</td> <td>{mphil_div}</td> </tr> <tr><th colspan="7">Phd. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{phd_stream}</td> <td>{phd_institution}</td> <td>{phd_board}</td> <td>{phd_yop}</td> <td>{phd_marks}</td> <td>{phd_div}</td> </tr> <tr><th colspan="7">Other Qualification</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{other_stream}</td> <td>{other_institution}</td> <td>{other_board}</td> <td>{other_yop}</td> <td>{other_marks}</td> <td>{other_div}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Extra Activities</th> </tr> <tr> <th colspan="2">Scholarship Details</th> <td colspan="2">{details_scholarship}</td> <th colspan="2">Awards/honours Details</th> <td>{details_honours}</td> </tr> <tr> <th colspan="2">Publication Details</th> <td>{details_publication}</td> <th colspan="3">Curricular Activities Details</th> <td>{details_curricular_activities}</td> </tr> <tr> <th colspan="3">Sports Detail</th> <td colspan="4">{details_sport}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Working Experience</th> </tr> <tr> <th>Institution</th> <th>DOJ</th> <th>DOL</th> <th>Position</th> <th>Subject Taught</th> </tr> <tr> <td>{work_institution}</td> <td>{doj}</td> <td>{dol}</td> <td>{position}</td> <td>{subject_taught}</td> </tr> </table> </section>', '', '', function(opts) {
 
 	var self = this
     self.on("mount", function(){
@@ -18094,7 +19278,7 @@ riot.tag2('student-withdrawn-student', '<loading-bar if="{loading}"></loading-ba
     }
 
 });
-riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_student\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Students</h2> </div> <div class="level-right"> <button class="button is-primary is-rounded" onclick="{print_list}"> <span>Print List</span> </button> <button class="button is-primary is-rounded ml10" onclick="{student_list}"> <span>Student List</span> </button> <button class="button is-primary is-rounded ml10" onclick="{regenerate_roll_no}"> <span>Regenerate Roll No</span> </button> <button class="button is-warning is-rounded ml10" onclick="{add_new_student}"> <span class="icon"> <span class="fas fa-plus"></span> </span> <span>New Student</span> </button> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="read_standard_id" onchange="{getReadSection}"> <option>Choose Section</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="read_section_id"> <option>Choose Class</option> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column is-one-third"> <input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No"> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getStudentData}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>Roll no</th> <th>Student Name</th> <th>Enroll No</th> <th>Registration No</th> <th>SMS</th> <th>Father\'s Name</th> <th></th> </tr> </thead> <tbody> <tr each="{st, i in students}"> <td>{st.roll_number}</td> <td>{st.name}</td> <td>{st.enroll_number}</td> <td>{st.reg_number}</td> <td>{st.mobile}</td> <td>{st.f_name}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{st.confirmDelete}"> <span><a class="button is-small is-rounded " onclick="{withdraw_student.bind(this, st.student_id)}">WithDraw Student</a></span> <span><a class="button is-small is-rounded" onclick="{view_profile.bind(this, st.student_id)}">Profile</a></span> <span><a class="button is-small is-rounded " onclick="{edit.bind(this, st.student_id)}">Edit</a></span> <span> <a class="button is-small is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{st.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <div id="withdrawModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">WithDraw</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <div class="control"> <label class="label" for="role">Date of Leaving</label> <input class="input date" ref="withdraw_date" type="text"> </div> </div> <div class="field"> <div class="control"> <label class="label" for="role">TC No</label> <input class="input" type="text" ref="tc_no"> </div> </div> <div class="control"> <label class="label" for="read_standard_id_for_withdraw">Standard</label> <div class="select is-fullwidth"> <select ref="read_standard_id_for_withdraw" id="read_standard_id_for_withdraw" onchange="{getReadSectionForWithdraw}"> <option>Choose Section</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> <div class="control"> <label class="label" for="read_section_id_for_withdraw">Section</label> <div class="select is-fullwidth"> <select ref="read_section_id_for_withdraw" id="read_section_id_for_withdraw"> <option>Choose Class</option> <option each="{readwithdrawfilteredSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> <div class="control"> <label class="label" for="withdraw_remarks">Reason</label> <textarea class="textarea" ref="withdraw_remarks" rows="2"></textarea> </div> </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{WithdrawStudent}">Add</button> <button class="button" id="item-modal-close" onclick="{closewithdrawModal}">Cancel</button> </footer> </div> </div> <section class=" is-fluid" show="{student_view ==\'print_list\'}"> <div class="level"> <div class="level-left"> </div> <div class="level-right"> <div class="control no-print"> <div class="select is-fullwidth"> <select id="add_column" ref="add_column" onchange="{AddColumn}"> <option value="0">Select Column</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> </select> </div> </div> <input type="checkbox" id="checkHouse" checked="{e.done}" onclick="{viewHouse}" class="no-print ml10"> <b class="no-print">House</b> <a class="button no-print ml10" onclick="{close_print_list}">Back</a> </div> </div> <center> <table class=" table" style="border-style:none;"> <tr style="border-style:none;"> <td style="padding-left:5px;border:none;width:100px"><img src="/images/school_small.png" height="60"></td> <td style="text-align:center;border-style:none"> <h2>M. C. Kejriwal Vidyapeeth</h2> <p style="text-align:center; font-size:12px;">243 G. T. Road(N) Liluah, Howrah - 711204, West Bengal, India <br> PHONE - (033) 2654-3387/89 - EMAIL - info@mckvie.edu.in - WEB - http://www.mckv.edu.in</p> </td> <td style="padding-right:5px;border:none;width:100px"> <img src="/images/nabet.JPG" height="60"> </td> </tr> </table> <hr style="border:none;border-top:solid #dd0000 2px;margin:10px 0;"> <div style=""> <div style="text-align:right;"> Printed on:{print_date} </div> </div> <table class="table is-fullwidth is-bordered" style=""> <caption class="caption">Students List {pl.standard} - {pl.section} ({pl.session_name}) </caption> </table> <div style="text-align:left;"> <table class="table is-fullwidth is-bordered"> <tr> <th style="">Roll No</th> <th style="">Enrol No</th> <th style="">Name</th> <th style="" show="{house_column}">House</th> <th show="{column_one}"></th> <th show="{column_two}"></th> <th show="{column_three}"></th> <th show="{column_four}"></th> <th show="{column_five}"></th> <th show="{column_six}"></th> <th show="{column_seven}"></th> <th show="{column_eight}"></th> <th show="{column_nine}"></th> </tr> <tr each="{pl, i in print_list}"> <td>{pl.roll_number}</td> <td>{pl.enroll_number}</td> <td>{pl.name}</td> <td show="{house_column}">{pl.house}</td> <td show="{column_one}"></td> <td show="{column_two}"></td> <td show="{column_three}"></td> <td show="{column_four}"></td> <td show="{column_five}"></td> <td show="{column_six}"></td> <td show="{column_seven}"></td> <td show="{column_eight}"></td> <td show="{column_nine}"></td> </tr> </table> </div> </center> </section> <section class=" is-fluid" show="{student_view ==\'student_list\'}"> <div class="level"> <div class="level-left"> </div> <div class="level-right"> <a class="button no-print" onclick="{close_student_list}">Back</a> </div> </div> <center> <table class=" " style="border-style:none;width:860px;"> <tr style="border-style:none;"> <td style="padding-left:5px;border:none;width:100px"><img src="/images/school_small.png" height="60"></td> <td style="text-align:center;border-style:none"> <h2>M. C. Kejriwal Vidyapeeth</h2> <p style="text-align:center; font-size:12px;">243 G. T. Road(N) Liluah, Howrah - 711204, West Bengal, India <br> PHONE - (033) 2654-3387/89 - EMAIL - info@mckvie.edu.in - WEB - http://www.mckv.edu.in</p> </td> <td style="padding-right:5px;border:none;width:100px"> <img src="/images/nabet.JPG" height="60"> </td> </tr> </table> <hr style="border:none;border-top:solid #dd0000 2px;margin:10px 0;width:860px;"> <div style="width:860px;"> <div style="text-align:right;"> Printed on:{print_date} </div> </div> <table class="table is-fullwidth is-bordered" style="width:860px;"><caption class="caption">Student Listing of {sl.standard} {sl.section}[{total_student}] </caption></table> <div style="text-align:left;width:860px;"> <table class="table is-fullwidth is-bordered"> <tr> <th style="">Sl No</th> <th style="">Enrol No</th> <th style="">Name</th> </tr> <tr each="{student, i in student_list}"> <td>{i +1}</td> <td>{student.enroll_number}</td> <td>{student.name}</td> </tr> </table> </div></center> </section> <section class=" is-fluid" show="{student_view ==\'student_profile\'}"> <div class="level"> <div class="level-left"> <h2 class="title">Profile of {st.first_name}{st.middle_name}{st.last_name}</h2> </div> <div class="level-right"> <a class="button no-print" onclick="{close_student_profile}">Back</a> </div> </div> <table class="table is-fullwidth is-bordered"> <caption class="caption"> Student\\\'s Information ({st.session_name})</caption> <tr> <td rowspan="4" colspan="2"> <img id="pp_box1" width="90" height="90"> </td> <td colspan="2" style="background-color:#efefef"><h>Student\\\'s Information</td> <td colspan="3"><h>Contact Information</td> </tr> <tr> <th>Date of Admission</th> <td>{st.doa}</td> <th>Father\'s Name</th> <td colspan="2">{st.f_name}</td> </tr> <tr> <th>Date of Joining</th> <td>{st.doj} </td> <th>Mother\'s Name</th> <td colspan="2">{st.m_name}</td> </tr> <tr> <th>Date of Birth</th> <td>{st.dob}</td> <th>Permanent Address </th> <td colspan="2">{st.p_add_l1} {st.p_add_l2}</td> </tr> <tr> <th> Name </th> <td> {st.first_name} {st.middle_name} {st.last_name}</td> <th>Nationality</th> <td>{st.nationality}</td><th>city </th><td colspan="2"> {st.p_city}</td> </tr> <tr> <th>Enroll No.</th> <td> {st.enroll_number}</td> <th>Gender</th> <td>{st.gender}</td> <th>State</th> <td colspan="2">{st.p_state}</td> </tr> <tr> <th>Reg. No.</th> <td> {st.reg_number}</td> <th>Category</th> <td>{st.category_name}</td> <th>Country</th> <td colspan="2">{st.p_country}</td> </tr> <tr> <th>Class / Sec:</th> <td> {st.standard} {st.section}</td> <th>Mother Tongue</th> <td>{st.mother_tongue}</td> <th>Zip</th> <td colspan="2">{st.p_zip} </td> </tr> <tr> <th>House</th> <td> {st.house_name}</td> <th>Religion</th> <td>{st.religion}</td> <th> Correspondence Address </th> <td colspan="2">{st.c_add_l1} {st.c_add_l2}, {st.c_city}-{st.c_zip}, {st.c_state}, {st.c_country}</td> </tr> <tr> <th>Blood Group</th> <td> {st.blood_group}</td> <th>Hobbies</th> <td> {st.hobby}</td> <th>Residence Phone </th> <td colspan="2">{st.residence_phone}</td> </tr> <tr> <th>Roll No.</th> <td>{st.roll_number}</td> <th>Admission for Class</th> <td>{st.admission_for_class}</td> <th>SMS No</th> <td colspan="2">{st.mobile}</td> </tr> <tr> <th>Reference Enrol</th> <td> {st.reference_enrol}</td> <th>Last Class Attended</th> <td>{st.last_class}</td> <th>Emergency No.</th> <td colspan="2">{st.fax}</td> </tr> <tr> <th>Aadhar No.</th> <td>{st.aadhar_no}</td> <th>Second Language</th> <td colspan="4">{st.second_language}</td> </tr> <tr> <td rowspan="4" colspan="2"> <img id="f_pp_box1" width="90" height="90"> </td> <td colspan="5" style="background-color:#efefef"><h>Father\\\'s Information</td></tr> <tr> <th>Examination Passed</th> <td>{st.f_school_exam_passed}</td> <th>Address</th> <td colspan="2">{st.f_add_l1} {st.f_add_l2}</td> </tr> <tr> <th>Other Qualification</th> <td>{st.f_college_exam_passed}</td> <th>City</th> <td colspan="2">{st.f_city}</td> </tr> <tr> <th>Nationality</th> <td>{st.f_nationality}</td> <th>State</th> <td colspan="2">{st.f_state}</td> </tr> <tr> <th>Name:</th> <td colspan="3"> {st.f_name}</td> <th>Country</th> <td colspan="2">{st.f_country}</td> </tr> <tr> <th>Occupation: </th> <td>{st.f_occupation}</td> <th>Work Detail</th> <td>{st.f_work_profile}</td> <th>Pin Code</th> <td colspan="2"> {st.f_zip}</td> </tr> <tr> <th>Annual Income:</th> <td> {st.f_annual_income}</td> <th>Organisation\'s Name"</th> <td>{st.f_organisation_name}</td> <th>Residence Ph.</th> <td colspan="2">{st.f_phone}</td> </tr> <tr> <th>Designation:"</th> <td> {st.f_designation}</td> <th>Office Address</th> <td>{st.f_office_add_l1} {st.f_office_add_l2}</td> <th>Office Ph.</th> <td colspan="2">{st.f_office_phone} </td> </tr> <tr> <th>Mobile</th> <td> {st.f_mobile}</td> <th></th> <td></td> <th>Email</th> <td colspan="2">{st.f_email}</td> </tr> <tr> <td rowspan="4" colspan="2"> <img id="m_pp_box1" width="90" height="90"> </td> <td colspan="5" style="background-color:#efefef"><h>Mother\\\'s Information</td> </tr> <tr> <th>Examination Passed</th> <td>{st.m_school_exam_passed}</td> <th>Address</th> <td colspan="2">{st.m_add_l1} {st.m_add_l2}</td> </tr> <tr> <th>Other Qualification</th> <td>{st.m_college_exam_passed}</td> <th>City</th> <td colspan="2">{st.m_city}</td> </tr> <tr> <th>Nationality</th> <td>{st.m_nationality}</td> <th>State</th> <td colspan="2">{st.m_state}</td> </tr> <tr> <th>Name:</th> <td colspan="3"> {st.m_name}</td> <th>Country</th> <td colspan="2">{st.m_country}</td> </tr> <tr> <th>Occupation: </th> <td>{st.m_occupation}</td> <th>Work Detail</th> <td>{st.m_work_profile}</td> <th>Pin Code</th> <td colspan="2"> {st.m_zip}</td> </tr> <tr> <th>Annual Income:</th> <td> {st.m_annual_income}</td> <th>Organisation\'s Name"</th> <td>{st.m_organisation_name}</td> <th>Residence Ph.</th> <td colspan="2">{st.m_phone}</td> </tr> <tr> <th>Designation:"</th> <td> {st.m_designation}</td> <th>Office Address</th> <td>{st.m_office_add_l1} {st.m_office_add_l2}</td> <th>Office Ph.</th> <td colspan="2">{st.m_office_phone} </td> </tr> <tr> <th>Mobile</th> <td> {st.m_mobile}</td> <th></th> <td></td> <th>Email</th> <td colspan="2">{st.m_email}</td> </tr> <tr> <td rowspan="4" colspan="2"> <img id="g_pp_box1" width="90" height="90"> </td> <td colspan="5" style="background-color:#efefef"><h>Guardian\\\'s Information</td> </tr> <tr> <th>Examination Passed</th> <td>{st.g_school_exam_passed}</td> <th>Address</th> <td colspan="2">{st.g_add_l1} {st.g_add_l2}</td> </tr> <tr> <th>Other Qualification</th> <td>{st.g_college_exam_passed}</td> <th>City</th> <td colspan="2">{st.g_city}</td> </tr> <tr> <th>Nationality</th> <td>{st.g_nationality}</td> <th>State</th> <td colspan="2">{st.g_state}</td> </tr> <tr> <th>Name:</th> <td colspan="3"> {st.g_name}</td> <th>Country</th> <td colspan="2">{st.g_country}</td> </tr> <tr> <th>Occupation: </th> <td>{st.g_occupation}</td> <th>Work Detail</th> <td>{st.g_work_profile}</td> <th>Pin Code</th> <td colspan="2"> {st.g_zip}</td> </tr> <tr> <th>Annual Income:</th> <td> {st.g_annual_income}</td> <th>Organisation\'s Name"</th> <td>{st.g_organisation_name}</td> <th>Residence Ph.</th> <td colspan="2">{st.g_phone}</td> </tr> <tr> <th>Designation:</th> <td> {st.g_designation}</td> <th>Office Address</th> <td>{st.g_office_add_l1} {st.g_office_add_l2}</td> <th>Office Ph.</th> <td colspan="2">{st.g_office_phone} </td> </tr> <tr> <th>Mobile</th> <td> {st.g_mobile}</td> <th>Relation</th> <td>{st.g_relation}</td> <th>Email</th> <td colspan="2">{st.g_email}</td> </tr> <tr> <td colspan="7" style="background-color:#efefef"><h>Siblings Detail:</td> </tr> <tr> <th style="width:30px">Sl.</th> <th>Name</th> <th>Age</th> <th>Class</th> <th>Sec</th> <th>Enrol No</th> <th>School</th> </tr> <tr> <td>1</td> <td>{st.first_child_name}</td> <td>{st.first_child_age}</td> <td>{st.first_child_class}</td> <td>{st.first_child_section}</td> <td>{st.first_enrol}</td> <td>{st.first_child_school}</td> </tr> <tr> <td>2</td> <td>{st.second_child_name}</td> <td>{st.second_child_age}</td> <td>{st.second_child_class}</td> <td>{st.second_child_section}</td> <td>{st.second_enrol}</td> <td>{st.second_child_school}</td> </tr> <tr> <td>3</td> <td>{st.third_child_name}</td> <td>{st.third_child_age}</td> <td>{st.third_child_class}</td> <td>{st.third_child_section}</td> <td>{st.third_enrol}</td> <td>{st.third_child_school}</td> </tr> <tr> <td>4</td> <td>{st.fourth_child_name}</td> <td>{st.fourth_child_age}</td> <td>{st.fourth_child_class}</td> <td>{st.fourth_child_section}</td> <td>{st.fourth_enrol}</td> <td>{st.fourth_child_school}</td> </tr> <tr> <td colspan="7" style="background-color:#efefef"><h>Areas Where Parent(Father or Mother) can contribute to the School</h></td> </tr> <tr> <th colspan="4"><input type="checkbox" id="music"> Music</th> <th colspan="4"><input type="checkbox" id="academic"> Academic</th> </tr> <tr> <th colspan="4"><input type="checkbox" id="sports"> Sports</th> <th colspan="4"><input type="checkbox" id="community"> Community Programme </th> </tr> <tr> <th colspan="4"><input type="checkbox" id="social"> Social Skills</th> <th colspan="4"><input type="checkbox" id="medical"> Medical </th> </tr> <tr> <th colspan="4"><input type="checkbox" id="media"> Media/PR</th> <th colspan="4"><input type="checkbox" id="hr_training"> HR Training </th> </tr> <tr> <th colspan="4"><input type="checkbox" id="painting"> Painting/Sculpture </th> <th colspan="4"><input type="checkbox" id="career"> Career Counselling </th> </tr> <tr> <th colspan="4"><input type="checkbox" id="information"> Information Technology </th> <th colspan="4"><input type="checkbox" id="communication"> Public Communication / Communication Skills </th> </tr> <tr> <td colspan="7"><h>Extra Qualification Possessed by the Parent</h></td> </tr> <tr> <th colspan="4"><input type="checkbox" id="med"> M.Ed </th> <th colspan="4"><input type="checkbox" id="bed"> B.Ed </th> </tr> <tr> <th colspan="4"><input type="checkbox" id="ttc"> TTC </th> <th colspan="3"><input type="checkbox" id="montessori"> Montessori Trained </th> </tr> </table> </section> <section class=" is-fluid" show="{student_view ==\'add_student\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Student</h2> </div> <div class="level-right"></div> </div> <div class="box"> <div class="columns is-variable is-1 is-multiline"> <div class="column is-half"> <div id="pp_box" class="pp-box" onclick="{trigger_file_input.bind(this,\'student_picture\')}"> <div class="icon has-text-danger" onclick="{remove_picture.bind(this, \'pp_box\',\'student_picture\')}"><i class="fas fa-trash"></i> </div> </div> <input accept="image/*" class="is-hidden" id="student_picture" name="student_picture" onchange="{loadFile.bind(this, \'pp_box\')}" type="file"> </div> <div class="column is-half"> <div class="column is-narrow"> <label class="label" for="first_name">First Name</label> <input class="input" id="first_name" ref="first_name" type="text"> </div> <div class="column is-narrow"> <label class="label" for="middle_name">Middle Name</label> <input class="input" ref="middle_name" type="text"> </div> <div class="column is-narrow"> <label class="label" for="last_name">Last Name</label> <input class="input" ref="last_name" type="text"> </div> </div> <div class="column is-one-third"> <label class="label" for="standard_id">Class</label> <div class="control"> <div class="select is-fullwidth"> <select ref="standard_id" onchange="{getSection}"> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="section_id">Section</label> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option each="{filteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="house_id">House</label> <div class="control"> <div class="select is-fullwidth"> <select ref="house_id"> <option each="{houses}" riot-value="{house_id}">{house_name} </option> </select> </div> </div> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Given Concession</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="enroll_number">Enroll No</label> <input class="input" ref="enroll_number" type="number"> </div> <div class="column is-one-third"> <label class="label" for="roll_number">Roll No</label> <input class="input" ref="roll_number" type="number"> </div> <div class="column is-one-third"> <label class="label" for="reg_number">Reg. No</label> <input class="input" ref="reg_number" type="text"> </div> <div class="column is-one-third"> <label class="label" for="gender">Gender</label> <div class="control"> <div class="select is-fullwidth"> <select id="gender" ref="gender"> <option value="M">Male</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="category_id">Cast Category</label> <div class="control"> <div class="select is-fullwidth"> <select ref="category_id"> <option each="{cast}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="dob">DOB</label> <input class="input date" ref="dob" type="text"> </div> <div class="column is-one-third"> <label class="label" for="blood_group">Blood Group</label> <div class="control"> <div class="select is-fullwidth"> <select id="blood_group" ref="blood_group"> <option value="A+">A+</option> <option value="A-">A-</option> <option value="AB+">AB+</option> <option value="AB-">AB-</option> <option value="B+">B+</option> <option value="B-">B-</option> <option value="O+">O+</option> <option value="O-">O-</option> </select> </div> </div> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Contact Information(Permanent Address)</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="p_add_l1">Address Line 1</label> <input class="input" ref="p_add_l1" type="text"> </div> <div class="column is-one-third"> <label class="label" for="p_add_l2">Address Line 2</label> <input class="input" ref="p_add_l2" type="text"> </div> <div class="column is-one-third"> <label class="label" for="p_city">City</label> <input class="input" ref="p_city" type="text"> </div> <div class="column is-one-third"> <label class="label" for="p_zip">Zip</label> <input class="input" ref="p_zip" type="number"> </div> <div class="column is-one-third"> <label class="label" for="p_state">State</label> <input class="input" ref="p_state" type="text"> </div> <div class="column is-one-third"> <label class="label" for="p_country">Country</label> <input class="input" ref="p_country" type="text"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link"> Check if Correspondence Address is same as Permanent Address <input type="checkbox" id="correspondenceCheckbox" name="correspondenceCheckbox" onclick="{copyAddress.bind(this)}"> </h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="c_add_l1">Address Line 1</label> <input class="input" ref="c_add_l1" type="text"> </div> <div class="column is-one-third"> <label class="label" for="c_add_l2">Address Line 2</label> <input class="input" ref="c_add_l2" type="text"> </div> <div class="column is-one-third"> <label class="label" for="c_city">City</label> <input class="input" ref="c_city" type="text"> </div> <div class="column is-one-third"> <label class="label" for="c_zip">Zip</label> <input class="input" ref="c_zip" type="number"> </div> <div class="column is-one-third"> <label class="label" for="c_state">State</label> <input class="input" ref="c_state" type="text"> </div> <div class="column is-one-third"> <label class="label" for="c_country">Country</label> <input class="input" ref="c_country" type="text"> </div> <div class="column is-full"> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="residence_phone">Phone(R)</label> <input class="input" ref="residence_phone" type="number"> </div> <div class="column is-one-third"> <label class="label" for="mobile">SMS No.</label> <input class="input" ref="mobile" type="number"> </div> <div class="column is-one-third"> <label class="label" for="emergency_no">Emergency No.</label> <input class="input" ref="emergency_no" type="number"> </div> <div class="column is-one-third"> <label class="label" for="student_type">Student Type</label> <div class="control"> <div class="select is-fullwidth"> <select id="student_type" ref="student_type"> <option value="Day Scholar">Day Scholar</option> </select> </div> </div> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Other Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="aadhar_no">Aadhar No</label> <input class="input" ref="aadhar_no" type="text"> </div> <div class="column is-one-third"> <label class="label" for="doa">Date of Admission</label> <input class="input date" ref="doa" type="text"> </div> <div class="column is-one-third"> <label class="label" for="old_doa">Old Date of Admission</label> <input class="input date" ref="old_doa" type="text"> </div> <div class="column is-one-third"> <label class="label" for="doj">Date of Joining</label> <input class="input date" ref="doj" type="text"> </div> <div class="column is-one-third"> <label class="label" for="old_doj">Old Date of Joining</label> <input class="input date" ref="old_doj" type="text"> </div> <div class="column is-one-third"> <label class="label" for="mother_tongue">Mother Tongue</label> <input class="input" ref="mother_tongue" type="text"> </div> <div class="column is-one-third"> <label class="label" for="last_school">Last School</label> <input class="input" ref="last_school" type="text"> </div> <div class="column is-one-third"> <label class="label" for="last_class">Last Class</label> <input class="input" ref="last_class" type="text"> </div> <div class="column is-one-third"> <label class="label" for="admission_for_class">Admission For Class</label> <input class="input" ref="admission_for_class" type="text"> </div> <div class="column is-one-third"> <label class="label" for="hobby">Hobbies</label> <input class="input" ref="hobby" type="text"> </div> <div class="column is-one-third"> <label class="label" for="cast">Cast</label> <input class="input" ref="cast" type="text"> </div> <div class="column is-one-third"> <label class="label" for="religion_id">Religion</label> <div class="control"> <div class="select is-fullwidth"> <select id="religion_id" ref="religion_id"> <option each="{religion}" riot-value="{religion_id}">{religion} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="staff_child">Staff Member Child</label> <div class="control"> <div class="select is-fullwidth"> <select id="staff_child" ref="staff_child" onchange="{GetStaffName}"> <option value="Y">Yes</option> <option value="N">No</option> </select> </div> </div> </div> <div class="column is-one-third" show="{staff_name}"> <label class="label" for="staff_name">Staff\'s Name</label> <input class="input" ref="staff_name" type="text"> </div> <div class="column is-full"> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addFatherInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'add_father_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Father</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns is-variable is-1 is-multiline"> <div class="column is-half"> <div id="f_pp_box" class="f_pp-box" onclick="{trigger_father_file_input.bind(this,\'father_picture\')}"> <div class="icon has-text-danger" onclick="{remove_father_picture.bind(this, \'f_pp_box\',\'father_picture\')}"><i class="fas fa-trash"></i></div> </div> <input accept="image/*" class="is-hidden" id="father_picture" name="father_picture" onchange="{loadFatherFile.bind(this, \'f_pp_box\')}" type="file"> </div> <div class="column is-half"> <div class="column is-narrow"> <label class="label" for="f_title">Title</label> <input class="input" id="f_title" ref="f_title" type="text"> </div> <div class="column is-narrow"> <label class="label" for="f_name">Father\'s Name</label> <input class="input" ref="f_name" type="text"> </div> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Work Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="f_occupation">Occupation</label> <input class="input" id="f_occupation" ref="f_occupation" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_organisation_type">Organization Type</label> <div class="control"> <div class="select is-fullwidth"> <select id="f_organisation_type" ref="f_organisation_type"> <option value="Governmnet">Governmnet</option> <option value="Business">Business</option> <option value="NGO">NGO</option> <option value="Professional">Professional</option> <option value="Other">Other</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="f_annual_income">Annual Income</label> <input class="input" id="f_annual_income" ref="f_annual_income" type="number"> </div> <div class="column is-one-third"> <label class="label" for="f_work_profile">Work Profile</label> <input class="input" ref="f_work_profile" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_organisation_name">Organization Name</label> <input class="input" ref="f_organisation_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_designation">Designation</label> <input class="input" ref="f_designation" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_department">Department</label> <input class="input" ref="f_department" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_office_add_l1">Office Address Line 1</label> <input class="input" ref="f_office_add_l1" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_office_add_l2">Office Address Line 2</label> <input class="input" ref="f_office_add_l2" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_office_city">City</label> <input class="input" ref="f_office_city" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_office_zip">Zip</label> <input class="input" ref="f_office_zip" type="number"> </div> <div class="column is-one-third"> <label class="label" for="f_office_state">State</label> <input class="input" ref="f_office_state" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_office_country">Country</label> <input class="input" ref="f_office_country" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_office_phone">Phone(O)</label> <input class="input" ref="f_office_phone" type="number"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Educational Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="f_qualification">Qualification</label> <input class="input" ref="f_qualification" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_other_qualification">Other Qualification</label> <input class="input" ref="f_other_qualification" type="text"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Check if Candidate\'s Correspondence Address is same as Father\'s Address <input type="checkbox" id="fatherCorrespondenceCheckbox" onclick="{copyFatherAddress.bind(this)}"> </h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="f_add_l1">Address Line 1</label> <input class="input" ref="f_add_l1" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_add_l2">Address Line 2</label> <input class="input" ref="f_add_l2" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_city">City</label> <input class="input" ref="f_city" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_zip">Zip</label> <input class="input" ref="f_zip" type="number"> </div> <div class="column is-one-third"> <label class="label" for="f_state">State</label> <input class="input" ref="f_state" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_country">Country</label> <input class="input" ref="f_country" type="text"> </div> <div class="column is-one-third"> <label class="label" for="f_mobile">Mobile</label> <input class="input" ref="f_mobile" type="number"> </div> <div class="column is-one-third"> <label class="label" for="f_email">Email</label> <input class="input" ref="f_email" type="email"> </div> <div class="column is-one-third"> <label class="label" for="f_nationality">Nationality</label> <input class="input" ref="f_nationality" type="text"> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeFatherInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addMotherInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'add_mother_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Mother</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns is-variable is-1 is-multiline"> <div class="column is-half"> <div id="m_pp_box" class="m_pp-box" onclick="{trigger_mother_file_input.bind(this,\'mother_picture\')}"> <div class="icon has-text-danger" onclick="{remove_mother_picture.bind(this, \'m_pp_box\',\'mother_picture\')}"><i class="fas fa-trash"></i></div> </div> <input accept="image/*" class="is-hidden" id="mother_picture" name="mother_picture" onchange="{loadMotherFile.bind(this, \'m_pp_box\')}" type="file"> </div> <div class="column is-half"> <div class="column is-narrow"> <label class="label" for="m_title">Title</label> <input class="input" id="m_title" ref="m_title" type="text"> </div> <div class="column is-narrow"> <label class="label" for="m_name">Mother\'s Name</label> <input class="input" ref="m_name" type="text"> </div> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Work Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="m_occupation">Occupation</label> <input class="input" ref="m_occupation" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_organisation_type">Organization Type</label> <div class="control"> <div class="select is-fullwidth"> <select ref="m_organisation_type"> <option value="Governmnet">Governmnet</option> <option value="Business">Business</option> <option value="NGO">NGO</option> <option value="Professional">Professional</option> <option value="Other">Other</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="m_annual_income">Annual Income</label> <input class="input" ref="m_annual_income" type="number"> </div> <div class="column is-one-third"> <label class="label" for="m_work_profile">Work Profile</label> <input class="input" ref="m_work_profile" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_organisation_name">Organization Name</label> <input class="input" ref="m_organisation_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_designation">Designation</label> <input class="input" ref="m_designation" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_department">Department</label> <input class="input" ref="m_department" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_office_add_l1">Office Address Line 1</label> <input class="input" ref="m_office_add_l1" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_office_add_l2">Office Address Line 2</label> <input class="input" ref="m_office_add_l2" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_office_city">City</label> <input class="input" ref="m_office_city" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_office_zip">Zip</label> <input class="input" ref="m_office_zip" type="number"> </div> <div class="column is-one-third"> <label class="label" for="m_office_state">State</label> <input class="input" ref="m_office_state" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_office_country">Country</label> <input class="input" ref="m_office_country" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_office_phone">Phone(O)</label> <input class="input" ref="m_office_phone" type="number"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Educational Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="m_qualification">Qualification</label> <input class="input" ref="m_qualification" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_other_qualification">Other Qualification</label> <input class="input" ref="m_other_qualification" type="text"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Contact Information Check if Mother\'s Address is same as Father\'s Address <input type="checkbox" id="motherCorrespondenceCheckbox" onclick="{copyMotherAddress.bind(this)}"> </h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="m_add_l1">Address Line 1</label> <input class="input" ref="m_add_l1" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_add_l2">Address Line 2</label> <input class="input" ref="m_add_l2" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_city">City</label> <input class="input" ref="m_city" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_zip">Zip</label> <input class="input" ref="m_zip" type="number"> </div> <div class="column is-one-third"> <label class="label" for="m_state">State</label> <input class="input" ref="m_state" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_country">Country</label> <input class="input" ref="m_country" type="text"> </div> <div class="column is-one-third"> <label class="label" for="m_mobile">Mobile</label> <input class="input" ref="m_mobile" type="number"> </div> <div class="column is-one-third"> <label class="label" for="m_email">Email</label> <input class="input" ref="m_email" type="email"> </div> <div class="column is-one-third"> <label class="label" for="m_nationality">Nationality</label> <input class="input" ref="m_nationality" type="text"> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeMotherInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addGuardianInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'add_guardian_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Guardian</h2> </div> <div class="level-right"> <div class="column is-one-third"> <label class="label" for="is_guardian">Select Guardian</label> <div class="control"> <div class="select is-fullwidth"> <select ref="is_guardian" id="guardian" onchange="{getGuardianInformation}"> <option>Select Guardian</option> <option value="Father">Father</option> <option value="Mother">Mother</option> <option value="Other">Other</option> </select> </div> </div> </div> </div> </div> <div class="box"> <div class="columns is-variable is-1 is-multiline"> <div class="column is-half"> <div id="g_pp_box" class="g_pp-box" onclick="{trigger_guardian_file_input.bind(this,\'guardian_picture\')}"> <div class="icon has-text-danger" onclick="{remove_guardian_picture.bind(this, \'g_pp_box\',\'guardian_picture\')}"><i class="fas fa-trash"></i></div> </div> <input accept="image/*" class="is-hidden" id="guardian_picture" name="guardian_picture" onchange="{loadGuardianFile.bind(this, \'g_pp_box\')}" type="file"> </div> <div class="column is-half"> <div class="column is-narrow"> <label class="label" for="g_title">Title</label> <input class="input" id="g_title" ref="g_title" type="text"> </div> <div class="column is-narrow"> <label class="label" for="g_name">Guardian\'s Name</label> <input class="input" id="g_name" ref="g_name" type="text"> </div> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Work Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="g_occupation">Occupation</label> <input class="input" id="g_occupation" ref="g_occupation" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_organisation_type">Organization Type</label> <div class="control"> <div class="select is-fullwidth"> <select ref="g_organisation_type" id="g_organisation_type"> <option value="Governmnet">Governmnet</option> <option value="Business">Business</option> <option value="NGO">NGO</option> <option value="Professional">Professional</option> <option value="Other">Other</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="g_annual_income">Annual Income</label> <input class="input" id="g_annual_income" ref="g_annual_income" type="number"> </div> <div class="column is-one-third"> <label class="label" for="g_work_profile">Work Profile</label> <input class="input" id="g_work_profile" ref="g_work_profile" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_organisation_name">Organization Name</label> <input class="input" id="g_organisation_name" ref="g_organisation_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_designation">Designation</label> <input class="input" id="g_designation" ref="g_designation" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_department">Department</label> <input class="input" id="g_department" ref="g_department" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_office_add_l1">Office Address Line 1</label> <input class="input" id="g_office_add_l1" ref="g_office_add_l1" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_office_add_l2">Office Address Line 2</label> <input class="input" id="g_office_add_l2" ref="g_office_add_l2" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_office_city">City</label> <input class="input" id="g_office_city" ref="g_office_city" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_office_zip">Zip</label> <input class="input" id="g_office_zip" ref="g_office_zip" type="number"> </div> <div class="column is-one-third"> <label class="label" for="g_office_state">State</label> <input class="input" id="g_office_state" ref="g_office_state" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_office_country">Country</label> <input class="input" id="g_office_country" ref="g_office_country" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_office_phone">Phone(O)</label> <input class="input" id="g_office_phone" ref="g_office_phone" type="number"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Educational Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="g_qualification">Qualification</label> <input class="input" id="g_qualification" ref="g_qualification" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_other_qualification">Other Qualification</label> <input class="input" id="g_other_qualification" ref="g_other_qualification" type="text"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Contact Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="g_add_l1">Address Line 1</label> <input class="input" id="g_add_l1" ref="g_add_l1" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_add_l2">Address Line 2</label> <input class="input" id="g_add_l2" ref="g_add_l2" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_city">City</label> <input class="input" id="g_city" ref="g_city" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_zip">Zip</label> <input class="input" id="g_zip" ref="g_zip" type="number"> </div> <div class="column is-one-third"> <label class="label" for="g_state">State</label> <input class="input" id="g_state" ref="g_state" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_country">Country</label> <input class="input" id="g_country" ref="g_country" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_phone">Phone(R)</label> <input class="input" id="g_phone" ref="g_phone" type="number"> </div> <div class="column is-one-third"> <label class="label" for="g_mobile">Mobile</label> <input class="input" id="g_mobile" ref="g_mobile" type="number"> </div> <div class="column is-one-third"> <label class="label" for="g_email">Email</label> <input class="input" id="g_email" ref="g_email" type="email"> </div> <div class="column is-one-third"> <label class="label" for="g_nationality">Nationality</label> <input class="input" id="g_nationality" ref="g_nationality" type="text"> </div> <div class="column is-one-third"> <label class="label" for="g_relation">Relationship</label> <input class="input" id="g_relation" ref="g_relation" type="text"> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeGuardianInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addSiblingInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'add_sibling_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Sibling Detail</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns is-variable is-1 is-multiline"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">First Child</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="first_child_name">Name</label> <input class="input" id="first_child_name" ref="first_child_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="first_child_age">Age</label> <input class="input" id="first_child_age" ref="first_child_age" type="number"> </div> <div class="column is-one-third"> <label class="label" for="first_child_class">Class</label> <input class="input" id="first_child_class" ref="first_child_class" type="text"> </div> <div class="column is-one-third"> <label class="label" for="first_child_section">Section</label> <input class="input" id="first_child_section" ref="first_child_section" type="text" onkeyup="this.value = this.value.toUpperCase();"> </div> <div class="column is-one-third"> <label class="label" for="first_enrol">Enroll No.</label> <input class="input" id="first_enrol" ref="first_enrol" type="text"> </div> <div class="column is-one-third"> <label class="label" for="first_child_school">School</label> <input class="input" id="first_child_school" ref="first_child_school" type="text"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Second Child</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="second_child_name">Name</label> <input class="input" id="second_child_name" ref="second_child_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="second_child_age">Age</label> <input class="input" id="second_child_age" ref="second_child_age" type="number"> </div> <div class="column is-one-third"> <label class="label" for="second_child_class">Class</label> <input class="input" id="second_child_class" ref="second_child_class" type="text"> </div> <div class="column is-one-third"> <label class="label" for="second_child_section">Section</label> <input class="input" id="second_child_section" ref="second_child_section" type="text" onkeyup="this.value = this.value.toUpperCase();"> </div> <div class="column is-one-third"> <label class="label" for="second_enrol">Enroll No.</label> <input class="input" id="second_enrol" ref="second_enrol" type="text"> </div> <div class="column is-one-third"> <label class="label" for="second_child_school">School</label> <input class="input" id="second_child_school" ref="second_child_school" type="text"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Third Child</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="third_child_name">Name</label> <input class="input" id="third_child_name" ref="third_child_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="third_child_age">Age</label> <input class="input" id="third_child_age" ref="third_child_age" type="number"> </div> <div class="column is-one-third"> <label class="label" for="third_child_class">Class</label> <input class="input" id="third_child_class" ref="third_child_class" type="text"> </div> <div class="column is-one-third"> <label class="label" for="third_child_section">Section</label> <input class="input" id="third_child_section" ref="third_child_section" type="text" onkeyup="this.value = this.value.toUpperCase();"> </div> <div class="column is-one-third"> <label class="label" for="third_enrol">Enroll No.</label> <input class="input" id="third_enrol" ref="third_enrol" type="text"> </div> <div class="column is-one-third"> <label class="label" for="third_child_school">School</label> <input class="input" id="third_child_school" ref="third_child_school" type="text"> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Fourth Child</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class="column is-one-third"> <label class="label" for="fourth_child_name">Name</label> <input class="input" id="fourth_child_name" ref="fourth_child_name" type="text"> </div> <div class="column is-one-third"> <label class="label" for="fourth_child_age">Age</label> <input class="input" id="fourth_child_age" ref="fourth_child_age" type="number"> </div> <div class="column is-one-third"> <label class="label" for="fourth_child_class">Class</label> <input class="input" id="fourth_child_class" ref="fourth_child_class" type="text"> </div> <div class="column is-one-third"> <label class="label" for="fourth_child_section">Section</label> <input class="input" id="fourth_child_section" ref="fourth_child_section" type="text" onkeyup="this.value = this.value.toUpperCase();"> </div> <div class="column is-one-third"> <label class="label" for="fourth_enrol">Enroll No.</label> <input class="input" id="fourth_enrol" ref="fourth_enrol" type="text"> </div> <div class="column is-one-third"> <label class="label" for="fourth_child_school">School</label> <input class="input" id="fourth_child_school" ref="fourth_child_school" type="text"> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeSiblingInformation}">Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addOtherInformation}">Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}">Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'add_other_information\'}"> <div class="box"> <div class="columns is-variable is-1 is-multiline"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Areas Where Parent(Father or Mentor) can contribute to the school</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class=" column has-text-centered"> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <tbody> <tr> <td> <input type="checkbox" id="music" ref="music">Music </td> <td> <input type="checkbox" id="sports" ref="sports">Sports </td> <td> <input type="checkbox" id="social" ref="social">Social Skills </td> <td> <input type="checkbox" id="media" ref="media">Media/PR </td> </tr> <tr> <td> <input type="checkbox" id="academic" ref="academic">Academic </td> <td> <input type="checkbox" id="community" ref="community"> Community Programme </td> <td> <input type="checkbox" id="painting" ref="painting"> Painting/Sculpture </td> <td> <input type="checkbox" id="information" ref="information"> Information Technology </td> </tr> <tr> <td> <input type="checkbox" id="hr_training" ref="hr_training">HR Training </td> <td> <input type="checkbox" id="medical" ref="medical">Medical </td> <td> <input type="checkbox" id="career" ref="career"> Career Counselling </td> <td> <input type="checkbox" id="communication" ref="communication"> Public Speaking / Communication Skills </td> </tr> </tbody> </table> </div> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-4 has-text-link">Please Mention if either parent possesses any of the following Qualification</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> <div class=" column is-full"> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <tbody> <tr> <td> <input type="checkbox" id="med" ref="med">MEd </td> <td> <input type="checkbox" id="bed" ref="bed">BEd </td> <td> <input type="checkbox" id="ttc" ref="ttc">TTC </td> <td> <input type="checkbox" id="montessori" ref="montessori"> Montessori Trained </td> </tr> </tbody> </table> </div> <div class="column is-one-third"> <label class="label" for="transport_mode">Mode of Transport</label> <div class="control"> <div class="select is-fullwidth"> <select ref="transport_mode" id="transport_mode"> <option value="None">None</option> <option value="Bus">Bus</option> <option value="Carpool">Carpool</option> <option value="Rikshaw">Rikshaw</option> <option value="Self">Self</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="school_distance">Distance from school</label> <div class="control"> <div class="select is-fullwidth"> <select ref="school_distance" id="school_distance"> <option value="1 km">1 km</option> <option value="1-2 km">1-2 km</option> <option value="More than 2 km">More than 2 km</option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="differently_abled">If child is Differently Abled</label> <div class="control"> <div class="select is-fullwidth"> <select ref="differently_abled" id="differently_abled"> <option value="None">None</option> <option value="In seeing">In seeing</option> <option value="In hearing">In hearing</option> <option value="In speaking">In speaking</option> <option value="In movement">In movement</option> <option value="In mental ability">In mental ability</option> </select> </div> </div> </div> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeOtherInformation}">Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addInformation}">Submit </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}">Cancel </button> </div> </div> </div> </section>', '', '', function(opts) {
+riot.tag2('student', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid" show="{student_view ==\'show_student\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Students</h2> </div> <div class="level-right"> <button class="button is-primary is-rounded" onclick="{print_list}" show="{print_list_button}"> <span>Print List</span> </button> <button class="button is-primary is-rounded ml10" onclick="{student_list}" show="{student_list_button}"> <span>Student List</span> </button> <button class="button is-primary is-rounded ml10" onclick="{regenerate_roll_no}" show="{regenerate_roll_no_button}"> <span>Regenerate Roll No</span> </button> <button class="button is-warning is-rounded ml10" onclick="{add_new_student}"> <span class="icon"> <span class="fas fa-plus"></span> </span> <span>New Student</span> </button> </div> </div> <div class="level box"> <div class="level-left"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="read_standard_id" onchange="{getReadSection}"> <option each="{standards}" riot-value="{standard_id}"> {standard}</option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="read_section_id" onchange="{getStudentData}"> <option each="{readfilteredSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> </div> </div> <div class="level-right"> <div class="column is-narrow field has-addons"> <div class="control"> <input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No"> </div> <div class="control"> <a class="button is-info" onclick="{getStudentData}">Search</a> </div> </div> <button class="button is-warning is-rounded ml5" style="margin-bottom:12px;" onclick="{getStudentData}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>Roll no</th> <th>Student Name</th> <th>Enroll No</th> <th>Registration No</th> <th>SMS</th> <th>Father\'s Name</th> <th></th> </tr> </thead> <tbody> <tr each="{st, i in students}"> <td>{st.roll_number}</td> <td>{st.name}</td> <td>{st.enroll_number}</td> <td>{st.reg_number}</td> <td>{st.mobile}</td> <td>{st.f_name}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{st.confirmDelete}"> <span><a class="button is-small is-rounded " onclick="{withdraw_student.bind(this, st.student_id)}">WithDraw Student</a></span> <span><a class="button is-small is-rounded" onclick="{view_profile.bind(this, st.student_id)}">Profile</a></span> <span><a class="button is-small is-rounded " onclick="{edit.bind(this, st.student_id)}">Edit</a></span> <span> <a class="button is-small is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{st.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <div id="withdrawModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">WithDraw</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <div class="control"> <label class="label" for="role">Date of Leaving</label> <input class="input date" ref="withdraw_date" type="text"> </div> </div> <div class="field"> <div class="control"> <label class="label" for="role">TC No</label> <input class="input" type="text" ref="tc_no"> </div> </div> <div class="control"> <label class="label" for="read_standard_id_for_withdraw">Standard</label> <div class="select is-fullwidth"> <select ref="read_standard_id_for_withdraw" id="read_standard_id_for_withdraw" onchange="{getReadSectionForWithdraw}"> <option>Choose Section</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> <div class="control"> <label class="label" for="read_section_id_for_withdraw">Section</label> <div class="select is-fullwidth"> <select ref="read_section_id_for_withdraw" id="read_section_id_for_withdraw"> <option>Choose Class</option> <option each="{readwithdrawfilteredSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> <div class="control"> <label class="label" for="withdraw_remarks">Reason</label> <textarea class="textarea" ref="withdraw_remarks" rows="2"></textarea> </div> </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{WithdrawStudent}">Add</button> <button class="button" id="item-modal-close" onclick="{closewithdrawModal}">Cancel</button> </footer> </div> </div> <section class=" is-fluid" show="{student_view ==\'print_list\'}"> <div class="level"> <div class="level-left"> </div> <div class="level-right"> <div class="control no-print"> <div class="select is-fullwidth"> <select id="add_column" ref="add_column" onchange="{AddColumn}"> <option value="0">Select Column</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> </select> </div> </div> <input type="checkbox" id="checkHouse" checked="{e.done}" onclick="{viewHouse}" class="no-print ml10"> <b class="no-print">House</b> <button class="button is-warning is-rounded no-print" onclick="{close_print_list}"> <span class="icon"> <span class="fas fa-arrow-left"></span> </span> </button> </div> </div> <center> <table class=" table" style="border-style:none;"> <tr style="border-style:none;"> <td style="padding-left:5px;border:none;width:100px"><img src="/images/school_small.png" height="60"></td> <td style="text-align:center;border-style:none"> <h2>M. C. Kejriwal Vidyapeeth</h2> <p style="text-align:center; font-size:12px;">243 G. T. Road(N) Liluah, Howrah - 711204, West Bengal, India <br> PHONE - (033) 2654-3387/89 - EMAIL - info@mckvie.edu.in - WEB - http://www.mckv.edu.in</p> </td> <td style="padding-right:5px;border:none;width:100px"> <img src="/images/nabet.JPG" height="60"> </td> </tr> </table> <hr style="border:none;border-top:solid #dd0000 2px;margin:10px 0;"> <div style=""> <div style="text-align:right;"> Printed on:{print_date} </div> </div> <table class="table is-fullwidth is-bordered" style=""> <caption class="caption">Students List {pl.standard} - {pl.section} ({pl.session_name}) </caption> </table> <div style="text-align:left;"> <table class="table is-fullwidth is-bordered"> <tr> <th style="">Roll No</th> <th style="">Enrol No</th> <th style="">Name</th> <th style="" show="{house_column}">House</th> <th show="{column_one}"></th> <th show="{column_two}"></th> <th show="{column_three}"></th> <th show="{column_four}"></th> <th show="{column_five}"></th> <th show="{column_six}"></th> <th show="{column_seven}"></th> <th show="{column_eight}"></th> <th show="{column_nine}"></th> </tr> <tr each="{pl, i in print_list}"> <td>{pl.roll_number}</td> <td>{pl.enroll_number}</td> <td>{pl.name}</td> <td show="{house_column}">{pl.house}</td> <td show="{column_one}"></td> <td show="{column_two}"></td> <td show="{column_three}"></td> <td show="{column_four}"></td> <td show="{column_five}"></td> <td show="{column_six}"></td> <td show="{column_seven}"></td> <td show="{column_eight}"></td> <td show="{column_nine}"></td> </tr> </table> </div> </center> </section> <section class=" is-fluid" show="{student_view ==\'student_list\'}"> <div class="level"> <div class="level-left"> </div> <div class="level-right"> <button class="button is-warning is-rounded no-print" onclick="{close_student_list}"> <span class="icon"> <span class="fas fa-arrow-left"></span> </span> </button> </div> </div> <center> <table class=" " style="border-style:none;width:860px;"> <tr style="border-style:none;"> <td style="padding-left:5px;border:none;width:100px"><img src="/images/school_small.png" height="60"></td> <td style="text-align:center;border-style:none"> <h2>M. C. Kejriwal Vidyapeeth</h2> <p style="text-align:center; font-size:12px;">243 G. T. Road(N) Liluah, Howrah - 711204, West Bengal, India <br> PHONE - (033) 2654-3387/89 - EMAIL - info@mckvie.edu.in - WEB - http://www.mckv.edu.in</p> </td> <td style="padding-right:5px;border:none;width:100px"> <img src="/images/nabet.JPG" height="60"> </td> </tr> </table> <hr style="border:none;border-top:solid #dd0000 2px;margin:10px 0;width:860px;"> <div style="width:860px;"> <div style="text-align:right;"> Printed on:{print_date} </div> </div> <table class="table is-fullwidth is-bordered" style="width:860px;"><caption class="caption">Student Listing of {sl.standard} {sl.section}[{total_student}] </caption> </table> <div style="text-align:left;width:860px;"> <table class="table is-fullwidth is-bordered"> <tr> <th style="">Sl No</th> <th style="">Enrol No</th> <th style="">Name</th> </tr> <tr each="{student, i in student_list}"> <td>{i +1}</td> <td>{student.enroll_number}</td> <td>{student.name}</td> </tr> </table> </div> </center> </section> <section class=" is-fluid" show="{student_view ==\'student_profile\'}"> <div class="level no-print"> <div class="level-left"> <h2 class="title has-text-danger">Profile of {st.first_name}{st.middle_name}{st.last_name}</h2> </div> <div class="level-right"> <button class="button is-warning is-rounded no-print" onclick="{close_student_profile}"> <span class="icon"> <span class="fas fa-arrow-left"></span> </span> </button> </div> </div> <table class="table is-fullwidth is-bordered"> <caption class="caption"> Student\\\'s Information ({st.session_name})</caption> <tr> <td rowspan="4" colspan="2"> <img id="pp_box1" width="90" height="90"> </td> <td colspan="2" style="background-color:#efefef"><h>Student\\\'s Information</td> <td colspan="3"><h>Contact Information</td> </tr> <tr> <th>Date of Admission</th> <td>{st.doa}</td> <th>Father\'s Name</th> <td colspan="2">{st.f_name}</td> </tr> <tr> <th>Date of Joining</th> <td>{st.doj} </td> <th>Mother\'s Name</th> <td colspan="2">{st.m_name}</td> </tr> <tr> <th>Date of Birth</th> <td>{st.dob}</td> <th>Permanent Address </th> <td colspan="2">{st.p_add_l1} {st.p_add_l2}</td> </tr> <tr> <th> Name </th> <td> {st.first_name} {st.middle_name} {st.last_name}</td> <th>Nationality</th> <td>{st.nationality}</td><th>city </th><td colspan="2"> {st.p_city}</td> </tr> <tr> <th>Enroll No.</th> <td> {st.enroll_number}</td> <th>Gender</th> <td>{st.gender}</td> <th>State</th> <td colspan="2">{st.p_state}</td> </tr> <tr> <th>Reg. No.</th> <td> {st.reg_number}</td> <th>Category</th> <td>{st.category_name}</td> <th>Country</th> <td colspan="2">{st.p_country}</td> </tr> <tr> <th>Class / Sec:</th> <td> {st.standard} {st.section}</td> <th>Mother Tongue</th> <td>{st.mother_tongue}</td> <th>Zip</th> <td colspan="2">{st.p_zip} </td> </tr> <tr> <th>House</th> <td> {st.house_name}</td> <th>Religion</th> <td>{st.religion}</td> <th> Correspondence Address </th> <td colspan="2">{st.c_add_l1} {st.c_add_l2}, {st.c_city}-{st.c_zip}, {st.c_state}, {st.c_country}</td> </tr> <tr> <th>Blood Group</th> <td> {st.blood_group}</td> <th>Hobbies</th> <td> {st.hobby}</td> <th>Residence Phone </th> <td colspan="2">{st.residence_phone}</td> </tr> <tr> <th>Roll No.</th> <td>{st.roll_number}</td> <th>Admission for Class</th> <td>{st.admission_for_class}</td> <th>SMS No</th> <td colspan="2">{st.mobile}</td> </tr> <tr> <th>Reference Enrol</th> <td> {st.reference_enrol}</td> <th>Last Class Attended</th> <td>{st.last_class}</td> <th>Emergency No.</th> <td colspan="2">{st.fax}</td> </tr> <tr> <th>Aadhar No.</th> <td>{st.aadhar_no}</td> <th>Second Language</th> <td colspan="4">{st.second_language}</td> </tr> <tr> <td rowspan="4" colspan="2"> <img id="f_pp_box1" width="90" height="90"> </td> <td colspan="5" style="background-color:#efefef"><h>Father\\\'s Information</td></tr> <tr> <th>Examination Passed</th> <td>{st.f_school_exam_passed}</td> <th>Address</th> <td colspan="2">{st.f_add_l1} {st.f_add_l2}</td> </tr> <tr> <th>Other Qualification</th> <td>{st.f_college_exam_passed}</td> <th>City</th> <td colspan="2">{st.f_city}</td> </tr> <tr> <th>Nationality</th> <td>{st.f_nationality}</td> <th>State</th> <td colspan="2">{st.f_state}</td> </tr> <tr> <th>Name:</th> <td colspan="3"> {st.f_name}</td> <th>Country</th> <td colspan="2">{st.f_country}</td> </tr> <tr> <th>Occupation: </th> <td>{st.f_occupation}</td> <th>Work Detail</th> <td>{st.f_work_profile}</td> <th>Pin Code</th> <td colspan="2"> {st.f_zip}</td> </tr> <tr> <th>Annual Income:</th> <td> {st.f_annual_income}</td> <th>Organisation\'s Name"</th> <td>{st.f_organisation_name}</td> <th>Residence Ph.</th> <td colspan="2">{st.f_phone}</td> </tr> <tr> <th>Designation:"</th> <td> {st.f_designation}</td> <th>Office Address</th> <td>{st.f_office_add_l1} {st.f_office_add_l2}</td> <th>Office Ph.</th> <td colspan="2">{st.f_office_phone} </td> </tr> <tr> <th>Mobile</th> <td> {st.f_mobile}</td> <th></th> <td></td> <th>Email</th> <td colspan="2">{st.f_email}</td> </tr> <tr> <td rowspan="4" colspan="2"> <img id="m_pp_box1" width="90" height="90"> </td> <td colspan="5" style="background-color:#efefef"><h>Mother\\\'s Information</td> </tr> <tr> <th>Examination Passed</th> <td>{st.m_school_exam_passed}</td> <th>Address</th> <td colspan="2">{st.m_add_l1} {st.m_add_l2}</td> </tr> <tr> <th>Other Qualification</th> <td>{st.m_college_exam_passed}</td> <th>City</th> <td colspan="2">{st.m_city}</td> </tr> <tr> <th>Nationality</th> <td>{st.m_nationality}</td> <th>State</th> <td colspan="2">{st.m_state}</td> </tr> <tr> <th>Name:</th> <td colspan="3"> {st.m_name}</td> <th>Country</th> <td colspan="2">{st.m_country}</td> </tr> <tr> <th>Occupation: </th> <td>{st.m_occupation}</td> <th>Work Detail</th> <td>{st.m_work_profile}</td> <th>Pin Code</th> <td colspan="2"> {st.m_zip}</td> </tr> <tr> <th>Annual Income:</th> <td> {st.m_annual_income}</td> <th>Organisation\'s Name"</th> <td>{st.m_organisation_name}</td> <th>Residence Ph.</th> <td colspan="2">{st.m_phone}</td> </tr> <tr> <th>Designation:"</th> <td> {st.m_designation}</td> <th>Office Address</th> <td>{st.m_office_add_l1} {st.m_office_add_l2}</td> <th>Office Ph.</th> <td colspan="2">{st.m_office_phone} </td> </tr> <tr> <th>Mobile</th> <td> {st.m_mobile}</td> <th></th> <td></td> <th>Email</th> <td colspan="2">{st.m_email}</td> </tr> <tr> <td rowspan="4" colspan="2"> <img id="g_pp_box1" width="90" height="90"> </td> <td colspan="5" style="background-color:#efefef"><h>Guardian\\\'s Information</td> </tr> <tr> <th>Examination Passed</th> <td>{st.g_school_exam_passed}</td> <th>Address</th> <td colspan="2">{st.g_add_l1} {st.g_add_l2}</td> </tr> <tr> <th>Other Qualification</th> <td>{st.g_college_exam_passed}</td> <th>City</th> <td colspan="2">{st.g_city}</td> </tr> <tr> <th>Nationality</th> <td>{st.g_nationality}</td> <th>State</th> <td colspan="2">{st.g_state}</td> </tr> <tr> <th>Name:</th> <td colspan="3"> {st.g_name}</td> <th>Country</th> <td colspan="2">{st.g_country}</td> </tr> <tr> <th>Occupation: </th> <td>{st.g_occupation}</td> <th>Work Detail</th> <td>{st.g_work_profile}</td> <th>Pin Code</th> <td colspan="2"> {st.g_zip}</td> </tr> <tr> <th>Annual Income:</th> <td> {st.g_annual_income}</td> <th>Organisation\'s Name"</th> <td>{st.g_organisation_name}</td> <th>Residence Ph.</th> <td colspan="2">{st.g_phone}</td> </tr> <tr> <th>Designation:</th> <td> {st.g_designation}</td> <th>Office Address</th> <td>{st.g_office_add_l1} {st.g_office_add_l2}</td> <th>Office Ph.</th> <td colspan="2">{st.g_office_phone} </td> </tr> <tr> <th>Mobile</th> <td> {st.g_mobile}</td> <th>Relation</th> <td>{st.g_relation}</td> <th>Email</th> <td colspan="2">{st.g_email}</td> </tr> <tr> <td colspan="7" style="background-color:#efefef"><h>Siblings Detail:</td> </tr> <tr> <th style="width:30px">Sl.</th> <th>Name</th> <th>Age</th> <th>Class</th> <th>Sec</th> <th>Enrol No</th> <th>School</th> </tr> <tr> <td>1</td> <td>{st.first_child_name}</td> <td>{st.first_child_age}</td> <td>{st.first_child_class}</td> <td>{st.first_child_section}</td> <td>{st.first_enrol}</td> <td>{st.first_child_school}</td> </tr> <tr> <td>2</td> <td>{st.second_child_name}</td> <td>{st.second_child_age}</td> <td>{st.second_child_class}</td> <td>{st.second_child_section}</td> <td>{st.second_enrol}</td> <td>{st.second_child_school}</td> </tr> <tr> <td>3</td> <td>{st.third_child_name}</td> <td>{st.third_child_age}</td> <td>{st.third_child_class}</td> <td>{st.third_child_section}</td> <td>{st.third_enrol}</td> <td>{st.third_child_school}</td> </tr> <tr> <td>4</td> <td>{st.fourth_child_name}</td> <td>{st.fourth_child_age}</td> <td>{st.fourth_child_class}</td> <td>{st.fourth_child_section}</td> <td>{st.fourth_enrol}</td> <td>{st.fourth_child_school}</td> </tr> <tr> <td colspan="7" style="background-color:#efefef"><h>Areas Where Parent(Father or Mother) can contribute to the School</h></td> </tr> <tr> <th colspan="4"><input type="checkbox" id="music"> Music</th> <th colspan="4"><input type="checkbox" id="academic"> Academic</th> </tr> <tr> <th colspan="4"><input type="checkbox" id="sports"> Sports</th> <th colspan="4"><input type="checkbox" id="community"> Community Programme </th> </tr> <tr> <th colspan="4"><input type="checkbox" id="social"> Social Skills</th> <th colspan="4"><input type="checkbox" id="medical"> Medical </th> </tr> <tr> <th colspan="4"><input type="checkbox" id="media"> Media/PR</th> <th colspan="4"><input type="checkbox" id="hr_training"> HR Training </th> </tr> <tr> <th colspan="4"><input type="checkbox" id="painting"> Painting/Sculpture </th> <th colspan="4"><input type="checkbox" id="career"> Career Counselling </th> </tr> <tr> <th colspan="4"><input type="checkbox" id="information"> Information Technology </th> <th colspan="4"><input type="checkbox" id="communication"> Public Communication / Communication Skills </th> </tr> <tr> <td colspan="7"><h>Extra Qualification Possessed by the Parent</h></td> </tr> <tr> <th colspan="4"><input type="checkbox" id="med"> M.Ed </th> <th colspan="4"><input type="checkbox" id="bed"> B.Ed </th> </tr> <tr> <th colspan="4"><input type="checkbox" id="ttc"> TTC </th> <th colspan="3"><input type="checkbox" id="montessori"> Montessori Trained </th> </tr> </table> </section> <section class=" is-fluid" show="{student_view ==\'add_student\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Student</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns is-multiline"> <div class="column is-one-fifth"> <div id="pp_box" class="pp-box" onclick="{trigger_file_input.bind(this,\'student_picture\')}"> <div class="icon has-text-danger" onclick="{remove_picture.bind(this, \'pp_box\',\'student_picture\')}"><i class="fas fa-trash"></i> </div> </div> <input accept="image/*" class="is-hidden" id="student_picture" name="student_picture" onchange="{loadFile.bind(this, \'pp_box\')}" type="file"> </div> <div class="column "> <div class="columns "> <div class="column is-2"> <label class="label is-small" for="first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" id="first_name" ref="first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="middle_name">Middle Name</label> </div> <div class="column is-2"> <input class="input is-small" id="middle_name" ref="middle_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="last_name">Last Name</label> </div> <div class="column is-2"> <input class="input is-small" id="last_name" ref="last_name" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="standard_id">Class</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="standard_id" onchange="{getSection}"> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="section_id">Section</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select ref="section_id"> <option each="{filteredSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="section_id">House</label> </div> <div class="column is-2"> <div class=" select is-fullwidth is-small"> <select ref="house_id"> <option value="-1">None</option> <option each="{houses}" riot-value="{house_id}">{house_name}</option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="enroll_number">Enroll No</label> </div> <div class="column is-2"> <input class="input is-small" ref="enroll_number" maxlength="8" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="roll_number">Roll No</label> </div> <div class="column is-2"> <input class="input is-small" ref="roll_number" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="reg_number">Reg. No</label> </div> <div class="column is-2"> <input class="input is-small" ref="reg_number" type="number"> </div> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="control"> <div class="select is-fullwidth is-small"> <select id="gender" ref="gender"> <option value="M">Male</option> </select> </div> </div> </div> <div class="column is-2"> <label class="label is-small" for="category_id">Cast Category</label> </div> <div class="column is-2"> <div class="control"> <div class="select is-fullwidth is-small"> <select ref="category_id"> <option each="{cast}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="column is-2"> <label class="label is-small" for="dob">DOB</label> </div> <div class="column is-2"> <input class="input date is-small" ref="dob" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="blood_group">Blood Group</label> </div> <div class="column is-2"> <div class="control"> <div class="select is-fullwidth is-small"> <select id="blood_group" ref="blood_group"> <option value="A+">A+</option> <option value="A-">A-</option> <option value="AB+">AB+</option> <option value="AB-">AB-</option> <option value="B+">B+</option> <option value="B-">B-</option> <option value="O+">O+</option> <option value="O-">O-</option> </select> </div> </div> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information(Permanent Address)</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="p_add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" ref="p_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="p_add_l2">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="p_add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="p_city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="p_city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="p_zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" ref="p_zip" maxlength="6" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="p_state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="p_state" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="p_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="p_country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link"> Check if Correspondence Address is same as Permanent Address <input type="checkbox" id="correspondenceCheckbox" name="correspondenceCheckbox" onclick="{copyAddress.bind(this)}"> </h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="c_add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_add_l2">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="c_zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_zip" maxlength="6" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="c_state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_state" type="text" id="c_state"> </div> <div class="column is-2"> <label class="label is-small" for="c_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="residence_phone">Phone(R)</label> </div> <div class="column is-2"> <input class="input is-small" ref="residence_phone" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="mobile">SMS No.</label> </div> <div class="column is-2"> <input class="input is-small" ref="mobile" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="emergency_no">Emergency No.</label> </div> <div class="column is-2"> <input class="input is-small" ref="emergency_no" type="number"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="student_type">Student Type</label> </div> <div class="column is-2"> <div class="control"> <div class="select is-fullwidth is-small"> <select id="student_type" ref="student_type"> <option value="Day Scholar">Day Scholar</option> </select> </div> </div> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Other Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="aadhar_no">Aadhar No</label> </div> <div class="column is-2"> <input class="input is-small" ref="aadhar_no" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="doa">Date of Admission</label> </div> <div class="column is-2"> <input class="input date is-small" ref="doa" type="text" readonly> </div> <div class="column is-2"> <label class="label is-small" for="old_doa">Old Date of Admission</label> </div> <div class="column is-2"> <input class="input date is-small" ref="old_doa" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="doj">Date of Joining</label> </div> <div class="column is-2"> <input class="input date is-small" ref="doj" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="old_doj">Old Date of Joining</label> </div> <div class="column is-2"> <input class="input date is-small" ref="old_doj" type="text" readonly> </div> <div class="column is-2"> <label class="label is-small" for="mother_tongue">Mother Tongue</label> </div> <div class="column is-2"> <input class="input is-small" ref="mother_tongue" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="last_school">Last School</label> </div> <div class="column is-2"> <input class="input is-small" ref="last_school" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="last_class">Last Class</label> </div> <div class="column is-2"> <input class="input is-small" ref="last_class" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="admission_for_class">Admission For Class</label> </div> <div class="column is-2"> <input class="input is-small" ref="admission_for_class" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="hobby">Hobbies</label> </div> <div class="column is-2"> <input class="input is-small" ref="hobby" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="cast">Cast</label> </div> <div class="column is-2"> <input class="input is-small" ref="cast" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="religion_id">Religion</label> </div> <div class="column is-2"> <div class="control"> <div class="select is-fullwidth is-small"> <select id="religion_id" ref="religion_id"> <option each="{religion}" riot-value="{religion_id}">{religion} </option> </select> </div> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="staff_child">Staff Member Child</label> </div> <div class="column is-2"> <div class="control"> <div class="select is-fullwidth is-small"> <select id="staff_child" ref="staff_child" onchange="{GetStaffName}"> <option value="N">No</option> <option value="Y">Yes</option> </select> </div> </div> </div> <div class="column is-2" show="{staff_name}"> <label class="label is-small" for="staff_name">Staff\'s Name</label> </div> <div class="column is-2" show="{staff_name}"> <input class="input is-small" ref="staff_name" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addFatherInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'add_father_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Father</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns is-multiline"> <div class="column is-one-fifth"> <div id="f_pp_box" class="f_pp-box" onclick="{trigger_father_file_input.bind(this,\'father_picture\')}"> <div class="icon has-text-danger" onclick="{remove_father_picture.bind(this, \'f_pp_box\',\'father_picture\')}"><i class="fas fa-trash"></i></div> </div> <input accept="image/*" class="is-hidden" id="father_picture" name="father_picture" onchange="{loadFatherFile.bind(this, \'f_pp_box\')}" type="file"> </div> <div class="column "> <div class="columns"> <div class="column is-2"> <label class="label is-small" for="f_name">Father\'s Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_name" id="f_name" type="text"> </div> </div> <div class="columns mt35"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Work Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="f_occupation">Occupation</label> </div> <div class="column is-2"> <input class="input is-small" id="f_occupation" ref="f_occupation" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_organisation_type">Organization Type</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select id="f_organisation_type" ref="f_organisation_type"> <option value="Governmnet">Governmnet</option> <option value="Business">Business</option> <option value="NGO">NGO</option> <option value="Professional">Professional</option> <option value="Other">Other</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="f_annual_income">Annual Income</label> </div> <div class="column is-2"> <input class="input is-small" id="f_annual_income" ref="f_annual_income" type="number"> </div> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="f_work_profile">Work Profile</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_work_profile" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_organisation_name">Organization Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="f_organisation_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_designation">Designation</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_designation" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="f_department">Department</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_department" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_office_add_l1">Office Address Line 1</label> </div> <div class="column is-2 "> <input class="input is-small" ref="f_office_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_office_add_l2">Office Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_office_add_l2" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="f_office_city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_office_city" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_office_zip">Zip</label> </div> <div class="column is-2 "> <input class="input is-small" ref="f_office_zip" maxlength="6" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="f_office_state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_office_state" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="f_office_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_office_country" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_office_phone">Phone(O)</label> </div> <div class="column is-2 "> <input class="input is-small" ref="f_office_phone" type="number"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Educational Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="f_qualification">Qualification</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_qualification" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_other_qualification">Other Qualification</label> </div> <div class="column is-2 "> <input class="input is-small" ref="f_other_qualification" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_office_state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_office_state" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Check if Candidate\'s Correspondence Address is same as Father\'s Address <input type="checkbox" id="fatherCorrespondenceCheckbox" onclick="{copyFatherAddress.bind(this)}"> </h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="f_add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_add_l2">Address Line 2</label> </div> <div class="column is-2 "> <input class="input is-small" ref="f_add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="f_zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_zip" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="f_state">State</label> </div> <div class="column is-2 "> <input class="input is-small" ref="f_state" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="f_mobile">Mobile</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_mobile" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="f_email">Email</label> </div> <div class="column is-2 "> <input class="input is-small" ref="f_email" type="email"> </div> <div class="column is-2"> <label class="label is-small" for="f_nationality">Nationality</label> </div> <div class="column is-2"> <input class="input is-small" ref="f_nationality" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeFatherInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addMotherInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'add_mother_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Mother</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns is-multiline"> <div class="column is-one-fifth"> <div id="m_pp_box" class="m_pp-box" onclick="{trigger_mother_file_input.bind(this,\'mother_picture\')}"> <div class="icon has-text-danger" onclick="{remove_mother_picture.bind(this, \'m_pp_box\',\'mother_picture\')}"><i class="fas fa-trash"></i></div> </div> <input accept="image/*" class="is-hidden" id="mother_picture" name="mother_picture" onchange="{loadMotherFile.bind(this, \'m_pp_box\')}" type="file"> </div> <div class="column "> <div class="columns"> <div class="column is-2"> <label class="label is-small" for="m_name">Mother\'s Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_name" id="m_name" type="text"> </div> </div> <div class="columns mt35"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Work Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="m_occupation">Occupation</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_occupation" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_organisation_type">Organization Type</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select ref="m_organisation_type"> <option value="Governmnet">Governmnet</option> <option value="Business">Business</option> <option value="NGO">NGO</option> <option value="Professional">Professional</option> <option value="Other">Other</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="m_annual_income">Annual Income</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_annual_income" type="number"> </div> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="m_work_profile">Work Profile</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_work_profile" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_organisation_name">Organization Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="m_organisation_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_designation">Designation</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_designation" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="m_department">Department</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_department" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_office_add_l1">Office Address Line 1</label> </div> <div class="column is-2 "> <input class="input is-small" ref="m_office_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_office_add_l2">Office Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_office_add_l2" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="m_office_city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_office_city" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_office_zip">Zip</label> </div> <div class="column is-2 "> <input class="input is-small" ref="m_office_zip" maxlength="6" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="m_office_state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_office_state" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="m_office_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_office_country" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_office_phone">Phone(O)</label> </div> <div class="column is-2 "> <input class="input is-small" ref="m_office_phone" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="m_office_state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_office_state" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Educational Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="m_qualification">Qualification</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_qualification" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_other_qualification">Other Qualification</label> </div> <div class="column is-2 "> <input class="input is-small" ref="m_other_qualification" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_office_state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_office_state" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information Check if Mother\'s Address is same as Father\'s Address <input type="checkbox" id="motherCorrespondenceCheckbox" onclick="{copyMotherAddress.bind(this)}"> </h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="m_add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_add_l2">Address Line 2</label> </div> <div class="column is-2 "> <input class="input is-small" ref="m_add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="m_zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_zip" maxlength="6" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="m_state">State</label> </div> <div class="column is-2 "> <input class="input is-small" ref="m_state" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="m_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="m_mobile">Mobile</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_mobile" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="m_email">Email</label> </div> <div class="column is-2 "> <input class="input is-small" ref="m_email" type="email"> </div> <div class="column is-2"> <label class="label is-small" for="m_nationality">Nationality</label> </div> <div class="column is-2"> <input class="input is-small" ref="m_nationality" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeMotherInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addGuardianInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'add_guardian_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Guardian</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns is-multiline"> <div class="column is-one-fifth"> <div id="g_pp_box" class="g_pp-box" onclick="{trigger_guardian_file_input.bind(this,\'guardian_picture\')}"> <div class="icon has-text-danger" onclick="{remove_guardian_picture.bind(this, \'g_pp_box\',\'guardian_picture\')}"><i class="fas fa-trash"></i></div> </div> <input accept="image/*" class="is-hidden" id="guardian_picture" name="guardian_picture" onchange="{loadGuardianFile.bind(this, \'g_pp_box\')}" type="file"> </div> <div class="column "> <div class="columns"> <div class="column is-2"> <label class="label is-small" for="is_guardian">Select Guardian</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="is_guardian" id="guardian" onchange="{getGuardianInformation}"> <option>Select Guardian</option> <option value="Father">Father</option> <option value="Mother">Mother</option> <option value="Other">Other</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="g_name">Guardian\'s Name</label> </div> <div class="column is-2"> <input class="input is-small" id="g_name" ref="g_name" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Work Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="g_occupation">Occupation</label> </div> <div class="column is-2"> <input class="input is-small" id="g_occupation" ref="g_occupation" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_organisation_type">Organization Type</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select ref="g_organisation_type" id="g_organisation_type"> <option value="Governmnet">Governmnet</option> <option value="Business">Business</option> <option value="NGO">NGO</option> <option value="Professional">Professional</option> <option value="Other">Other</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="g_annual_income">Annual Income</label> </div> <div class="column is-2"> <input class="input is-small" id="g_annual_income" ref="g_annual_income" type="number"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="g_work_profile">Work Profile</label> </div> <div class="column is-2"> <input class="input is-small" id="g_work_profile" ref="g_work_profile" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_organisation_name">Organization Name</label> </div> <div class="column is-2 "> <input class="input is-small" id="g_organisation_name" ref="g_organisation_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_designation">Designation</label> </div> <div class="column is-2"> <input class="input is-small" id="g_designation" ref="g_designation" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="g_department">Department</label> </div> <div class="column is-2"> <input class="input is-small" id="g_department" ref="g_department" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_office_add_l1">Office Address Line 1</label> </div> <div class="column is-2 "> <input class="input is-small" id="g_office_add_l1" ref="g_office_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_office_add_l2">Office Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" id="g_office_add_l2" ref="g_office_add_l2" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="g_office_city">City</label> </div> <div class="column is-2"> <input class="input is-small" id="g_office_city" ref="g_office_city" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_office_zip">Zip</label> </div> <div class="column is-2 "> <input class="input is-small" id="g_office_zip" ref="g_office_zip" maxlength="6" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="g_office_state">State</label> </div> <div class="column is-2"> <input class="input is-small" id="g_office_state" ref="g_office_state" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label" for="g_office_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" id="g_office_country" ref="g_office_country" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_office_phone">Phone(O)</label> </div> <div class="column is-2 "> <input class="input is-small" id="g_office_phone" ref="g_office_phone" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="g_office_state">State</label> </div> <div class="column is-2"> <input class="input is-small" id="g_office_state" ref="g_office_state" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Educational Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="g_qualification">Qualification</label> </div> <div class="column is-2"> <input class="input is-small" id="g_qualification" ref="g_qualification" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_other_qualification">Other Qualification</label> </div> <div class="column is-2 "> <input class="input is-small" id="g_other_qualification" ref="g_other_qualification" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="g_add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" id="g_add_l1" ref="g_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_add_l2">Address Line 2</label> </div> <div class="column is-2 "> <input class="input is-small" id="g_add_l2" ref="g_add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_city">City</label> </div> <div class="column is-2"> <input class="input is-small" id="g_city" ref="g_city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="g_zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" id="g_zip" ref="g_zip" maxlength="6" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="g_state">State</label> </div> <div class="column is-2 "> <input class="input is-small" id="g_state" ref="g_state" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" id="g_country" ref="g_country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="g_phone">Phone(R)</label> </div> <div class="column is-2"> <input class="input is-small" id="g_phone" ref="g_phone" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="g_mobile">Mobile</label> </div> <div class="column is-2 "> <input class="input is-small" id="g_mobile" ref="g_mobile" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="g_email">Email</label> </div> <div class="column is-2"> <input class="input is-small" id="g_email" ref="g_email" type="email"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="g_nationality">Nationality</label> </div> <div class="column is-2"> <input class="input is-small" id="g_nationality" ref="g_nationality" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_relation">Relationship</label> </div> <div class="column is-2 "> <input class="input is-small" id="g_relation" ref="g_relation" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="g_email">Email</label> </div> <div class="column is-2"> <input class="input is-small" id="g_email" ref="g_email" type="email"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeGuardianInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addSiblingInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'add_sibling_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Sibling Detail</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt20"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">First Child</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="first_child_name">Name</label> </div> <div class="column is-2"> <input class="input is-small" id="first_child_name" ref="first_child_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="first_child_age">Age</label> </div> <div class="column is-2 "> <input class="input is-small" id="first_child_age" ref="first_child_age" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="first_child_class">Class</label> </div> <div class="column is-2"> <input class="input is-small" id="first_child_class" ref="first_child_class" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="first_child_section">Section</label> </div> <div class="column is-2"> <input class="input is-small" id="first_child_section" ref="first_child_section" type="text" onkeyup="this.value = this.value.toUpperCase();"> </div> <div class="column is-2"> <label class="label is-small" for="first_enrol">Enroll No.</label> </div> <div class="column is-2 "> <input class="input is-small" id="first_enrol" ref="first_enrol" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="first_child_school">School</label> </div> <div class="column is-2"> <input class="input is-small" id="first_child_school" ref="first_child_school" type="text"> </div> </div> <div class="columns mt35"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Second Child</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="second_child_name">Name</label> </div> <div class="column is-2"> <input class="input is-small" id="second_child_name" ref="second_child_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="second_child_age">Age</label> </div> <div class="column is-2 "> <input class="input is-small" id="second_child_age" ref="second_child_age" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="second_child_class">Class</label> </div> <div class="column is-2"> <input class="input is-small" id="second_child_class" ref="second_child_class" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="second_child_section">Section</label> </div> <div class="column is-2"> <input class="input is-small" id="second_child_section" ref="second_child_section" type="text" onkeyup="this.value = this.value.toUpperCase();"> </div> <div class="column is-2"> <label class="label is-small" for="second_enrol">Enroll No.</label> </div> <div class="column is-2 "> <input class="input is-small" id="second_enrol" ref="second_enrol" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="second_child_school">School</label> </div> <div class="column is-2"> <input class="input is-small" id="second_child_school" ref="second_child_school" type="text"> </div> </div> <div class="columns mt35"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Third Child</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="third_child_name">Name</label> </div> <div class="column is-2"> <input class="input is-small" id="third_child_name" ref="third_child_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="third_child_age">Age</label> </div> <div class="column is-2 "> <input class="input is-small" id="third_child_age" ref="third_child_age" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="third_child_class">Class</label> </div> <div class="column is-2"> <input class="input is-small" id="third_child_class" ref="third_child_class" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="third_child_section">Section</label> </div> <div class="column is-2"> <input class="input is-small" id="third_child_section" ref="third_child_section" type="text" onkeyup="this.value = this.value.toUpperCase();"> </div> <div class="column is-2"> <label class="label is-small" for="third_enrol">Enroll No.</label> </div> <div class="column is-2 "> <input class="input is-small" id="third_enrol" ref="third_enrol" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="third_child_school">School</label> </div> <div class="column is-2"> <input class="input is-small" id="third_child_school" ref="third_child_school" type="text"> </div> </div> <div class="columns mt35"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Fourth Child</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="fourth_child_name">Name</label> </div> <div class="column is-2"> <input class="input is-small" id="fourth_child_name" ref="fourth_child_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="fourth_child_age">Age</label> </div> <div class="column is-2 "> <input class="input is-small" id="fourth_child_age" ref="fourth_child_age" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="fourth_child_class">Class</label> </div> <div class="column is-2"> <input class="input is-small" id="fourth_child_class" ref="fourth_child_class" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="fourth_child_section">Section</label> </div> <div class="column is-2"> <input class="input is-small" id="fourth_child_section" ref="fourth_child_section" type="text" onkeyup="this.value = this.value.toUpperCase();"> </div> <div class="column is-2"> <label class="label is-small" for="fourth_enrol">Enroll No.</label> </div> <div class="column is-2 "> <input class="input is-small" id="fourth_enrol" ref="fourth_enrol" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="fourth_child_school">School</label> </div> <div class="column is-2"> <input class="input is-small" id="fourth_child_school" ref="fourth_child_school" type="text"> </div> </div> <div class="columns mt60"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeSiblingInformation}">Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addOtherInformation}">Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}">Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'add_other_information\'}"> <div class="box"> <div class="columns "> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Areas Where Parent(Father or Mentor) can contribute to the school</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <table class="table is-fullwidth no-border"> <tbody> <tr> <td> <input type="checkbox" id="music" ref="music">Music </td> <td> <input type="checkbox" id="sports" ref="sports">Sports </td> <td> <input type="checkbox" id="social" ref="social">Social Skills </td> <td> <input type="checkbox" id="media" ref="media">Media/PR </td> </tr> <tr> <td> <input type="checkbox" id="academic" ref="academic">Academic </td> <td> <input type="checkbox" id="community" ref="community"> Community Programme </td> <td> <input type="checkbox" id="painting" ref="painting"> Painting/Sculpture </td> <td> <input type="checkbox" id="information" ref="information"> Information Technology </td> </tr> <tr> <td> <input type="checkbox" id="hr_training" ref="hr_training">HR Training </td> <td> <input type="checkbox" id="medical" ref="medical">Medical </td> <td> <input type="checkbox" id="career" ref="career"> Career Counselling </td> <td> <input type="checkbox" id="communication" ref="communication"> Public Speaking / Communication Skills </td> </tr> </tbody> </table> </div> <div class="columns "> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Please Mention if either parent possesses any of the following Qualification</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns"> <table class="table is-fullwidth"> <tbody> <tr> <td> <input type="checkbox" id="med" ref="med">MEd </td> <td> <input type="checkbox" id="bed" ref="bed">BEd </td> <td> <input type="checkbox" id="ttc" ref="ttc">TTC </td> <td> <input type="checkbox" id="montessori" ref="montessori"> Montessori Trained </td> </tr> </tbody> </table> </div> <div class="columns "> <div class="column is-2"> <label class="label is-small" for="transport_mode">Mode of Transport</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="transport_mode" id="transport_mode"> <option value="None">None</option> <option value="Bus">Bus</option> <option value="Carpool">Carpool</option> <option value="Rikshaw">Rikshaw</option> <option value="Self">Self</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="school_distance">Distance from school</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select ref="school_distance" id="school_distance"> <option value="1 km">1 km</option> <option value="1-2 km">1-2 km</option> <option value="More than 2 km">More than 2 km</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="differently_abled">If child is Differently Abled</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="differently_abled" id="differently_abled"> <option value="None">None</option> <option value="In seeing">In seeing</option> <option value="In hearing">In hearing</option> <option value="In speaking">In speaking</option> <option value="In movement">In movement</option> <option value="In mental ability">In mental ability</option> </select> </div> </div> </div> <div class="columns"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeOtherInformation}">Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addInformation}">Submit </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}">Cancel </button> </div> </div> </div> </section>', '', '', function(opts) {
 
 	var self = this
 	self.st={}
@@ -18107,10 +19291,13 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	self.student_picture=false
     	self.role = getCookie('role')
     	self.readStandard()
-    	self.readSection()
     	self.readHouse()
     	self.readCategory()
     	self.readReligion()
+    	self.loading = false
+    	self.print_list_button = false;
+    	self.student_list_button = false;
+    	self.regenerate_roll_no_button = false;
     	self.staff_name = true
     	self.house_column = false
     	self.column_one = false
@@ -18148,18 +19335,37 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     })
 
     self.getStudentData = () =>{
-    	if(self.refs.read_enroll_number.value==""){
-    		studentStore.trigger('read_student', self.refs.read_standard_id.value,self.refs.read_section_id.value,0)
-    	}else{
-    		studentStore.trigger('read_student', self.refs.read_standard_id.value,self.refs.read_section_id.value,
-      	self.refs.read_enroll_number.value)
+    	if(self.refs.read_section_id.value !=""){
+    		self.print_list_button = true;
+    		self.student_list_button = true;
+    		self.regenerate_roll_no_button = true;
     	}
 
+    	if(self.refs.read_section_id.value ==""){
+    		self.print_list_button = false;
+    		self.student_list_button = false;
+    		self.regenerate_roll_no_button = false;
+    		return;
+    	}
+    	if(self.refs.read_enroll_number.value=="" ){
+    		self.loading = true
+    		studentStore.trigger('read_student', self.refs.read_standard_id.value,self.refs.read_section_id.value,0)
+    	}else{
+    		self.loading = true
+    		studentStore.trigger('read_student', self.refs.read_standard_id.value,
+    			self.refs.read_section_id.value,self.refs.read_enroll_number.value)
+    	}
     }
 
     self.add_new_student = () =>{
     	self.student_view='add_student'
+    	self.clearForm()
     	self.update()
+    	document.getElementById(item2).value = ""
+    	self.refs.p_state.value = "West Bengal"
+    	self.refs.c_state.value = "West Bengal"
+    	self.refs.p_country.value = "India"
+    	self.refs.c_country.value = "India"
     	document.getElementById("first_name").focus()
     }
 
@@ -18177,11 +19383,18 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 
     self.addFatherInformation = () =>{
     	var phoneno = /^\d{10}$/;
+
     	if(!self.refs.first_name.value){
     		toastr.error("Please enter First Name and try again")
     		return;
     	}else if(!self.refs.enroll_number.value){
         	toastr.error("Please enter Enroll No and try again")
+        	return;
+      	}else if((self.refs.enroll_number.value).length!=8){
+        	toastr.error("Please enter Valid Enroll No and try again")
+        	return;
+      	}else if((self.refs.p_zip.value).length!=6){
+        	toastr.error("Please enter Valid Zip Code and try again")
         	return;
       	}else if(!self.refs.dob.value){
         	toastr.error("Please enter DOB and try again")
@@ -18198,10 +19411,13 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
       	}else if(!self.refs.doj.value){
         	toastr.error("Please enter DOJ and try again")
         	return;
+      	}else if(!self.refs.religion_id.value){
+        	toastr.error("Please select Religion and try again")
+        	return;
       	}else{
     		self.student_view='add_father_information'
     		self.update()
-    		document.getElementById("f_title").focus()
+    		document.getElementById("f_name").focus()
       	}
     }
     self.closeFatherInformation = () =>{
@@ -18215,7 +19431,7 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	}else{
     		self.student_view='add_mother_information'
     		self.update()
-    		document.getElementById("m_title").focus()
+    		document.getElementById("m_name").focus()
       	}
     }
     self.closeMotherInformation = () =>{
@@ -18237,21 +19453,22 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	self.student_view = 'add_mother_information'
     }
     self.addOtherInformation = () =>{
-    	if(!self.refs.g_name.value){
-    		toastr.error("Please enter Guardian Name and try again")
-    		return;
-    	}else{
-    		self.student_view='add_other_information'
-    		self.update()
-      	}
+
+    	self.student_view='add_other_information'
+    	self.update()
     }
     self.closeOtherInformation = () =>{
     	self.student_view = 'add_sibling_information'
     }
 
     self.addSiblingInformation = () =>{
-    	self.student_view='add_sibling_information'
-    	self.update()
+    	if(!self.refs.g_name.value){
+    		toastr.error("Please enter Guardian Name and try again")
+    		return;
+    	}else{
+    		self.student_view='add_sibling_information'
+    		self.update()
+    	}
     }
 
     self.closeSiblingInformation = () =>{
@@ -18285,7 +19502,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 
     self.getGuardianInformation = () =>{
     	if(self.refs.is_guardian.value == 'Father'){
-    		document.getElementById("g_title").disabled = true;
     		document.getElementById("g_name").disabled = true;
     		document.getElementById("g_occupation").disabled = true;
     		document.getElementById("g_organisation_type").disabled = true;
@@ -18319,7 +19535,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     		}else if(self.title == "Update"){
     			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/father/'+self.student_id+'.jpg)';
     		}
-    		self.refs.g_title.value = self.refs.f_title.value
     		self.refs.g_name.value = self.refs.f_name.value
     		self.refs.g_occupation.value = self.refs.f_occupation.value
     		self.refs.g_organisation_type.value = self.refs.f_organisation_type.value
@@ -18349,7 +19564,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     		self.refs.g_relation.value = self.refs.is_guardian.value
 
     	}else if(self.refs.is_guardian.value == 'Mother'){
-    		document.getElementById("g_title").disabled = true;
     		document.getElementById("g_name").disabled = true;
     		document.getElementById("g_occupation").disabled = true;
     		document.getElementById("g_organisation_type").disabled = true;
@@ -18384,7 +19598,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     		}else if(self.title == "Update"){
     			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/mother/'+self.student_id+'.jpg)';
     		}
-    		self.refs.g_title.value = self.refs.m_title.value
     		self.refs.g_name.value = self.refs.m_name.value
     		self.refs.g_occupation.value = self.refs.m_occupation.value
     		self.refs.g_organisation_type.value = self.refs.m_organisation_type.value
@@ -18413,7 +19626,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     		self.refs.g_nationality.value = self.refs.m_nationality.value
     		self.refs.g_relation.value = self.refs.is_guardian.value
     	}else {
-    		document.getElementById("g_title").disabled = false;
     		document.getElementById("g_name").disabled = false;
     		document.getElementById("g_occupation").disabled = false;
     		document.getElementById("g_organisation_type").disabled = false;
@@ -18448,7 +19660,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     		}else if(self.title == "Update"){
     			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/guardian/'+self.student_id+'.jpg)';
     		}
-    		self.refs.g_title.value = ''
     		self.refs.g_name.value = ''
     		self.refs.g_occupation.value = ''
     		self.refs.g_organisation_type.value = ''
@@ -18676,7 +19887,7 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 		}
     }
 
-	 self.readStandard = () => {
+	self.readStandard = () => {
        studentStore.trigger('read_standard')
     }
 
@@ -18708,6 +19919,8 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	self.readfilteredSections = self.sections.filter(s => {
     		return s.standard_id == self.refs.read_standard_id.value
     	})
+    	self.update()
+    	console.log(self.readfilteredSections)
     }
     self.getReadSectionForWithdraw = () => {
     	self.readwithdrawfilteredSections = []
@@ -18796,7 +20009,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 
         var parent={};
 
-    	parent['f_title']=self.refs.f_title.value
     	parent['f_name']=self.refs.f_name.value
     	parent['f_occupation']=self.refs.f_occupation.value
     	parent['f_organisation_type']=self.refs.f_organisation_type.value
@@ -18831,7 +20043,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	parent['f_email']=self.refs.f_email.value
     	parent['f_nationality']=self.refs.f_nationality.value
 
-    	parent['m_title']=self.refs.m_title.value
     	parent['m_name']=self.refs.m_name.value
     	parent['m_occupation']=self.refs.m_occupation.value
     	parent['m_organisation_type']=self.refs.m_organisation_type.value
@@ -18880,7 +20091,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     		parent['is_guardian'] = 'Other'
     	}
 
-        parent['g_title']=self.refs.g_title.value
     	parent['g_name']=self.refs.g_name.value
     	parent['g_occupation']=self.refs.g_occupation.value
     	parent['g_organisation_type']=self.refs.g_organisation_type.value
@@ -19038,8 +20248,10 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 
     	if(self.title=='Add'){
           studentStore.trigger('add_student', obj)
+
         }else if(self.title=='Update'){
           studentStore.trigger('edit_student', obj,self.student_id)
+          self.student_view = 'show_student'
         }
     }
 
@@ -19050,6 +20262,7 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 	    allowInput: true,
         dateFormat: "d/m/Y",
   		})
+      self.title='Update'
       studentStore.trigger('read_for_edit_student',self.student_id)
       document.getElementById('pp_box').style.backgroundImage = 'url(/images/7/student/'+c+'.jpg)';
       document.getElementById('f_pp_box').style.backgroundImage = 'url(/images/7/father/'+c+'.jpg)';
@@ -19063,7 +20276,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
       	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/guardian/'+c+'.jpg)';
       }
       self.add_new_student()
-      self.title='Update'
 
     }
 
@@ -19268,6 +20480,8 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	self.refs.first_name.value = ""
     	self.refs.middle_name.value = ""
     	self.refs.last_name.value = ""
+    	self.refs.standard_id.value = ""
+    	self.refs.section_id.value = ""
     	self.refs.enroll_number.value = ""
     	self.refs.roll_number.value = ""
     	self.refs.reg_number.value = ""
@@ -19316,7 +20530,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	self.refs.enroll_number.value = ""
     	self.refs.dob.value =""
 
-    	self.refs.f_title.value = ""
     	self.refs.f_name.value = ""
     	self.refs.f_occupation.value = ""
     	self.refs.f_organisation_type.value = ""
@@ -19345,7 +20558,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	self.refs.f_email.value = ""
     	self.refs.f_nationality.value = ""
 
-    	self.refs.m_title.value = ""
     	self.refs.m_name.value = ""
     	self.refs.m_occupation.value = ""
     	self.refs.m_organisation_type.value = ""
@@ -19374,7 +20586,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	self.refs.m_email.value = ""
     	self.refs.m_nationality.value = ""
 
-        self.refs.g_title.value = ""
     	self.refs.g_name.value = ""
     	self.refs.g_occupation.value = ""
     	self.refs.g_organisation_type.value = ""
@@ -19438,6 +20649,7 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
       console.log(standards)
       self.standards = standards
       self.update()
+      self.readSection()
     }
 
     studentStore.on('read_section_changed',SectionChanged)
@@ -19445,7 +20657,9 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
       console.log(sections)
       self.sections = sections
       self.update()
+      self.getSection()
       self.getReadSection()
+      self.getStudentData()
       self.getReadSectionForWithdraw()
     }
 
@@ -19472,7 +20686,7 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 
     studentStore.on('read_student_changed',StudentChanged)
     function StudentChanged(students){
-      console.log(students)
+      self.loading = false
       self.students = students
       self.update()
     }
@@ -19539,7 +20753,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	}else{
     		self.staff_name = false
     	}
-    	self.refs.f_title.value = student_profile_details[0].f_title
 		self.refs.f_name.value = student_profile_details[0].f_name
 		self.refs.f_occupation.value = student_profile_details[0].f_occupation
 		self.refs.f_organisation_type.value = student_profile_details[0].f_organisation_type
@@ -19574,7 +20787,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 		self.refs.f_state.value=student_profile_details[0].f_state
 		self.refs.f_country.value=student_profile_details[0].f_country
 
-		self.refs.m_title.value = student_profile_details[0].m_title
 		self.refs.m_name.value = student_profile_details[0].m_name
 		self.refs.m_occupation.value = student_profile_details[0].m_occupation
 		self.refs.m_organisation_type.value = student_profile_details[0].m_organisation_type
@@ -19617,7 +20829,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 		}else{
 			self.refs.is_guardian.value = 'Other'
 		}
-		self.refs.g_title.value = student_profile_details[0].g_title
 		self.refs.g_name.value = student_profile_details[0].g_name
 		self.refs.g_occupation.value = student_profile_details[0].g_occupation
 		self.refs.g_organisation_type.value = student_profile_details[0].g_organisation_type
@@ -19801,7 +21012,8 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
       self.uploadFatherImage(student_id)
       self.uploadMotherImage(student_id)
       self.uploadGuardianImage(student_id)
-      self.read_student()
+
+      self.student_view = 'show_student'
       self.update()
     }
 
@@ -19815,7 +21027,8 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
       self.uploadMotherImage(self.student_id)
       self.uploadGuardianImage(self.student_id)
       self.clearForm()
-      self.read_student()
+
+      self.student_view = 'show_student'
       self.update()
     }
 
@@ -19823,6 +21036,7 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     function DeleteStudentChanged(students){
       console.log(students)
       self.students = students
+      self.loading = false
       self.update()
     }
 
@@ -19910,7 +21124,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
     	}else{
     		self.staff_name = false
     	}
-    	self.refs.f_title.value = student_details[0].f_title
 		self.refs.f_name.value = student_details[0].f_name
 		self.refs.f_occupation.value = student_details[0].f_occupation
 		self.refs.f_organisation_type.value = student_details[0].f_organisation_type
@@ -19945,7 +21158,6 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 		self.refs.f_state.value=student_details[0].f_state
 		self.refs.f_country.value=student_details[0].f_country
 
-		self.refs.m_title.value = student_details[0].m_title
 		self.refs.m_name.value = student_details[0].m_name
 		self.refs.m_occupation.value = student_details[0].m_occupation
 		self.refs.m_organisation_type.value = student_details[0].m_organisation_type
@@ -19988,7 +21200,7 @@ riot.tag2('student', '<section class=" is-fluid" show="{student_view ==\'show_st
 		}else{
 			self.refs.is_guardian.value = 'Other'
 		}
-		self.refs.g_title.value = student_details[0].g_title
+
 		self.refs.g_name.value = student_details[0].g_name
 		self.refs.g_occupation.value = student_details[0].g_occupation
 		self.refs.g_organisation_type.value = student_details[0].g_organisation_type
@@ -20321,6 +21533,76 @@ riot.tag2('subject', '<section class=" is-fluid"> <h2 class="title" style="color
       self.subjects = subjects
       self.update()
       console.log(self.subjects)
+    }
+
+});
+riot.tag2('teacher-time-table', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Teacher Time Table</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Teacher</label></div> <div class="column is-narrow"> <div class="control"> <div class="select "> <select ref="teacherSelect"> <option value="">Select Teacher</option> <option each="{teachers}" riot-value="{emp_id}">{name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <button class="button is-danger is-narrow has-text-weight-bold" onclick="{refreshTimeTable}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th class="has-text-centered" style="vertical-align: middle;">Days/Periods</th> <th each="{p, i in periods}" class="has-text-centered"> <span style="color:#ff0000">{p.period_name}</span><br> <span style="font-size:12px">{p.period_time}</span> </th> </tr> </thead> <tbody> <tr each="{d, i in days}"> <th class="has-text-centered" style="vertical-align: middle;">{d.day_name}</th> <td each="{p, j in periods}" class="has-text-centered" onclick="{openTimeTableModalEdit.bind(this, d, p)}" style="cursor: pointer;"> <div each="{t, k in time_table}"> <p if="{d.day_id==t.day_id && p.period_id==t.period_id}" style="font-size:12px"> <span style="color:#ff0000">{t.subject_short_name}({t.period_type})</span><br>{t.room_no}<br>{t.standard} </p> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+	var self = this
+    self.on("mount", function(){
+      self.loading = false;
+      self.readTeachers();
+
+    })
+    self.on("unmount", function(){
+      teacherTimeTableStore.off('read_teachers_changed',TeachersChanged)
+      teacherTimeTableStore.off('read_periods_changed',PeriodsChanged)
+    })
+
+   self.readTeachers = () => {
+     self.loading = true;
+     teacherTimeTableStore.trigger('read_teachers')
+   }
+
+   self.refreshTimeTable = () => {
+     self.loading = true;
+     teacherTimeTableStore.trigger('read_periods',self.refs.teacherSelect.value)
+   }
+   self.openTimeTableModalEdit = (d,p,e) => {
+      console.log('edit')
+      console.log(d)
+      console.log(p)
+      let edit = 0;
+      let edit_data = {};
+      self.time_table.map(t=>{
+        if(d.day_id==t.day_id && p.period_id==t.period_id){
+          edit = 1
+          edit_data = t
+        }
+      })
+
+      if(edit==1){
+        console.log('edit')
+        console.log(edit_data)
+      }else if(edit == 0){
+        console.log('add')
+      }
+   }
+
+   teacherTimeTableStore.on('read_teachers_changed',TeachersChanged)
+    function TeachersChanged(teachers){
+      self.loading = false
+      self.teachers = []
+      self.teachers = teachers
+      self.update()
+      console.log(self.teachers)
+    }
+
+   teacherTimeTableStore.on('read_periods_changed',PeriodsChanged)
+    function PeriodsChanged(periods,time_table,days){
+      self.loading = false
+      self.periods = []
+      self.periods = periods
+
+      self.time_table = []
+      self.time_table = time_table
+
+      self.days = []
+      self.days = days
+
+      self.update()
+      console.log(self.periods)
+      console.log(self.time_table)
+      console.log(self.days)
     }
 
 });

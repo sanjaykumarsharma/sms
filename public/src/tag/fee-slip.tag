@@ -1,4 +1,5 @@
 <fee-slip>
+  <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<h2 class="title has-text-centered" style="color: #ff3860;">Fee Slip Management</h2>
 		<div class="flex items-center mt-2 mb-6 no-print">
@@ -12,7 +13,7 @@
 					<div class="field">
 						<label class="label" for="role">Slip Name</label>
 						<div class="control">
-							<input class="input" type="text" ref="addSlipName"
+							<input class="input" type="text" ref="addSlipName" id="addSlipName"
 							onkeyup={addEnter}>
 						</div>
 					</div>
@@ -20,7 +21,7 @@
 				<div class="column is-narrow">
 					<div class="field">
 						<div class="control">
-							<button class="button is-danger has-text-weight-bold adjusted-top"
+							<button disabled={loading} class="button is-danger has-text-weight-bold adjusted-top"
 					         onclick={add} >{title}</button>
 						</div>
 					</div>
@@ -58,6 +59,7 @@
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
+      self.loading = false
       self.update()
       self.readSlips()
     })
@@ -102,6 +104,7 @@
    	  console.log("here");
       console.log(c)
       self.title='Update'
+      document.getElementById("addSlipName").focus()
       self.refs.addSlipName.value = c.fee_slip_name
       self.old_fee_slip_name = c.fee_slip_name
     }
@@ -134,9 +137,9 @@
       console.log(slips) 
       self.title='Create'
       self.refs.addSlipName.value = ''
-      self.loading = false
        self.slips = []
       self.slips = slips
+      self.loading = false
       self.update()
       console.log(self.slips)
     }

@@ -1,19 +1,20 @@
 <student>
+	<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid" show={student_view =='show_student'}>
 		<div class="level">
 			<div class="level-left">
 				<h2 class="title" style="color: #ff3860;">Students</h2>
 			</div>
 			<div class="level-right">
-				<button class="button is-primary is-rounded" onclick={print_list}>
+				<button class="button is-primary is-rounded" onclick={print_list} show={print_list_button}>
 				<span>Print List</span>
 				</button>
 
-				<button class="button is-primary is-rounded ml10" onclick={student_list}>
+				<button class="button is-primary is-rounded ml10" onclick={student_list} show={student_list_button}>
 				<span>Student List</span>
 				</button>
 
-				<button class="button is-primary is-rounded ml10" onclick={regenerate_roll_no}>
+				<button class="button is-primary is-rounded ml10" onclick={regenerate_roll_no} show={regenerate_roll_no_button}>
 				<span>Regenerate Roll No</span>
 				</button>
 
@@ -25,38 +26,44 @@
 				</button>
 			</div>
 		</div>
-		<div class="box">
-			<div class="columns">
-				<div class="column is-narrow">
-					<div class="control">
-						<div class="select">
-							<select ref="read_standard_id" onchange={getReadSection}>
-								<option>Choose Section</option>
-								<option each={standards} value={standard_id}>{standard}
-	                            </option>
-							</select>
+		<div class="level box">
+			<div class="level-left">
+				<div class="columns">
+					<div class="column is-narrow">
+						<div class="control">
+							<div class="select">
+								<select ref="read_standard_id" onchange={getReadSection}>
+									<option each={standards} value={standard_id}>
+									{standard}</option>
+								</select>
+							</div>
 						</div>
 					</div>
+					<div class="column is-narrow">
+						<div class="control">
+				        	<div class="select is-fullwidth">
+								<select ref="read_section_id" onchange={getStudentData}>
+									<option each={readfilteredSections} value={section_id}>{section}</option>
+								</select>
+							</div>
+				      	</div>
+				    </div>
 				</div>
-				<div class="column is-narrow">
+			</div>
+			<div class="level-right">
+				<div class="column is-narrow field has-addons">
 					<div class="control">
-			        	<div class="select is-fullwidth">
-							<select ref="read_section_id">
-								<option>Choose Class</option>
-								<option each={readfilteredSections} value={section_id}>{section}
-	                            </option>
-							</select>
-						</div>
-			      	</div>
-			    </div>
-	        	<div class="column is-one-third">
-					<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
-    			</div>
-				<div class="column">
-					<button class="button is-danger has-text-weight-bold"
-					onclick={getStudentData} >GO
-					</button>
+				    	<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
+				  	</div>
+			    	<div class="control">
+			    		<a class="button is-info" onclick={getStudentData}>Search</a>
+			  		</div>
 				</div>
+				<button class="button is-warning is-rounded ml5" style="margin-bottom:12px;" onclick={getStudentData}>
+			        <span class="icon">
+			          <span class="fas fa-sync-alt"></span>
+			        </span>
+	        	</button>
 			</div>
 		</div>
 		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
@@ -176,7 +183,12 @@
 				<input type="checkbox" id="checkHouse" checked={e.done} 
 				onclick={viewHouse}  class="no-print ml10"> <b class="no-print">House</b>
 
-				<a class="button no-print ml10" onclick={close_print_list}>Back</a>
+				<!-- <a class="button no-print ml10" onclick={}>Back</a> -->
+				<button class="button is-warning is-rounded no-print" onclick={close_print_list}>
+		    		<span class="icon">
+          				<span class="fas fa-arrow-left"></span>
+        			</span>
+		    	</button>
 			</div>
 		</div>
 		<center>
@@ -248,60 +260,72 @@
 			<div class="level-left">
 			</div>
 			<div class="level-right">
-				<a class="button no-print" onclick={close_student_list}>Back</a>
+				<!-- <a class="button no-print" onclick={}>Back</a> -->
+				<button class="button is-warning is-rounded no-print" onclick={close_student_list}>
+		    		<span class="icon">
+          				<span class="fas fa-arrow-left"></span>
+        			</span>
+		    	</button>
 			</div>
 		</div>
 		<center>
-		<table class=" " style="border-style:none;width:860px;">
-      		<tr style="border-style:none;">
-          		<td style="padding-left:5px;border:none;width:100px"><img src="/images/school_small.png" height="60"></td>
-          		<td  style="text-align:center;border-style:none">
-            		<h2>M. C. Kejriwal Vidyapeeth</h2>
-            		<p style="text-align:center; font-size:12px;">243 G. T. Road(N) Liluah, Howrah - 711204, West Bengal, India
-            		<br/> PHONE - (033) 2654-3387/89 - EMAIL - info@mckvie.edu.in - WEB - http://www.mckv.edu.in</p>
-          		</td>
-          		<td style="padding-right:5px;border:none;width:100px">
-          			<img src="/images/nabet.JPG" height="60">
-          		</td>
-      		</tr>
-    	</table>
-    	<hr style="border:none;border-top:solid #dd0000 2px;margin:10px 0;width:860px;">
+			<table class=" " style="border-style:none;width:860px;">
+	      		<tr style="border-style:none;">
+	          		<td style="padding-left:5px;border:none;width:100px"><img src="/images/school_small.png" height="60"></td>
+	          		<td  style="text-align:center;border-style:none">
+	            		<h2>M. C. Kejriwal Vidyapeeth</h2>
+	            		<p style="text-align:center; font-size:12px;">243 G. T. Road(N) Liluah, Howrah - 711204, West Bengal, India
+	            		<br/> PHONE - (033) 2654-3387/89 - EMAIL - info@mckvie.edu.in - WEB - http://www.mckv.edu.in</p>
+	          		</td>
+	          		<td style="padding-right:5px;border:none;width:100px">
+	          			<img src="/images/nabet.JPG" height="60">
+	          		</td>
+	      		</tr>
+	    	</table>
+    		<hr style="border:none;border-top:solid #dd0000 2px;margin:10px 0;width:860px;">
     	
-    	<div style="width:860px;">
-     		<div style="text-align:right;"> Printed on:{print_date} </div>
-    	</div>
+	    	<div style="width:860px;">
+	     		<div style="text-align:right;"> Printed on:{print_date} </div>
+	    	</div>
 
-    	<table class="table is-fullwidth is-bordered" style="width:860px;"><caption class="caption">Student Listing of {sl.standard} {sl.section}[{total_student}]  </caption></table>	  
-      	<div style="text-align:left;width:860px;">
-	      	<table class="table is-fullwidth is-bordered" >
-		        <tr>
-		        	<th style="">Sl No</th>
-          			<th style="">Enrol No</th>
-          			<th style="">Name</th>
-		         	
-		        </tr>     	
-				<tr each={student, i in student_list}>
-					
-	           		<td >{i +1}</td> 
-	           		<td >{student.enroll_number}</td> 
-	            	<td >{student.name}</td>
-	            	
-	           	</tr>
-	   
-	        </table>
-    	</div></center>
+    		<table class="table is-fullwidth is-bordered" style="width:860px;"><caption class="caption">Student Listing of {sl.standard} {sl.section}[{total_student}]  </caption>
+    		</table>	  
+	      	<div style="text-align:left;width:860px;">
+		      	<table class="table is-fullwidth is-bordered" >
+			        <tr>
+			        	<th style="">Sl No</th>
+	          			<th style="">Enrol No</th>
+	          			<th style="">Name</th>
+			         	
+			        </tr>     	
+					<tr each={student, i in student_list}>
+						
+		           		<td >{i +1}</td> 
+		           		<td >{student.enroll_number}</td> 
+		            	<td >{student.name}</td>
+		            	
+		           	</tr>
+		   
+		        </table>
+	    	</div>
+    	</center>
 	</section>
 
 	<!-- Student List view end -->
 
 	<!-- profile view start -->
 	<section class=" is-fluid" show={student_view =='student_profile'}>
-		<div class="level">
+		<div class="level no-print">
 			<div class="level-left">
-				<h2 class="title">Profile of {st.first_name}{st.middle_name}{st.last_name}</h2>
+				<h2 class="title has-text-danger">Profile of {st.first_name}{st.middle_name}{st.last_name}</h2>
 			</div>
 			<div class="level-right">
-				<a class="button no-print" onclick={close_student_profile}>Back</a>
+				<!-- <a class="button no-print" onclick={}>Back</a> -->
+				<button class="button is-warning is-rounded no-print" onclick={close_student_profile}>
+		    		<span class="icon">
+          				<span class="fas fa-arrow-left"></span>
+        			</span>
+		    	</button>
 			</div>
 		</div>
 		
@@ -679,15 +703,17 @@
 	<!-- profile view end -->
 
 	<section class=" is-fluid" show={student_view =='add_student'}>
-	<div class="label">
-		<div class="level-left">
-			<h2 class="title" style="color: #ff3860;">{title} Student</h2>
+	<div class="level">
+			<div class="level-left">
+				<h2 class="title" style="color: #ff3860;">{title} Student</h2>
+			</div>
+			<div class="level-right">
+				<!-- <a class="button no-print" onclick={}>Back</a> -->
+			</div>
 		</div>
-		<div class="level-right"></div>
-	</div>
 	<div class="box">
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-half">
+		<div class="columns is-multiline">
+		    <div class="column is-one-fifth">
 			    <div id="pp_box" class="pp-box" onclick={trigger_file_input.bind(this,'student_picture')}>
 			        <div class="icon has-text-danger" onclick=
 			        	{remove_picture.bind(this, 'pp_box','student_picture')}><i class="fas fa-trash"></i>
@@ -695,98 +721,127 @@
 			    </div>
 			    <input accept="image/*" class="is-hidden" id="student_picture" name="student_picture" onchange={loadFile.bind(this, 'pp_box')} type="file">
 		    </div>
-		    <div class="column is-half">
-		      	<div class="column is-narrow">
-				<label class="label" for="first_name">First Name</label>
-					<input class="input" id="first_name" ref="first_name" type="text">
-		      	</div>
-		      	<div class="column is-narrow">
-		      		<label class="label" for="middle_name">Middle Name</label>
-		      		<input class="input" ref="middle_name" type="text">
-		      	</div>
-		       <div class="column is-narrow">
-				<label class="label" for="last_name">Last Name</label>
-					<input class="input" ref="last_name" type="text">
-		      	</div>
+		    <div class="column ">
+		    	<div class="columns ">
+			      	<div class="column is-2">
+						<label class="label is-small" for="first_name">First Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" id="first_name" ref="first_name" type="text">
+			      	</div>
+
+			      	<div class="column is-2">
+						<label class="label is-small" for="middle_name">Middle Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" id="middle_name" ref="middle_name" type="text">
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="last_name">Last Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" id="last_name" ref="last_name" type="text">
+			      	</div>
+			    </div>
+
+				<div class="columns mt30">
+			      	<div class="column is-2">
+						<label class="label is-small" for="standard_id">Class</label>
+			      	</div>
+			      	<div class="column is-2">
+						<div class="select is-fullwidth is-small">
+							<select ref="standard_id" onchange={getSection}>
+								<option each={standards} value={standard_id}>{standard}</option>
+							</select>
+						</div>
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="section_id">Section</label>
+			      	</div>
+			      	<div class="column is-2 ">
+						<div class="select is-fullwidth is-small">
+							<select ref="section_id">
+								<option each={filteredSections} value={section_id}>{section}</option>
+							</select>
+						</div>
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="section_id">House</label>
+			      	</div>
+			      	<div class="column is-2">
+		        		<div class=" select is-fullwidth is-small">
+							<select ref="house_id">
+								<option value="-1">None</option>
+								<option each={houses} value={house_id}>{house_name}</option>
+							</select>
+						</div>
+			      	</div>
+		    	</div>
+
+		    	<div class="columns mt30">
+			      	<div class="column is-2">
+						<label class="label is-small" for="enroll_number">Enroll No</label>
+	      			</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="enroll_number" type="number" maxlength="8">
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="roll_number">Roll No</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="roll_number" type="number">
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="reg_number">Reg. No</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="reg_number" type="number">
+			      	</div>
+		    	</div>
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="standard_id">Class</label>
+		</div>     
+
+  		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="gender">Gender</label>
+	      	</div>
+	      	<div class="column is-2">
 				<div class="control">
-		        	<div class="select is-fullwidth">
-						<select ref="standard_id" onchange={getSection}>
-							<option each={standards} value={standard_id}>{standard}
-                            </option>
-						</select>
-					</div>
-		      	</div>
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="section_id">Section</label>
-				<div class="control">
-		        	<div class="select is-fullwidth">
-						<select ref="section_id">
-							<option each={filteredSections} value={section_id}>{section}
-                            </option>
-						</select>
-					</div>
-		      	</div>
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="house_id">House</label>
-				<div class="control">
-		        	<div class="select is-fullwidth">
-						<select ref="house_id">
-							<option each={houses} value={house_id}>{house_name}
-                            </option>
-						</select>
-					</div>
-		      	</div>
-		    </div>
-		    <div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-4 has-text-link">Given Concession</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="enroll_number">Enroll No</label>
-				<input class="input" ref="enroll_number" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="roll_number">Roll No</label>
-				<input class="input" ref="roll_number" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="reg_number">Reg. No</label>
-				<input class="input" ref="reg_number" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="gender">Gender</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
+	        		<div class="select is-fullwidth is-small">
 						<select id="gender" ref="gender">
 							<option value="M">Male</option>
 						</select>
 					</div>
 	      		</div>
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="category_id">Cast Category</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="category_id">Cast Category</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<div class="control">
+	        		<div class="select is-fullwidth is-small">
 						<select ref="category_id">
 							<option each={cast} value={category_id}>{category_name}
                             </option>
 						</select>
 					</div>
 	      		</div>
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="dob">DOB</label>
-				<input class="input date" ref="dob" type="text">
-			</div>
-    		<div class="column is-one-third">
-				<label class="label" for="blood_group">Blood Group</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="dob">DOB</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input date is-small" ref="dob" type="text">
+	      	</div>
+  		</div>
+
+  		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="blood_group">Blood Group</label>
+	      	</div>
+	      	<div class="column is-2">
 				<div class="control">
-	        		<div class="select is-fullwidth">
+	        		<div class="select is-fullwidth is-small">
 						<select id="blood_group" ref="blood_group">
 							<option value="A+">A+</option>
 							<option value="A-">A-</option>
@@ -799,165 +854,263 @@
 						</select>
 					</div>
 	      		</div>
-			</div>
+	      	</div>
+	    </div>  
+	    <div class="columns mt30">
 			<div class="column is-full">
-          		<h3 class="has-text-weight-bold is-size-4 has-text-link">Contact Information(Permanent Address)</h3>
-          		<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
-        	</div>
-			<div class="column is-one-third">
-				<label class="label" for="p_add_l1">Address Line 1</label>
-				<input class="input" ref="p_add_l1" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="p_add_l2">Address Line 2</label>
-				<input class="input" ref="p_add_l2" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="p_city">City</label>
-				<input class="input" ref="p_city" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="p_zip">Zip</label>
-				<input class="input" ref="p_zip" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="p_state">State</label>
-				<input class="input" ref="p_state" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="p_country">Country</label>
-				<input class="input" ref="p_country" type="text">
-		    </div>
-		    <div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-4 has-text-link"> Check if Correspondence Address is same as Permanent Address
+	          	<h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information(Permanent Address)</h3>
+	          	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+	        </div>
+	    </div> 
+
+	    <div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="p_add_l1">Address Line 1</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="p_add_l1" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="p_add_l2">Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="p_add_l2" type="text">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="p_city">City</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="p_city" type="text">
+	      	</div>
+  		</div>
+
+  		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="p_zip">Zip</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="p_zip" type="number" maxlength="6">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="p_state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="p_state" type="text">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="p_country">Country</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="p_country" type="text">
+	      	</div>
+  		</div> 
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link"> Check if Correspondence Address is same as Permanent Address
 		    		<input type="checkbox" id="correspondenceCheckbox" name="correspondenceCheckbox" onclick={copyAddress.bind(this)}>
 		      	</h3>
 		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_add_l1">Address Line 1</label>
-				<input class="input" ref="c_add_l1" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_add_l2">Address Line 2</label>
-				<input class="input" ref="c_add_l2" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_city">City</label>
-				<input class="input" ref="c_city" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_zip">Zip</label>
-				<input class="input" ref="c_zip" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_state">State</label>
-				<input class="input" ref="c_state" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="c_country">Country</label>
-				<input class="input" ref="c_country" type="text">
-		    </div>
-		    <div class="column is-full">
-		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="residence_phone">Phone(R)</label>
-				<input class="input" ref="residence_phone" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="mobile">SMS No.</label>
-				<input class="input" ref="mobile" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="emergency_no">Emergency No.</label>
-				<input class="input" ref="emergency_no" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="student_type">Student Type</label>
+		</div> 
+
+		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="c_add_l1">Address Line 1</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="c_add_l1" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="c_add_l2">Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="c_add_l2" type="text">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="c_city">City</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="c_city" type="text">
+	      	</div>
+  		</div>  
+
+  		<div class="columns mt30">
+      		<div class="column is-2">
+				<label class="label is-small" for="c_zip">Zip</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="c_zip" type="number" maxlength="6">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="c_state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="c_state" type="text" id="c_state" >
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="c_country">Country</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="c_country" type="text" >
+	      	</div>
+  		</div>
+
+	    <div class="columns mt30">
+  			<div class="column is-2">
+				<label class="label is-small" for="residence_phone">Phone(R)</label>
+      		</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="residence_phone" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="mobile">SMS No.</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="mobile" type="number">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="emergency_no">Emergency No.</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="emergency_no" type="number">
+	      	</div>
+		</div>  
+
+		<div class="columns mt30">
+  			<div class="column is-2">
+				<label class="label is-small" for="student_type">Student Type</label>
+      		</div>
+	      	<div class="column is-2">
 				<div class="control">
-	        		<div class="select is-fullwidth">
+	        		<div class="select is-fullwidth is-small">
 						<select id="student_type" ref="student_type">
 							<option value="Day Scholar">Day Scholar</option>
 						</select>
 					</div>
 	      		</div>
-			</div>
+	      	</div>	      	  		      	
+		</div>  
+		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-4 has-text-link">Other Information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Other Information</h3>
 		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
+		</div>
 
-			<div class="column is-one-third">
-				<label class="label" for="aadhar_no">Aadhar No</label>
-				<input class="input" ref="aadhar_no" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="doa">Date of Admission</label>
-				<input class="input date" ref="doa" type="text">
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="old_doa">Old Date of Admission</label>
-				<input class="input date" ref="old_doa" type="text">
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="doj">Date of Joining</label>
-				<input class="input date" ref="doj" type="text">
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="old_doj">Old Date of Joining</label>
-				<input class="input date" ref="old_doj" type="text">
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="mother_tongue">Mother Tongue</label>
-				<input class="input" ref="mother_tongue" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="last_school">Last School</label>
-				<input class="input" ref="last_school" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    	<label class="label" for="last_class">Last Class</label>
-				<input class="input" ref="last_class" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    	<label class="label" for="admission_for_class">Admission For Class</label>
-				<input class="input" ref="admission_for_class" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    	<label class="label" for="hobby">Hobbies</label>
-				<input class="input" ref="hobby" type="text">
-		    </div>
-		    <div class="column is-one-third">
-		    	<label class="label" for="cast">Cast</label>
-				<input class="input" ref="cast" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="religion_id">Religion</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
+		<div class="columns mt30">
+  			<div class="column is-2">
+				<label class="label is-small" for="aadhar_no">Aadhar No</label>
+      		</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="aadhar_no" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="doa">Date of Admission</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input date is-small" ref="doa" type="text" readonly>
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="old_doa">Old Date of Admission</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input date is-small" ref="old_doa" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+  			<div class="column is-2">
+				<label class="label is-small" for="doj">Date of Joining</label>
+      		</div>
+	      	<div class="column is-2">
+				<input class="input date is-small" ref="doj" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="old_doj">Old Date of Joining</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input date is-small" ref="old_doj" type="text" readonly>
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="mother_tongue">Mother Tongue</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="mother_tongue" type="text">
+	      	</div>
+		</div> 
+
+		<div class="columns mt30">
+  			<div class="column is-2">
+				<label class="label is-small" for="last_school">Last School</label>
+      		</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="last_school" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="last_class">Last Class</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="last_class" type="text">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="admission_for_class">Admission For Class</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="admission_for_class" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+  			<div class="column is-2">
+				<label class="label is-small" for="hobby">Hobbies</label>
+      		</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="hobby" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="cast">Cast</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<input class="input is-small" ref="cast" type="text">
+	      	</div>
+	      	<div class="column is-2">
+	      		<label class="label is-small" for="religion_id">Religion</label>
+	      	</div>
+	      	<div class="column is-2">
+	      		<div class="control">
+	        		<div class="select is-fullwidth is-small">
 						<select id="religion_id" ref="religion_id">
 							<option each={religion} value={religion_id}>{religion}
                             </option>
 						</select>
 					</div>
 	      		</div>
-			</div>
-			<div class="column is-one-third">
-				<label class="label" for="staff_child">Staff Member Child</label>
+	      	</div>
+		</div> 
+
+		<div class="columns mt30">
+  			<div class="column is-2">
+				<label class="label is-small" for="staff_child">Staff Member Child</label>
+      		</div>
+	      	<div class="column is-2">
 				<div class="control">
-	        		<div class="select is-fullwidth">
+	        		<div class="select is-fullwidth is-small">
 						<select id="staff_child" ref="staff_child"  onchange={GetStaffName}>
-							<option value="Y">Yes</option>
 							<option value="N">No</option>
+							<option value="Y">Yes</option>
 						</select>
 					</div>
 	      		</div>
-			</div>
-			<div class="column is-one-third" show={staff_name}>
-		    	<label class="label" for="staff_name">Staff's Name</label>
-				<input class="input" ref="staff_name" type="text">
-		    </div>
+	      	</div>
+	      	<div class="column is-2" show={staff_name}>
+				<label class="label is-small" for="staff_name">Staff's Name</label>
+	      	</div>
+	      	<div class="column is-2" show={staff_name}>
+	      		<input class="input is-small" ref="staff_name" type="text">
+	      	</div>
+		</div> 
+		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addFatherInformation}>
 			    	Next >>
@@ -966,7 +1119,7 @@
 			    	Cancel
 			    </button>    
 		    </div>
-  		</div>
+		</div>
 	</div>
 </section>
 <!-- Start Father Information -->
@@ -979,150 +1132,238 @@
 		</div>
 	</div>
 	<div class="box">
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-half">
-			      <div id="f_pp_box" class="f_pp-box"
+		<div class="columns is-multiline">
+		    <div class="column is-one-fifth">
+			    <div id="f_pp_box" class="f_pp-box"
 			      onclick={trigger_father_file_input.bind(this,'father_picture')}>
 			        <div class="icon has-text-danger" onclick=
 			        {remove_father_picture.bind(this, 'f_pp_box','father_picture')}><i class="fas fa-trash"></i></div>
-			      </div>
+			    </div>
 			      <input accept="image/*" class="is-hidden" id="father_picture" name="father_picture" onchange={loadFatherFile.bind(this, 'f_pp_box')} type="file">
 		    </div>
-		    <div class="column is-half">
-		      	<div class="column is-narrow">
-					<label class="label" for="f_title">Title</label>
-					<input class="input" id="f_title" ref="f_title" type="text">
-		      	</div>
-		       <div class="column is-narrow">
-					<label class="label" for="f_name">Father's Name</label>
-					<input class="input" ref="f_name" type="text">
-		      	</div>
-		    </div>
-		    <div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-4 has-text-link">Work Information</h3>
-		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="f_occupation">Occupation</label>
-				<input class="input" id="f_occupation" ref="f_occupation" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_organisation_type">Organization Type</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select id="f_organisation_type" ref="f_organisation_type">
-							<option value="Governmnet">Governmnet</option>
-							<option value="Business">Business</option>
-							<option value="NGO">NGO</option>
-							<option value="Professional">Professional</option>
-							<option value="Other">Other</option>
-						</select>
+		    <div class="column ">
+		    	<div class="columns">
+		    		<div class="column is-2">
+						<label class="label is-small" for="f_name">Father's Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="f_name" id="f_name" type="text">
+			      	</div>
+		    	</div>
+		       	<div class="columns mt35">
+		       		<div class="column is-full">
+		      			<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Information</h3>
+		      			<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    		</div>
+		       	</div>
+		       	<div class="columns mt30">
+					<div class="column is-2">
+						<label class="label is-small" for="f_occupation">Occupation</label>
 					</div>
-	      		</div>
+					<div class="column is-2">
+						<input class="input is-small" id="f_occupation" ref="f_occupation" type="text">
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="f_organisation_type">Organization Type</label>
+			      	</div>
+			      	<div class="column is-2 ">
+						<div class="select is-fullwidth is-small">
+							<select id="f_organisation_type" ref="f_organisation_type">
+								<option value="Governmnet">Governmnet</option>
+								<option value="Business">Business</option>
+								<option value="NGO">NGO</option>
+								<option value="Professional">Professional</option>
+								<option value="Other">Other</option>
+							</select>
+						</div>
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="f_annual_income">Annual Income</label>
+			      	</div>
+			      	<div class="column is-2">
+		        		<input class="input is-small" id="f_annual_income" ref="f_annual_income" type="number">
+			      	</div>
+				</div>
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_annual_income">Annual Income</label>
-				<input class="input" id="f_annual_income" ref="f_annual_income" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_work_profile">Work Profile</label>
-				<input class="input" ref="f_work_profile" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_organisation_name">Organization Name</label>
-				<input class="input" ref="f_organisation_name" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_designation">Designation</label>
-				<input class="input" ref="f_designation" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="f_department">Department</label>
-				<input class="input" ref="f_department" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-				<label class="label" for="f_office_add_l1">Office Address Line 1</label>
-				<input class="input" ref="f_office_add_l1" type="text">
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="f_work_profile">Work Profile</label>
 			</div>
-			<div class="column is-one-third">
-				<label class="label" for="f_office_add_l2">Office Address Line 2</label>
-				<input class="input" ref="f_office_add_l2" type="text">
+			<div class="column is-2">
+				<input class="input is-small" ref="f_work_profile" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_organisation_name">Organization Name</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="f_organisation_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_designation">Designation</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="f_designation" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="f_department">Department</label>
 			</div>
-			<div class="column is-one-third">
-				<label class="label" for="f_office_city">City</label>
-				<input class="input" ref="f_office_city" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_office_zip">Zip</label>
-				<input class="input" ref="f_office_zip" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_office_state">State</label>
-				<input class="input" ref="f_office_state" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_office_country">Country</label>
-				<input class="input" ref="f_office_country" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="f_office_phone">Phone(O)</label>
-				<input class="input" ref="f_office_phone" type="number">
-		    </div>
+			<div class="column is-2">
+				<input class="input is-small" ref="f_department" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_office_add_l1">Office Address Line 1</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="f_office_add_l1" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_office_add_l2">Office Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="f_office_add_l2" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="f_office_city">City</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="f_office_city" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_office_zip">Zip</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="f_office_zip" type="number" maxlength="6">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_office_state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="f_office_state" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="f_office_country">Country</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="f_office_country" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_office_phone">Phone(O)</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="f_office_phone" type="number">
+	      	</div>
+		</div>
+		<div class="columns mt30">
 		    <div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-4 has-text-link">Educational Information</h3>
+		      <h3 class="has-text-weight-bold is-size-6 has-text-link">Educational Information</h3>
 		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_qualification">Qualification</label>
-				<input class="input" ref="f_qualification" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_other_qualification">Other Qualification</label>
-				<input class="input" ref="f_other_qualification" type="text">
-		    </div>
-		    <div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-4 has-text-link">Check if Candidate's Correspondence Address is same as Father's Address
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="f_qualification">Qualification</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="f_qualification" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_other_qualification">Other Qualification</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="f_other_qualification" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_office_state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="f_office_state" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Check if Candidate's Correspondence Address is same as Father's Address
 		      		<input type="checkbox" id="fatherCorrespondenceCheckbox" onclick={copyFatherAddress.bind(this)}>
 		      	</h3>
 		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_add_l1">Address Line 1</label>
-				<input class="input" ref="f_add_l1" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_add_l2">Address Line 2</label>
-				<input class="input" ref="f_add_l2" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_city">City</label>
-				<input class="input" ref="f_city" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_zip">Zip</label>
-				<input class="input" ref="f_zip" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_state">State</label>
-				<input class="input" ref="f_state" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_country">Country</label>
-				<input class="input" ref="f_country" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_mobile">Mobile</label>
-				<input class="input" ref="f_mobile" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_email">Email</label>
-				<input class="input" ref="f_email" type="email">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="f_nationality">Nationality</label>
-				<input class="input" ref="f_nationality" type="text">
-		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="f_add_l1">Address Line 1</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="f_add_l1" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_add_l2">Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="f_add_l2" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_city">City</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="f_city" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="f_zip">Zip</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="f_zip" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_state">State</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="f_state" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_country">Country</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="f_country" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="f_mobile">Mobile</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="f_mobile" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_email">Email</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="f_email" type="email">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="f_nationality">Nationality</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="f_nationality" type="text">
+	      	</div>
+		</div>
+		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeFatherInformation}>
 			    	Previous
@@ -1134,8 +1375,8 @@
 			    	Cancel
 			    </button>    
 		    </div>
-  		</div>
-	</div>
+		</div>
+  	</div>
 </section>
 <!-- End Father Information -->
 
@@ -1149,8 +1390,8 @@
 		</div>
 	</div>
 	<div class="box">
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-half">
+		<div class="columns is-multiline">
+		    <div class="column is-one-fifth">
 			      <div id="m_pp_box" class="m_pp-box"
 			      onclick={trigger_mother_file_input.bind(this,'mother_picture')}>
 			        <div class="icon has-text-danger" onclick=
@@ -1158,141 +1399,237 @@
 			      </div>
 			      <input accept="image/*" class="is-hidden" id="mother_picture" name="mother_picture" onchange={loadMotherFile.bind(this, 'm_pp_box')} type="file">
 		    </div>
-		    <div class="column is-half">
-		      	<div class="column is-narrow">
-					<label class="label" for="m_title">Title</label>
-					<input class="input" id="m_title" ref="m_title" type="text">
-		      	</div>
-		       <div class="column is-narrow">
-					<label class="label" for="m_name">Mother's Name</label>
-					<input class="input" ref="m_name" type="text">
-		      	</div>
-		    </div>
-		    <div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-4 has-text-link">Work Information</h3>
-		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="m_occupation">Occupation</label>
-				<input class="input" ref="m_occupation" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_organisation_type">Organization Type</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select ref="m_organisation_type">
-							<option value="Governmnet">Governmnet</option>
-							<option value="Business">Business</option>
-							<option value="NGO">NGO</option>
-							<option value="Professional">Professional</option>
-							<option value="Other">Other</option>
-						</select>
+		    <div class="column ">
+		      	<div class="columns">
+		    		<div class="column is-2">
+						<label class="label is-small" for="m_name">Mother's Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" ref="m_name" id="m_name" type="text">
+			      	</div>
+		    	</div>
+		    	<div class="columns mt35">
+		       		<div class="column is-full">
+		      			<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Information</h3>
+		      			<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    		</div>
+		       	</div>
+		       	<div class="columns mt30">
+					<div class="column is-2">
+						<label class="label is-small" for="m_occupation">Occupation</label>
 					</div>
-	      		</div>
+					<div class="column is-2">
+						<input class="input is-small" ref="m_occupation" type="text">
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="m_organisation_type">Organization Type</label>
+			      	</div>
+			      	<div class="column is-2 ">
+						<div class="select is-fullwidth is-small">
+							<select ref="m_organisation_type">
+								<option value="Governmnet">Governmnet</option>
+								<option value="Business">Business</option>
+								<option value="NGO">NGO</option>
+								<option value="Professional">Professional</option>
+								<option value="Other">Other</option>
+							</select>
+						</div>
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="m_annual_income">Annual Income</label>
+			      	</div>
+			      	<div class="column is-2">
+		        		<input class="input is-small" ref="m_annual_income" type="number">
+			      	</div>
+				</div>
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_annual_income">Annual Income</label>
-				<input class="input" ref="m_annual_income" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_work_profile">Work Profile</label>
-				<input class="input" ref="m_work_profile" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_organisation_name">Organization Name</label>
-				<input class="input" ref="m_organisation_name" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_designation">Designation</label>
-				<input class="input" ref="m_designation" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="m_department">Department</label>
-				<input class="input" ref="m_department" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-				<label class="label" for="m_office_add_l1">Office Address Line 1</label>
-				<input class="input" ref="m_office_add_l1" type="text">
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="m_work_profile">Work Profile</label>
 			</div>
-			<div class="column is-one-third">
-				<label class="label" for="m_office_add_l2">Office Address Line 2</label>
-				<input class="input" ref="m_office_add_l2" type="text">
+			<div class="column is-2">
+				<input class="input is-small" ref="m_work_profile" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_organisation_name">Organization Name</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="m_organisation_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_designation">Designation</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="m_designation" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="m_department">Department</label>
 			</div>
-			<div class="column is-one-third">
-				<label class="label" for="m_office_city">City</label>
-				<input class="input" ref="m_office_city" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_office_zip">Zip</label>
-				<input class="input" ref="m_office_zip" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_office_state">State</label>
-				<input class="input" ref="m_office_state" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_office_country">Country</label>
-				<input class="input" ref="m_office_country" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="m_office_phone">Phone(O)</label>
-				<input class="input" ref="m_office_phone" type="number">
-		    </div>
-		    <div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-4 has-text-link">Educational Information</h3>
+			<div class="column is-2">
+				<input class="input is-small" ref="m_department" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_office_add_l1">Office Address Line 1</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="m_office_add_l1" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_office_add_l2">Office Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="m_office_add_l2" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="m_office_city">City</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="m_office_city" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_office_zip">Zip</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="m_office_zip" type="number" maxlength="6">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_office_state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="m_office_state" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="m_office_country">Country</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="m_office_country" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_office_phone">Phone(O)</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="m_office_phone" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_office_state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="m_office_state" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		      <h3 class="has-text-weight-bold is-size-6 has-text-link">Educational Information</h3>
 		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_qualification">Qualification</label>
-				<input class="input" ref="m_qualification" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_other_qualification">Other Qualification</label>
-				<input class="input" ref="m_other_qualification" type="text">
-		    </div>
-		    <div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-4 has-text-link">Contact Information Check if Mother's Address is same as Father's Address
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="m_qualification">Qualification</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="m_qualification" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_other_qualification">Other Qualification</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="m_other_qualification" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_office_state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="m_office_state" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information Check if Mother's Address is same as Father's Address
 		      		<input type="checkbox" id="motherCorrespondenceCheckbox" onclick={copyMotherAddress.bind(this)}>
 		      	</h3>
 		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_add_l1">Address Line 1</label>
-				<input class="input" ref="m_add_l1" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_add_l2">Address Line 2</label>
-				<input class="input" ref="m_add_l2" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_city">City</label>
-				<input class="input" ref="m_city" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_zip">Zip</label>
-				<input class="input" ref="m_zip" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_state">State</label>
-				<input class="input" ref="m_state" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_country">Country</label>
-				<input class="input" ref="m_country" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_mobile">Mobile</label>
-				<input class="input" ref="m_mobile" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_email">Email</label>
-				<input class="input" ref="m_email" type="email">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="m_nationality">Nationality</label>
-				<input class="input" ref="m_nationality" type="text">
-		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="m_add_l1">Address Line 1</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="m_add_l1" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_add_l2">Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="m_add_l2" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_city">City</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="m_city" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="m_zip">Zip</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="m_zip" type="number" maxlength="6">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_state">State</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="m_state" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_country">Country</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="m_country" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="m_mobile">Mobile</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="m_mobile" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_email">Email</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" ref="m_email" type="email">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="m_nationality">Nationality</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" ref="m_nationality" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeMotherInformation}>
 			    	Previous
@@ -1304,8 +1641,8 @@
 			    	Cancel
 			    </button>    
 		    </div>
-  		</div>
-	</div>
+		</div>    		    					    	    
+  	</div>
 </section>
 <!-- End Mother Information -->
 
@@ -1316,172 +1653,279 @@
 			<h2 class="title" style="color: #ff3860;">{title} Guardian</h2>
 		</div>
 		<div class="level-right">
-			<div class="column is-one-third">
-				<label class="label" for="is_guardian">Select Guardian</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select ref="is_guardian" id="guardian" onchange={getGuardianInformation}>
-							<option >Select Guardian</option>
-							<option value="Father">Father</option>
-							<option value="Mother">Mother</option>
-							<option value="Other">Other</option>
-						</select>
-					</div>
-	      		</div>
-		    </div>
+
 		</div>
 	</div>
 	<div class="box">
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-half">
-			      <div id="g_pp_box" class="g_pp-box"
-			      onclick={trigger_guardian_file_input.bind(this,'guardian_picture')}>
+		<div class="columns is-multiline">
+		    <div class="column is-one-fifth">
+		    	<div id="g_pp_box" class="g_pp-box"
+		      		onclick={trigger_guardian_file_input.bind(this,'guardian_picture')}>
 			        <div class="icon has-text-danger" onclick=
 			        {remove_guardian_picture.bind(this, 'g_pp_box','guardian_picture')}><i class="fas fa-trash"></i></div>
-			      </div>
-			      <input accept="image/*" class="is-hidden" id="guardian_picture" name="guardian_picture" onchange={loadGuardianFile.bind(this, 'g_pp_box')} type="file">
-		    </div>
-		    <div class="column is-half">
-		      	<div class="column is-narrow">
-					<label class="label" for="g_title">Title</label>
-					<input class="input" id="g_title" ref="g_title" type="text">
 		      	</div>
-		       <div class="column is-narrow">
-					<label class="label" for="g_name">Guardian's Name</label>
-					<input class="input" id="g_name" ref="g_name" type="text">
-		      	</div>
+			    <input accept="image/*" class="is-hidden" id="guardian_picture" name="guardian_picture" onchange={loadGuardianFile.bind(this, 'g_pp_box')} type="file">
 		    </div>
-		    <div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-4 has-text-link">Work Information</h3>
-		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    <div class="column ">
+		    	<div class="columns">
+		    		<div class="column is-2">
+						<label class="label is-small" for="is_guardian">Select Guardian</label>
+			      	</div>
+			      	<div class="column is-2">
+						<div class="select is-fullwidth is-small">
+							<select ref="is_guardian" id="guardian" onchange={getGuardianInformation}>
+								<option >Select Guardian</option>
+								<option value="Father">Father</option>
+								<option value="Mother">Mother</option>
+								<option value="Other">Other</option>
+							</select>
+						</div>
+			      	</div>
+
+		    		<div class="column is-2">
+						<label class="label is-small" for="g_name">Guardian's Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input class="input is-small" id="g_name" ref="g_name" type="text">
+			      	</div>
+		    	</div>
+		    	<div class="columns mt30">
+		    		<div class="column is-full">
+		      			<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Information</h3>
+		      			<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    		</div>
+		    	</div>
 		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="g_occupation">Occupation</label>
-				<input class="input" id="g_occupation" ref="g_occupation" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_organisation_type">Organization Type</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select ref="g_organisation_type" id="g_organisation_type">
-							<option value="Governmnet">Governmnet</option>
-							<option value="Business">Business</option>
-							<option value="NGO">NGO</option>
-							<option value="Professional">Professional</option>
-							<option value="Other">Other</option>
-						</select>
-					</div>
-	      		</div>
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_annual_income">Annual Income</label>
-				<input class="input" id="g_annual_income" ref="g_annual_income" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_work_profile">Work Profile</label>
-				<input class="input" id="g_work_profile" ref="g_work_profile" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_organisation_name">Organization Name</label>
-				<input class="input" id="g_organisation_name" ref="g_organisation_name" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_designation">Designation</label>
-				<input class="input" id="g_designation" ref="g_designation" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="g_department">Department</label>
-				<input class="input" id="g_department" ref="g_department" type="text">
-		    </div>
-		    
-			<div class="column is-one-third">
-				<label class="label" for="g_office_add_l1">Office Address Line 1</label>
-				<input class="input" id="g_office_add_l1" ref="g_office_add_l1" type="text">
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="g_occupation">Occupation</label>
 			</div>
-			<div class="column is-one-third">
-				<label class="label" for="g_office_add_l2">Office Address Line 2</label>
-				<input class="input" id="g_office_add_l2" ref="g_office_add_l2" type="text">
+			<div class="column is-2">
+				<input class="input is-small" id="g_occupation" ref="g_occupation" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_organisation_type">Organization Type</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<div class="select is-fullwidth is-small">
+					<select ref="g_organisation_type" id="g_organisation_type">
+						<option value="Governmnet">Governmnet</option>
+						<option value="Business">Business</option>
+						<option value="NGO">NGO</option>
+						<option value="Professional">Professional</option>
+						<option value="Other">Other</option>
+					</select>
+				</div>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_annual_income">Annual Income</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="g_annual_income" ref="g_annual_income" type="number">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="g_work_profile">Work Profile</label>
 			</div>
-			<div class="column is-one-third">
-				<label class="label" for="g_office_city">City</label>
-				<input class="input" id="g_office_city" ref="g_office_city" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_office_zip">Zip</label>
-				<input class="input" id="g_office_zip" ref="g_office_zip" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_office_state">State</label>
-				<input class="input" id="g_office_state" ref="g_office_state" type="text">
-		    </div>
-		    <div class="column is-one-third">
+			<div class="column is-2">
+				<input class="input is-small" id="g_work_profile" ref="g_work_profile" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_organisation_name">Organization Name</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="g_organisation_name" ref="g_organisation_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_designation">Designation</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="g_designation" ref="g_designation" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="g_department">Department</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="g_department" ref="g_department" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_office_add_l1">Office Address Line 1</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="g_office_add_l1" ref="g_office_add_l1" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_office_add_l2">Office Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="g_office_add_l2" ref="g_office_add_l2" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="g_office_city">City</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="g_office_city" ref="g_office_city" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_office_zip">Zip</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="g_office_zip" ref="g_office_zip" type="number" 
+				maxlength="6"> 
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_office_state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="g_office_state" ref="g_office_state" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
 				<label class="label" for="g_office_country">Country</label>
-				<input class="input" id="g_office_country" ref="g_office_country" type="text">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="g_office_phone">Phone(O)</label>
-				<input class="input" id="g_office_phone" ref="g_office_phone" type="number">
-		    </div>
-		    <div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-4 has-text-link">Educational Information</h3>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="g_office_country" ref="g_office_country" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_office_phone">Phone(O)</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="g_office_phone" ref="g_office_phone" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_office_state">State</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="g_office_state" ref="g_office_state" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		      <h3 class="has-text-weight-bold is-size-6 has-text-link">Educational Information</h3>
 		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_qualification">Qualification</label>
-				<input class="input" id="g_qualification" ref="g_qualification" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_other_qualification">Other Qualification</label>
-				<input class="input" id="g_other_qualification" ref="g_other_qualification" type="text">
-		    </div>
-		    <div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-4 has-text-link">Contact Information</h3>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="g_qualification">Qualification</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="g_qualification" ref="g_qualification" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_other_qualification">Other Qualification</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="g_other_qualification" ref="g_other_qualification" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information</h3>
 		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_add_l1">Address Line 1</label>
-				<input class="input" id="g_add_l1" ref="g_add_l1" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_add_l2">Address Line 2</label>
-				<input class="input" id="g_add_l2" ref="g_add_l2" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_city">City</label>
-				<input class="input" id="g_city" ref="g_city" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_zip">Zip</label>
-				<input class="input" id="g_zip" ref="g_zip" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_state">State</label>
-				<input class="input" id="g_state" ref="g_state" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_country">Country</label>
-				<input class="input" id="g_country" ref="g_country" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_phone">Phone(R)</label>
-				<input class="input" id="g_phone" ref="g_phone" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_mobile">Mobile</label>
-				<input class="input" id="g_mobile" ref="g_mobile" type="number">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_email">Email</label>
-				<input class="input" id="g_email" ref="g_email" type="email">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_nationality">Nationality</label>
-				<input class="input" id="g_nationality" ref="g_nationality" type="text">
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="g_relation">Relationship</label>
-				<input class="input" id="g_relation" ref="g_relation" type="text">
-		    </div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="g_add_l1">Address Line 1</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="g_add_l1" ref="g_add_l1" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_add_l2">Address Line 2</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="g_add_l2" ref="g_add_l2" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_city">City</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="g_city" ref="g_city" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="g_zip">Zip</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="g_zip" ref="g_zip" type="number" maxlength="6">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_state">State</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="g_state" ref="g_state" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_country">Country</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="g_country" ref="g_country" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="g_phone">Phone(R)</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="g_phone" ref="g_phone" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_mobile">Mobile</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="g_mobile" ref="g_mobile" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_email">Email</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="g_email" ref="g_email" type="email">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="g_nationality">Nationality</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="g_nationality" ref="g_nationality" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_relation">Relationship</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="g_relation" ref="g_relation" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="g_email">Email</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="g_email" ref="g_email" type="email">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeGuardianInformation}>
 			    	Previous
@@ -1493,8 +1937,8 @@
 			    	Cancel
 			    </button>    
 		    </div>
-  		</div>
-	</div>
+		</div>	    		    	
+  	</div>
 </section>
 <!-- End Guardian Information -->
 
@@ -1508,124 +1952,206 @@
 		</div>
 	</div>
 	<div class="box">
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-4 has-text-link">First Child</h3>
+		<div class="columns mt20">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">First Child</h3>
 		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="first_child_name">Name</label>
-				<input class="input" id="first_child_name" ref="first_child_name" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="first_child_age">Age</label>
-				<input class="input" id="first_child_age" ref="first_child_age" type="number">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="first_child_class">Class</label>
-				<input class="input" id="first_child_class" ref="first_child_class" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="first_child_section">Section</label>
-				<input class="input" id="first_child_section" ref="first_child_section" type="text"
+		</div>
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="first_child_name">Name</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="first_child_name" ref="first_child_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="first_child_age">Age</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="first_child_age" ref="first_child_age" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="first_child_class">Class</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="first_child_class" ref="first_child_class" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="first_child_section">Section</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="first_child_section" ref="first_child_section" type="text"
 				onkeyup="this.value = this.value.toUpperCase();">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="first_enrol">Enroll No.</label>
-				<input class="input" id="first_enrol" ref="first_enrol" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="first_child_school">School</label>
-				<input class="input" id="first_child_school" ref="first_child_school" type="text">
-	    	</div>
-	    	<div class="column is-full">
-	    		<h3 class="has-text-weight-bold is-size-4 has-text-link">Second Child</h3>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="first_enrol">Enroll No.</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="first_enrol" ref="first_enrol" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="first_child_school">School</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="first_child_school" ref="first_child_school" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt35">
+			<div class="column is-full">
+	    		<h3 class="has-text-weight-bold is-size-6 has-text-link">Second Child</h3>
 	      		<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="second_child_name">Name</label>
-				<input class="input" id="second_child_name" ref="second_child_name" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="second_child_age">Age</label>
-				<input class="input" id="second_child_age" ref="second_child_age" type="number">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="second_child_class">Class</label>
-				<input class="input" id="second_child_class" ref="second_child_class" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="second_child_section">Section</label>
-				<input class="input" id="second_child_section" ref="second_child_section" type="text"
-				onkeyup="this.value = this.value.toUpperCase();">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="second_enrol">Enroll No.</label>
-				<input class="input" id="second_enrol" ref="second_enrol" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="second_child_school">School</label>
-				<input class="input" id="second_child_school" ref="second_child_school" type="text">
-	    	</div>
-	    	<div class="column is-full">
-	    		<h3 class="has-text-weight-bold is-size-4 has-text-link">Third Child</h3>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="second_child_name">Name</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="second_child_name" ref="second_child_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="second_child_age">Age</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="second_child_age" ref="second_child_age" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="second_child_class">Class</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="second_child_class" ref="second_child_class" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="second_child_section">Section</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="second_child_section" ref="second_child_section" type="text" onkeyup="this.value = this.value.toUpperCase();">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="second_enrol">Enroll No.</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="second_enrol" ref="second_enrol" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="second_child_school">School</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="second_child_school" ref="second_child_school" type="text">
+	      	</div>
+		</div>
+		
+		<div class="columns mt35">
+			<div class="column is-full">
+	    		<h3 class="has-text-weight-bold is-size-6 has-text-link">Third Child</h3>
 	      		<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="third_child_name">Name</label>
-				<input class="input" id="third_child_name" ref="third_child_name" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="third_child_age">Age</label>
-				<input class="input" id="third_child_age" ref="third_child_age" type="number">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="third_child_class">Class</label>
-				<input class="input" id="third_child_class" ref="third_child_class" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="third_child_section">Section</label>
-				<input class="input" id="third_child_section" ref="third_child_section" type="text"
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="third_child_name">Name</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="third_child_name" ref="third_child_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="third_child_age">Age</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="third_child_age" ref="third_child_age" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="third_child_class">Class</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="third_child_class" ref="third_child_class" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="third_child_section">Section</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="third_child_section" ref="third_child_section" type="text"
 				onkeyup="this.value = this.value.toUpperCase();">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="third_enrol">Enroll No.</label>
-				<input class="input" id="third_enrol" ref="third_enrol" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="third_child_school">School</label>
-				<input class="input" id="third_child_school" ref="third_child_school" type="text">
-	    	</div>
-	    	<div class="column is-full">
-	    		<h3 class="has-text-weight-bold is-size-4 has-text-link">Fourth Child</h3>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="third_enrol">Enroll No.</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="third_enrol" ref="third_enrol" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="third_child_school">School</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="third_child_school" ref="third_child_school" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt35">
+			<div class="column is-full">
+	    		<h3 class="has-text-weight-bold is-size-6 has-text-link">Fourth Child</h3>
 	      		<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="fourth_child_name">Name</label>
-				<input class="input" id="fourth_child_name" ref="fourth_child_name" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="fourth_child_age">Age</label>
-				<input class="input" id="fourth_child_age" ref="fourth_child_age" type="number">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="fourth_child_class">Class</label>
-				<input class="input" id="fourth_child_class" ref="fourth_child_class" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="fourth_child_section">Section</label>
-				<input class="input" id="fourth_child_section" ref="fourth_child_section" type="text"
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="fourth_child_name">Name</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="fourth_child_name" ref="fourth_child_name" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="fourth_child_age">Age</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="fourth_child_age" ref="fourth_child_age" type="number">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="fourth_child_class">Class</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="fourth_child_class" ref="fourth_child_class" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="fourth_child_section">Section</label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" id="fourth_child_section" ref="fourth_child_section" type="text"
 				onkeyup="this.value = this.value.toUpperCase();">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="fourth_enrol">Enroll No.</label>
-				<input class="input" id="fourth_enrol" ref="fourth_enrol" type="text">
-	    	</div>
-	    	<div class="column is-one-third">
-				<label class="label" for="fourth_child_school">School</label>
-				<input class="input" id="fourth_child_school" ref="fourth_child_school" type="text">
-	    	</div>
-		    <div class="column is-full">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="fourth_enrol">Enroll No.</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small" id="fourth_enrol" ref="fourth_enrol" type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="fourth_child_school">School</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small" id="fourth_child_school" ref="fourth_child_school" type="text">
+	      	</div>
+		</div>
+
+		<div class="columns mt60">
+			<div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" 
 			    	onclick={closeSiblingInformation}>Previous
 			    </button>
@@ -1636,142 +2162,152 @@
 			    	onclick={close}>Cancel
 			    </button>    
 		    </div>
-  		</div>
+		</div>
 	</div>
 </section>
+		    	    		    		    		    	    		    		    		    		    		
 <!-- End Sibling Information -->
 
 
 <!-- Start Other Information -->
 <section class=" is-fluid" show={student_view =='add_other_information'}>
 	<div class="box">
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-4 has-text-link">Areas Where Parent(Father or Mentor) can contribute to the school</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		<div class="columns ">
+			<div class="column is-full">
+		      <h3 class="has-text-weight-bold is-size-6 has-text-link">Areas Where Parent(Father or Mentor) can contribute to the school</h3>
+		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-	    	<div class=" column has-text-centered">
-	    		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
-	    			<tbody>
-	    				<tr>
-	    					<td>
-	    						<input type="checkbox" id="music" ref="music" >Music
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="sports" ref="sports">Sports
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="social" ref="social">Social Skills
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="media" ref="media">Media/PR
-	    					</td>
-	    				</tr>
-	    				<tr>
-	    					<td>
-	    						<input type="checkbox" id="academic" ref="academic">Academic
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="community" ref="community">
-	    						Community Programme
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="painting" ref="painting">
-	    						Painting/Sculpture
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="information" ref="information">
-	    						Information Technology
-	    					</td>
-	    				</tr>
-	    				<tr>
-	    					<td>
-	    						<input type="checkbox" id="hr_training" ref="hr_training">HR Training
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="medical" ref="medical">Medical
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="career" ref="career">
-	    						Career Counselling
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="communication" ref="communication">
-	    						Public Speaking / Communication Skills
-	    					</td>
-	    				</tr>
-	    			</tbody>
-	    		</table>
-	    	</div>
-	    	<div class="column is-full">
-	    		<h3 class="has-text-weight-bold is-size-4 has-text-link">Please Mention if either parent possesses any of the following Qualification</h3>
-	      		<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
-	    	</div>
-	    	<div class=" column is-full">
-	    		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
-	    			<tbody>
-	    				<tr>
-	    					<td>
-	    						<input type="checkbox" id="med" ref="med">MEd
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="bed" ref="bed">BEd
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="ttc" ref="ttc">TTC
-	    					</td>
-	    					<td>
-	    						<input type="checkbox" id="montessori" ref="montessori">
-	    						Montessori Trained
-	    					</td>
-	    				</tr>
-	    			</tbody>
-	    		</table>
-	    	</div>
+		</div>
 
-	    	<div class="column is-one-third">
-				<label class="label" for="transport_mode">Mode of Transport</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select ref="transport_mode" id="transport_mode">
-							<option value="None">None</option>
-							<option value="Bus">Bus</option>
-							<option value="Carpool">Carpool</option>
-							<option value="Rikshaw">Rikshaw</option>
-							<option value="Self">Self</option>
-						</select>
-					</div>
-	      		</div>
+		<div class="columns mt30">
+			<table class="table is-fullwidth no-border">
+    			<tbody>
+    				<tr>
+    					<td>
+    						<input type="checkbox" id="music" ref="music" >Music
+    					</td>
+    					<td>
+    						<input type="checkbox" id="sports" ref="sports">Sports
+    					</td>
+    					<td>
+    						<input type="checkbox" id="social" ref="social">Social Skills
+    					</td>
+    					<td>
+    						<input type="checkbox" id="media" ref="media">Media/PR
+    					</td>
+    				</tr>
+    				<tr>
+    					<td>
+    						<input type="checkbox" id="academic" ref="academic">Academic
+    					</td>
+    					<td>
+    						<input type="checkbox" id="community" ref="community">
+    						Community Programme
+    					</td>
+    					<td>
+    						<input type="checkbox" id="painting" ref="painting">
+    						Painting/Sculpture
+    					</td>
+    					<td>
+    						<input type="checkbox" id="information" ref="information">
+    						Information Technology
+    					</td>
+    				</tr>
+    				<tr>
+    					<td>
+    						<input type="checkbox" id="hr_training" ref="hr_training">HR Training
+    					</td>
+    					<td>
+    						<input type="checkbox" id="medical" ref="medical">Medical
+    					</td>
+    					<td>
+    						<input type="checkbox" id="career" ref="career">
+    						Career Counselling
+    					</td>
+    					<td>
+    						<input type="checkbox" id="communication" ref="communication">
+    						Public Speaking / Communication Skills
+    					</td>
+    				</tr>
+    			</tbody>
+	    	</table>
+		</div>
+
+		<div class="columns ">
+			<div class="column is-full">
+		      <h3 class="has-text-weight-bold is-size-6 has-text-link">Please Mention if either parent possesses any of the following Qualification</h3>
+		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="school_distance">Distance from school</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select ref="school_distance" id="school_distance">
-							<option value="1 km">1 km</option>
-							<option value="1-2 km">1-2 km</option>
-							<option value="More than 2 km">More than 2 km</option>
-						</select>
-					</div>
-	      		</div>
-		    </div>
-		    <div class="column is-one-third">
-				<label class="label" for="differently_abled">If child is Differently Abled</label>
-				<div class="control">
-	        		<div class="select is-fullwidth">
-						<select ref="differently_abled" id="differently_abled">
-							<option value="None">None</option>
-							<option value="In seeing">In seeing</option>
-							<option value="In hearing">In hearing</option>
-							<option value="In speaking">In speaking</option>
-							<option value="In movement">In movement</option>
-							<option value="In mental ability">In mental ability</option>
-						</select>
-					</div>
-	      		</div>
-		    </div>
+		</div>
+
+		<div class="columns">
+			<table class="table is-fullwidth">
+    			<tbody>
+    				<tr>
+    					<td>
+    						<input type="checkbox" id="med" ref="med">MEd
+    					</td>
+    					<td>
+    						<input type="checkbox" id="bed" ref="bed">BEd
+    					</td>
+    					<td>
+    						<input type="checkbox" id="ttc" ref="ttc">TTC
+    					</td>
+    					<td>
+    						<input type="checkbox" id="montessori" ref="montessori">
+    						Montessori Trained
+    					</td>
+    				</tr>
+    			</tbody>
+    		</table>
+		</div>
+
+		<div class="columns ">
+			<div class="column is-2">
+				<label class="label is-small" for="transport_mode">Mode of Transport</label>
+			</div>
+			<div class="column is-2">
+				<div class="select is-fullwidth is-small">
+					<select ref="transport_mode" id="transport_mode">
+						<option value="None">None</option>
+						<option value="Bus">Bus</option>
+						<option value="Carpool">Carpool</option>
+						<option value="Rikshaw">Rikshaw</option>
+						<option value="Self">Self</option>
+					</select>
+				</div>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="school_distance">Distance from school</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<div class="select is-fullwidth is-small">
+					<select ref="school_distance" id="school_distance">
+						<option value="1 km">1 km</option>
+						<option value="1-2 km">1-2 km</option>
+						<option value="More than 2 km">More than 2 km</option>
+					</select>
+				</div>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="differently_abled">If child is Differently Abled</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<div class="select is-fullwidth is-small">
+					<select ref="differently_abled" id="differently_abled">
+						<option value="None">None</option>
+						<option value="In seeing">In seeing</option>
+						<option value="In hearing">In hearing</option>
+						<option value="In speaking">In speaking</option>
+						<option value="In movement">In movement</option>
+						<option value="In mental ability">In mental ability</option>
+					</select>
+				</div>
+	      	</div>
+		</div>
+		<div class="columns">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" 
+			     <button class="button is-primary has-text-weight-bold adjusted-top" 
 			    	onclick={closeOtherInformation}>Previous
 			    </button>
 			    <button class="button is-info has-text-weight-bold adjusted-top" 
@@ -1779,9 +2315,9 @@
 			    </button>
 			    <button class="button is-danger has-text-weight-bold adjusted-top" 
 			    	onclick={close}>Cancel
-			    </button>    
+			    </button>     
 		    </div>
-  		</div>
+		</div>  
 	</div>
 </section>
 <!-- End Other Information -->
@@ -1798,10 +2334,13 @@
     	self.student_picture=false
     	self.role = getCookie('role')
     	self.readStandard()
-    	self.readSection()
     	self.readHouse()
     	self.readCategory()
     	self.readReligion()
+    	self.loading = false
+    	self.print_list_button = false;
+    	self.student_list_button = false;
+    	self.regenerate_roll_no_button = false;
     	self.staff_name = true
     	self.house_column = false
     	self.column_one = false
@@ -1839,18 +2378,37 @@
     })
 
     self.getStudentData = () =>{
-    	if(self.refs.read_enroll_number.value==""){
+    	if(self.refs.read_section_id.value !=""){
+    		self.print_list_button = true;
+    		self.student_list_button = true;
+    		self.regenerate_roll_no_button = true;
+    	}
+    	
+    	if(self.refs.read_section_id.value ==""){
+    		self.print_list_button = false;
+    		self.student_list_button = false;
+    		self.regenerate_roll_no_button = false;
+    		return;
+    	}
+    	if(self.refs.read_enroll_number.value=="" ){
+    		self.loading = true
     		studentStore.trigger('read_student', self.refs.read_standard_id.value,self.refs.read_section_id.value,0)
     	}else{
-    		studentStore.trigger('read_student', self.refs.read_standard_id.value,self.refs.read_section_id.value,
-      	self.refs.read_enroll_number.value)
+    		self.loading = true
+    		studentStore.trigger('read_student', self.refs.read_standard_id.value,
+    			self.refs.read_section_id.value,self.refs.read_enroll_number.value)
     	}
-      
     }
 
     self.add_new_student = () =>{
     	self.student_view='add_student'
+    	self.clearForm()
     	self.update()
+    	document.getElementById(item2).value = ""
+    	self.refs.p_state.value = "West Bengal"
+    	self.refs.c_state.value = "West Bengal"
+    	self.refs.p_country.value = "India"
+    	self.refs.c_country.value = "India"
     	document.getElementById("first_name").focus()
     }
 
@@ -1868,11 +2426,18 @@
 
     self.addFatherInformation = () =>{
     	var phoneno = /^\d{10}$/;
+
     	if(!self.refs.first_name.value){
     		toastr.error("Please enter First Name and try again")
     		return;
     	}else if(!self.refs.enroll_number.value){
         	toastr.error("Please enter Enroll No and try again")
+        	return;
+      	}else if((self.refs.enroll_number.value).length!=8){
+        	toastr.error("Please enter Valid Enroll No and try again")
+        	return;
+      	}else if((self.refs.p_zip.value).length!=6){
+        	toastr.error("Please enter Valid Zip Code and try again")
         	return;
       	}else if(!self.refs.dob.value){
         	toastr.error("Please enter DOB and try again")
@@ -1889,10 +2454,13 @@
       	}else if(!self.refs.doj.value){
         	toastr.error("Please enter DOJ and try again")
         	return;
+      	}else if(!self.refs.religion_id.value){
+        	toastr.error("Please select Religion and try again")
+        	return;
       	}else{
     		self.student_view='add_father_information'
     		self.update()
-    		document.getElementById("f_title").focus()
+    		document.getElementById("f_name").focus()
       	}
     }
     self.closeFatherInformation = () =>{
@@ -1906,7 +2474,7 @@
     	}else{
     		self.student_view='add_mother_information'
     		self.update()
-    		document.getElementById("m_title").focus()
+    		document.getElementById("m_name").focus()
       	}
     }
     self.closeMotherInformation = () =>{
@@ -1928,21 +2496,22 @@
     	self.student_view = 'add_mother_information'
     }
     self.addOtherInformation = () =>{
-    	if(!self.refs.g_name.value){
-    		toastr.error("Please enter Guardian Name and try again")
-    		return;
-    	}else{
-    		self.student_view='add_other_information'
-    		self.update()
-      	}
+    	
+    	self.student_view='add_other_information'
+    	self.update()
     }
     self.closeOtherInformation = () =>{
     	self.student_view = 'add_sibling_information'
     }
 
     self.addSiblingInformation = () =>{
-    	self.student_view='add_sibling_information'
-    	self.update()
+    	if(!self.refs.g_name.value){
+    		toastr.error("Please enter Guardian Name and try again")
+    		return;
+    	}else{
+    		self.student_view='add_sibling_information'
+    		self.update()
+    	}
     }
 
     self.closeSiblingInformation = () =>{
@@ -1976,7 +2545,6 @@
 
     self.getGuardianInformation = () =>{
     	if(self.refs.is_guardian.value == 'Father'){
-    		document.getElementById("g_title").disabled = true;
     		document.getElementById("g_name").disabled = true;
     		document.getElementById("g_occupation").disabled = true;
     		document.getElementById("g_organisation_type").disabled = true;
@@ -2010,7 +2578,6 @@
     		}else if(self.title == "Update"){
     			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/father/'+self.student_id+'.jpg)';
     		}
-    		self.refs.g_title.value = self.refs.f_title.value
     		self.refs.g_name.value = self.refs.f_name.value
     		self.refs.g_occupation.value = self.refs.f_occupation.value
     		self.refs.g_organisation_type.value = self.refs.f_organisation_type.value
@@ -2040,7 +2607,6 @@
     		self.refs.g_relation.value = self.refs.is_guardian.value
 
     	}else if(self.refs.is_guardian.value == 'Mother'){
-    		document.getElementById("g_title").disabled = true;
     		document.getElementById("g_name").disabled = true;
     		document.getElementById("g_occupation").disabled = true;
     		document.getElementById("g_organisation_type").disabled = true;
@@ -2075,7 +2641,6 @@
     		}else if(self.title == "Update"){
     			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/mother/'+self.student_id+'.jpg)';
     		}
-    		self.refs.g_title.value = self.refs.m_title.value
     		self.refs.g_name.value = self.refs.m_name.value
     		self.refs.g_occupation.value = self.refs.m_occupation.value
     		self.refs.g_organisation_type.value = self.refs.m_organisation_type.value
@@ -2104,7 +2669,6 @@
     		self.refs.g_nationality.value = self.refs.m_nationality.value
     		self.refs.g_relation.value = self.refs.is_guardian.value
     	}else {
-    		document.getElementById("g_title").disabled = false;
     		document.getElementById("g_name").disabled = false;
     		document.getElementById("g_occupation").disabled = false;
     		document.getElementById("g_organisation_type").disabled = false;
@@ -2139,7 +2703,6 @@
     		}else if(self.title == "Update"){
     			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/guardian/'+self.student_id+'.jpg)';
     		}
-    		self.refs.g_title.value = ''
     		self.refs.g_name.value = ''
     		self.refs.g_occupation.value = ''
     		self.refs.g_organisation_type.value = ''
@@ -2382,7 +2945,7 @@
 
 	/* End */
 
-	 self.readStandard = () => {
+	self.readStandard = () => {
        studentStore.trigger('read_standard')
     }
 
@@ -2414,6 +2977,8 @@
     	self.readfilteredSections = self.sections.filter(s => {
     		return s.standard_id == self.refs.read_standard_id.value
     	})
+    	self.update()
+    	console.log(self.readfilteredSections)
     }
     self.getReadSectionForWithdraw = () => {
     	self.readwithdrawfilteredSections = []
@@ -2510,7 +3075,6 @@
         
         var parent={};
 
-    	parent['f_title']=self.refs.f_title.value
     	parent['f_name']=self.refs.f_name.value
     	parent['f_occupation']=self.refs.f_occupation.value
     	parent['f_organisation_type']=self.refs.f_organisation_type.value
@@ -2548,7 +3112,6 @@
 
     	/*Mother Information*/
 
-    	parent['m_title']=self.refs.m_title.value
     	parent['m_name']=self.refs.m_name.value
     	parent['m_occupation']=self.refs.m_occupation.value
     	parent['m_organisation_type']=self.refs.m_organisation_type.value
@@ -2600,7 +3163,6 @@
     		parent['is_guardian'] = 'Other'
     	}
 
-        parent['g_title']=self.refs.g_title.value
     	parent['g_name']=self.refs.g_name.value
     	parent['g_occupation']=self.refs.g_occupation.value
     	parent['g_organisation_type']=self.refs.g_organisation_type.value
@@ -2758,8 +3320,10 @@
 
     	if(self.title=='Add'){
           studentStore.trigger('add_student', obj)
+          
         }else if(self.title=='Update'){
           studentStore.trigger('edit_student', obj,self.student_id)
+          self.student_view = 'show_student'
         }
     }
 
@@ -2770,6 +3334,7 @@
 	    allowInput: true,
         dateFormat: "d/m/Y",
   		})
+      self.title='Update'
       studentStore.trigger('read_for_edit_student',self.student_id)
       document.getElementById('pp_box').style.backgroundImage = 'url(/images/7/student/'+c+'.jpg)';
       document.getElementById('f_pp_box').style.backgroundImage = 'url(/images/7/father/'+c+'.jpg)';
@@ -2783,7 +3348,6 @@
       	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/guardian/'+c+'.jpg)';
       }
       self.add_new_student()
-      self.title='Update'
       
     }
 
@@ -2988,6 +3552,8 @@
     	self.refs.first_name.value = ""
     	self.refs.middle_name.value = ""
     	self.refs.last_name.value = ""
+    	self.refs.standard_id.value = ""
+    	self.refs.section_id.value = ""
     	self.refs.enroll_number.value = ""
     	self.refs.roll_number.value = ""
     	self.refs.reg_number.value = ""
@@ -3036,7 +3602,6 @@
     	self.refs.enroll_number.value = ""
     	self.refs.dob.value =""
 
-    	self.refs.f_title.value = ""
     	self.refs.f_name.value = ""
     	self.refs.f_occupation.value = ""
     	self.refs.f_organisation_type.value = ""
@@ -3065,7 +3630,6 @@
     	self.refs.f_email.value = ""
     	self.refs.f_nationality.value = ""
 
-    	self.refs.m_title.value = ""
     	self.refs.m_name.value = ""
     	self.refs.m_occupation.value = ""
     	self.refs.m_organisation_type.value = ""
@@ -3094,7 +3658,6 @@
     	self.refs.m_email.value = ""
     	self.refs.m_nationality.value = ""
 
-        self.refs.g_title.value = ""
     	self.refs.g_name.value = ""
     	self.refs.g_occupation.value = ""
     	self.refs.g_organisation_type.value = ""
@@ -3158,6 +3721,7 @@
       console.log(standards) 
       self.standards = standards
       self.update()
+      self.readSection()
     }
 
     studentStore.on('read_section_changed',SectionChanged)
@@ -3165,7 +3729,9 @@
       console.log(sections) 
       self.sections = sections
       self.update()
+      self.getSection()
       self.getReadSection()
+      self.getStudentData()
       self.getReadSectionForWithdraw()
     }
 
@@ -3192,7 +3758,7 @@
 
     studentStore.on('read_student_changed',StudentChanged)
     function StudentChanged(students){
-      console.log(students) 
+      self.loading = false
       self.students = students
       self.update()
     }
@@ -3259,7 +3825,6 @@
     	}else{
     		self.staff_name = false
     	}
-    	self.refs.f_title.value = student_profile_details[0].f_title
 		self.refs.f_name.value = student_profile_details[0].f_name
 		self.refs.f_occupation.value = student_profile_details[0].f_occupation
 		self.refs.f_organisation_type.value = student_profile_details[0].f_organisation_type
@@ -3294,7 +3859,6 @@
 		self.refs.f_state.value=student_profile_details[0].f_state
 		self.refs.f_country.value=student_profile_details[0].f_country
 
-		self.refs.m_title.value = student_profile_details[0].m_title
 		self.refs.m_name.value = student_profile_details[0].m_name
 		self.refs.m_occupation.value = student_profile_details[0].m_occupation
 		self.refs.m_organisation_type.value = student_profile_details[0].m_organisation_type
@@ -3337,7 +3901,6 @@
 		}else{
 			self.refs.is_guardian.value = 'Other'
 		}
-		self.refs.g_title.value = student_profile_details[0].g_title
 		self.refs.g_name.value = student_profile_details[0].g_name
 		self.refs.g_occupation.value = student_profile_details[0].g_occupation
 		self.refs.g_organisation_type.value = student_profile_details[0].g_organisation_type
@@ -3522,7 +4085,8 @@
       self.uploadFatherImage(student_id)
       self.uploadMotherImage(student_id)
       self.uploadGuardianImage(student_id)
-      self.read_student()
+      //self.getStudentData()
+      self.student_view = 'show_student'
       self.update()
     }
 
@@ -3536,7 +4100,8 @@
       self.uploadMotherImage(self.student_id)
       self.uploadGuardianImage(self.student_id)
       self.clearForm()
-      self.read_student()
+      //self.getStudentData()
+      self.student_view = 'show_student'
       self.update()
     }
 
@@ -3544,6 +4109,7 @@
     function DeleteStudentChanged(students){
       console.log(students) 
       self.students = students
+      self.loading = false
       self.update()
     }
 
@@ -3631,7 +4197,6 @@
     	}else{
     		self.staff_name = false
     	}
-    	self.refs.f_title.value = student_details[0].f_title
 		self.refs.f_name.value = student_details[0].f_name
 		self.refs.f_occupation.value = student_details[0].f_occupation
 		self.refs.f_organisation_type.value = student_details[0].f_organisation_type
@@ -3666,7 +4231,6 @@
 		self.refs.f_state.value=student_details[0].f_state
 		self.refs.f_country.value=student_details[0].f_country
 
-		self.refs.m_title.value = student_details[0].m_title
 		self.refs.m_name.value = student_details[0].m_name
 		self.refs.m_occupation.value = student_details[0].m_occupation
 		self.refs.m_organisation_type.value = student_details[0].m_organisation_type
@@ -3709,7 +4273,7 @@
 		}else{
 			self.refs.is_guardian.value = 'Other'
 		}
-		self.refs.g_title.value = student_details[0].g_title
+
 		self.refs.g_name.value = student_details[0].g_name
 		self.refs.g_occupation.value = student_details[0].g_occupation
 		self.refs.g_organisation_type.value = student_details[0].g_organisation_type

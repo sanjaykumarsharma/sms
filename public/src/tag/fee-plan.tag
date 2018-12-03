@@ -1,4 +1,5 @@
 <fee-plan>
+<loading-bar if={loading}></loading-bar>  
 	<section class="container is-fluid" show={fee_plan_view =='show_fee_plan'}>
 		<div class="level">
 			<div class="level-left">
@@ -11,6 +12,11 @@
 				</span>
 				<span>Add Fee Plan</span>
 				</button>
+        <button disabled={loading} class="button is-warning is-rounded" onclick={readFeePlans} style="margin-left:2px">
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
 			</div>
 		</div>
 		<table class="table is-fullwidth is-striped is-hoverable">
@@ -198,7 +204,7 @@
         <div class="columns is-multiline">   
           <div class="columns">
             <div class="column is-narrow">
-              <label class="label" >Selected {selectedFeeSlip}</label>
+              <label class="label" >Selected=== {selectedFeeSlip}</label>
             </div>
             <div class="column is-narrow">
               <label class="label" >Last Date</label>
@@ -378,6 +384,7 @@
       self.title='Add'
       self.role = getCookie('role')
       self.fee_plan_view = 'show_fee_plan'
+      self.loading = false
       self.update()
       self.readFeePlans()
       self.readStandards()
@@ -431,6 +438,7 @@
     console.log(self.feedHeadValues)*/
     //read courses
     self.readFeePlans = () => {
+      self.loading=true
        feePlanStore.trigger('read_fee_plans')
     }
     self.readStandards = () =>{
@@ -626,11 +634,15 @@ self.editFeeSlip = (c,e)=>{
     }
     
     self.removeDeleteFeeSlip = () =>{
+      console.log("")
       $("#deleteFeeSlipModel").removeClass("is-active");
     }
     self.deleteFeeSlip = () => {
       self.loading = true
       feePlanStore.trigger('delete_fee_slip', self.selected_fee_slip_id)
+    }
+    self.cancelOperation = () =>{
+      c.confirmDelete = false
     }
   //=========End Fee Slip Delete  
 
@@ -674,7 +686,7 @@ self.editFeeSlip = (c,e)=>{
     function FeeSlipDeleteChanged(){
       self.loading = false
       $("#deleteFeeSlipModel").removeClass("is-active");
-      feePlanStore.trigger('read_fee_slip_head', c.fee_plan_id)
+      //feePlanStore.trigger('read_fee_slip_head', c.fee_plan_id)
       self.update()
     }
     feePlanStore.on('add_fee_plan_changed',AddFeePlansChanged)
