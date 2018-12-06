@@ -76,6 +76,9 @@ RiotControl.addStore(studentStudentGroupStore)
 var teacherTimeTableStore = new TeacherTimeTableStore() 
 RiotControl.addStore(teacherTimeTableStore)
 
+var timeTableSubstitutaionStore = new TimeTableSubstitutaionStore() 
+RiotControl.addStore(timeTableSubstitutaionStore)
+
 var studentWithdrawnStudentStore = new StudentWithdrawnStudentStore() 
 RiotControl.addStore(studentWithdrawnStudentStore)
 
@@ -320,6 +323,9 @@ RiotControl.addStore(staffStore)
 var studentSearchStore  = new StudentSearchStore() 
 RiotControl.addStore(studentSearchStore)
 
+var certificateStore  = new CertificateStore() 
+RiotControl.addStore(certificateStore)
+
 var birthDayStore  = new BirthDayStore() 
 RiotControl.addStore(birthDayStore)
 
@@ -328,6 +334,7 @@ RiotControl.addStore(attendanceStore)
 
 var adminReportStore  = new AdminReportStore() 
 RiotControl.addStore(adminReportStore)
+
 
 
 var currentPage = null;
@@ -367,6 +374,9 @@ let goTo = (path1, path2, path3) => {
     break;
     case 'teacher-time-table':
       currentPage = riot.mount('div#view', 'teacher-time-table')[0];
+    break;
+    case 'time-table-substitutation':
+      currentPage = riot.mount('div#view', 'time-table-substitutation')[0];
     break;
     case 'marks-report':
       currentPage = riot.mount('div#view', 'marks-report', {selected_marks_report: path2})[0];
@@ -693,6 +703,7 @@ case 'receive-fees':
     case 'student-browser':
           riot.mount("div#view", 'student-browser')
     break;
+
     case 'occupation-report':
           riot.mount("div#view", 'occupation-report')
     break;
@@ -705,6 +716,21 @@ case 'receive-fees':
     case 'daily-attendance':
           riot.mount("div#view", 'daily-attendance')
     break;
+
+     case 'staff-report':
+      currentPage = riot.mount('div#view', 'staff-report', {selected_staff_report: path2})[0];
+      switch(path2){
+        case 'staff-gernder-report':
+          riot.mount("div#staff-report-view", 'staff-gernder-report')
+        break;
+        case 'staff-type-report':
+          riot.mount("div#staff-report-view", 'staff-type-report')
+        break;
+        default:
+          riot.mount("div#staff-report-view", 'staff-gender-report')
+      }
+    break;
+
     case 'admin-report':
       currentPage = riot.mount('div#view', 'admin-report', {selected_admin_report: path2})[0];
       switch(path2){
@@ -749,6 +775,24 @@ case 'receive-fees':
         break;
         default:
           riot.mount("div#admin-report-view", 'student-summary-report')
+      }
+    break;
+
+
+    case 'certificate':
+      currentPage = riot.mount('div#view', 'certificate', {selected_certificate: path2})[0];
+      switch(path2){
+        case 'issue-certificate':
+          riot.mount("div#certificate-view", 'issue-certificate')
+        break;
+        case 'manage-certificate':
+          riot.mount("div#certificate-view", 'manage-certificate')
+        break;
+        case 'issued-certificate':
+          riot.mount("div#certificate-view", 'issued-certificate')
+        break;
+        default:
+          riot.mount("div#certificate-view", 'issue-certificate')
       }
     break;
    
@@ -923,23 +967,6 @@ case 'receive-fees':
         break;
         default:
           riot.mount("div#master-view", 'employee-type')
-      }
-    break;
-
-    case 'certificate':
-      currentPage = riot.mount('div#view', 'certificate', {selected_certificate: path2})[0];
-      switch(path2){
-        case 'issue-certificate':
-          riot.mount("div#certificate-view", 'issue-certificate')
-        break;
-        case 'manage-certificate':
-          riot.mount("div#certificate-view", 'manage-certificate')
-        break;
-        case 'issued-certificate':
-          riot.mount("div#certificate-view", 'issued-certificate')
-        break;
-        default:
-          riot.mount("div#certificate-view", 'issue-certificate')
       }
     break;
 

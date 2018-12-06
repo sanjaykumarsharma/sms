@@ -26,17 +26,9 @@ router.get('/read-init', function(req, res, next) {
                      from period_master`;
            
 
-      var standards = `select standard_id,standard from standard_master`;    
+      var rooms = `select room_id,room_name from room_master`;    
 
-      var sections = `select  section_id, section, standard_id
-                      from section_master  a
-                      order by standard_id, section_id`;    
-
-      var subjects = `select subject_id,subject_name,subject_short_name,order_no,department_name,a.department_id
-                      from subject_master a
-                      LEFT JOIN department_master b on a.department_id=b.department_id order by 2`;        
-
-      var qry = teachers+';'+days+';'+periods+';'+standards+';'+sections+';'+subjects;                               
+      var qry = teachers+';'+days+';'+periods+';'+rooms;
 
       console.log(qry);
 
@@ -52,9 +44,7 @@ router.get('/read-init', function(req, res, next) {
           data.teachers = result[0];
           data.days = result[1];
           data.periods = result[2];
-          data.standards = result[3];
-          data.sections = result[4];
-          data.subjects = result[5];
+          data.rooms = result[3];
           res.send(data)
         }
      
@@ -62,16 +52,145 @@ router.get('/read-init', function(req, res, next) {
 
 });
 
-router.get('/read-edit-time-table/:period_id/:day_id', function(req, res, next) {
+
+
+router.get('/read-periods/:emp_id', function(req, res, next) {
 
      var data = {}
 
-      var qry = `select room_id,room_name from room_master 
-                   where room_id not in (select room_id from time_table 
-                                         where period_id=${req.params.period_id} 
-                                         and day_id=${req.params.day_id}
-                                         and session_id=${req.cookies.session_id})`;     
+      var time_table  = `select distinct a.period_id,a.day_id,a.room_id,a.subject_id,subject_short_name,period_type,d.day_name,e.room_name,
+                         concat(standard,'  ',section) as standard,g.standard_id,a.section_id 
+                         from time_table_substitution a
+                         left join subject_master b on(a.subject_id = b.subject_id)
+                         left join period_master c on(a.period_id = c.period_id)
+                         left join day_master d on(a.day_id=d.day_id)
+                         left join room_master e on (a.room_id= e.room_id)
+                         left join section_master f on (a.section_id= f.section_id)
+                         left join standard_master g on (f.standard_id= g.standard_id)
+                         where a.teacher_id=${req.params.emp_id}
+                         and a.session_id=${req.cookies.session_id}
+                         order by a.day_id`;
 
+      console.log(time_table);
+
+     pool.query(time_table,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading time_table : %s ",err );
+           data.status = 'e';
+           data.error = err
+           data.messaage = err.sqlMessage
+        }else{
+          data.status = 's';
+          data.time_table = result;
+          res.send(data)
+        }
+     
+     });
+
+});
+
+
+router.post('/reset-time-table', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  console.log(input)
+
+  var data = {} 
+
+    req.getConnection(function(err,connection){
+      connection.beginTransaction(function(err) {
+        if (err) { throw err; }
+
+        var query = `delete from time_table_substitution`;
+
+        console.log(query)             
+
+        connection.query(query, function (error, rows) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }
+
+           var qry = `insert into time_table_substitution(section_id,period_id,day_id,subject_id,period_type,
+                      room_id,teacher_id,session_id,creation_date,modification_date,modified_by)
+                      select section_id,period_id,day_id,subject_id,period_type,
+                      room_id,teacher_id,session_id,creation_date,modification_date,modified_by
+                      from time_table`;
+
+          connection.query(qry, function (error, rows) {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+
+            connection.commit(function(err) {
+              if (err) {
+                return connection.rollback(function() {
+                  throw err;
+                });
+              }
+              data.status = 's';
+              console.log(data);
+              res.send(data)
+            });
+
+          });
+
+        });//main query
+      });
+    });
+  });
+
+
+
+router.post('/read-edit-time-table', function(req, res, next) {
+
+     var input = JSON.parse(JSON.stringify(req.body));
+
+     var data = {}
+
+     var free_periods = `select * from
+                        (select emp_id, concat(first_name, ' ', middle_name, ' ', last_name)as teacher,a.department_id,
+                        count(period_id)as period_count_day
+                        from employee a
+                        join time_table_substitution b on a.emp_id=b.teacher_id
+                        where emp_type_id!=5 and is_active='Y' and b.teacher_id not in((select teacher_id from time_table_substitution 
+                                                  where period_id=${input.period_id} and day_id=${input.day_id} and session_id=${req.cookies.session_id}))
+                        and b.day_id=${input.day_id}
+                        group by teacher_id 
+                        
+                        UNION
+                        
+                        select emp_id, concat(first_name, ' ', middle_name, ' ', last_name)as teacher,a.department_id,
+                        '0' as period_count_day 
+                        from employee a
+                        where emp_type_id!=5 and is_active='Y' and emp_id not in (select distinct teacher_id from time_table_substitution 
+                                             where session_id=${req.cookies.session_id}))a  
+                        order by teacher`;
+
+      var teacher_peiods = `select * from
+                          (select emp_id, concat(first_name, ' ', middle_name, ' ', last_name)as teacher,a.department_id,
+                          count(period_id)as period_count_day
+                          from employee a
+                          join time_table b on a.emp_id=b.teacher_id
+                          where emp_type_id!=5 and is_active='Y' and b.teacher_id not in((select teacher_id from time_table 
+                                                    where period_id=${input.period_id} and day_id=${input.day_id} and session_id=${req.cookies.session_id}) )
+                          and b.day_id=${input.day_id}
+                          group by teacher_id 
+                          
+                          UNION
+                          
+                          select emp_id, concat(first_name, ' ', middle_name, ' ', last_name)as teacher,a.department_id,
+                          '0' as period_count_day 
+                          from employee a
+                          where emp_type_id!=5 and is_active='Y' and emp_id not in (select distinct teacher_id from time_table 
+                                               where session_id=${req.cookies.session_id}))a  
+                          order by teacher`;                  
+
+      var qry = free_periods+';'+teacher_peiods;
       console.log(qry);
 
      pool.query(qry,function(err,result)     {
@@ -83,7 +202,8 @@ router.get('/read-edit-time-table/:period_id/:day_id', function(req, res, next) 
            data.messaage = err.sqlMessage
         }else{
           data.status = 's';
-          data.rooms = result;
+          data.free_periods = result[0];
+          data.teacher_peiods = result[1];
           res.send(data)
         }
      
@@ -91,54 +211,7 @@ router.get('/read-edit-time-table/:period_id/:day_id', function(req, res, next) 
 
 });
 
-router.get('/read-periods/:emp_id', function(req, res, next) {
 
-     var data = {}
-
-      // var periods = `select period_id, period_name,
-      //                concat('(',time_format(start_time, '%H:%i'),' - ',time_format(end_time, '%H:%i'),')' ) as period_time,
-      //                is_break
-      //                from period_master`;
-
-      // var days = `select day_id,day_name from day_master
-      //             where session_id=${req.cookies.session_id}
-      //             order by 1`;
-
-      var time_table = `select distinct a.period_id,a.day_id,a.room_id,a.subject_id,subject_short_name,period_type,d.day_name,e.room_name,
-                        concat(standard,'  ',section) as standard,g.standard_id,a.section_id 
-                        from time_table a
-                        left join subject_master b on(a.subject_id = b.subject_id)
-                        left join period_master c on(a.period_id = c.period_id)
-                        left join day_master d on(a.day_id=d.day_id)
-                        left join room_master e on (a.room_id= e.room_id)
-                        left join section_master f on (a.section_id= f.section_id)
-                        left join standard_master g on (f.standard_id= g.standard_id)
-                        where a.teacher_id=${req.params.emp_id}
-                        and a.session_id=${req.cookies.session_id}
-                        order by a.day_id`;
-
-      //var qry = periods+';'+days+';'+time_table;
-
-      console.log(time_table);
-
-     pool.query(time_table,function(err,result)     {
-            
-        if(err){
-           console.log("Error reading periods/days/time_table : %s ",err );
-           data.status = 'e';
-           data.error = err
-           data.messaage = err.sqlMessage
-        }else{
-          data.status = 's';
-          //data.periods = result[0];
-          //data.days = result[1];
-          data.time_table = result;
-          res.send(data)
-        }
-     
-     });
-
-});
 
 
 router.post('/edit-time-table', function(req, res, next) {

@@ -1,4 +1,5 @@
 <staff>
+	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" show={staff_view =='show_staff'}>
 		<div class="level">
 			<div class="level-left">
@@ -6,7 +7,7 @@
 			</div>
 			<div class="level-right">
 				<div>
-				<button class="button  is-small" onclick={add_new_staff}>
+				<button class="button is-primary is-rounded" onclick={add_new_staff}>
 				<span class="icon">
 					<span class="fas fa-plus"></span>
 				</span>
@@ -14,17 +15,17 @@
 				</button>
 			</div>
 				<div>
-				<button class="button is-small" onclick={update_staff_status}>
+				<button class="button is-rounded ml10" onclick={update_staff_status}>
 				 Leaving Status
 				</button>
 			</div>
 			<div>
-				<button class="button is-small" onclick={allowBlockStaff}>
+				<button class="button is-warning is-rounded ml10" onclick={allowBlockStaff}>
 				Allow/Block
 				</button>
 			</div>
 			<div>
-				<button class="button is-small" onclick={resetStaffPassword}>
+				<button class="button is-danger  is-rounded ml10" onclick={resetStaffPassword}>
 				Reset Password
 				</button>
 			</div>
@@ -36,7 +37,7 @@
 					<div class="control">
 						<div class="select">
 							<select ref="r_emp_type_id">
-								<option>Type</option>
+								<option value={-2}>Type</option>
 								<option value={-1}>All</option>
 								<option each={employeeTypes} value={emp_type_id}>{emp_type}
 	                            </option>
@@ -48,7 +49,8 @@
 					<div class="control">
 			        	<div class="select is-fullwidth">
 							<select ref="r_designation_id">
-								<option>Designation</option>
+								<option value={-2}>Designation</option>
+								<option value={-1}>All</option>
 								<option each={designations} value={designation_id}>{designation}
 	                            </option>
 							</select>
@@ -59,7 +61,8 @@
 					<div class="control">
 			        	<div class="select is-fullwidth">
 							<select ref="r_level_id">
-								<option>Level</option>
+								<option value={-2}>Level</option>
+								<option value={-1}>All</option>
 								<option each={levels} value={level_id}>{level}
 	                            </option>
 							</select>
@@ -70,7 +73,8 @@
 					<div class="control">
 			        	<div class="select is-fullwidth">
 							<select ref="r_department_id">
-								<option>Department</option>
+								<option value={-2}>Department</option>
+								<option value={-1}>All</option>
 								<option each={departments} value={department_id}>{department_name}
 	                            </option>
 							</select>
@@ -147,6 +151,14 @@
 			    <input accept="image/*" class="is-hidden" id="staff_picture" name="staff_picture" onchange={loadFile.bind(this, 'pp_box')} type="file">
 		    </div>
 		    <div class="column ">
+		    	<div class="columns ">
+		    		<div class="column is-2">
+							<label class="label is-small" for="title">Title</label>
+				      	</div>
+				      	<div class="column is-10">
+							<input class="input is-small" id="title" ref="title" type="text">
+				      	</div>
+				</div>
 		    	<div class="columns ">
 		    		<!-- <div class="column is-2">
 							<label class="label" for="title">Title</label>
@@ -288,6 +300,12 @@
   		</div>
 
   		<div class="columns mt30">
+  			<div class="column is-2">
+				<label class="label is-small" for="Employee ID">Employee ID</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="employee_id" type="text">
+	      	</div>
       		<div class="column is-2">
 				<label class="label is-small" for="Moble">Mobile</label>
 	      	</div>
@@ -2071,6 +2089,7 @@
     	self.staff_view = 'show_staff'
     	self.is_staff_picture=false
     	self.staff_picture=false
+    	self.loading=false
     	self.role = getCookie('role')
     	self.readEmployeeTypes()
     	self.readDesignations()
@@ -2161,6 +2180,7 @@
 
     self.getStaffData = () =>{
     	//if(self.refs.read_enroll_number.value==""){
+    		self.loading=true
     		staffStore.trigger('read_staff', self.refs.r_emp_type_id.value,self.refs.r_department_id.value,self.refs.r_designation_id.value,self.refs.r_level_id.value)
     	//}
       
@@ -2661,7 +2681,7 @@
         dateFormat: "d/m/Y",
   		})
       staffStore.trigger('read_for_edit_staff',self.emp_id)
-      document.getElementById('pp_box').style.backgroundImage = 'url(/images/staff/'+c+'.jpg)';
+      document.getElementById('pp_box').style.backgroundImage = 'url(/images/empImages/'+c+'.jpg)';
       self.title='Update'
       self.add_new_staff()
       
@@ -2670,7 +2690,7 @@
       console.log(c)
       self.emp_id = c
       staffStore.trigger('read_for_edit_staff',self.emp_id)
-      document.getElementById('pp_box').style.backgroundImage = 'url(/images/staff/'+c+'.jpg)';
+      document.getElementById('pp_box1').src = '/images/empImages/'+c+'.jpg';
       self.title='printProfile' 
       self.add_new_staff()
     }
@@ -2855,7 +2875,8 @@
     function StaffChanged(staffs){
       console.log(staffs) 
       self.staffs = staffs
-       self.staffs.map(i=>{
+      self.loading=false
+        self.staffs.map(i=>{
          if(i.emp_id==null){
               i.done = false; //RoleId1
                self.emp_id=i.emp_id
@@ -2914,7 +2935,7 @@
     function ReadForEditStaffChanged(staff_details){
      	self.staff_details=staff_details
      	if(self.title=='Update'){
-        self.refs.title.value=staff_details[0].title
+         self.refs.title.value=staff_details[0].title
     	self.refs.first_name.value=staff_details[0].first_name
     	self.refs.middle_name.value=staff_details[0].middle_name
     	self.refs.last_name.value=staff_details[0].last_name
@@ -3101,8 +3122,8 @@
     	self.language=staff_details[0].language
     	self.emp_type_id=staff_details[0].emp_type_id
     	self.department_id=staff_details[0].department_id
-    	self.level_id=staff_details[0].level_i
-    	self.employment_status_id.value=staff_details[0].employment_status_id
+    	self.level_id=staff_details[0].level_id
+    	self.employment_status_id=staff_details[0].employment_status_id
     	self.subject_id=staff_details[0].subject_id
     	self.designation_id=staff_details[0].designation_id
     	self.qualification=staff_details[0].qualification

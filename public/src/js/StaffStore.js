@@ -74,6 +74,65 @@ function StaffStore() {
       })
   })*/
 
+
+ //Staff TYpe Report
+
+ self.on('read_employee_type_report', function(emp_type_id) {
+    let req = {}
+    $.ajax({
+      url:'/staff/read_employee_type_report/'+emp_type_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            //self.studentSummaryReports=[]
+            console.log("inside employee  report")
+            self.employeeTypeReports = data.employeeTypeReports
+            var grandTotal=0;
+            self.employeeTypeReports.map(i=>{
+                   grandTotal=Number(grandTotal) + Number(i.total)
+                 })
+            self.trigger('read_employee_type_report_change', self.employeeTypeReports,grandTotal)
+          }else if(data.status == 'e'){
+            showToast("staff Type Report Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+ self.on('read_employee_gender_report', function() {
+    let req = {}
+    $.ajax({
+      url:'/staff/read_employee_gender_report',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            //self.studentSummaryReports=[]
+            console.log("inside employee  report")
+            self.employeeGenderReports = data.employeeGenderReports
+            var grandTotal=0;
+            self.employeeGenderReports.map(i=>{
+                   grandTotal=Number(grandTotal) + Number(i.total)
+                 })
+            self.trigger('read_employee_gender_report_change', self.employeeGenderReports,grandTotal)
+          }else if(data.status == 'e'){
+            showToast("staff Gender Report Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
   self.on('read_for_edit_staff', function(emp_id) {
     console.log(emp_id)
     let req = {}

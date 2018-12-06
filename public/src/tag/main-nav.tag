@@ -51,6 +51,7 @@
                 <a class="navbar-item" >Time Table</a>
                 <div class="navbar-dropdown">
                   <a class="navbar-item" href="#/teacher-time-table">Teacher Time Table</a>
+                  <a class="navbar-item" href="#/time-table-substitutation">Time Table Substitutaion</a>
                 </div>
               </div>
 

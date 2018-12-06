@@ -245,7 +245,7 @@
       self.title='Create'
       self.loading = false
       self.students = students
-       self.students.map(i=>{
+      self.students.map(i=>{
 	      i.done = false;
       })
       self.update()

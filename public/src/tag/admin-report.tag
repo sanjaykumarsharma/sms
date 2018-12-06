@@ -21,7 +21,7 @@
 		    </a>
 	  	</p>
 	  	<p class="control">
-		    <a class="button {is-active: selected_admin_report == 'student-category-strength-report'}" href="#/admin-report/student-religion-strength-report">
+		    <a class="button {is-active: selected_admin_report == 'student-religion-strength-report'}" href="#/admin-report/student-religion-strength-report">
 		      <span>Religion Strength</span>
 		    </a>
 	  	</p>

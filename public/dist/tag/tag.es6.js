@@ -1035,7 +1035,7 @@ riot.tag2('activity-student-event-report', '<section class=" is-fluid"> <h2 clas
       self.update();
     }
 });
-riot.tag2('admin-report', '<div class="field has-addons"> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-summary-report\'}" href="#/admin-report/student-summary-report"> <span>Student Summary</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-strength-report\'}" href="#/admin-report/student-strength-report"> <span>Student Strength</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-category-summary-report\'}" href="#/admin-report/student-category-summary-report"> <span>Category Summary</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-category-strength-report\'}" href="#/admin-report/student-category-strength-report"> <span>Category Strength</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-category-strength-report\'}" href="#/admin-report/student-religion-strength-report"> <span>Religion Strength</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-group-report\'}" href="#/admin-report/student-group-report"> <span>Group Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-house-report\'}" href="#/admin-report/student-house-report"> <span>House Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-class-teacher-report\'}" href="#/admin-report/student-class-teacher-report"> <span>Class Teacher</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'new-admission-report\'}" href="#/admin-report/new-admission-report/new-admission-category-report"> <span>New Admission</span> </a> </p> </div> <div id="admin-report-view"></div>', '', '', function(opts) {
+riot.tag2('admin-report', '<div class="field has-addons"> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-summary-report\'}" href="#/admin-report/student-summary-report"> <span>Student Summary</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-strength-report\'}" href="#/admin-report/student-strength-report"> <span>Student Strength</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-category-summary-report\'}" href="#/admin-report/student-category-summary-report"> <span>Category Summary</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-category-strength-report\'}" href="#/admin-report/student-category-strength-report"> <span>Category Strength</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-religion-strength-report\'}" href="#/admin-report/student-religion-strength-report"> <span>Religion Strength</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-group-report\'}" href="#/admin-report/student-group-report"> <span>Group Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-house-report\'}" href="#/admin-report/student-house-report"> <span>House Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'student-class-teacher-report\'}" href="#/admin-report/student-class-teacher-report"> <span>Class Teacher</span> </a> </p> <p class="control"> <a class="button {is-active: selected_admin_report == \'new-admission-report\'}" href="#/admin-report/new-admission-report/new-admission-category-report"> <span>New Admission</span> </a> </p> </div> <div id="admin-report-view"></div>', '', '', function(opts) {
     var self = this
     console.log('opts.selected_admin_report')
     console.log(opts.selected_admin_report)
@@ -1801,11 +1801,126 @@ riot.tag2('birthday', '<section class=" is-fluid"> <div class="level"> <div clas
     }
 
 });
-riot.tag2('browse-staff', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Staff</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="emp_type_id" onchange="{ReadBrowseStaff}"> <option riot-value="{-1}">All</option> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Emp ID</th> <th>First Name</th> <th>Middle Name</th> <th>Last Name</th> <th>City</th> <th>Office Phone</th> <th>Mobile</th> <th>Email</th> </tr> </thead> <tbody> <tr each="{st, i in browseStaffs}"> <td>{i+1}</td> <td>{st.employee_id}</td> <td>{st.first_name}</td> <td> {st.middle_name}</td> <td> {st.last_name}</td> <td>{st.city}</td> <td>{st.office_phone}</td> <td>{st.mobile}</td> <td>{st.email}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('browse-staff', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Staff</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="emp_type_id" onchange="{ReadBrowseStaff}"> <option riot-value="{-1}">All</option> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-primary has-text-weight-bold" onclick="{showStaffField}">Setting </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th show="{view_title=\'show_title\'}">title</th> <th show="{view_first_name==\'show_first_name\'}">first_name</th> <th show="{view_middle_name==\'show_middle_name\'}">middle_name</th> <th show="{view_last_name==\'show_last_name\'}">last_name</th> <th show="{view_employee_id==\'show_employee_id\'}">employee_id</th> <th show="{view_short_name==\'show_short_name\'}">short_name</th> <th show="{view_marital_status==\'show_marital_status\'}">marital_status</th> <th show="{view_father_name==\'show_father_name\'}">father_name</th> <th show="{view_spouse==\'show_spouse\'}">spouse</th> <th show="{view_blood_group==\'show_blood_group\'}">blood_group</th> <th show="{view_religion_id==\'show_religion_id\'}">religion_id</th> <th show="{view_language==\'show_language\'}">language</th> <th show="{view_emp_type_id==\'show_emp_type_id\'}">emp_type_id</th> <th show="{view_department_id==\'show_department_id\'}">department_id</th> <th show="{view_employment_status_id==\'show_employment_status_id\'}">employment_status_id</th> <th show="{view_subject_id==\'show_subject_id\'}">subject_id</th> <th show="{view_designation_id==\'show_designation_id\'}">designation_id</th> <th show="{view_qualification==\'show_qualification\'}">qualification</th> <th show="{view_doj==\'show_doj\'}">doj</th> <th show="{view_dob==\'show_dob\'}">dob</th> <th show="{view_add_l1==\'show_add_l1\'}">add_l1</th> <th show="{view_city==\'show_city\'}">city</th> <th show="{view_zip==\'show_zip\'}">zip</th> <th show="{view_state==\'show_state\'}">state</th> <th show="{view_country==\'show_country\'}">country</th> <th show="{view_residence_phone==\'show_residence_phone\'}">residence_phone</th> <th show="{view_office_phone==\'show_office_phone\'}">office_phone</th> <th show="{view_mobile==\'show_mobile\'}">mobile</th> <th show="{view_email==\'show_email\'}">email</th> <th show="{view_nationality==\'show_nationality\'}">nationality</th> <th show="{view_x_subject==\'show_x_subject\'}">x_subject</th> <th show="{view_x_institution==\'show_x_institution\'}">x_institution</th> <th show="{view_x_board==\'show_x_board\'}">x_board</th> <th show="{view_x_yop==\'show_x_yop\'}">x_yop</th> <th show="{view_x_marks==\'show_x_marks\'}">x_marks</th> <th show="{view_x_div==\'show_x_div\'}">x_div</th> <th show="{view_xii_subject==\'show_xii_subject\'}">xii_subject</th> <th show="{view_xii_institution==\'show_xii_institution\'}">xii_institution</th> <th show="{view_xii_board==\'show_xii_board\'}">xii_board</th> <th show="{view_xii_yop==\'show_xii_yop\'}">xii_yop</th> <th show="{view_xii_marks==\'show_xii_marks\'}">xii_marks</th> <th show="{view_xii_div==\'show_xii_div\'}">xii_div</th> <th show="{view_ug_course==\'show_ug_course\'}">ug_course</th> <th show="{view_ug_institution==\'show_ug_institution\'}">ug_institution</th> <th show="{view_ug_university==\'show_ug_university\'}">ug_university</th> <th show="{view_ug_yop==\'show_ug_yop\'}">ug_yop</th> <th show="{view_ug_marks==\'show_ug_marks\'}">ug_marks</th> <th show="{view_ug_div==\'show_ug_div\'}">ug_div</th> <th show="{view_pg_course==\'show_pg_course\'}">pg_course</th> <th show="{view_pg_institution==\'show_pg_institution\'}">pg_institution</th> <th show="{view_pg_university==\'show_pg_university\'}">pg_university</th> <th show="{view_pg_yop==\'show_pg_yop\'}">pg_yop</th> <th show="{view_pg_marks==\'show_pg_marks\'}">pg_marks</th> <th show="{view_pg_div==\'show_pg_div\'}">pg_div</th> <th show="{view_bed_stream==\'show_bed_stream\'}">bed_stream</th> <th show="{view_bed_institution==\'show_bed_institution\'}">bed_institution</th> <th show="{view_bed_university==\'show_bed_university\'}">bed_university</th> <th show="{view_bed_yop==\'show_bed_yop\'}">bed_yop</th> <th show="{view_bed_marks==\'show_bed_marks\'}">bed_marks</th> <th show="{view_bed_div==\'show_bed_div\'}">bed_div</th> <th show="{view_bt_stream==\'show_bt_stream\'}">bt_stream</th> <th show="{view_bt_institution==\'show_bt_institution\'}">bt_institution</th> <th show="{view_bt_university==\'show_bt_university\'}">bt_university</th> <th show="{view_bt_yop==\'show_bt_yop\'}">bt_yop</th> <th show="{view_bt_marks==\'show_bt_marks\'}">bt_marks</th> <th show="{view_bt_div==\'show_bt_div\'}">bt_div</th> <th show="{view_bped_stream==\'show_bped_stream\'}">bped_stream</th> <th show="{view_bped_institution==\'show_bped_institution\'}">bped_institution</th> <th show="{view_bped_university==\'show_bped_university\'}">bped_university</th> <th show="{view_bped_yop==\'show_bped_yop\'}">bped_yop</th> <th show="{view_bped_marks==\'show_bped_marks\'}">bped_marks</th> <th show="{view_bped_div==\'show_bped_div\'}">bped_div</th> <th show="{view_dped_stream==\'show_dped_stream\'}">dped_stream</th> <th show="{view_dped_institution==\'show_dped_institution\'}">dped_institution</th> <th show="{view_dped_university==\'show_dped_university\'}">dped_university</th> <th show="{view_dped_yop==\'show_dped_yop\'}">dped_yop</th> <th show="{view_dped_marks==\'show_dped_marks\'}">dped_marks</th> <th show="{view_dped_div==\'show_dped_div\'}">dped_div</th> <th show="{view_mped_stream==\'show_mped_stream\'}">mped_stream</th> <th show="{view_mped_institution==\'show_mped_institution\'}">mped_institution</th> <th show="{view_mped_university==\'show_mped_university\'}">mped_university</th> <th show="{view_mped_yop==\'show_mped_yop\'}">mped_yop</th> <th show="{view_mped_marks==\'show_mped_marks\'}">mped_marks</th> <th show="{view_mped_div==\'show_mped_div\'}">mped_div</th> <th show="{view_med_stream==\'show_med_stream\'}">med_stream</th> <th show="{view_med_institution==\'show_med_institution\'}">med_institution</th> <th show="{view_med_university==\'show_med_university\'}">med_university</th> <th show="{view_med_yop==\'show_med_yop\'}">med_yop</th> <th show="{view_med_marks==\'show_med_marks\'}">med_marks</th> <th show="{view_med_div==\'show_med_div\'}">med_div</th> <th show="{view_mphil_stream==\'show_mphil_stream\'}">mphil_stream</th> <th show="{view_mphil_institution==\'show_mphil_institution\'}">mphil_institution</th> <th show="{view_mphil_university==\'show_mphil_university\'}">mphil_university</th> <th show="{view_mphil_yop==\'show_mphil_yop\'}">mphil_yop</th> <th show="{view_mphil_marks==\'show_mphil_marks\'}">mphil_marks</th> <th show="{view_mphil_div==\'show_mphil_div\'}">mphil_div</th> <th show="{view_phd_stream==\'show_phd_stream\'}">phd_stream</th> <th show="{view_phd_institution==\'show_phd_institution\'}">phd_institution</th> <th show="{view_phd_university==\'show_phd_university\'}">phd_university</th> <th show="{view_phd_yop==\'show_phd_yop\'}">phd_yop</th> <th show="{view_phd_marks==\'show_phd_marks\'}">phd_marks</th> <th show="{view_phd_div==\'show_phd_div\'}">phd_div</th> <th show="{view_other_stream==\'show_other_stream\'}">other_stream</th> <th show="{view_other_institution==\'show_other_institution\'}">other_institution</th> <th show="{view_other_university==\'show_other_university\'}">other_university</th> <th show="{view_other_yop==\'show_other_yop\'}">other_yop</th> <th show="{view_other_marks==\'show_other_marks\'}">other_marks</th> <th show="{view_other_div==\'show_other_div\'}">other_div</th> <th show="{view_details_scholarship==\'show_details_scholarship\'}">details_scholarship</th> <th show="{view_details_honours==\'show_details_honours\'}">details_honours</th> <th show="{view_details_publication==\'show_details_publication\'}">details_publication</th> <th show="{view_details_curricular_activities==\'show_details_curricular_activities\'}"> details_curricular_activities </th> <th show="{view_details_sport==\'show_details_sport\'}">details_sport</th> </tr> </thead> <tbody> <tr each="{st, i in browseStaffs}"> <td>{i+1}</td> <td show="{view_title==\'show_title\'}">{st.title}</td> <td show="{view_first_name==\'show_first_name\'}">{st.first_name}</td> <td show="{view_middle_name==\'show_middle_name\'}">{st.middle_name}</td> <td show="{view_last_name==\'show_last_name\'}">{st.last_name}</td> <td show="{view_employee_id==\'show_employee_id\'}">{st.employee_id}</td> <td show="{view_short_name==\'show_short_name\'}">{st.short_name}</td> <td show="{view_marital_status==\'show_marital_status\'}">{st.marital_status}</td> <td show="{view_father_name==\'show_father_name\'}">{st.father_name}</td> <td show="{view_spouse==\'show_spouse\'}">{st.spouse}</td> <td show="{view_blood_group==\'show_blood_group\'}">{st.blood_group}</td> <td show="{view_religion_id==\'show_religion_id\'}">{st.religion_id}</td> <td show="{view_language==\'show_language\'}">{st.language}</td> <td show="{view_emp_type_id==\'show_emp_type_id\'}">{st.emp_type_id}</td> <td show="{view_department_id==\'show_department_id\'}">{st.department_id}</td> <td show="{view_employment_status_id==\'show_employment_status_id\'}">{st.employment_status_id}</td> <td show="{view_subject_id==\'show_subject_id\'}">{st.subject_id}</td> <td show="{view_designation_id==\'show_designation_id\'}">{st.designation_id}</td> <td show="{view_qualification==\'show_qualification\'}">{st.qualification}</td> <td show="{view_doj==\'show_doj\'}">{st.doj}</td> <td show="{view_dob==\'show_dob\'}">{st.dob}</td> <td show="{view_add_l1==\'show_add_l1\'}">{st.add_l1}</td> <td show="{view_city==\'show_city\'}">{st.city}</td> <td show="{view_zip==\'show_zip\'}">{st.zip}</td> <td show="{view_state==\'show_state\'}">{st.state}</td> <td show="{view_country==\'show_country\'}">{st.country}</td> <td show="{view_residence_phone==\'show_residence_phone\'}">{st.residence_phone}</td> <td show="{view_office_phone==\'show_office_phone\'}">{st.office_phone}</td> <td show="{view_mobile==\'show_mobile\'}">{st.mobile}</td> <td show="{view_email==\'show_email\'}">{st.email}</td> <td show="{view_nationality==\'show_nationality\'}">{st.nationality}</td> <td show="{view_x_subject==\'show_x_subject\'}">x_subject}</td> <td show="{view_x_institution==\'show_x_institution\'}">{st.x_institution}</td> <td show="{view_x_board==\'show_x_board\'}">{st.x_board}</td> <td show="{view_x_yop==\'show_x_yop\'}">{st.x_yop}</td> <td show="{view_x_marks==\'show_x_marks\'}">{st.x_marks}</td> <td show="{view_x_div==\'show_x_div\'}">{st.x_div}</td> <td show="{view_xii_subject==\'show_xii_subject\'}">{st.xii_subject}</td> <td show="{view_xii_institution==\'show_xii_institution\'}">{st.xii_institution}</td> <td show="{view_xii_board==\'show_xii_board\'}">{st.xii_board}</td> <td show="{view_xii_yop==\'show_xii_yop\'}">{st.xii_yop}</td> <td show="{view_xii_marks==\'show_xii_marks\'}">{st.xii_marks}</td> <td show="{view_xii_div==\'show_xii_div\'}">{st.xii_div}</td> <td show="{view_ug_course==\'show_ug_course\'}">{st.ug_course}</td> <td show="{view_ug_institution==\'show_ug_institution\'}">{st.ug_institution}</td> <td show="{view_ug_university==\'show_ug_university\'}">{st.ug_university}</td> <td show="{view_ug_yop==\'show_ug_yop\'}">{st.ug_yop}</td> <td show="{view_ug_marks==\'show_ug_marks\'}">{st.ug_marks}</td> <td show="{view_ug_div==\'show_ug_div\'}">{st.ug_div}</td> <td show="{view_pg_course==\'show_pg_course\'}">{st.pg_course}</td> <td show="{view_pg_institution==\'show_pg_institution\'}">{st.pg_institution}</td> <td show="{view_pg_university==\'show_pg_university\'}">{st.pg_university}</td> <td show="{view_pg_yop==\'show_pg_yop\'}">{st.pg_yop}</td> <td show="{view_pg_marks==\'show_pg_marks\'}">{st.pg_marks}</td> <td show="{view_pg_div==\'show_pg_div\'}">{st.pg_div}</td> <td show="{view_bed_stream==\'show_bed_stream\'}">{st.bed_stream}</td> <td show="{view_bed_institution==\'show_bed_institution\'}">{st.bed_institution}</td> <td show="{view_bed_university==\'show_bed_university\'}">{st.bed_university}</td> <td show="{view_bed_yop==\'show_bed_yop\'}">{st.bed_yop}</td> <td show="{view_bed_marks==\'show_bed_marks\'}">{st.bed_marks}</td> <td show="{view_bed_div==\'show_bed_div\'}">{st.bed_div}</td> <td show="{view_bt_stream==\'show_bt_stream\'}">{st.bt_stream}</td> <td show="{view_bt_institution==\'show_bt_institution\'}">{st.bt_institution}</td> <td show="{view_bt_university==\'show_bt_university\'}">{st.bt_university}</td> <td show="{view_bt_yop==\'show_bt_yop\'}">{st.bt_yop}</td> <td show="{view_bt_marks==\'show_bt_marks\'}">{st.bt_marks}</td> <td show="{view_bt_div==\'show_bt_div\'}">{st.bt_div}</td> <td show="{view_bped_stream==\'show_bped_stream\'}">{st.bped_stream}</td> <td show="{view_bped_institution==\'show_bped_institution\'}">{st.bped_institution}</td> <td show="{view_bped_university==\'show_bped_university\'}">{st.bped_university}</td> <td show="{view_bped_yop==\'show_bped_yop\'}">{st.bped_yop}</td> <td show="{view_bped_marks==\'show_bped_marks\'}">{st.bped_marks}</td> <td show="{view_bped_div==\'show_bped_div\'}">{st.bped_div}</td> <td show="{view_dped_stream==\'show_dped_stream\'}">{st.dped_stream}</td> <td show="{view_dped_institution==\'show_dped_institution\'}">{st.dped_institution}</td> <td show="{view_dped_university==\'show_dped_university\'}">{st.dped_university}</td> <td show="{view_dped_yop==\'show_dped_yop\'}">{st.dped_yop}</td> <td show="{view_dped_marks==\'show_dped_marks\'}">{st.dped_marks}</td> <td show="{view_dped_div==\'show_dped_div\'}">{st.dped_div}</td> <td show="{view_mped_stream==\'show_mped_stream\'}">{st.mped_stream}</td> <td show="{view_mped_institution==\'show_mped_institution\'}">{st.mped_institution}</td> <td show="{view_mped_university==\'show_mped_university\'}">{st.mped_university}</td> <td show="{view_mped_yop==\'show_mped_yop\'}">{st.mped_yop}</td> <td show="{view_mped_marks==\'show_mped_marks\'}">{st.mped_marks}</td> <td show="{view_mped_div==\'show_mped_div\'}">{st.mped_div}</td> <td show="{view_med_stream==\'show_med_stream\'}">{st.med_stream}</td> <td show="{view_med_institution==\'show_med_institution\'}">{st.med_institution}</td> <td show="{view_med_university==\'show_med_university\'}">{st.med_university}</td> <td show="{view_med_yop==\'show_med_yop\'}">{st.med_yop}</td> <td show="{view_med_marks==\'show_med_marks\'}">{st.med_marks}</td> <td show="{view_med_div==\'show_med_div\'}">{st.med_div}</td> <td show="{view_mphil_stream==\'show_mphil_stream\'}">{st.mphil_stream}</td> <td show="{view_mphil_institution==\'show_mphil_institution\'}">{st.mphil_institution}</td> <td show="{view_mphil_university==\'show_mphil_university\'}">{st.mphil_university}</td> <td show="{view_mphil_yop==\'show_mphil_yop\'}">{st.mphil_yop}</td> <td show="{view_mphil_marks==\'show_mphil_marks\'}">{st.mphil_marks}</td> <td show="{view_mphil_div==\'show_mphil_div\'}">{st.mphil_div}</td> <td show="{view_phd_stream==\'show_phd_stream\'}">{st.phd_stream}</td> <td show="{view_phd_institution==\'show_phd_institution\'}">{st.phd_institution}</td> <td show="{view_phd_university==\'show_phd_university\'}">{st.phd_university}</td> <td show="{view_phd_yop==\'show_phd_yop\'}">{st.phd_yop}</td> <td show="{view_phd_marks==\'show_phd_marks\'}">{st.phd_marks}</td> <td show="{view_phd_div==\'show_phd_div\'}">{st.phd_div}</td> <td show="{view_other_stream==\'show_other_stream\'}">{st.other_stream}</td> <td show="{view_other_institution==\'show_other_institution\'}">{st.other_institution}</td> <td show="{view_other_university==\'show_other_university\'}">{st.other_university}</td> <td show="{view_other_yop==\'show_other_yop\'}">{st.other_yop}</td> <td show="{view_other_marks==\'show_other_marks\'}">{st.other_marks}</td> <td show="{view_other_div==\'show_other_div\'}">{st.other_div}</td> <td show="{view_details_scholarship==\'show_details_scholarship\'}">{st.details_scholarship}</td> <td show="{view_details_honours==\'show_details_honours\'}">{st.details_honours}</td> <td show="{view_details_publication==\'show_details_publication\'}">{st.details_publication}</td> <td show="{view_details_curricular_activities==\'show_details_curricular_activities\'}"> {st.details_curricular_activities} </td> <td show="{view_details_sport==\'show_details_sport\'}">{st.details_sport}</td> </tr> </tbody> </table> </section> <section> <div id="columnSetting" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Setting Configuaration</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <label class="label" for="role"></label> <div class="control" each="{st, i in fieldList}"> <input class="checkbox" type="checkbox" checked="{st.done}" id="{\'addStaffName\' + st.array_name}" onclick="{addCheckedColumn.bind(this,st)}">{st.field_name} </div> </div> </div> </div> </section> <footer class="modal-card-foot"> <div class="control"> <input type="checkbox" id="checkAllCheckBox" onclick="{selectAllCheckBox}"> All </div> <button class="button" id="item-modal-close" onclick="{closeCheckBoxModal}">Close</button> </footer> </div> </div> </section>', '', '', function(opts) {
 
 	var self = this
     self.on("mount", function(){
-    	self.title='Add'
+    self.title='Add'
+    self.fieldList=[
+        {field_name : "title", array_name: "title"},
+    	{field_name : "first_name", array_name: "first_name"},
+    	{field_name : "middle_name", array_name: "middle_name"},
+    	{field_name : "last_name", array_name: "last_name"},
+    	{field_name : "employee_id", array_name: "employee_id"},
+    	{field_name : "short_name", array_name: "short_name"},
+    	{field_name : "marital_status", array_name: "marital_status"},
+    	{field_name : "father_name", array_name: "father_name"},
+    	{field_name : "spouse", array_name: "spouse"},
+    	{field_name : "blood_group", array_name: "blood_group"},
+    	{field_name : "religion_id", array_name: "religion_id"},
+    	{field_name : "language", array_name: "language"},
+    	{field_name : "emp_type_id", array_name: "emp_type_id"},
+    	{field_name : "department_id", array_name: "department_id"},
+    	{field_name : "employment_status_id", array_name: "employment_status_id"},
+    	{field_name : "subject_id", array_name: "subject_id"},
+    	{field_name : "designation_id", array_name: "designation_id"},
+    	{field_name : "qualification", array_name: "qualification"},
+    	{field_name : "doj" , array_name : "doj"},
+    	{field_name : "dob" , array_name: "dob"},
+    	{field_name : "add_l1", array_name: "add_l1"},
+    	{field_name : "city", array_name: "city"},
+    	{field_name : "zip", array_name: "zip"},
+    	{field_name : "state", array_name: "state"},
+    	{field_name : "country", array_name: "country"},
+    	{field_name : "residence_phone", array_name: "residence_phone"},
+    	{field_name : "office_phone", array_name: "office_phone"},
+    	{field_name : "mobile", array_name: "mobile"},
+    	{field_name : "email", array_name: "email"},
+    	{field_name : "nationality", array_name: "nationality"},
+    	{field_name : 'x_subject' , array_name : "x_subject"},
+    	{field_name : 'x_institution' , array_name : "x_institution"},
+    	{field_name : 'x_board' , array_name : "x_board"},
+    	{field_name : 'x_yop' , array_name : "x_yop"},
+    	{field_name : 'x_marks' , array_name : "x_marks"},
+    	{field_name : 'x_div' , array_name : "x_div"},
+    	{field_name : 'xii_subject' , array_name : "xii_subject"},
+    	{field_name : 'xii_institution' , array_name : "xii_institution"},
+    	{field_name : 'xii_board' , array_name : "xii_board"},
+    	{field_name : 'xii_yop' , array_name : "xii_yop"},
+    	{field_name : 'xii_marks' , array_name : "xii_marks"},
+    	{field_name : 'xii_div' , array_name : "xii_div"},
+    	{field_name : 'ug_course' , array_name : "ug_course"},
+    	{field_name : 'ug_institution' , array_name : "ug_institution"},
+    	{field_name : 'ug_university' , array_name : "ug_university"},
+    	{field_name : 'ug_yop' , array_name : "ug_yop"},
+    	{field_name : 'ug_marks' , array_name : "ug_marks"},
+    	{field_name : 'ug_div' , array_name : "ug_div"},
+    	{field_name : 'pg_course' , array_name : "pg_course"},
+    	{field_name : 'pg_institution' , array_name : "pg_institution"},
+    	{field_name : 'pg_university' , array_name : "pg_university"},
+    	{field_name : 'pg_yop' , array_name : "pg_yop"},
+    	{field_name : 'pg_marks' , array_name : "pg_marks"},
+    	{field_name : 'pg_div' , array_name : "pg_div"},
+    	{field_name : 'bed_stream' , array_name : "bed_stream"},
+    	{field_name : 'bed_institution' , array_name : "bed_institution"},
+    	{field_name : 'bed_university' , array_name : "bed_university"},
+    	{field_name : 'bed_yop' , array_name : "bed_yop"},
+    	{field_name : 'bed_marks' , array_name : "bed_marks"},
+    	{field_name : 'bed_div' , array_name : "bed_div"},
+    	{field_name : 'bt_stream' , array_name : "bt_stream"},
+    	{field_name : 'bt_institution' , array_name : "bt_institution"},
+    	{field_name : 'bt_university' , array_name : "bt_university"},
+    	{field_name : 'bt_yop' , array_name : "bt_yop"},
+    	{field_name : 'bt_marks' , array_name : "bt_marks"},
+    	{field_name : 'bt_div' , array_name : "bt_div"},
+    	{field_name : 'bped_stream' , array_name : "bped_stream"},
+    	{field_name : 'bped_institution' , array_name : "bped_institution"},
+    	{field_name : 'bped_university' , array_name : "bped_university"},
+    	{field_name : 'bped_yop' , array_name : "bped_yop"},
+    	{field_name : 'bped_marks' , array_name : "bped_marks"},
+    	{field_name : 'bped_div' , array_name : "bped_div"},
+    	{field_name : 'dped_stream' , array_name : "dped_stream"},
+    	{field_name : 'dped_institution' , array_name : "dped_institution"},
+    	{field_name : 'dped_university' , array_name : "dped_university"},
+    	{field_name : 'dped_yop' , array_name : "dped_yop"},
+    	{field_name : 'dped_marks' , array_name : "dped_marks"},
+    	{field_name : 'dped_div' , array_name : "dped_div"},
+    	{field_name : 'mped_stream' , array_name : "mped_stream"},
+    	{field_name : 'mped_institution' , array_name : "mped_institution"},
+    	{field_name : 'mped_university' , array_name : "mped_university"},
+    	{field_name : 'mped_yop' , array_name : "mped_yop"},
+    	{field_name : 'mped_marks' , array_name : "mped_marks"},
+    	{field_name : 'mped_div' , array_name : "mped_div"},
+    	{field_name : 'med_stream' , array_name : "med_stream"},
+    	{field_name : 'med_institution' , array_name : "med_institution"},
+    	{field_name : 'med_university' , array_name : "med_university"},
+    	{field_name : 'med_yop' , array_name : "med_yop"},
+    	{field_name : 'med_marks' , array_name : "med_marks"},
+    	{field_name : 'med_div' , array_name : "med_div"},
+    	{field_name : 'mphil_stream' , array_name : "mphil_stream"},
+    	{field_name : 'mphil_institution' , array_name : "mphil_institution"},
+    	{field_name : 'mphil_university' , array_name : "mphil_university"},
+    	{field_name : 'mphil_yop' , array_name : "mphil_yop"},
+    	{field_name : 'mphil_marks' , array_name : "mphil_marks"},
+    	{field_name : 'mphil_div' , array_name : "mphil_div"},
+    	{field_name : 'phd_stream' , array_name : "phd_stream"},
+    	{field_name : 'phd_institution' , array_name : "phd_institution"},
+    	{field_name : 'phd_university' , array_name : "phd_university"},
+    	{field_name : 'phd_yop' , array_name : "phd_yop"},
+    	{field_name : 'phd_marks' , array_name : "phd_marks"},
+    	{field_name : 'phd_div' , array_name : "phd_div"},
+    	{field_name : 'other_stream' , array_name : "other_stream"},
+    	{field_name : 'other_institution' , array_name : "other_institution"},
+    	{field_name : 'other_university' , array_name : "other_university"},
+    	{field_name : 'other_yop' , array_name : "other_yop"},
+    	{field_name : 'other_marks' , array_name : "other_marks"},
+    	{field_name : 'other_div' , array_name : "other_div"},
+    	{field_name : 'details_scholarship' , array_name : "details_scholarship"},
+    	{field_name : 'details_honours' , array_name : "details_honours"},
+    	{field_name : 'details_publication' , array_name : "details_publication"},
+    	{field_name : 'details_curricular_activities' , array_name : "details_curricular_activities"},
+    	{field_name : 'details_sport' , array_name : "details_sport"}
+    ]
     	self.role = getCookie('role')
     	self.readEmployeeTypes()
         self.update()
@@ -1819,6 +1934,916 @@ riot.tag2('browse-staff', '<section class=" is-fluid"> <div class="level"> <div 
       staffStore.off('read_browse_staff_changed',ReadBrowseStaffChanged)
       employeeTypeStore.off('employeeTypes_changed',EmployeeTypesChanged)
     })
+    self.showStaffField = () =>{
+       $("#columnSetting").addClass("is-active")
+
+    }
+
+    self.closeCheckBoxModal=()=>{
+    	 $("#columnSetting").removeClass("is-active");
+    }
+    self.selectAllCheckBox = () => {
+    	console.log("checkAlll")
+      if($('#checkAllCheckBox').is(":checked")){
+        self.fieldList.map(i=>{
+        	console.log(i)
+          i.done = true;
+          $('addStaffName'+i.array_name).prop('checked', true);
+        })
+      }else{
+        self.fieldList.map(i=>{
+          i.done = false;
+          $('addStaffName'+i.array_name).prop('checked', false);
+        })
+      }
+      	var item=''
+      	var event=''
+       self.addCheckedColumn(item,event)
+    }
+
+self.addCheckedColumn = (item, event) => {
+console.log(item)
+ 	if(item!=''){
+	 item.done=!event.item.st.done
+ 	}
+self.fieldList.map( q => {
+    console.log(q.field_name)
+if(q.done==true && q.array_name== "title"){
+        self.view_title= "show_title"
+    }
+if(q.done==true && q.array_name== "first_name"){
+        self.view_first_name="show_irst_name"
+    }
+if(q.done==true && q.array_name== "middle_name"){
+        self.view_middle_name= "show_middle_name"
+    }
+if(q.done==true && q.array_name== "last_name"){
+        self.view_last_name= "show_last_name"
+    }
+if(q.done==true && q.array_name== "employee_id"){
+        self.view_employee_id ="show_employee_id"
+    }
+if(q.done==true && q.array_name== "short_name"){
+        self.view_short_name= "show_short_name"
+    }
+if(q.done==true && q.array_name== "marital_status"){
+        self.view_marital_status= "show_marital_status"
+    }
+if(q.done==true && q.array_name== "father_name"){
+    self.view_father_name= "show_father_name"
+
+    }
+if(q.done==true && q.array_name== "spouse"){
+    self.view_spouse= "show_spouse"
+
+    }
+if(q.done==true && q.array_name== "blood_group"){
+    self.view_blood_group= "show_blood_group"
+
+    }
+if(q.done==true && q.array_name== "religion_id"){
+    self.view_religion_id= "show_religion_id"
+
+    }
+if(q.done==true && q.array_name== "language"){
+    self.view_language= "show_language"
+
+    }
+if(q.done==true && q.array_name== "emp_type_id"){
+    self.view_emp_type_id= "show_emp_type_id"
+
+    }
+if(q.done==true && q.array_name== "department_id"){
+    self.view_department_id= "show_department_id"
+
+    }
+if(q.done==true && q.array_name== "employment_status_id"){
+    self.view_employment_status_id= "show_employment_status_id"
+
+    }
+if(q.done==true && q.array_name== "subject_id"){
+    self.view_subject_id= "show_subject_id"
+
+    }
+if(q.done==true && q.array_name== "designation_id"){
+    self.view_designation_id= "show_designation_id"
+
+    }
+if(q.done==true && q.array_name== "qualification"){
+    self.view_qualification= "show_qualification"
+
+    }
+if(q.done==true && q.array_name=="doj"){
+    self.view_doj="show_doj"
+
+    }
+if(q.done==true && q.array_name=="dob"){
+    self.view_dob="show_dob"
+
+    }
+if(q.done==true && q.array_name== "add_l1"){
+    self.view_add_l1= "show_add_l1"
+
+    }
+if(q.done==true && q.array_name== "city"){
+    self.view_city= "show_city"
+
+    }
+if(q.done==true && q.array_name== "zip"){
+    self.view_zip= "show_zip"
+
+    }
+if(q.done==true && q.array_name== "state"){
+    self.view_state= "show_state"
+
+    }
+if(q.done==true && q.array_name== "country"){
+    self.view_country= "show_country"
+
+    }
+if(q.done==true && q.array_name== "residence_phone"){
+    self.view_residence_phone= "show_residence_phone"
+
+    }
+if(q.done==true && q.array_name== "office_phone"){
+    self.view_office_phone= "show_office_phone"
+
+    }
+if(q.done==true && q.array_name== "mobile"){
+    self.view_mobile= "show_mobile"
+
+    }
+if(q.done==true && q.array_name== "email"){
+    self.view_email= "show_email"
+
+    }
+if(q.done==true && q.array_name== "nationality"){
+    self.view_nationality= "show_nationality"
+
+    }
+	if (q.done==true && q.array_name == "x_subject"){
+        self.view_x_subject= "show_x_subject"
+
+    }
+	if (q.done==true && q.array_name == "x_institution"){
+        self.view_x_institution= "show_x_institution"
+
+    }
+	if (q.done==true && q.array_name == "x_board"){
+        self.view_x_board= "show_x_board"
+
+    }
+	if (q.done==true && q.array_name == "x_yop"){
+        self.view_x_yop= "show_x_yop"
+
+    }
+	if (q.done==true && q.array_name == "x_marks"){
+        self.view_x_marks= "show_x_marks"
+
+    }
+	if (q.done==true && q.array_name == "x_div"){
+        self.view_x_div= "show_x_div"
+
+    }
+	if (q.done==true && q.array_name == "xii_subject"){
+        self.view_xii_subject= "show_xii_subject"
+
+    }
+	if (q.done==true && q.array_name == "xii_institution"){
+        self.view_xii_institution= "show_xii_institution"
+
+    }
+	if (q.done==true && q.array_name == "xii_board"){
+        self.view_xii_board= "show_xii_board"
+
+    }
+	if (q.done==true && q.array_name == "xii_yop"){
+        self.view_xii_yop= "show_xii_yop"
+
+    }
+	if (q.done==true && q.array_name == "xii_marks"){
+        self.view_xii_marks= "show_xii_marks"
+
+    }
+	if (q.done==true && q.array_name == "xii_div"){
+        self.view_xii_div= "show_xii_div"
+
+    }
+	if (q.done==true && q.array_name == "ug_course"){
+        self.view_ug_course= "show_ug_course"
+
+    }
+	if (q.done==true && q.array_name == "ug_institution"){
+        self.view_ug_institution= "show_ug_institution"
+
+    }
+	if (q.done==true && q.array_name == "ug_university"){
+        self.view_ug_university= "show_ug_university"
+
+    }
+	if (q.done==true && q.array_name == "ug_yop"){
+        self.view_ug_yop= "show_ug_yop"
+
+    }
+	if (q.done==true && q.array_name == "ug_marks"){
+        self.view_ug_marks= "show_ug_marks"
+
+    }
+	if (q.done==true && q.array_name == "ug_div"){
+        self.view_ug_div= "show_ug_div"
+
+    }
+	if (q.done==true && q.array_name == "pg_course"){
+        self.view_pg_course= "show_pg_course"
+
+    }
+	if (q.done==true && q.array_name == "pg_institution"){
+        self.view_pg_institution= "show_pg_institution"
+
+    }
+	if (q.done==true && q.array_name == "pg_university"){
+        self.view_pg_university= "show_pg_university"
+
+    }
+	if (q.done==true && q.array_name == "pg_yop"){
+        self.view_pg_yop= "show_pg_yop"
+
+    }
+	if (q.done==true && q.array_name == "pg_marks"){
+        self.view_pg_marks= "show_pg_marks"
+
+    }
+	if (q.done==true && q.array_name == "pg_div"){
+        self.view_pg_div= "show_pg_div"
+
+    }
+	if (q.done==true && q.array_name == "bed_stream"){
+        self.view_bed_stream= "show_bed_stream"
+
+    }
+	if (q.done==true && q.array_name == "bed_institution"){
+        self.view_bed_institution= "show_bed_institution"
+
+    }
+	if (q.done==true && q.array_name == "bed_university"){
+        self.view_bed_university= "show_bed_university"
+
+    }
+	if (q.done==true && q.array_name == "bed_yop"){
+        self.view_bed_yop= "show_bed_yop"
+
+    }
+	if (q.done==true && q.array_name == "bed_marks"){
+        self.view_bed_marks= "show_bed_marks"
+
+    }
+	if (q.done==true && q.array_name == "bed_div"){
+        self.view_bed_div= "show_bed_div"
+
+    }
+	if (q.done==true && q.array_name == "bt_stream"){
+        self.view_bt_stream= "show_bt_stream"
+
+    }
+	if (q.done==true && q.array_name == "bt_institution"){
+        self.view_bt_institution= "show_bt_institution"
+
+    }
+	if (q.done==true && q.array_name == "bt_university"){
+        self.view_bt_university= "show_bt_university"
+
+    }
+	if (q.done==true && q.array_name == "bt_yop"){
+        self.view_bt_yop= "show_bt_yop"
+
+    }
+	if (q.done==true && q.array_name == "bt_marks"){
+        self.view_bt_marks= "show_bt_marks"
+
+    }
+	if (q.done==true && q.array_name == "bt_div"){
+        self.view_bt_div= "show_bt_div"
+
+    }
+	if (q.done==true && q.array_name == "bped_stream"){
+        self.view_bped_stream= "show_bped_stream"
+
+    }
+	if (q.done==true && q.array_name == "bped_institution"){
+        self.view_bped_institution= "show_bped_institution"
+
+    }
+	if (q.done==true && q.array_name == "bped_university"){
+        self.view_bped_university= "show_bped_university"
+
+    }
+	if (q.done==true && q.array_name == "bped_yop"){
+        self.view_bped_yop= "show_bped_yop"
+
+    }
+	if (q.done==true && q.array_name == "bped_marks"){
+        self.view_bped_marks= "show_bped_marks"
+
+    }
+	if (q.done==true && q.array_name == "bped_div"){
+        self.view_bped_div= "show_bped_div"
+
+    }
+	if (q.done==true && q.array_name == "dped_stream"){
+        self.view_dped_stream= "show_dped_stream"
+
+    }
+	if (q.done==true && q.array_name == "dped_institution"){
+        self.view_dped_institution= "show_dped_institution"
+
+    }
+	if (q.done==true && q.array_name == "dped_university"){
+        self.view_dped_university= "show_dped_university"
+
+    }
+	if (q.done==true && q.array_name == "dped_yop"){
+        self.view_dped_yop= "show_dped_yop"
+
+    }
+	if (q.done==true && q.array_name == "dped_marks"){
+        self.view_dped_marks= "show_dped_marks"
+
+    }
+	if (q.done==true && q.array_name == "dped_div"){
+        self.view_dped_div= "show_dped_div"
+
+    }
+	if (q.done==true && q.array_name == "mped_stream"){
+        self.view_mped_stream= "show_mped_stream"
+
+    }
+	if (q.done==true && q.array_name == "mped_institution"){
+        self.view_mped_institution= "show_mped_institution"
+
+    }
+	if (q.done==true && q.array_name == "mped_university"){
+        self.view_mped_university= "show_mped_university"
+
+    }
+	if (q.done==true && q.array_name == "mped_yop"){
+        self.view_mped_yop= "show_mped_yop"
+
+    }
+	if (q.done==true && q.array_name == "mped_marks"){
+        self.view_mped_marks= "show_mped_marks"
+
+    }
+	if (q.done==true && q.array_name == "mped_div"){
+        self.view_mped_div= "show_mped_div"
+
+    }
+	if (q.done==true && q.array_name == "med_stream"){
+        self.view_med_stream= "show_med_stream"
+
+    }
+	if (q.done==true && q.array_name == "med_institution"){
+        self.view_med_institution= "show_med_institution"
+
+    }
+	if (q.done==true && q.array_name == "med_university"){
+        self.view_med_university= "show_med_university"
+
+    }
+	if (q.done==true && q.array_name == "med_yop"){
+        self.view_med_yop= "show_med_yop"
+
+    }
+	if (q.done==true && q.array_name == "med_marks"){
+        self.view_med_marks= "show_med_marks"
+
+    }
+	if (q.done==true && q.array_name == "med_div"){
+        self.view_med_div= "show_med_div"
+
+    }
+	if (q.done==true && q.array_name == "mphil_stream"){
+        self.view_mphil_stream= "show_mphil_stream"
+
+    }
+	if (q.done==true && q.array_name == "mphil_institution"){
+        self.view_mphil_institution= "show_mphil_institution"
+
+    }
+	if (q.done==true && q.array_name == "mphil_university"){
+        self.view_mphil_university= "show_mphil_university"
+
+    }
+	if (q.done==true && q.array_name == "mphil_yop"){
+        self.view_mphil_yop= "show_mphil_yop"
+
+    }
+	if (q.done==true && q.array_name == "mphil_marks"){
+        self.view_mphil_marks= "show_mphil_marks"
+
+    }
+	if (q.done==true && q.array_name == "mphil_div"){
+        self.view_mphil_div= "show_mphil_div"
+
+    }
+	if (q.done==true && q.array_name == "phd_stream"){
+        self.view_phd_stream= "show_phd_stream"
+
+    }
+	if (q.done==true && q.array_name == "phd_institution"){
+        self.view_phd_institution= "show_phd_institution"
+
+    }
+	if (q.done==true && q.array_name == "phd_university"){
+        self.view_phd_university= "show_phd_university"
+
+    }
+	if (q.done==true && q.array_name == "phd_yop"){
+        self.view_phd_yop= "show_phd_yop"
+
+    }
+	if (q.done==true && q.array_name == "phd_marks"){
+        self.view_phd_marks= "show_phd_marks"
+
+    }
+	if (q.done==true && q.array_name == "phd_div"){
+        self.view_phd_div= "show_phd_div"
+
+    }
+	if (q.done==true && q.array_name == "other_stream"){
+        self.view_other_stream= "show_other_stream"
+
+    }
+	if (q.done==true && q.array_name == "other_institution"){
+        self.view_other_institution= "show_other_institution"
+
+    }
+	if (q.done==true && q.array_name == "other_university"){
+        self.view_other_university= "show_other_university"
+
+    }
+	if (q.done==true && q.array_name == "other_yop"){
+        self.view_other_yop= "show_other_yop"
+
+    }
+	if (q.done==true && q.array_name == "other_marks"){
+        self.view_other_marks= "show_other_marks"
+
+    }
+	if (q.done==true && q.array_name == "other_div"){
+        self.view_other_div= "show_other_div"
+
+    }
+	if (q.done==true && q.array_name == "details_scholarship"){
+        self.view_details_scholarship= "show_details_scholarship"
+
+    }
+	if (q.done==true && q.array_name == "details_honours"){
+        self.view_details_honours= "show_details_honours"
+
+    }
+	if (q.done==true && q.array_name == "details_publication"){
+        self.view_details_publication= "show_details_publication"
+
+    }
+	if (q.done==true && q.array_name == "details_curricular_activities"){
+        self.view_details_curricular_activities= "show_details_curricular_activities"
+
+    }
+	if (q.done==true && q.array_name == "details_sport"){
+        self.view_details_sport= "show_details_sport"
+
+    }
+
+if(q.done==false && q.array_name== "title"){
+        self.view_title= ""
+}
+if(q.done==false && q.array_name== "first_name"){
+        self.view_first_name=""
+
+    }
+if(q.done==false && q.array_name== "middle_name"){
+        self.view_middle_name= ""
+
+    }
+if(q.done==false && q.array_name== "last_name"){
+        self.view_ast_name= ""
+
+    }
+if(q.done==false && q.array_name== "employee_id"){
+        self.view_employee_id =""
+
+    }
+if(q.done==false && q.array_name== "short_name"){
+        self.view_short_name= ""
+
+    }
+if(q.done==false && q.array_name== "marital_status"){
+        self.view_marital_status= ""
+
+    }
+if(q.done==false && q.array_name== "father_name"){
+    self.view_father_name= ""
+    }
+if(q.done==false && q.array_name== "spouse"){
+    self.view_spouse= ""
+    }
+if(q.done==false && q.array_name== "blood_group"){
+    self.view_blood_group= ""
+    }
+if(q.done==false && q.array_name== "religion_id"){
+    self.view_religion_id= ""
+    }
+if(q.done==false && q.array_name== "language"){
+    self.view_language= ""
+    }
+if(q.done==false && q.array_name== "emp_type_id"){
+    self.view_emp_type_id= ""
+    }
+if(q.done==false && q.array_name== "department_id"){
+    self.view_department_id= ""
+    }
+if(q.done==false && q.array_name== "employment_status_id"){
+    self.view_employment_status_id= ""
+    }
+if(q.done==false && q.array_name== "subject_id"){
+    self.view_subject_id= ""
+    }
+if(q.done==false && q.array_name== "designation_id"){
+    self.view_designation_id= ""
+    }
+if(q.done==false && q.array_name== "qualification"){
+    self.view_qualification= ""
+    }
+if(q.done==false && q.array_name=="doj"){
+    self.view_doj=""
+    }
+if(q.done==false && q.array_name=="dob"){
+    self.view_dob=""
+    }
+if(q.done==false && q.array_name== "add_l1"){
+    self.view_add_l1= ""
+    }
+if(q.done==false && q.array_name== "city"){
+    self.view_city= ""
+    }
+if(q.done==false && q.array_name== "zip"){
+    self.view_zip= ""
+    }
+if(q.done==false && q.array_name== "state"){
+    self.view_state= ""
+    }
+if(q.done==false && q.array_name== "country"){
+    self.view_country= ""
+    }
+if(q.done==false && q.array_name== "residence_phone"){
+    self.view_residence_phone= ""
+    }
+if(q.done==false && q.array_name== "office_phone"){
+    self.view_office_phone= ""
+    }
+if(q.done==false && q.array_name== "mobile"){
+    self.view_mobile= ""
+    }
+if(q.done==false && q.array_name== "email"){
+    self.view_email= ""
+    }
+if(q.done==false && q.array_name== "nationality"){
+    self.view_nationality= ""
+    }
+	if (q.done==false && q.array_name == "x_subject"){
+        self.view_x_subject= ""
+
+    }
+	if (q.done==false && q.array_name == "x_institution"){
+        self.view_x_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "x_board"){
+        self.view_x_board= ""
+
+    }
+	if (q.done==false && q.array_name == "x_yop"){
+        self.view_x_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "x_marks"){
+        self.view_x_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "x_div"){
+        self.view_x_div= ""
+
+    }
+	if (q.done==false && q.array_name == "xii_subject"){
+        self.view_xii_subject= ""
+
+    }
+	if (q.done==false && q.array_name == "xii_institution"){
+        self.view_xii_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "xii_board"){
+        self.view_xii_board= ""
+
+    }
+	if (q.done==false && q.array_name == "xii_yop"){
+        self.view_xii_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "xii_marks"){
+        self.view_xii_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "xii_div"){
+        self.view_xii_div= ""
+
+    }
+	if (q.done==false && q.array_name == "ug_course"){
+        self.view_ug_course= ""
+
+    }
+	if (q.done==false && q.array_name == "ug_institution"){
+        self.view_ug_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "ug_university"){
+        self.view_ug_university= ""
+
+    }
+	if (q.done==false && q.array_name == "ug_yop"){
+        self.view_ug_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "ug_marks"){
+        self.view_ug_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "ug_div"){
+        self.view_ug_div= ""
+
+    }
+	if (q.done==false && q.array_name == "pg_course"){
+        self.view_pg_course= ""
+
+    }
+	if (q.done==false && q.array_name == "pg_institution"){
+        self.view_pg_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "pg_university"){
+        self.view_pg_university= ""
+
+    }
+	if (q.done==false && q.array_name == "pg_yop"){
+        self.view_pg_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "pg_marks"){
+        self.view_pg_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "pg_div"){
+        self.view_pg_div= ""
+
+    }
+	if (q.done==false && q.array_name == "bed_stream"){
+        self.view_bed_stream= ""
+
+    }
+	if (q.done==false && q.array_name == "bed_institution"){
+        self.view_bed_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "bed_university"){
+        self.view_bed_university= ""
+
+    }
+	if (q.done==false && q.array_name == "bed_yop"){
+        self.view_bed_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "bed_marks"){
+        self.view_bed_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "bed_div"){
+        self.view_bed_div= ""
+
+    }
+	if (q.done==false && q.array_name == "bt_stream"){
+        self.view_bt_stream= ""
+
+    }
+	if (q.done==false && q.array_name == "bt_institution"){
+        self.view_bt_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "bt_university"){
+        self.view_bt_university= ""
+
+    }
+	if (q.done==false && q.array_name == "bt_yop"){
+        self.view_bt_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "bt_marks"){
+        self.view_bt_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "bt_div"){
+        self.view_bt_div= ""
+
+    }
+	if (q.done==false && q.array_name == "bped_stream"){
+        self.view_bped_stream= ""
+
+    }
+	if (q.done==false && q.array_name == "bped_institution"){
+        self.view_bped_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "bped_university"){
+        self.view_bped_university= ""
+
+    }
+	if (q.done==false && q.array_name == "bped_yop"){
+        self.view_bped_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "bped_marks"){
+        self.view_bped_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "bped_div"){
+        self.view_bped_div= ""
+
+    }
+	if (q.done==false && q.array_name == "dped_stream"){
+        self.view_dped_stream= ""
+
+    }
+	if (q.done==false && q.array_name == "dped_institution"){
+        self.view_dped_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "dped_university"){
+        self.view_dped_university= ""
+
+    }
+	if (q.done==false && q.array_name == "dped_yop"){
+        self.view_dped_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "dped_marks"){
+        self.view_dped_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "dped_div"){
+        self.view_dped_div= ""
+
+    }
+	if (q.done==false && q.array_name == "mped_stream"){
+        self.view_mped_stream= ""
+
+    }
+	if (q.done==false && q.array_name == "mped_institution"){
+        self.view_mped_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "mped_university"){
+        self.view_mped_university= ""
+
+    }
+	if (q.done==false && q.array_name == "mped_yop"){
+        self.view_mped_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "mped_marks"){
+        self.view_mped_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "mped_div"){
+        self.view_mped_div= ""
+
+    }
+	if (q.done==false && q.array_name == "med_stream"){
+        self.view_med_stream= ""
+
+    }
+	if (q.done==false && q.array_name == "med_institution"){
+        self.view_med_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "med_university"){
+        self.view_med_university= ""
+
+    }
+	if (q.done==false && q.array_name == "med_yop"){
+        self.view_med_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "med_marks"){
+        self.view_med_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "med_div"){
+        self.view_med_div= ""
+
+    }
+	if (q.done==false && q.array_name == "mphil_stream"){
+        self.view_mphil_stream= ""
+
+    }
+	if (q.done==false && q.array_name == "mphil_institution"){
+        self.view_mphil_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "mphil_university"){
+        self.view_mphil_university= ""
+
+    }
+	if (q.done==false && q.array_name == "mphil_yop"){
+        self.view_mphil_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "mphil_marks"){
+        self.view_mphil_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "mphil_div"){
+        self.view_mphil_div= ""
+
+    }
+	if (q.done==false && q.array_name == "phd_stream"){
+        self.view_phd_stream= ""
+
+    }
+	if (q.done==false && q.array_name == "phd_institution"){
+        self.view_phd_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "phd_university"){
+        self.view_phd_university= ""
+
+    }
+	if (q.done==false && q.array_name == "phd_yop"){
+        self.view_phd_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "phd_marks"){
+        self.view_phd_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "phd_div"){
+        self.view_phd_div= ""
+
+    }
+	if (q.done==false && q.array_name == "other_stream"){
+        self.view_other_stream= ""
+
+    }
+	if (q.done==false && q.array_name == "other_institution"){
+        self.view_other_institution= ""
+
+    }
+	if (q.done==false && q.array_name == "other_university"){
+        self.view_other_university= ""
+
+    }
+	if (q.done==false && q.array_name == "other_yop"){
+        self.view_other_yop= ""
+
+    }
+	if (q.done==false && q.array_name == "other_marks"){
+        self.view_other_marks= ""
+
+    }
+	if (q.done==false && q.array_name == "other_div"){
+        self.view_other_div= ""
+
+    }
+	if (q.done==false && q.array_name == "details_scholarship"){
+        self.view_details_scholarship= ""
+
+    }
+	if (q.done==false && q.array_name == "details_honours"){
+        self.view_details_honours= ""
+
+    }
+	if (q.done==false && q.array_name == "details_publication"){
+        self.view_details_publication= ""
+
+    }
+	if (q.done==false && q.array_name == "details_curricular_activities"){
+        self.view_details_curricular_activities= ""
+
+    }
+	if (q.done==false && q.array_name == "details_sport"){
+        self.view_details_sport= ""
+
+    }
+  })
+}
 
     self.ReadBrowseStaff = () =>{
        staffStore.trigger('read_browse_staff', self.refs.emp_type_id.value)
@@ -10542,7 +11567,7 @@ riot.tag2('issue-certificate', '<section class=" is-fluid"> <div class="level"> 
       self.title='Create'
       self.loading = false
       self.students = students
-       self.students.map(i=>{
+      self.students.map(i=>{
 	      i.done = false;
       })
       self.update()
@@ -10862,7 +11887,7 @@ riot.tag2('login', '<div class="login-banner"> <div class="columns is-gapless is
 
 });
 
-riot.tag2('main-nav', '<nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if="{showNavItems}"> <div class="container is-fluid"> <div class="navbar-brand"> <div class="navbar-item is-size-3 has-text-weight-bold has-text-wight"> Sarathi </div> <div class="navbar-burger burger" data-target="navbarExampleTransparentExample"> <span aria-hidden="true"></span> <span aria-hidden="true"></span> <span aria-hidden="true"></span> </div> </div> <div id="navbarExampleTransparentExample" class="navbar-menu has-text-weight-bold"> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Exam</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/exam-scheme">Exam Scheme</a> <a class="navbar-item" href="#/grade">Grade</a> <a class="navbar-item" href="#/marks-manager">Marks Manager</a> <a class="navbar-item" href="#/marks-entry">Marks Entry</a> <a class="navbar-item" href="#/marks-report">Marks Report</a> <a class="navbar-item" href="#/maturity-development">Maturity Development</a> <a class="navbar-item" href="#/result-activation">Result Activation</a> <a class="navbar-item" href="#/physical-fitness">Physical Fitness</a> <a class="navbar-item" href="#/subject-group-map">Subject Group Map</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Admin</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/id-card">ID Card</a> <a class="navbar-item {active: selected_nav_item == \'certificate\'}" href="#/certificate/issue-certificate">Certificate</a> <a class="navbar-item " href="#/birthday">Bithday</a> <a class="navbar-item " href="#/occupation-report">Occupation Report</a> <a class="navbar-item" href="#/id-signature">Id Signature</a> <a class="navbar-item" href="#/student-assign-house">Assign House</a> <a class="navbar-item" href="#/student-group-student">Group Student</a> <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a> <a class="navbar-item" href="#/student-assign-section">Assign Section</a> <a class="navbar-item" href="#/student-result-activation">Result Activation</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Time Table</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/teacher-time-table">Teacher Time Table</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Student</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item " href="#/student-search">Search</a> <a class="navbar-item " href="#/student-browser">Browser</a> <a class="navbar-item {active: selected_nav_item == \'admin-report\'}" href="#/admin-report/student-summary-report">Report</a> <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a> <a class="navbar-item" href="#/promote">Promote Student</a> <a class="navbar-item" href="#/student-login-slip">Login Slip</a> <a class="navbar-item" href="#/student-school-leaving">Student Leaving Certificate</a> <a class="navbar-item" href="#/student-info-update">Student Info Update</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Notification</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/student-notification">Student Email & Sms</a> <a class="navbar-item" href="#/employee-notification">Employee Email & Sms</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Fees</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'receive-fees\'}" href="#/receive-fees">Receive Fees</a> <a class="navbar-item {active: selected_nav_item == \'fee-bill\'}" href="#/fee-bill/bill">Fee Head</a> <a class="navbar-item {active: selected_nav_item == \'fees-report\'}" href="#/fees-report/month-wise">Reports</a> <a class="navbar-item {active: selected_nav_item == \'scholarship\'}" href="#/scholarship">Scholarship</a> <a class="navbar-item {active: selected_nav_item == \'fees-withdraw\'}" href="#/fees-withdraw">Withdraw</a> <a class="navbar-item {active: selected_nav_item == \'fees-setting\'}" href="#/fees-setting/fine-setting">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Mentor</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/mentor-detail">Mentor Detail</a> <a class="navbar-item" href="#/mentor-report">Report</a> <a class="navbar-item {active: selected_nav_item == \'mentor-setting\'}" href="#/mentor-setting/mentor-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Discipline</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/discipline-detail">Discipline Detail</a> <a class="navbar-item" href="#/discipline-report">Report</a> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item {active: selected_nav_item == \'discipline-setting\'}" href="#/discipline-setting/discipline-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Activity</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/activity-detail">Activity Detail</a> <a class="navbar-item" href="#/report">Report</a> <a class="navbar-item {active: selected_nav_item == \'activity-setting\'}" href="#/activity-setting/item">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Attendance</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/attendance-entry">Attendance Entry</a> <a class="navbar-item " href="#/daily-attendance">Daily Attendance</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Staff</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/staff">Staff</a> <a class="navbar-item " href="#/ex-staff">EX-Staff</a> <a class="navbar-item " href="#/browse-staff">Browse</a> </div> </div> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Master</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'master\'}" href="#/master/employee-type">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Infirmary</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'infirmary-setting\'}" href="#/infirmary-setting/infirmary-category">Setting</a> <a class="navbar-item {active: selected_nav_item == \'infirmary\'}" href="#/infirmary/infirmary-student">Infirmary Detail</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Inventory</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'inventory-setting\'}" href="#/inventory-setting/inventory-rack">Setting</a> <a class="navbar-item" href="#/inventory-stock">Stock Inwards Entry</a> <a class="navbar-item" href="#/inventory-issue">Issue</a> <a class="navbar-item" href="#/inventory-sale">Sale</a> <a class="navbar-item" href="#/inventory-returnable">Returnable</a> <a class="navbar-item {active: selected_nav_item == \'inventory-report\'}" href="#/inventory-report/inventory-received-goods-report">Report</a> </div> </div> <a class="navbar-item has-text-danger" onclick="{logout}"><i class="fas fa-power-off"></i></a> </div> </div> </div> </nav>', '', '', function(opts) {
+riot.tag2('main-nav', '<nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if="{showNavItems}"> <div class="container is-fluid"> <div class="navbar-brand"> <div class="navbar-item is-size-3 has-text-weight-bold has-text-wight"> Sarathi </div> <div class="navbar-burger burger" data-target="navbarExampleTransparentExample"> <span aria-hidden="true"></span> <span aria-hidden="true"></span> <span aria-hidden="true"></span> </div> </div> <div id="navbarExampleTransparentExample" class="navbar-menu has-text-weight-bold"> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Exam</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/exam-scheme">Exam Scheme</a> <a class="navbar-item" href="#/grade">Grade</a> <a class="navbar-item" href="#/marks-manager">Marks Manager</a> <a class="navbar-item" href="#/marks-entry">Marks Entry</a> <a class="navbar-item" href="#/marks-report">Marks Report</a> <a class="navbar-item" href="#/maturity-development">Maturity Development</a> <a class="navbar-item" href="#/result-activation">Result Activation</a> <a class="navbar-item" href="#/physical-fitness">Physical Fitness</a> <a class="navbar-item" href="#/subject-group-map">Subject Group Map</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Admin</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/id-card">ID Card</a> <a class="navbar-item {active: selected_nav_item == \'certificate\'}" href="#/certificate/issue-certificate">Certificate</a> <a class="navbar-item " href="#/birthday">Bithday</a> <a class="navbar-item " href="#/occupation-report">Occupation Report</a> <a class="navbar-item" href="#/id-signature">Id Signature</a> <a class="navbar-item" href="#/student-assign-house">Assign House</a> <a class="navbar-item" href="#/student-group-student">Group Student</a> <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a> <a class="navbar-item" href="#/student-assign-section">Assign Section</a> <a class="navbar-item" href="#/student-result-activation">Result Activation</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Time Table</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/teacher-time-table">Teacher Time Table</a> <a class="navbar-item" href="#/time-table-substitutation">Time Table Substitutaion</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Student</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item " href="#/student-search">Search</a> <a class="navbar-item " href="#/student-browser">Browser</a> <a class="navbar-item {active: selected_nav_item == \'admin-report\'}" href="#/admin-report/student-summary-report">Report</a> <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a> <a class="navbar-item" href="#/promote">Promote Student</a> <a class="navbar-item" href="#/student-login-slip">Login Slip</a> <a class="navbar-item" href="#/student-school-leaving">Student Leaving Certificate</a> <a class="navbar-item" href="#/student-info-update">Student Info Update</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Notification</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/student-notification">Student Email & Sms</a> <a class="navbar-item" href="#/employee-notification">Employee Email & Sms</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Fees</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'receive-fees\'}" href="#/receive-fees">Receive Fees</a> <a class="navbar-item {active: selected_nav_item == \'fee-bill\'}" href="#/fee-bill/bill">Fee Head</a> <a class="navbar-item {active: selected_nav_item == \'fees-report\'}" href="#/fees-report/month-wise">Reports</a> <a class="navbar-item {active: selected_nav_item == \'scholarship\'}" href="#/scholarship">Scholarship</a> <a class="navbar-item {active: selected_nav_item == \'fees-withdraw\'}" href="#/fees-withdraw">Withdraw</a> <a class="navbar-item {active: selected_nav_item == \'fees-setting\'}" href="#/fees-setting/fine-setting">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Mentor</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/mentor-detail">Mentor Detail</a> <a class="navbar-item" href="#/mentor-report">Report</a> <a class="navbar-item {active: selected_nav_item == \'mentor-setting\'}" href="#/mentor-setting/mentor-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Discipline</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/discipline-detail">Discipline Detail</a> <a class="navbar-item" href="#/discipline-report">Report</a> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item {active: selected_nav_item == \'discipline-setting\'}" href="#/discipline-setting/discipline-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Activity</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/activity-detail">Activity Detail</a> <a class="navbar-item" href="#/report">Report</a> <a class="navbar-item {active: selected_nav_item == \'activity-setting\'}" href="#/activity-setting/item">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Attendance</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/attendance-entry">Attendance Entry</a> <a class="navbar-item " href="#/daily-attendance">Daily Attendance</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Staff</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/staff">Staff</a> <a class="navbar-item " href="#/ex-staff">EX-Staff</a> <a class="navbar-item " href="#/browse-staff">Browse</a> </div> </div> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Master</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'master\'}" href="#/master/employee-type">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Infirmary</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'infirmary-setting\'}" href="#/infirmary-setting/infirmary-category">Setting</a> <a class="navbar-item {active: selected_nav_item == \'infirmary\'}" href="#/infirmary/infirmary-student">Infirmary Detail</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Inventory</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'inventory-setting\'}" href="#/inventory-setting/inventory-rack">Setting</a> <a class="navbar-item" href="#/inventory-stock">Stock Inwards Entry</a> <a class="navbar-item" href="#/inventory-issue">Issue</a> <a class="navbar-item" href="#/inventory-sale">Sale</a> <a class="navbar-item" href="#/inventory-returnable">Returnable</a> <a class="navbar-item {active: selected_nav_item == \'inventory-report\'}" href="#/inventory-report/inventory-received-goods-report">Report</a> </div> </div> <a class="navbar-item has-text-danger" onclick="{logout}"><i class="fas fa-power-off"></i></a> </div> </div> </div> </nav>', '', '', function(opts) {
     var self = this
     console.log('opts.selected_nav_item')
     console.log(opts.selected_nav_item)
@@ -15424,7 +16449,202 @@ riot.tag2('setting', '<div class="field has-addons"> <p class="control"> <a clas
       self.selected_master = opts.selected_master
     }
 });
-riot.tag2('staff', '<section class=" is-fluid" show="{staff_view ==\'show_staff\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Staff</h2> </div> <div class="level-right"> <div> <button class="button is-small" onclick="{add_new_staff}"> <span class="icon"> <span class="fas fa-plus"></span> </span> <span>New Staff</span> </button> </div> <div> <button class="button is-small" onclick="{update_staff_status}"> Leaving Status </button> </div> <div> <button class="button is-small" onclick="{allowBlockStaff}"> Allow/Block </button> </div> <div> <button class="button is-small" onclick="{resetStaffPassword}"> Reset Password </button> </div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="r_emp_type_id"> <option>Type</option> <option riot-value="{-1}">All</option> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_designation_id"> <option>Designation</option> <option each="{designations}" riot-value="{designation_id}">{designation} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_level_id"> <option>Level</option> <option each="{levels}" riot-value="{level_id}">{level} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_department_id"> <option>Department</option> <option each="{departments}" riot-value="{department_id}">{department_name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getStaffData}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Emp ID</th> <th>Name</th> <th>Department</th> <th>Designation</th> <th>Mobile</th> <th>Status</th> <th>Email</th> <th>Active</th> <th></th> </tr> </thead> <tbody> <tr each="{st, i in staffs}"> <td><input type="checkbox" class="id_check_box" id="{\'EmpId\' + st.emp_id}" onclick="{selectStaff.bind(this,st)}"> </td> <td>{st.employee_id}</td> <td>{st.first_name} {st.middle_name} {st.last_name}</td> <td>{st.department_name}</td> <td>{st.designation}</td> <td>{st.mobile}</td> <td>{st.employment_status}</td> <td>{st.email}</td> <td>{st.is_active}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{st.confirmDelete}"> <span><a class="button is-small is-rounded has-text-success" onclick="{printProfile.bind(this, st.emp_id)}">Profile</a></span> <span><a class="button is-small is-rounded has-text-success" onclick="{edit.bind(this, st.emp_id)}">Edit</a></span> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{st.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <section class=" is-fluid" show="{staff_view ==\'add_staff\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Staff</h2> </div> <div class="level-right"></div> </div> <div class="box"> <div class="columns is-multiline"> <div class="column is-one-fifth"> <div id="pp_box" class="pp-box" onclick="{trigger_file_input.bind(this,\'staff_picture\')}"> <div class="icon has-text-danger" onclick="{remove_picture.bind(this, \'pp_box\',\'staff_picture\')}"><i class="fas fa-trash"></i> </div> </div> <input accept="image/*" class="is-hidden" id="staff_picture" name="staff_picture" onchange="{loadFile.bind(this, \'pp_box\')}" type="file"> </div> <div class="column "> <div class="columns "> <div class="column is-2"> <label class="label is-small" for="first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" id="first_name" ref="first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="middle_name">Middle Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="middle_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="last_name">Last Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="last_name" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="last_name">Short Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="short_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="gender" ref="gender"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Identification Marks</label> </div> <div class="column is-2"> <input class="input is-small" ref="id_mark" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="blood_group">Blood Group</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="blood_group" ref="blood_group"> <option value="A+">A+</option> <option value="A-">A-</option> <option value="AB+">AB+</option> <option value="AB-">AB-</option> <option value="B+">B+</option> <option value="B-">B-</option> <option value="O+">O+</option> <option value="O-">O-</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="dob">Place of Birth</label> </div> <div class="column is-2"> <input class="input is-small" ref="place_of_birth" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="dob">Nationality</label> </div> <div class="column is-2"> <input class="input is-small" ref="nationality" type="text"> </div> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="religion_id">Religion</label> </div> <div class="column is-2"> <div class="control"> <div class="select is-fullwidth is-small"> <select id="religion_id" ref="religion_id"> <option each="{religion}" riot-value="{religion_id}">{religion} </option> </select> </div> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Language</label> </div> <div class="column is-2"> <input class="input is-small" ref="language" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="category_id">Cast Category</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="category_id"> <option each="{cast}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="dob">DOB</label> </div> <div class="column is-2"> <input class="input date is-small" ref="dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="residence_phone">Phone(R)</label> </div> <div class="column is-2"> <input class="input is-small" ref="residence_phone" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="Office_phone">Phone(O)</label> </div> <div class="column is-2"> <input class="input is-small" ref="office_phone" type="number"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="Moble">Mobile</label> </div> <div class="column is-2"> <input class="input is-small" ref="mobile" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="Office_phone">Email</label> </div> <div class="column is-2"> <input class="input is-small" ref="email" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information(Permanent Address)</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" ref="add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="add_l2">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" ref="zip" maxlength="6" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="state" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link"> Check if Correspondence Address is same as Permanent Address <input type="checkbox" id="correspondenceCheckbox" name="correspondenceCheckbox" onclick="{copyAddress.bind(this)}"> </h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="c_add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_add_l2">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="c_zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_zip" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="c_state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_state" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addFamilyInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_family_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Family</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="marital_status">Marital Status</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="marital_status" ref="marital_status"> <option value="S">Single</option> <option value="M">Married</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="f_occupation">Father Name</label> </div> <div class="column is-2 "> <input class="input is-small" id="father_name" ref="father_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Father Occupation</label> </div> <div class="column is-2"> <input class="input is-small" id="father_occupation" ref="father_occupation" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Spouse\'s Name</label> </div> <div class="column is-2"> <input class="input is-small" id="" ref="spouse" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Spouse\'s Occupation</label> </div> <div class="column is-2 "> <input class="input is-small" id="" ref="spouse_occupation" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_organisation_name">Anniversary</label> </div> <div class="column is-2"> <input class="input date is-small" ref="anniversary" type="date"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Child1</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="child1_first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="child1_first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Last Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child1_last_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="sex" ref="child1_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Dob</label> </div> <div class="column is-2"> <input class="input date is-small" ref="child1_dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">School</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child1_school" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Child2</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="child2_first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="child2_first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Last Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child2_last_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="sex" ref="child2_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Dob</label> </div> <div class="column is-2"> <input class="input date is-small" ref="child2_dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">School</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child2_school" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Child3</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="child3_first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="child3_first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Last Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child3_last_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="sex" ref="child3_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Dob</label> </div> <div class="column is-2"> <input class="input date is-small" ref="child3_dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">School</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child3_school" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeFamilyInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addQualificationInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_qualification_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Qualification</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Academic Qualification</h3> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">X information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="x_subject">X Subject </label> </div> <div class="column is-2"> <input class="input is-small" ref="x_subject" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="x_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Board</label> </div> <div class="column is-2"> <input class="input is-small" ref="x_board" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">X YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="x_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="x_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="x_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">XII information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="xii_subject">XII Subject </label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_subject" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="xii_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Board</label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_board" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">XII YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="xii_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Professional Qualification</h3> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">UG information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="ug_course">UG Course </label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_course" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="ug_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG University</label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">UG YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="ug_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">PG information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="pg_course">PG Course </label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_course" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="pg_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG University</label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">PG YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="pg_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeQualificationInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addProfessionalCourseInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_professional_course_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">B.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="bed_stream">B.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bed_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">B.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bed_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">B.T. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="bt_stream">B.T. Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bt_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">B.T. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bt_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">B.P.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="bped_stream">B.P.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bped_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bped_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">D.P.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="dped_stream">D.P.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="dped_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="dped_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeProfessionalCourseInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addProfessionalMasterCourseInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_professional_master_course_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">M.P.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="mped_stream">M.P.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mped_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mped_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">M.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="med_stream">M.Ed. Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="med_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="med_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="med_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">M.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="med_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="med_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="med_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">M.Phil information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="mphil_stream">M.Phil stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mphil_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil University</label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">M.Phil YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mphil_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Phd. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="phd_stream">Phd. Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="phd_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Phd. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="phd_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Other information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="other_stream">Other Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="other_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="other_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other University</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Other YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="other_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeProfessionalMasterCourseInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addExtraActivityInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_extra_activity_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Other information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="details_scholarship">Scholarship Detail </label> </div> <div class="column is-2"> <input class="input is-small" ref="details_scholarship" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Awards/Honours Detail</label> </div> <div class="column is-2 "> <input class="input is-small" ref="details_honours" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Publication Detail</label> </div> <div class="column is-2"> <input class="input is-small" ref="details_publication" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Curricular Activities Detail</label> </div> <div class="column is-2"> <input class="input is-small" ref="details_curricular_activities" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Sports Detail</label> </div> <div class="column is-2 "> <input class="input is-small" ref="details_sport" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeExtraActivityInformation}"> Previous </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{addPrevoiusJob}"> Next </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_previous_job_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Particulars of Previous Job</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Organization Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="organization_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Address Line 1</label> </div> <div class="column is-2 "> <input class="input is-small" ref="add_l1_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="add_l2_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="city_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Zip</label> </div> <div class="column is-2 "> <input class="input is-small" ref="zip_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="state_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="country_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Designation</label> </div> <div class="column is-2 "> <input class="input is-small" ref="designation_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Date of Joining</label> </div> <div class="column is-2"> <input class="input date is-small" ref="doj_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Salary</label> </div> <div class="column is-2"> <input class="input is-small" ref="salary_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Basic</label> </div> <div class="column is-2 "> <input class="input is-small" ref="basic_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Allowances</label> </div> <div class="column is-2"> <input class="input is-small" ref="allowances_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Other Benefits</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_benefits_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Bond Details</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bond_details_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Work Profile</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Qualification</label> </div> <div class="column is-2"> <input class="input is-small" ref="qualification" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="doj">Date of Joining</label> </div> <div class="column is-2 "> <input class="input date is-small" ref="doj" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="subject_id">Specialization</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="subject_id"> <option each="{subjects}" riot-value="{subject_id}">{subject_name} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Employee Type</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="emp_type_id"> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Designation</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select ref="designation_id"> <option each="{designations}" riot-value="{designation_id}">{designation} </option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Department</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="department_id"> <option each="{departments}" riot-value="{department_id}">{department_name} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="level_id">Level</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="level_id"> <option each="{levels}" riot-value="{level_id}">{level} </option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Employment Status</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select ref="employment_status_id"> <option each="{employmentStatus}" riot-value="{employment_status_id}">{employment_status} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closePreviousJob}"> << Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addInformation}"> Submit </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <div id="statusModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Update Status</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <label class="label" for="role">Leaving Date</label> <div class="control"> <input class="input date" type="text" ref="leaving_date"> </div> </div> </div> <div class="column"> <div class="field"> <label class="label" for="role">Remarks</label> <div class="control"> <textarea class="input" type="text" ref="remark" rows="3"></textarea> </div> </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{updateEmployeeStatus}">{title}</button> <button class="button" id="item-modal-close" onclick="{closeStatusUpdateModal}">Cancel</button> </footer> </div> </div> <section class=" is-fluid" show="{staff_view ==\'staff_profile\'}"> <div class="level"> <div class="level-left"> <h2 class="title">Profile of {first_name} {middle_name} {last_name}</h2> </div> <div class="level-right"> <a class="button no-print" onclick="{close_staff_profile}">Back</a> </div> </div> <table class="table is-fullwidth is-bordered"> <tr> <td rowspan="4" colspan="2"> <img id="pp_box1" width="90" height="90"> </td> <td colspan="2" style="background-color:#efefef"><b>Login ID</b></td> <td colspan="3">{employee_id}</td> </tr> <tr> <th>Name</th> <td>{first_name} {middle_name} {last_name}</td> <th>Short Name</th> <td colspan="2">{st.short_name}</td> </tr> <tr> <th>Gender</th> <td>{gender} </td> <th>Blood Group</th> <td colspan="2">{blood_group}</td> </tr> <tr> <th>Category</th> <td colspan="2">{category_name}</td> <th>Date of Birth</th> <td>{dob}</td> </tr> <tr> <th>Marital Status</th> <td>{marital_status}</td> <th>Date of Marriage</th> <td>{dom}</td> <th colspan="2">Husband/Wife Name</th> <td>{spouse}</td> </tr> <tr> <th colspan="2">Permanent Address</th> <td colspan="5">{add_l1} , {add_l2}, {city} , {state}-{zip}, {country}</td> </tr> <tr> <th colspan="2">Correspondence Address</th> <td colspan="5">{c_add_l1} , {c_add_l2}, {c_city} , {c_state}-{c_zip}, {c_country}</td> </tr> <tr> <th colspan="2">Phone(O)</th> <td>{office_phoe}</td> <th colspan="2">Mobile</th> <td>{mobile}</td> </tr> <tr> <th colspan="2">Email</th> <td colspan="5">{email}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Work Profile</th> </tr> <tr> <th colspan="2">Phone(O)</th> <td>{office_phoe}</td> <th colspan="2">Mobile</th> <td>{mobile}</td> </tr> <tr> <th>Qulaification</th> <td colspan="2">{qualification}</td> <th colspan="2">Date of Joining</th> <td>{doj}</td> </tr> <tr> <th colspan="2">Specialization</th> <td>{specialization}</td> <th colspan="2">Employee Type</th> <td>{emp_type}</td> </tr> <tr> <th colspan="2">Designation</th> <td>{designation}</td> <th colspan="2">Department</th> <td>{department_name}</td> </tr> <tr> <th colspan="2">Level</th> <td>{level_name}</td> <th colspan="2">Employment Status</th> <td>{employment_status}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7"><b>Academic Qualification</b></th> </tr> <tr><th colspan="7">X Infrmation</th></tr> <tr> <th>Subject</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{x_subject}</td> <td>{x_institution}</td> <td>{x_board}</td> <td>{x_yop}</td> <td>{x_marks}</td> <td>{x_div}</td> </tr> <tr><th colspan="7">XII Infrmation</th></tr> <tr> <th>Subject</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{xii_subject}</td> <td>{xii_institution}</td> <td>{xii_board}</td> <td>{xii_yop}</td> <td>{xii_marks}</td> <td>{xii_div}</td> </tr> <tr><th colspan="7">UG Infrmation</th></tr> <tr> <th>Course</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{ug_course}</td> <td>{ug_institution}</td> <td>{ug_board}</td> <td>{ug_yop}</td> <td>{ug_marks}</td> <td>{ug_div}</td> </tr> <tr><th colspan="7">PG Infrmation</th></tr> <tr> <th>Course</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{pg_course}</td> <td>{pg_institution}</td> <td>{pg_board}</td> <td>{pg_yop}</td> <td>{pg_marks}</td> <td>{pg_div}</td> </tr> <tr><th colspan="7">B.Ed Infrmation</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bed_stream}</td> <td>{bed_institution}</td> <td>{bed_board}</td> <td>{bed_yop}</td> <td>{bed_marks}</td> <td>{bed_div}</td> </tr> <tr><th colspan="7">B.T Infrmation</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bt_stream}</td> <td>{bt_institution}</td> <td>{bt_board}</td> <td>{bt_yop}</td> <td>{bt_marks}</td> <td>{bt_div}</td> </tr> <tr><th colspan="7">B. P. Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bped_stream}</td> <td>{bped_institution}</td> <td>{bped_board}</td> <td>{bped_yop}</td> <td>{bped_marks}</td> <td>{bped_div}</td> </tr> <tr><th colspan="7">D.P.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{dped_stream}</td> <td>{dped_institution}</td> <td>{dped_board}</td> <td>{dped_yop}</td> <td>{dped_marks}</td> <td>{dped_div}</td> </tr> <tr><th colspan="7">M.P.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{mped_stream}</td> <td>{mped_institution}</td> <td>{mped_board}</td> <td>{mped_yop}</td> <td>{mped_marks}</td> <td>{mped_div}</td> </tr> <tr><th colspan="7">M.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{med_stream}</td> <td>{med_institution}</td> <td>{med_board}</td> <td>{med_yop}</td> <td>{med_marks}</td> <td>{med_div}</td> </tr> <tr><th colspan="7">M.Phil. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{mphil_stream}</td> <td>{mphil_institution}</td> <td>{mphil_board}</td> <td>{mphil_yop}</td> <td>{mphil_marks}</td> <td>{mphil_div}</td> </tr> <tr><th colspan="7">Phd. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{phd_stream}</td> <td>{phd_institution}</td> <td>{phd_board}</td> <td>{phd_yop}</td> <td>{phd_marks}</td> <td>{phd_div}</td> </tr> <tr><th colspan="7">Other Qualification</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{other_stream}</td> <td>{other_institution}</td> <td>{other_board}</td> <td>{other_yop}</td> <td>{other_marks}</td> <td>{other_div}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Extra Activities</th> </tr> <tr> <th colspan="2">Scholarship Details</th> <td colspan="2">{details_scholarship}</td> <th colspan="2">Awards/honours Details</th> <td>{details_honours}</td> </tr> <tr> <th colspan="2">Publication Details</th> <td>{details_publication}</td> <th colspan="3">Curricular Activities Details</th> <td>{details_curricular_activities}</td> </tr> <tr> <th colspan="3">Sports Detail</th> <td colspan="4">{details_sport}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Working Experience</th> </tr> <tr> <th>Institution</th> <th>DOJ</th> <th>DOL</th> <th>Position</th> <th>Subject Taught</th> </tr> <tr> <td>{work_institution}</td> <td>{doj}</td> <td>{dol}</td> <td>{position}</td> <td>{subject_taught}</td> </tr> </table> </section>', '', '', function(opts) {
+riot.tag2('staff-gender-report', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Student Gender Report</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column"> <input type="checkbox" id="checkTable" checked="{e.done}" onclick="{viewTable}" style="margin-top: 12px;"> Table </div> </div> </div> <canvas id="canvas_pie" show="{report_view ==\'show_graph\'}"></canvas> <table class="table is-fullwidth is-striped is-hoverable is-narrow" show="{report_view ==\'show_table\'}"> <thead> <tr> <th>#</th> <th>Gender</th> <th>Strength</th> </tr> </thead> <tbody> <tr each="{st, i in employeeGenderReports}"> <td>{i+1}</td> <td>{st.gender}</td> <td>{st.total}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+
+	var self = this
+    self.on("mount", function(){
+    	self.title='Add'
+    	self.report_view ='show_graph'
+    	self.readEmployeeGenderReport()
+    	self.role = getCookie('role')
+        self.update()
+        flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
+    })
+
+    self.on("unmount", function(){
+      staffStore.off('read_employee_gender_report_change',ReadEmployeeGenderReportChanged)
+    })
+
+     self.viewTable = () => {
+    	if($('#checkTable').is(":checked")){
+	        self.report_view = 'show_table'
+    	}else{
+	        self.report_view = 'show_graph'
+    	}
+    }
+
+    self.readEmployeeGenderReport = () => {
+       staffStore.trigger('read_employee_gender_report')
+    }
+
+    staffStore.on('read_employee_gender_report_change',ReadEmployeeGenderReportChanged)
+    function ReadEmployeeGenderReportChanged(employeeGenderReports,grandTotal){
+
+      self.title='Create'
+      self.loading = false
+      self.employeeGenderReports = employeeGenderReports
+       self.grand_total = grandTotal
+
+      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
+
+		var labels = []
+		var chart_percentage = []
+        var backgroundColor = []
+
+		 for (var i = self.employeeGenderReports.length - 1; i >= 0; i--) {
+		 	var total_percentage = ((self.employeeGenderReports[i].total*100)/self.grand_total).toFixed(2);
+		    var percentage = self.employeeGenderReports[i].gender + ' ( ' + self.employeeGenderReports[i].total + ' , ' + total_percentage + '% )';
+
+		    labels.push(percentage)
+		    chart_percentage.push(self.employeeGenderReports[i].total)
+		    if(typeof chartColors[i] != "undefined"){
+		    	backgroundColor.push(chartColors[i])
+		    }
+
+		 }
+
+		  console.log(labels);
+		  console.log(chart_percentage);
+
+		  var config = {
+		    type: 'pie',
+		    data: {
+		      datasets: [{
+		        data: chart_percentage,
+		        backgroundColor: backgroundColor,
+		        label: 'labels'
+		      }],
+		      labels: labels
+		    },
+		    options: {
+		      responsive: true
+		    }
+		  };
+
+		  var ctx = document.getElementById('canvas_pie').getContext('2d');
+		  window.myPie = new Chart(ctx, config);
+	      self.update()
+	      console.log(self.readEmployeeGenderReports)
+      self.update()
+
+    }
+
+});
+riot.tag2('staff-report', '<div class="field has-addons"> <p class="control"> <a class="button {is-active: selected_staff_report == \'staff-gender-report\'}" href="#/staff-report/staff-gender-report"> <span>Staff By Gender</span> </a> </p> <p class="control"> <a class="button {is-active: selected_staff_report == \'staff-type-report\'}" href="#/staff-report/staff-type-report"> <span>Staff By Type</span> </a> </p> </div> <div id="staff-report-view"></div>', '', '', function(opts) {
+    var self = this
+    console.log('opts.selected_staff_report')
+    console.log(opts.selected_staff_report)
+    if(!opts.selected_staff_report){
+      self.selected_staff_report = 'staff-gender-report'
+    }else{
+      self.selected_staff_report = opts.selected_staff_report
+    }
+});
+
+
+
+riot.tag2('staff-type-report', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Student House Report</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="emp_type_id" onchange="{getEmployeeTypeReport}"> <option>Choose Type</option> <option value="-1">All</option> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> <div class="column"> <input type="checkbox" id="checkTable" checked="{e.done}" onclick="{viewTable}" style="margin-top: 12px;"> Table </div> </div> </div> <canvas id="canvas_pie" show="{report_view ==\'show_graph\'}"></canvas> <table class="table is-fullwidth is-striped is-hoverable is-narrow" show="{report_view ==\'show_table\'}"> <thead> <tr> <th>#</th> <th>Type</th> <th>Strength</th> </tr> </thead> <tbody> <tr each="{st, i in employeeTypeReports}"> <td>{i+1}</td> <td>{st.emp_type}</td> <td>{st.total}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+
+	var self = this
+    self.on("mount", function(){
+    	self.title='Add'
+    	self.report_view ='show_graph'
+    	self.readEmployeeTypes()
+
+    	self.role = getCookie('role')
+        self.update()
+        flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
+    })
+
+    self.on("unmount", function(){
+      employeeTypeStore.off('employeeTypes_changed', EmployeeTypesChanged)
+      staffStore.off('read_employee_type_report_change',ReadEmployeeTypeReportChanged)
+    })
+
+     self.viewTable = () => {
+    	if($('#checkTable').is(":checked")){
+	        self.report_view = 'show_table'
+    	}else{
+	        self.report_view = 'show_graph'
+    	}
+    }
+
+	self.readEmployeeTypes = () => {
+       self.loading = true;
+       employeeTypeStore.trigger('read_employeeTypes')
+    }
+
+    self.getEmployeeTypeReport = () => {
+       staffStore.trigger('read_employee_type_report',self.refs.emp_type_id.value)
+    }
+
+    employeeTypeStore.on('employeeTypes_changed',EmployeeTypesChanged)
+    function EmployeeTypesChanged(employeeTypes){
+      console.log(employeeTypes)
+      self.employeeTypes = employeeTypes
+      self.update()
+      console.log(self.employeeTypes)
+    }
+    staffStore.on('read_employee_type_report_change',ReadEmployeeTypeReportChanged)
+    function ReadEmployeeTypeReportChanged(employeeTypeReports,grandTotal){
+
+      self.title='Create'
+      self.loading = false
+      self.employeeTypeReports = employeeTypeReports
+       self.grand_total = grandTotal
+
+      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
+
+		var labels = []
+		var chart_percentage = []
+        var backgroundColor = []
+
+		 for (var i = self.employeeTypeReports.length - 1; i >= 0; i--) {
+		 	var total_percentage = ((self.employeeTypeReports[i].total*100)/self.grand_total).toFixed(2);
+		    var percentage = self.employeeTypeReports[i].emp_type + ' ( ' + self.employeeTypeReports[i].total + ' , ' + total_percentage + '% )';
+
+		    labels.push(percentage)
+		    chart_percentage.push(self.employeeTypeReports[i].total)
+		    if(typeof chartColors[i] != "undefined"){
+		    	backgroundColor.push(chartColors[i])
+		    }
+
+		 }
+
+		  console.log(labels);
+		  console.log(chart_percentage);
+
+		  var config = {
+		    type: 'pie',
+		    data: {
+		      datasets: [{
+		        data: chart_percentage,
+		        backgroundColor: backgroundColor,
+		        label: 'labels'
+		      }],
+		      labels: labels
+		    },
+		    options: {
+		      responsive: true
+		    }
+		  };
+
+		  var ctx = document.getElementById('canvas_pie').getContext('2d');
+		  window.myPie = new Chart(ctx, config);
+	      self.update()
+	      console.log(self.employeeTypeReports)
+      self.update()
+
+    }
+
+});
+riot.tag2('staff', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid" show="{staff_view ==\'show_staff\'}"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Staff</h2> </div> <div class="level-right"> <div> <button class="button is-primary is-rounded" onclick="{add_new_staff}"> <span class="icon"> <span class="fas fa-plus"></span> </span> <span>New Staff</span> </button> </div> <div> <button class="button is-rounded ml10" onclick="{update_staff_status}"> Leaving Status </button> </div> <div> <button class="button is-warning is-rounded ml10" onclick="{allowBlockStaff}"> Allow/Block </button> </div> <div> <button class="button is-danger is-rounded ml10" onclick="{resetStaffPassword}"> Reset Password </button> </div> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="r_emp_type_id"> <option riot-value="{-2}">Type</option> <option riot-value="{-1}">All</option> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_designation_id"> <option riot-value="{-2}">Designation</option> <option riot-value="{-1}">All</option> <option each="{designations}" riot-value="{designation_id}">{designation} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_level_id"> <option riot-value="{-2}">Level</option> <option riot-value="{-1}">All</option> <option each="{levels}" riot-value="{level_id}">{level} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="r_department_id"> <option riot-value="{-2}">Department</option> <option riot-value="{-1}">All</option> <option each="{departments}" riot-value="{department_id}">{department_name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getStaffData}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Emp ID</th> <th>Name</th> <th>Department</th> <th>Designation</th> <th>Mobile</th> <th>Status</th> <th>Email</th> <th>Active</th> <th></th> </tr> </thead> <tbody> <tr each="{st, i in staffs}"> <td><input type="checkbox" class="id_check_box" id="{\'EmpId\' + st.emp_id}" onclick="{selectStaff.bind(this,st)}"> </td> <td>{st.employee_id}</td> <td>{st.first_name} {st.middle_name} {st.last_name}</td> <td>{st.department_name}</td> <td>{st.designation}</td> <td>{st.mobile}</td> <td>{st.employment_status}</td> <td>{st.email}</td> <td>{st.is_active}</td> <td class="has-text-right"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{st.confirmDelete}"> <span><a class="button is-small is-rounded has-text-success" onclick="{printProfile.bind(this, st.emp_id)}">Profile</a></span> <span><a class="button is-small is-rounded has-text-success" onclick="{edit.bind(this, st.emp_id)}">Edit</a></span> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{st.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <section class=" is-fluid" show="{staff_view ==\'add_staff\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Staff</h2> </div> <div class="level-right"></div> </div> <div class="box"> <div class="columns is-multiline"> <div class="column is-one-fifth"> <div id="pp_box" class="pp-box" onclick="{trigger_file_input.bind(this,\'staff_picture\')}"> <div class="icon has-text-danger" onclick="{remove_picture.bind(this, \'pp_box\',\'staff_picture\')}"><i class="fas fa-trash"></i> </div> </div> <input accept="image/*" class="is-hidden" id="staff_picture" name="staff_picture" onchange="{loadFile.bind(this, \'pp_box\')}" type="file"> </div> <div class="column "> <div class="columns "> <div class="column is-2"> <label class="label is-small" for="title">Title</label> </div> <div class="column is-10"> <input class="input is-small" id="title" ref="title" type="text"> </div> </div> <div class="columns "> <div class="column is-2"> <label class="label is-small" for="first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" id="first_name" ref="first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="middle_name">Middle Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="middle_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="last_name">Last Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="last_name" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="last_name">Short Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="short_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="gender" ref="gender"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Identification Marks</label> </div> <div class="column is-2"> <input class="input is-small" ref="id_mark" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="blood_group">Blood Group</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="blood_group" ref="blood_group"> <option value="A+">A+</option> <option value="A-">A-</option> <option value="AB+">AB+</option> <option value="AB-">AB-</option> <option value="B+">B+</option> <option value="B-">B-</option> <option value="O+">O+</option> <option value="O-">O-</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="dob">Place of Birth</label> </div> <div class="column is-2"> <input class="input is-small" ref="place_of_birth" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="dob">Nationality</label> </div> <div class="column is-2"> <input class="input is-small" ref="nationality" type="text"> </div> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="religion_id">Religion</label> </div> <div class="column is-2"> <div class="control"> <div class="select is-fullwidth is-small"> <select id="religion_id" ref="religion_id"> <option each="{religion}" riot-value="{religion_id}">{religion} </option> </select> </div> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Language</label> </div> <div class="column is-2"> <input class="input is-small" ref="language" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="category_id">Cast Category</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="category_id"> <option each="{cast}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="dob">DOB</label> </div> <div class="column is-2"> <input class="input date is-small" ref="dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="residence_phone">Phone(R)</label> </div> <div class="column is-2"> <input class="input is-small" ref="residence_phone" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="Office_phone">Phone(O)</label> </div> <div class="column is-2"> <input class="input is-small" ref="office_phone" type="number"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="Employee ID">Employee ID</label> </div> <div class="column is-2"> <input class="input is-small" ref="employee_id" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="Moble">Mobile</label> </div> <div class="column is-2"> <input class="input is-small" ref="mobile" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="Office_phone">Email</label> </div> <div class="column is-2"> <input class="input is-small" ref="email" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information(Permanent Address)</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" ref="add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="add_l2">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" ref="zip" maxlength="6" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="state" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link"> Check if Correspondence Address is same as Permanent Address <input type="checkbox" id="correspondenceCheckbox" name="correspondenceCheckbox" onclick="{copyAddress.bind(this)}"> </h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="c_add_l1">Address Line 1</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_add_l1" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_add_l2">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_add_l2" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_city">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_city" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="c_zip">Zip</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_zip" type="number"> </div> <div class="column is-2"> <label class="label is-small" for="c_state">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_state" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="c_country">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="c_country" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addFamilyInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_family_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Family</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="marital_status">Marital Status</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="marital_status" ref="marital_status"> <option value="S">Single</option> <option value="M">Married</option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="f_occupation">Father Name</label> </div> <div class="column is-2 "> <input class="input is-small" id="father_name" ref="father_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Father Occupation</label> </div> <div class="column is-2"> <input class="input is-small" id="father_occupation" ref="father_occupation" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Spouse\'s Name</label> </div> <div class="column is-2"> <input class="input is-small" id="" ref="spouse" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Spouse\'s Occupation</label> </div> <div class="column is-2 "> <input class="input is-small" id="" ref="spouse_occupation" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="f_organisation_name">Anniversary</label> </div> <div class="column is-2"> <input class="input date is-small" ref="anniversary" type="date"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Child1</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="child1_first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="child1_first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Last Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child1_last_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="sex" ref="child1_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Dob</label> </div> <div class="column is-2"> <input class="input date is-small" ref="child1_dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">School</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child1_school" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Child2</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="child2_first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="child2_first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Last Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child2_last_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="sex" ref="child2_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Dob</label> </div> <div class="column is-2"> <input class="input date is-small" ref="child2_dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">School</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child2_school" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Child3</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="child3_first_name">First Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="child3_first_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Last Name</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child3_last_name" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="gender">Gender</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select id="sex" ref="child3_sex"> <option value="M">Male</option> <option value="F">Female</option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Dob</label> </div> <div class="column is-2"> <input class="input date is-small" ref="child3_dob" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">School</label> </div> <div class="column is-2 "> <input class="input is-small" ref="child3_school" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeFamilyInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addQualificationInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_qualification_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Qualification</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Academic Qualification</h3> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">X information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="x_subject">X Subject </label> </div> <div class="column is-2"> <input class="input is-small" ref="x_subject" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="x_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Board</label> </div> <div class="column is-2"> <input class="input is-small" ref="x_board" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">X YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="x_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="x_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">X Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="x_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">XII information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="xii_subject">XII Subject </label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_subject" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="xii_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Board</label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_board" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">XII YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="xii_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">XII Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="xii_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Professional Qualification</h3> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">UG information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="ug_course">UG Course </label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_course" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="ug_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG University</label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">UG YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="ug_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">UG Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="ug_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-8 has-text-link">PG information</h3> <hr style="margin-top: 0.5em; margin-bottom: 0.5em;"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="pg_course">PG Course </label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_course" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="pg_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG University</label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">PG YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="pg_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">PG Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="pg_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeQualificationInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addProfessionalCourseInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_professional_course_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">B.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="bed_stream">B.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bed_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">B.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bed_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="bed_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">B.T. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="bt_stream">B.T. Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bt_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">B.T. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bt_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.T. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="bt_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">B.P.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="bped_stream">B.P.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bped_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bped_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">B.P.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="bped_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">D.P.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="dped_stream">D.P.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="dped_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="dped_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">D.P.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="dped_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeProfessionalCourseInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addProfessionalMasterCourseInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_professional_master_course_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">M.P.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="mped_stream">M.P.Ed. stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mped_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mped_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.P.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="mped_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">M.Ed. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="med_stream">M.Ed. Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="med_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="med_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="med_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">M.Ed. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="med_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="med_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Ed. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="med_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">M.Phil information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="mphil_stream">M.Phil stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mphil_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil University</label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">M.Phil YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="mphil_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">M.Phil Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="mphil_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Phd. information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="phd_stream">Phd. Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="phd_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. University</label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Phd. YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="phd_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Phd. Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="phd_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Other information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="other_stream">Other Stream </label> </div> <div class="column is-2"> <input class="input is-small" ref="other_stream" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other Instituition</label> </div> <div class="column is-2 "> <input class="input is-small" ref="other_institution" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other University</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_university" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Other YOP</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_yop" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other Marks</label> </div> <div class="column is-2 "> <input class="input is-small" ref="other_marks" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Other Division</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_div" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeProfessionalMasterCourseInformation}"> Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addExtraActivityInformation}"> Next >> </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_extra_activity_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Other information</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="details_scholarship">Scholarship Detail </label> </div> <div class="column is-2"> <input class="input is-small" ref="details_scholarship" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Awards/Honours Detail</label> </div> <div class="column is-2 "> <input class="input is-small" ref="details_honours" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Publication Detail</label> </div> <div class="column is-2"> <input class="input is-small" ref="details_publication" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Curricular Activities Detail</label> </div> <div class="column is-2"> <input class="input is-small" ref="details_curricular_activities" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Sports Detail</label> </div> <div class="column is-2 "> <input class="input is-small" ref="details_sport" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closeExtraActivityInformation}"> Previous </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{addPrevoiusJob}"> Next </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <section class=" is-fluid" show="{staff_view ==\'add_previous_job_information\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} New Employee</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Particulars of Previous Job</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Organization Name</label> </div> <div class="column is-2"> <input class="input is-small" ref="organization_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Address Line 1</label> </div> <div class="column is-2 "> <input class="input is-small" ref="add_l1_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Address Line 2</label> </div> <div class="column is-2"> <input class="input is-small" ref="add_l2_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">City</label> </div> <div class="column is-2"> <input class="input is-small" ref="city_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Zip</label> </div> <div class="column is-2 "> <input class="input is-small" ref="zip_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">State</label> </div> <div class="column is-2"> <input class="input is-small" ref="state_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Country</label> </div> <div class="column is-2"> <input class="input is-small" ref="country_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Designation</label> </div> <div class="column is-2 "> <input class="input is-small" ref="designation_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Date of Joining</label> </div> <div class="column is-2"> <input class="input date is-small" ref="doj_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Salary</label> </div> <div class="column is-2"> <input class="input is-small" ref="salary_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Basic</label> </div> <div class="column is-2 "> <input class="input is-small" ref="basic_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Allowances</label> </div> <div class="column is-2"> <input class="input is-small" ref="allowances_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Other Benefits</label> </div> <div class="column is-2"> <input class="input is-small" ref="other_benefits_of_previous_job" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="">Bond Details</label> </div> <div class="column is-2 "> <input class="input is-small" ref="bond_details_of_previous_job" type="text"> </div> </div> <div class="columns mt30"> <div class="column is-full"> <h3 class="has-text-weight-bold is-size-6 has-text-link">Work Profile</h3> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Qualification</label> </div> <div class="column is-2"> <input class="input is-small" ref="qualification" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="doj">Date of Joining</label> </div> <div class="column is-2 "> <input class="input date is-small" ref="doj" type="text"> </div> <div class="column is-2"> <label class="label is-small" for="subject_id">Specialization</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="subject_id"> <option each="{subjects}" riot-value="{subject_id}">{subject_name} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="">Employee Type</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="emp_type_id"> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Designation</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select ref="designation_id"> <option each="{designations}" riot-value="{designation_id}">{designation} </option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Department</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="department_id"> <option each="{departments}" riot-value="{department_id}">{department_name} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-2"> <label class="label is-small" for="level_id">Level</label> </div> <div class="column is-2"> <div class="select is-fullwidth is-small"> <select ref="level_id"> <option each="{levels}" riot-value="{level_id}">{level} </option> </select> </div> </div> <div class="column is-2"> <label class="label is-small" for="">Employment Status</label> </div> <div class="column is-2 "> <div class="select is-fullwidth is-small"> <select ref="employment_status_id"> <option each="{employmentStatus}" riot-value="{employment_status_id}">{employment_status} </option> </select> </div> </div> </div> <div class="columns mt30"> <div class="column is-full"> <button class="button is-primary has-text-weight-bold adjusted-top" onclick="{closePreviousJob}"> << Previous </button> <button class="button is-info has-text-weight-bold adjusted-top" onclick="{addInformation}"> Submit </button> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{close}"> Cancel </button> </div> </div> </div> </section> <div id="statusModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Update Status</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <label class="label" for="role">Leaving Date</label> <div class="control"> <input class="input date" type="text" ref="leaving_date"> </div> </div> </div> <div class="column"> <div class="field"> <label class="label" for="role">Remarks</label> <div class="control"> <textarea class="input" type="text" ref="remark" rows="3"></textarea> </div> </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-danger" onclick="{updateEmployeeStatus}">{title}</button> <button class="button" id="item-modal-close" onclick="{closeStatusUpdateModal}">Cancel</button> </footer> </div> </div> <section class=" is-fluid" show="{staff_view ==\'staff_profile\'}"> <div class="level"> <div class="level-left"> <h2 class="title">Profile of {first_name} {middle_name} {last_name}</h2> </div> <div class="level-right"> <a class="button no-print" onclick="{close_staff_profile}">Back</a> </div> </div> <table class="table is-fullwidth is-bordered"> <tr> <td rowspan="4" colspan="2"> <img id="pp_box1" width="90" height="90"> </td> <td colspan="2" style="background-color:#efefef"><b>Login ID</b></td> <td colspan="3">{employee_id}</td> </tr> <tr> <th>Name</th> <td>{first_name} {middle_name} {last_name}</td> <th>Short Name</th> <td colspan="2">{st.short_name}</td> </tr> <tr> <th>Gender</th> <td>{gender} </td> <th>Blood Group</th> <td colspan="2">{blood_group}</td> </tr> <tr> <th>Category</th> <td colspan="2">{category_name}</td> <th>Date of Birth</th> <td>{dob}</td> </tr> <tr> <th>Marital Status</th> <td>{marital_status}</td> <th>Date of Marriage</th> <td>{dom}</td> <th colspan="2">Husband/Wife Name</th> <td>{spouse}</td> </tr> <tr> <th colspan="2">Permanent Address</th> <td colspan="5">{add_l1} , {add_l2}, {city} , {state}-{zip}, {country}</td> </tr> <tr> <th colspan="2">Correspondence Address</th> <td colspan="5">{c_add_l1} , {c_add_l2}, {c_city} , {c_state}-{c_zip}, {c_country}</td> </tr> <tr> <th colspan="2">Phone(O)</th> <td>{office_phoe}</td> <th colspan="2">Mobile</th> <td>{mobile}</td> </tr> <tr> <th colspan="2">Email</th> <td colspan="5">{email}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Work Profile</th> </tr> <tr> <th colspan="2">Phone(O)</th> <td>{office_phoe}</td> <th colspan="2">Mobile</th> <td>{mobile}</td> </tr> <tr> <th>Qulaification</th> <td colspan="2">{qualification}</td> <th colspan="2">Date of Joining</th> <td>{doj}</td> </tr> <tr> <th colspan="2">Specialization</th> <td>{specialization}</td> <th colspan="2">Employee Type</th> <td>{emp_type}</td> </tr> <tr> <th colspan="2">Designation</th> <td>{designation}</td> <th colspan="2">Department</th> <td>{department_name}</td> </tr> <tr> <th colspan="2">Level</th> <td>{level_name}</td> <th colspan="2">Employment Status</th> <td>{employment_status}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7"><b>Academic Qualification</b></th> </tr> <tr><th colspan="7">X Infrmation</th></tr> <tr> <th>Subject</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{x_subject}</td> <td>{x_institution}</td> <td>{x_board}</td> <td>{x_yop}</td> <td>{x_marks}</td> <td>{x_div}</td> </tr> <tr><th colspan="7">XII Infrmation</th></tr> <tr> <th>Subject</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{xii_subject}</td> <td>{xii_institution}</td> <td>{xii_board}</td> <td>{xii_yop}</td> <td>{xii_marks}</td> <td>{xii_div}</td> </tr> <tr><th colspan="7">UG Infrmation</th></tr> <tr> <th>Course</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{ug_course}</td> <td>{ug_institution}</td> <td>{ug_board}</td> <td>{ug_yop}</td> <td>{ug_marks}</td> <td>{ug_div}</td> </tr> <tr><th colspan="7">PG Infrmation</th></tr> <tr> <th>Course</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{pg_course}</td> <td>{pg_institution}</td> <td>{pg_board}</td> <td>{pg_yop}</td> <td>{pg_marks}</td> <td>{pg_div}</td> </tr> <tr><th colspan="7">B.Ed Infrmation</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bed_stream}</td> <td>{bed_institution}</td> <td>{bed_board}</td> <td>{bed_yop}</td> <td>{bed_marks}</td> <td>{bed_div}</td> </tr> <tr><th colspan="7">B.T Infrmation</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bt_stream}</td> <td>{bt_institution}</td> <td>{bt_board}</td> <td>{bt_yop}</td> <td>{bt_marks}</td> <td>{bt_div}</td> </tr> <tr><th colspan="7">B. P. Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{bped_stream}</td> <td>{bped_institution}</td> <td>{bped_board}</td> <td>{bped_yop}</td> <td>{bped_marks}</td> <td>{bped_div}</td> </tr> <tr><th colspan="7">D.P.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{dped_stream}</td> <td>{dped_institution}</td> <td>{dped_board}</td> <td>{dped_yop}</td> <td>{dped_marks}</td> <td>{dped_div}</td> </tr> <tr><th colspan="7">M.P.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{mped_stream}</td> <td>{mped_institution}</td> <td>{mped_board}</td> <td>{mped_yop}</td> <td>{mped_marks}</td> <td>{mped_div}</td> </tr> <tr><th colspan="7">M.Ed. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{med_stream}</td> <td>{med_institution}</td> <td>{med_board}</td> <td>{med_yop}</td> <td>{med_marks}</td> <td>{med_div}</td> </tr> <tr><th colspan="7">M.Phil. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{mphil_stream}</td> <td>{mphil_institution}</td> <td>{mphil_board}</td> <td>{mphil_yop}</td> <td>{mphil_marks}</td> <td>{mphil_div}</td> </tr> <tr><th colspan="7">Phd. Information</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{phd_stream}</td> <td>{phd_institution}</td> <td>{phd_board}</td> <td>{phd_yop}</td> <td>{phd_marks}</td> <td>{phd_div}</td> </tr> <tr><th colspan="7">Other Qualification</th></tr> <tr> <th>Stream</th> <th>Institution</th> <th>Board</th> <th>YOP</th> <th>Marks</th> <th>Division</th> </tr> <tr> <td>{other_stream}</td> <td>{other_institution}</td> <td>{other_board}</td> <td>{other_yop}</td> <td>{other_marks}</td> <td>{other_div}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Extra Activities</th> </tr> <tr> <th colspan="2">Scholarship Details</th> <td colspan="2">{details_scholarship}</td> <th colspan="2">Awards/honours Details</th> <td>{details_honours}</td> </tr> <tr> <th colspan="2">Publication Details</th> <td>{details_publication}</td> <th colspan="3">Curricular Activities Details</th> <td>{details_curricular_activities}</td> </tr> <tr> <th colspan="3">Sports Detail</th> <td colspan="4">{details_sport}</td> </tr> </table> <table class="table is-fullwidth is-bordered"> <tr> <th colspan="7">Working Experience</th> </tr> <tr> <th>Institution</th> <th>DOJ</th> <th>DOL</th> <th>Position</th> <th>Subject Taught</th> </tr> <tr> <td>{work_institution}</td> <td>{doj}</td> <td>{dol}</td> <td>{position}</td> <td>{subject_taught}</td> </tr> </table> </section>', '', '', function(opts) {
 
 	var self = this
     self.on("mount", function(){
@@ -15432,6 +16652,7 @@ riot.tag2('staff', '<section class=" is-fluid" show="{staff_view ==\'show_staff\
     	self.staff_view = 'show_staff'
     	self.is_staff_picture=false
     	self.staff_picture=false
+    	self.loading=false
     	self.role = getCookie('role')
     	self.readEmployeeTypes()
     	self.readDesignations()
@@ -15520,6 +16741,7 @@ riot.tag2('staff', '<section class=" is-fluid" show="{staff_view ==\'show_staff\
 
     self.getStaffData = () =>{
 
+    		self.loading=true
     		staffStore.trigger('read_staff', self.refs.r_emp_type_id.value,self.refs.r_department_id.value,self.refs.r_designation_id.value,self.refs.r_level_id.value)
 
     }
@@ -15949,7 +17171,7 @@ riot.tag2('staff', '<section class=" is-fluid" show="{staff_view ==\'show_staff\
         dateFormat: "d/m/Y",
   		})
       staffStore.trigger('read_for_edit_staff',self.emp_id)
-      document.getElementById('pp_box').style.backgroundImage = 'url(/images/staff/'+c+'.jpg)';
+      document.getElementById('pp_box').style.backgroundImage = 'url(/images/empImages/'+c+'.jpg)';
       self.title='Update'
       self.add_new_staff()
 
@@ -15958,7 +17180,7 @@ riot.tag2('staff', '<section class=" is-fluid" show="{staff_view ==\'show_staff\
       console.log(c)
       self.emp_id = c
       staffStore.trigger('read_for_edit_staff',self.emp_id)
-      document.getElementById('pp_box').style.backgroundImage = 'url(/images/staff/'+c+'.jpg)';
+      document.getElementById('pp_box1').src = '/images/empImages/'+c+'.jpg';
       self.title='printProfile'
       self.add_new_staff()
     }
@@ -16140,7 +17362,8 @@ riot.tag2('staff', '<section class=" is-fluid" show="{staff_view ==\'show_staff\
     function StaffChanged(staffs){
       console.log(staffs)
       self.staffs = staffs
-       self.staffs.map(i=>{
+      self.loading=false
+        self.staffs.map(i=>{
          if(i.emp_id==null){
               i.done = false;
                self.emp_id=i.emp_id
@@ -16199,7 +17422,7 @@ riot.tag2('staff', '<section class=" is-fluid" show="{staff_view ==\'show_staff\
     function ReadForEditStaffChanged(staff_details){
      	self.staff_details=staff_details
      	if(self.title=='Update'){
-        self.refs.title.value=staff_details[0].title
+         self.refs.title.value=staff_details[0].title
     	self.refs.first_name.value=staff_details[0].first_name
     	self.refs.middle_name.value=staff_details[0].middle_name
     	self.refs.last_name.value=staff_details[0].last_name
@@ -16384,8 +17607,8 @@ riot.tag2('staff', '<section class=" is-fluid" show="{staff_view ==\'show_staff\
     	self.language=staff_details[0].language
     	self.emp_type_id=staff_details[0].emp_type_id
     	self.department_id=staff_details[0].department_id
-    	self.level_id=staff_details[0].level_i
-    	self.employment_status_id.value=staff_details[0].employment_status_id
+    	self.level_id=staff_details[0].level_id
+    	self.employment_status_id=staff_details[0].employment_status_id
     	self.subject_id=staff_details[0].subject_id
     	self.designation_id=staff_details[0].designation_id
     	self.qualification=staff_details[0].qualification
@@ -17365,11 +18588,128 @@ riot.tag2('student-assign-subject', '<loading-bar if="{loading}"></loading-bar> 
     }
 
 });
-riot.tag2('student-browser', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Students</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getReadSection}"> <option>Choose Standard</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option>Choose Section</option> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readStudentBrowserData}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Roll No</th> <th>Enroll No</th> <th>Student Name</th> <th>Class</th> <th>SMS</th> <th>Student Email</th> <th>Father\'s Name</th> </tr> </thead> <tbody> <tr each="{st, i in browseStudents}"> <td>{i+1}</td> <td>{st.roll_number}</td> <td> {st.enroll_number}</td> <td>{st.first_name} {st.middle_name} {st.last_name}</td> <td>{st.standard}</td> <td>{st.mobile}</td> <td> {st.email}</td> <td>{st.f_name}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('student-browser', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Students</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getReadSection}"> <option>Choose Standard</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option>Choose Section</option> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readStudentBrowserData}">GO </button> <button class="button is-primary has-text-weight-bold" onclick="{showStudentField}">Setting </button> </div> </div> </div> <div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;"> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th show="{title_view ==\'show_title\'}">Title</th> <th show="{first_name_view ==\'show_first_name\'}">First Name</th> <th show="{middle_name_view ==\'show_middle_name\'}">Middle Name </th> <th show="{last_name_view ==\'show_last_name\'}">Last Name</th> <th show="{student_view ==\'show_student\'}">Student Name</th> <th show="{withdrawn_view ==\'show_withdrawn\'}">Withdrawn</th> <th show="{enroll_no_view ==\'show_enroll_no\'}">Enroll No</th> <th show="{reg_no_view ==\'show_reg_no\'}">Reg. No</th> <th show="{roll_no_view ==\'show_roll_no\'}">Roll No</th> <th show="{group_view ==\'show_group\'}">Group</th> <th show="{house_view ==\'show_house\'}">House</th> <th show="{class_view ==\'show_class\'}">Class</th> <th show="{gender_view ==\'show_gender\'}">Gender</th> <th show="{category_view ==\'show_category\'}">Category</th> <th show="{dob_view ==\'show_dob\'}">DOB</th> <th show="{doa_view ==\'show_doa\'}">DOA</th> <th show="{doj_view ==\'show_doj\'}">DOJ</th> <th show="{mother_tongue_view ==\'show_mother_tongue\'}">Mother Tongue</th> <th show="{last_school_view ==\'show_last_school\'}">Last School</th> <th show="{last_class_view ==\'show_last_class\'}">Last Class</th> <th show="{admission_for_view ==\'show_admission_for\'}">Admission For</th> <th show="{hobby_view ==\'show_hobby\'}">Hobby</th> <th show="{blood_group_view ==\'show_blood_group\'}">Blood Group</th> <th show="{nationality_view ==\'show_nationality\'}">Nationality</th> <th show="{cast_view ==\'show_cast\'}">Cast</th> <th show="{religion_view ==\'show_religion\'}">Religion</th> <th show="{c_add_view ==\'show_c_add\'}">C Add</th> <th show="{p_add_view ==\'show_p_add\'}">P Add</th> <th show="{sms_view ==\'show_sms\'}">SMS</th> <th show="{residence_phone_view ==\'show_residence_phone\'}">Residence Phone </th> <th show="{fax_view ==\'show_fax\'}">Fax</th> <th show="{student_type_view ==\'show_student_type\'}">Student Type</th> <th show="{staff_child_view ==\'show_staff_child\'}">Staff Child</th> <th show="{staff_name_view ==\'show_staff_name\'}">Staff Name</th> <th show="{student_email_view ==\'show_student_email\'}">Student Email</th> <th show="{f_title_view ==\'show_f_title\'}">Father Title</th> <th show="{f_name_view ==\'show_f_name\'}">Father\'s Name</th> <th show="{f_school_name_view ==\'show_f_school_name\'}">Father\'s School Name</th> <th show="{f_school_exam__view ==\'show_f_school_exam_\'}">Father\'s School Exam</th> <th show="{f_college_name_view ==\'show_f_college_name\'}">Father\'s College Name</th> <th show="{f_college_exam_view ==\'show_f_college_exam\'}">Father\'s College Exam</th> <th show="{f_occupation_view ==\'show_f_occupation\'}">Father\'s Occupation</th> <th show="{f_add_view ==\'show_f_add\'}">Father\'s Address</th> <th show="{f_phone_view ==\'show_f_phone\'}">Father\'s Phone</th> <th show="{f_mobile_view ==\'show_f_mobile\'}">Father\'s Mobile</th> <th show="{f_fax_view ==\'show_f_fax\'}">Father\'s Fax</th> <th show="{f_email_view ==\'show_f_email\'}">Father\'s Email</th> <th show="{f_organisation_view ==\'show_f_organisation\'}">Father\'s Organisation</th> <th show="{f_annual_income_view ==\'show_f_annual_income\'}">Father\'s AnnualIncome</th> <th show="{f_designation_view ==\'show_f_designation\'}">Father\'s Designation</th> <th show="{f_department_view ==\'show_f_department\'}">Father\'s Department</th> <th show="{f_office_add_view ==\'show_f_office_add\'}">Father\'s Office Add</th> <th show="{f_office_phone_view ==\'show_f_office_phone\'}">Father\'s Office Phone</th> <th show="{f_nationality_view ==\'show_f_nationality\'}">Father\'s Nationality</th> <th show="{m_title_view ==\'show_m_title\'}">Mother Title</th> <th show="{m_name_view ==\'show_m_name\'}">Mother\'s Name</th> <th show="{m_school_exam_view ==\'show_m_school_exam\'}">Mother\'s School Name</th> <th show="{m_exam_exam_view ==\'show_m_exam_exam\'}">Mother\'s School Exam</th> <th show="{m_college_exam_view ==\'show_m_college_exam\'}">Mother\'s College Name</th> <th show="{m_college_name_view ==\'show_m_college_name\'}">Mother\'s College Exam</th> <th show="{m_occupation_view ==\'show_m_occupation\'}">Mother\'s Occupation</th> <th show="{m_add_view ==\'show_m_add\'}">Mother\'s Address</th> <th show="{m_phone_view ==\'show_m_phone\'}">Mother\'s Phone</th> <th show="{m-mobile_view ==\'show_m-mobile\'}">Mother\'s Mobile</th> <th show="{m_fax_view ==\'show_m_fax\'}">Mother\'s Fax</th> <th show="{m_email_view ==\'show_m_email\'}">Mother\'s Email</th> <th show="{m_organisation_view ==\'show_m_organisation\'}">Mother\'s Organisation</th> <th show="{m_annual_income_view ==\'show_m_annual_income\'}">Mother\'s AnnualIncome</th> <th show="{m_designation_view ==\'show_m_designation\'}">Mother\'s Designation</th> <th show="{m_department_view ==\'show_m_department\'}">Mother\'s Department</th> <th show="{m_office_add_view ==\'show_m_office_add\'}">Mother\'s Office Add</th> <th show="{m_office_phone_view ==\'show_m_office_phone\'}">Mother\'s Office Phone</th> <th show="{m_nationality_view ==\'show_m_nationality\'}">Mother\'s Nationality</th> <th show="{g_name_view ==\'show_g_name\'}">Guardian\'s Name</th> <th show="{g_school_name_view ==\'show_g_school_name\'}">Guardian\'s School Name</th> <th show="{g_school_exam_view ==\'show_g_school_exam\'}">Guardian\'s School Exam</th> <th show="{g_college_name_view ==\'show_g_college_name\'}">Guardian\'s College Name</th> <th show="{g-college_exam_view ==\'show_g-college_exam\'}">Guardian\'s College Exam</th> <th show="{g_occupation_view ==\'show_g_occupation\'}">Guardian\'s Occupation</th> <th show="{g_add_view ==\'show_g_add\'}">Guardian\'s Address</th> <th show="{g_phone_view ==\'show_g_phone\'}">Guardian\'s Phone</th> <th show="{g_mobile_view ==\'show_g_mobile\'}">Guardian\'s Mobile</th> <th show="{g_fax_view ==\'show_g_fax\'}">Guardian\'s Fax</th> <th show="{g_email_view ==\'show_g_email\'}">Guardian\'s Email</th> <th show="{g_organisation_view ==\'show_g_organisation\'}">Guardian\'s Organisation</th> <th show="{g_annual_income_view ==\'show_g_annual_income\'}">Guardian\'s AnnualIncome</th> <th show="{g_designation_view ==\'show_g_designation\'}">Guardian\'s Designation</th> <th show="{g_department_view ==\'show_g_department\'}">Guardian\'s Department</th> <th show="{g_office_add_view ==\'show_g_office_add\'}">Guardian\'s Office Add</th> <th show="{g_office_phone_view ==\'show_g_office_phone\'}">Guardian\'s Office Phone</th> <th show="{g_nationality_view ==\'show_g_nationality\'}">Guardian\'s Nationality</th> <th show="{sibling_name_view ==\'show_sibling_name\'}">Sibling Name</th> <th show="{sibling_enroll_no_view ==\'show_sibling_enroll_no\'}">Sibling Enroll No</th> </tr> </thead> <tbody> <tr each="{st, i in browseStudents}"> <td>{i+1}</td> <td show="{title_view ==\'show_title\'}">{st.title}</td> <td show="{first_name_view ==\'show_first_name\'}">{st.first_name}</td> <td show="{middle_name_view ==\'show_middle_name\'}">{st.middle_name}</td> <td show="{last_name_view ==\'show_last_name\'}">{st.last_name}</td> <td show="{student_view ==\'show_student\'}">{st.student_name}</td> <td show="{withdrawn_view ==\'show_withdrawn\'}">{st.withdrawn}</td> <td show="{enroll_no_view ==\'show_enroll_no\'}">{st.enroll_number}</td> <td show="{reg_no_view ==\'show_reg_no\'}">{st.reg_number}</td> <td show="{roll_no_view ==\'show_roll_no\'}">{st.roll_number}</td> <td show="{group_view ==\'show_group\'}">{st.group_name}</td> <td show="{house_view ==\'show_house\'}">{st.house_name}</td> <td show="{class_view ==\'show_class\'}">{st.standard}</td> <td show="{gender_view ==\'show_gender\'}">{st.gender}</td> <td show="{category_view ==\'show_category\'}">{st.category_name}</td> <td show="{dob_view ==\'show_dob\'}">{st.dob}</td> <td show="{doa_view ==\'show_doa\'}">{st.doa}</td> <td show="{doj_view ==\'show_doj\'}">{st.doj}</td> <td show="{mother_tongue_view ==\'show_mother_tongue\'}">{st.mother_tongue}</td> <td show="{last_school_view ==\'show_last_school\'}">{st.last_school}</td> <td show="{last_class_view ==\'show_last_class\'}">{st.last_class}</td> <td show="{admission_for_view ==\'show_admission_for\'}">{st.admission_for_class}</td> <td show="{hobby_view ==\'show_hobby\'}">{st.hobby}</td> <td show="{blood_group_view ==\'show_blood_group\'}">{st.blood_group}</td> <td show="{nationality_view ==\'show_nationality\'}">{st.nationality}</td> <td show="{cast_view ==\'show_cast\'}">{st.cast}</td> <td show="{religion_view ==\'show_religion\'}">{st.religion}</td> <td show="{c_add_view ==\'show_c_add\'}">{st.c_add_l1} {st.c_add_l2} <br> {st.c_city}-{st.c_zip} <br>{st.c_state}, {st.c_country}</td> <td show="{p_add_view ==\'show_p_add\'}">{st.p_add_l1} {st.p_add_l2} <br> {st.p_city}-{st.p_zip} <br>{st.p_state}, {st.p_country}</td> <td show="{mobile_view ==\'show_mobile\'}">{st.mobile}</td> <td show="{residence_phone_view ==\'show_residence_phone\'}">{st.residence_phone}</td> <td show="{fax_view ==\'show_fax\'}">{st.fax}</td> <td show="{student_type_view ==\'show_student_type\'}">{st.student_type}</td> <td show="{staff_child_view ==\'show_staff_child\'}">{st.staff_child}</td> <td show="{staff_name_view ==\'show_staff_name\'}">{st.staff_name}</td> <td show="{email_view ==\'show_email\'}">{st.email}</td> <td show="{f_title_view ==\'show_f_title\'}">{f_title}</td> <td show="{f_name_view ==\'show_f_name\'}">{f_name}</td> <td show="{f_school_name_view ==\'show_f_school_name\'}">{f_school_name}</td> <td show="{f_school_exam_view ==\'show_f_school_exam\'}">{f_school_exam_passed}</td> <td show="{f_college_name_view ==\'show_f_college_name\'}">{st.f_college_name}</td> <td show="{f_college_exam ==\'show_f_college_exam\'}">{st.f_college_exam_passed}</td> <td show="{occupation_view ==\'show_occupation\'}">{f_occupation}</td> <td show="{f_add_view ==\'show_f_add\'}">{st.f_add_l1} {st.f_add_l2} <br> {st.f_city}-{st.f_zip} <br>{st.f_state}, {st.f_country}</td> <td show="{f_phone_view ==\'show_f_phone\'}">{st.f_phone}</td> <td show="{f_mobile_view ==\'show_f_mobile\'}">{st.f_mobile}</td> <td show="{f_fax_view ==\'show_f_fax\'}">{st.f_fax}</td> <td show="{f_email_view ==\'show_f_email\'}">{st.f_email}</td> <td show="{f_organisation_view ==\'show_f_organisation\'}">{st.f_organisation_name}</td> <td show="{f_annual_income_view ==\'show_f_annual_income\'}">{st.f_annual_income}</td> <td show="{f_designation_view ==\'show_f_designation\'}">{st.f_designation}</td> <td show="{f_department_view ==\'show_f_department\'}">{st.f_department}</td> <td show="{f_office_add_view ==\'show_f_office_add\'}">{st.f_office_add_l1} {st.f_office_add_l2} <br> {st.f_office_city}-{st.f_office_zip} <br>{st.f_office_state}, {st.f_office_country}</td> <td show="{f_office_phone_view ==\'show_f_office_phone\'}">{st.f_office_phone}</td> <td show="{f_nationality_view ==\'show_f_nationality\'}">{st.f_nationality}</td> <td show="{m_title_view ==\'show_itle\'}">{m_title}</td> <td show="{m_name_view ==\'show_m_name\'}">{m_name}</td> <td show="{m_school_name_view ==\'show_m_school_name\'}">{m_school_name}</td> <td show="{m_school_exam_view ==\'show_chool_exam\'}">{m_school_exam_passed}</td> <td show="{m_college_name_view ==\'show_m_college_name\'}">{st.m_college_name}</td> <td show="{m_college_exam_view ==\'show_m_college_exam\'}">{st.m_college_exam_passed}</td> <td show="{occupation_view ==\'show_occupation\'}">{m_occupation}</td> <td show="{m_add_view ==\'show_m_add\'}">{st.m_add_l1} {st.m_add_l2} <br> {st.m_city}-{st.m_zip} <br>{st.m_state}, {st.m_country}</td> <td show="{m_phone_view ==\'show_m_phone\'}">{st.m_phone}</td> <td show="{m_mobile_view ==\'show_m_mobile\'}">{st.m_mobile}</td> <td show="{m_fax_view ==\'show_m_fax\'}">{st.m_fax}</td> <td show="{m_email_view ==\'show_m_email\'}">{st.m_email}</td> <td show="{m_organisation_view ==\'show_m_organisation\'}">{st.m_organisation_name}</td> <td show="{m_annual_income_view ==\'show_m_annual_income\'}">{st.m_annual_income}</td> <td show="{m_designation_view ==\'show_m_designation\'}">{st.m_designation}</td> <td show="{m_department_view ==\'show_m_department\'}">{st.m_department}</td> <td show="{m_office_add_view ==\'show_m_office_add\'}">{st.m_office_add_l1} {st.m_office_add_l2} <br> {st.m_office_city}-{st.m_office_zip} <br>{st.m_office_state}, {st.m_office_country}</td> <td show="{m_office_phone_view ==\'show_m_office_phone\'}">{st.m_office_phone}</td> <td show="{m_nationality_view ==\'show_m_nationality\'}">{st.m_nationality}</td> <td show="{g_title_view ==\'show_g_title\'}">{g_title}</td> <td show="{g_name_view ==\'show_g_name\'}">{g_name}</td> <td show="{g_school_name_view ==\'show_g_school_name\'}">{g_school_name}</td> <td show="{g_school_exam_view ==\'show_g_school_exam\'}">{g_school_exag_passed}</td> <td show="{g_college_name_view ==\'show_g_college_name\'}">{st.g_college_name}</td> <td show="{g_college_exam_view ==\'show_g_college_exam\'}">{st.g_college_exag_passed}</td> <td show="{occupation_view ==\'show_occupation\'}">{g_occupation}</td> <td show="{g_add_view ==\'show_g_add\'}">{st.g_add_l1} {st.g_add_l2} <br> {st.g_city}-{st.g_zip} <br>{st.g_state}, {st.g_country}</td> <td show="{g_phone_view ==\'show_g_phone\'}">{st.g_phone}</td> <td show="{g_mobile_view ==\'show_g_mobile\'}">{st.g_mobile}</td> <td show="{g_fax_view ==\'show_g_fax\'}">{st.g_fax}</td> <td show="{g_email_view ==\'show_g_email\'}">{st.g_email}</td> <td show="{g_organisation_view ==\'show_g_organisation\'}">{st.g_organisation_name}</td> <td show="{g_annual_income_view ==\'show_g_annual_income\'}">{st.g_annual_income}</td> <td show="{g_designation_view ==\'show_g_designation\'}">{st.g_designation}</td> <td show="{g_department_view ==\'show_g_department\'}">{st.g_department}</td> <td show="{g_office_add_view ==\'show_g_office_add\'}">{st.g_office_add_l1} {st.g_office_add_l2} <br> {st.g_office_city}-{st.g_office_zip} <br>{st.g_office_state}, {st.g_office_country}</td> <td show="{g_office_phone_view ==\'show_g_office_phone\'}">{st.g_office_phone}</td> <td show="{g_nationality_view ==\'show_g_nationality\'}">{st.g_nationality}</td> <td show="{sibling_view ==\'show_sibling\'}">{st.sibling_name}</td> <td show="{sibling_enroll_no_view ==\'show_sibling_enroll_no\'}">{st.sibling_enroll_number}</td> </tr> </tbody> </table> </div> </section> <section> <div id="columnSetting" class="modal"> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Setting Configuaration</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <div class="control" each="{st, i in fieldList}"> <input class="checkbox" type="checkbox" checked="{st.done}" id="{\'addStudentName\' + st.array_name}" onclick="{addCheckedColumn.bind(this,st)}">{st.field_name} </div> </div> </div> </div> </section> <footer class="modal-card-foot"> <div class="control"> <input type="checkbox" id="checkAllCheckBox" onclick="{selectAllCheckBox}"> All </div> <button class="button" id="item-modal-close" onclick="{closeCheckBoxModal}">Close</button> </footer> </div> </div> </section>', '', '', function(opts) {
 
 	var self = this
     self.on("mount", function(){
     	self.title='Add'
+    	    	self.fieldList =[
+			{ field_name : "Group", array_name : "Group"},
+			{ field_name : "House", array_name : "House"},
+			{ field_name : "Title", array_name : "Title"},
+			{ field_name : "FirstName", array_name : "First Name"},
+			{ field_name : "MiddleName", array_name : "Middle Name"},
+			{ field_name : "LastName", array_name : "Last Name"},
+			{ field_name : "FullName" , array_name : "Full Name"},
+			{ field_name : "Standard" , array_name : "Class"},
+			{ field_name : "Enroll" , array_name : "Enroll No"},
+			{ field_name : "Roll" , array_name : "Roll No"},
+			{ field_name : "Registration", array_name : "Registration No"},
+			{ field_name : "Gender", array_name : "Gender"},
+			{ field_name : "Category", array_name : "Category"},
+			{ field_name : "DOB", array_name : "DOB"},
+			{ field_name : "Age", array_name : "Age as on 1st Apr"},
+			{ field_name : "Income", array_name : "Income"},
+			{ field_name : "DOA", array_name : "DOA"},
+			{ field_name : "DOj", array_name : "DOJ"},
+			{ field_name : "OldDOA", array_name : "Old DOA"},
+			{ field_name : "OldDOj", array_name : "Old DOJ"},
+			{ field_name : "MotherTongue", array_name : "Mother Tongue"},
+			{ field_name : "LastSchool", array_name : "Last School"},
+			{ field_name : "LastClass", array_name : "Last Class"},
+			{ field_name : "AdmissionforClass", array_name : "Admission for Class"},
+			{ field_name : "Hobby", array_name : "Hobby"},
+			{ field_name : "BloodGroup", array_name : "Blood Group"},
+			{ field_name : "Nationality", array_name : "Nationality"},
+			{ field_name : "Cast", array_name : "Cast"},
+			{ field_name : "Religion", array_name : "Religion"},
+			{ field_name : "c_Address", array_name : "Correspondence Address"},
+			{ field_name : "p_Address", array_name : "Permanent Address"},
+			{ field_name : "Mobile" , array_name : "SMS"},
+			{ field_name : "ResidencePhone", array_name : "Residence Phone"},
+			{ field_name : "Fax", array_name : "Fax"},
+			{ field_name : "StudentType", array_name : "Student Type"},
+			{ field_name : "StaffChild", array_name : "Staff Child"},
+			{ field_name : "StaffName", array_name : "Staff Name"},
+			{ field_name : "stdEmail" , array_name : "Student Email"},
+			{ field_name : "f_Title", array_name : "Father Title"},
+			{ field_name : "f_Name" , array_name :"Father Name"},
+			{ field_name : "f_School" , array_name :"f_School Name"},
+			{ field_name : "f_School_Exam" , array_name :"f_School Exam"},
+			{ field_name : "f_College" , array_name :"f_College Name"},
+			{ field_name : "f_College_Exam" , array_name :"f_College Exam"},
+			{ field_name : "f_Occupation" , array_name :"f_Occupation"},
+			{ field_name : "f_Address" , array_name :"f_Address"},
+			{ field_name : "f_Phone" , array_name :"f_Phone"},
+			{ field_name : "f_Mobile" , array_name :"f_Mobile"},
+			{ field_name : "f_Fax" , array_name :"f_Fax"},
+			{ field_name : "f_Email" , array_name :"f_Email"},
+			{ field_name : "f_OrganisationType" , array_name :"f_Organisation Type"},
+			{ field_name : "f_AnnualIncom" , array_name :"f_Annual Income"},
+			{ field_name : "f_OrganisationName" , array_name :"f_Organisation Name"},
+			{ field_name : "f_Designation" , array_name :"f_Designation"},
+			{ field_name : "f_Department" , array_name :"f_Department"},
+			{ field_name : "f_OfficeAddess" , array_name :"f_Office Address"},
+			{ field_name : "f_OfficePhone" , array_name :"f_Office Phone"},
+			{ field_name : "f_Nationality" , array_name :"f_Nationality"},
+
+			{ field_name : "m_Title" , array_name :"Mother Title"},
+			{ field_name : "m_Name" , array_name :"Mother Name"},
+			{ field_name : "m_School" , array_name :"m_School Name"},
+			{ field_name : "m_School_Exam" , array_name :"m_School Exam"},
+			{ field_name : "m_College" , array_name :"m_College Name"},
+			{ field_name : "m_College_Exam" , array_name :"m_College Exam"},
+			{ field_name : "m_Occupation" , array_name :"m_Occupation"},
+			{ field_name : "m_Address" , array_name :"m_Address"},
+			{ field_name : "m_Phone" , array_name :"m_Phone"},
+			{ field_name : "m_Mobile" , array_name :"m_Mobile"},
+			{ field_name : "m_Fax" , array_name :"m_Fax"},
+			{ field_name : "m_Email" , array_name :"m_Email"},
+			{ field_name : "m_OrganisationType" , array_name :"m_Organisation Type"},
+			{ field_name : "m_AnnualIncom" , array_name :"m_Annual Income"},
+			{ field_name : "m_OrganisationName" , array_name :"m_Organisation Name"},
+			{ field_name : "m_Designation" , array_name :"m_Designation"},
+			{ field_name : "m_Department" , array_name :"m_Department"},
+			{ field_name : "m_OfficeAddess" , array_name :"m_Office Address"},
+			{ field_name : "m_OfficePhone" , array_name :"m_Office Phone"},
+			{ field_name : "m_Nationality" , array_name :"m_Nationality"},
+			{ field_name : "g_Title" , array_name :"Guardian Title"},
+			{ field_name : "g_Name" , array_name :"Guardian Name"},
+			{ field_name : "g_School" , array_name :"g_School Name"},
+			{ field_name : "g_School_Exam" , array_name :"g_School Exam"},
+			{ field_name : "g_College" , array_name :"g_College Name"},
+			{ field_name : "g_College_Exam" , array_name :"g_College Exam"},
+			{ field_name : "g_Occupation" , array_name :"g_Occupation"},
+			{ field_name : "g_Address" , array_name :"g_Address"},
+			{ field_name : "g_Phone" , array_name :"g_Phone"},
+			{ field_name : "g_Mobile" , array_name :"g_Mobile"},
+			{ field_name : "g_Fax" , array_name :"g_Fax"},
+			{ field_name : "g_Email" , array_name :"g_Email"},
+			{ field_name : "g_OrganisationType" , array_name :"g_Organisation Type"},
+			{ field_name : "g_AnnualIncom" , array_name :"g_Annual Income"},
+			{ field_name : "g_OrganisationName" , array_name :"g_Organisation Name"},
+			{ field_name : "g_Designation" , array_name :"g_Designation"},
+			{ field_name : "g_Department" , array_name :"g_Department"},
+			{ field_name : "g_OfficeAddess" , array_name :"g_Office Address"},
+			{ field_name : "g_OfficePhone" , array_name :"g_Office Phone"},
+			{ field_name : "g_Nationality" , array_name :"g_Nationality"},
+			{ field_name : "g_relation" , array_name :"g_relation" },
+			{ field_name : "sibling_Name" , array_name :"Sibling Name"},
+			{ field_name : "siblingEnrollNumber" , array_name :"Sibling Enrol Number"}
+
+			  ];
+    	self.first_name_view ='show_first_name'
+		self.middle_name_view ='show_middle_name'
+		self.last_name_view ='show_last_name'
+		self.student_view ='show_student'
+		self.withdrawn_view ='show_withdrawn'
+		self.enroll_no_view ='show_enroll_no'
+		self.reg_no_view ='show_reg_no'
+		self.roll_no_view ='show_roll_no'
+		self.group_view ='show_group'
+		self.house_view ='show_house'
+		self.class_view ='show_class'
+		self.gender_view ='show_gender'
     	self.readStandard()
     	self.readSection()
     	self.role = getCookie('role')
@@ -17425,6 +18765,669 @@ riot.tag2('student-browser', '<section class=" is-fluid"> <div class="level"> <d
       self.loading = false
       self.browseStudents = browseStudents
       self.update()
+
+    }
+    self.closeCheckBoxModal=()=>{
+    	 $("#columnSetting").removeClass("is-active");
+
+    }
+    self.selectAllCheckBox = () => {
+    	console.log("checkAlll")
+      if($('#checkAllCheckBox').is(":checked")){
+        self.fieldList.map(i=>{
+        	console.log(i)
+          i.done = true;
+          $('addStudentName'+i.array_name).prop('checked', true);
+        })
+      }else{
+        self.fieldList.map(i=>{
+          i.done = false;
+          $('addStudentName'+i.array_name).prop('checked', false);
+        })
+      }
+      	var item=''
+      	var event=''
+       self.addCheckedColumn(item,event)
+    }
+
+     self.addCheckedColumn = (item, event) => {
+     	console.log(item)
+     	if(item!=''){
+    	 item.done=!event.item.st.done
+     	}
+
+        self.fieldList.map( q => {
+        	console.log(q.field_name)
+        	let a={}
+	        if(q.done==true && q.array_name=="Group"){
+	           self.group_view='show_group'
+            }
+
+			if(q.done==true && q.array_name=="House"){
+				self.house_view='show_house'
+			}
+			if(q.done==true && q.array_name=="Title"){
+				self.title_view='show_title'
+			}
+
+			if(q.done==true && q.array_name== "First Name"){
+					self.first_name_view='show_first_name'
+			}
+			if(q.done==true && q.array_name=="Middle Name"){
+					self.middle_name_view='show_middle_name'
+			}
+			if(q.done==true && q.array_name== "Last Name"){
+					self.last_name_view='show_last_name'
+			}
+			if(q.done==true && q.array_name=="Full Name"){
+					self.student_view='show_student'
+			}
+
+			if(q.done==true && q.array_name=="Class"){
+					self.class_view='show_class'
+			}
+			if(q.done==true && q.array_name=="Enroll No"){
+					self.enroll_no_view='show_enroll_no'
+			}
+
+			if(q.done==true && q.array_name=="Roll No"){
+					self.roll_no_view='show_roll_no'
+			}
+			if(q.done==true && q.array_name=="Registration No"){
+				self.reg_no_view='show_reg_no'
+			}
+			if(q.done==true && q.array_name=="Gender"){
+					self.gender_view='show_gender'
+			}
+
+			if(q.done==true && q.array_name=="Category"){
+					self.category_view='show_category'
+			}
+			if(q.done==true && q.array_name=="DOB"){
+					self.dob_view='show_dob'
+			}
+			if(q.done==true && q.array_name=="age as on 1st Apr"){
+					self.age_view='show_age'
+			}
+			if(q.done==true && q.array_name=="Income"){
+					self.annual_income_view='show_annual_income'
+			}
+			if(q.done==true && q.array_name=="DOA"){
+					self.doa_view='show_doa'
+			}
+			if(q.done==true && q.array_name=="DOJ"){
+					self.doj_view='show_doj'
+			}
+			if(q.done==true && q.array_name=="Old DOA"){
+					self.old_doa_view='show_old_doa'
+			}
+			if(q.done==true && q.array_name=="Old DOJ"){
+					self.old_doj_view='show_old_doj'
+			}
+			if(q.done==true && q.array_name=="Mother Tongue"){
+					self.mother_tongue_view='show_mother_tongue'
+			}
+			if(q.done==true && q.array_name=="Last School"){
+					self.last_school_view='show_last_school'
+			}
+			if(q.done==true && q.array_name=="Last Class"){
+					self.last_class_view='show_last_class'
+			}
+			if(q.done==true && q.array_name=="Admission for Class"){
+					self.admission_for_view='show_title'
+			}
+			if(q.done==true && q.array_name=="Hobby"){
+					self.hobby_view='show_hobby'
+			}
+			if(q.done==true && q.array_name=="Blood Group"){
+					self.blood_group_view='show_blood_group'
+			}
+			if(q.done==true && q.array_name=="Nationality"){
+					self.nationality_view='show_nationality'
+			}
+			if(q.done==true && q.array_name=="Cast"){
+					self.cast_view='show_cast'
+			}
+			if(q.done==true && q.array_name=="Religion"){
+					self.religion_view='show_religion'
+			}
+			if(q.done==true && q.array_name=="Correspondence Address"){
+					self.c_add_view='show_c_add'
+			}
+			if(q.done==true && q.array_name=="Permanent Address"){
+					self.p_add_view='show_p_add'
+			}
+			if(q.done==true && q.array_name=="SMS"){
+					self.sms_no_view='show_sms_no'
+			}
+			if(q.done==true && q.array_name=="Residence Phone"){
+					self.residence_phone_view='show_residence_phone'
+			}
+			if(q.done==true && q.array_name=="Fax"){
+					self.fax_view='show_fax'
+			}
+			if(q.done==true && q.array_name=="Student Type"){
+					self.student_type_view='show_student_type'
+			}
+			if(q.done==true && q.array_name=="Staff Child"){
+					self.staff_child_view='show_staff_child'
+			}
+			if(q.done==true && q.array_name=="Staff Name"){
+					self.staff_name_view='show_staff_name'
+			}
+			if(q.done==true && q.array_name=="Student Email"){
+					self.student_email_view='show_student_email'
+			}
+			if(q.done==true && q.array_name=="Father Title"){
+					self.f_title_view='show_f_title'
+			}
+			if(q.done==true && q.array_name=="Father Name"){
+					self.f_name_view='show_f_name'
+			}
+			if(q.done==true && q.array_name=="f_School Name"){
+					self.f_school_name_view='show_f_school_name'
+			}
+			if(q.done==true && q.array_name=="f_School Exam"){
+					self.f_school_exam_view='show_f_school_exam'
+			}
+			if(q.done==true && q.array_name=="f_College Name"){
+					self.f_college_name_view='show_f_college_name'
+			}
+			if(q.done==true && q.array_name=="f_College Exam"){
+					self.f_college_exam_view='show_f_college_exam'
+			}
+			if(q.done==true && q.array_name=="f_Occupation"){
+					self.f_occupation_view='show_f_occupation'
+			}
+			if(q.done==true && q.array_name=="f_Address"){
+					self.f_add_view='show_f_add'
+			}
+			if(q.done==true && q.array_name=="f_Phone"){
+					self.f_phone_view='show_f_phone'
+			}
+			if(q.done==true && q.array_name=="f_Mobile"){
+					self.f_mobile_view='show_f_mobile'
+			}
+			if(q.done==true && q.array_name=="f_Fax"){
+					self.f_fax_view='show_f_fax'
+			}
+			if(q.done==true && q.array_name=="f_Email"){
+					self.f_email_view='show_f_email'
+			}
+			if(q.done==true && q.array_name=="f_Organisation Type"){
+					self.f_organisation_view='show_f_organisation'
+			}
+			if(q.done==true && q.array_name=="f_Annual Income"){
+					self.f_annual_income_view='show_f_annual_income'
+			}
+			if(q.done==true && q.array_name=="f_Organisation Name"){
+					self.f_organisation_view='show_f_organisation'
+			}
+			if(q.done==true && q.array_name=="f_Designation"){
+					self.f_designation_view='show_f_designation'
+			}
+			if(q.done==true && q.array_name=="f_Department"){
+					self.f_department_view='show_f_department'
+			}
+			if(q.done==true && q.array_name=="f_Office Address"){
+					self.f_office_add_view='show_f_office_add'
+			}
+			if(q.done==true && q.array_name=="f_Office Phone"){
+					self.f_office_phone_view='show_f_office_phone'
+			}
+			if(q.done==true && q.array_name=="f_Nationality"){
+					self.f_nationality_view='show_f_nationality'
+			}
+
+			if(q.done==true && q.array_name=="Mother Title"){
+					self.m_title_view='show_m_title'
+			}
+			if(q.done==true && q.array_name=="Mother Name"){
+					self.m_name_view='show_m_name'
+			}
+			if(q.done==true && q.array_name=="m_School Name"){
+					self.m_school_name_view='show_m_school_name'
+			}
+			if(q.done==true && q.array_name=="m_School Exam"){
+					self.m_school_exam_view='show_m_school_exam'
+			}
+			if(q.done==true && q.array_name=="m_College Name"){
+					self.m_college_name_view='show_m_college_name'
+			}
+			if(q.done==true && q.array_name=="m_College Exam"){
+					self.m_college_exam_view='show_m_college_exam'
+			}
+			if(q.done==true && q.array_name=="m_Occupation"){
+					self.m_occupation_view='show_m_occupation'
+			}
+			if(q.done==true && q.array_name=="m_Address"){
+					self.m_add_view='show_m_add'
+			}
+			if(q.done==true && q.array_name=="m_Phone"){
+					self.m_phone_view='show_m_phone'
+			}
+			if(q.done==true && q.array_name=="m_Mobile"){
+					self.m_mobile_view='show_m_mobile'
+			}
+			if(q.done==true && q.array_name=="m_Fax"){
+					self.m_fax_view='show_m_fax'
+			}
+			if(q.done==true && q.array_name=="m_Email"){
+					self.m_email_view='show_m_email'
+			}
+			if(q.done==true && q.array_name=="m_Organisation Type"){
+					self.m_organisation_view='show_m_organisation'
+			}
+			if(q.done==true && q.array_name=="m_Annual Income"){
+					self.m_annual_income_view='show_m_annual_income'
+			}
+			if(q.done==true && q.array_name=="m_Organisation Name"){
+					self.m_organisation_view='show_m_organisation'
+			}
+			if(q.done==true && q.array_name=="m_Designation"){
+					self.m_designation_view='show_m_designation'
+			}
+			if(q.done==true && q.array_name=="m_Department"){
+					self.m_department_view='show_m_department'
+			}
+			if(q.done==true && q.array_name=="m_Office Address"){
+					self.m_office_add_view='show_m_office_add'
+			}
+			if(q.done==true && q.array_name=="m_Office Phone"){
+					self.m_office_phone_view='show_m_office_phone'
+			}
+			if(q.done==true && q.array_name=="m_Nationality"){
+					self.m_nationality_view='show_m_nationality'
+			}
+
+			if(q.done==true && q.array_name=="Guardian Title"){
+					self.g_title_view='show_g_title'
+			}
+			if(q.done==true && q.array_name=="Guardian Name"){
+					self.g_name_view='show_g_name'
+			}
+			if(q.done==true && q.array_name=="g_School Name"){
+					self.g_school_name_view='show_g_school_name'
+			}
+			if(q.done==true && q.array_name=="g_School Exam"){
+					self.g_school_exag_view='show_g_school_exam'
+			}
+			if(q.done==true && q.array_name=="g_College Name"){
+					self.g_college_name_view='show_g_college_name'
+			}
+			if(q.done==true && q.array_name=="g_College Exam"){
+					self.g_college_exag_view='show_g_college_exam'
+			}
+			if(q.done==true && q.array_name=="g_Occupation"){
+					self.g_occupation_view='show_g_occupation'
+			}
+			if(q.done==true && q.array_name=="g_Address"){
+					self.g_add_view='show_g_add'
+			}
+			if(q.done==true && q.array_name=="g_Phone"){
+					self.g_phone_view='show_g_phone'
+			}
+			if(q.done==true && q.array_name=="g_Mobile"){
+					self.g_mobile_view='show_g_mobile'
+			}
+			if(q.done==true && q.array_name=="g_Fax"){
+					self.g_fax_view='show_g_fax'
+			}
+			if(q.done==true && q.array_name=="g_Email"){
+					self.g_email_view='show_g_email'
+			}
+			if(q.done==true && q.array_name=="g_Organisation Type"){
+					self.g_organisation_view='show_g_organisation'
+			}
+			if(q.done==true && q.array_name=="g_Annual Income"){
+					self.g_annual_income_view='show_g_annual_income'
+			}
+			if(q.done==true && q.array_name=="g_Organisation Name"){
+					self.g_organisation_view='show_g_organisation'
+			}
+			if(q.done==true && q.array_name=="g_Designation"){
+					self.g_designation_view='show_g_designation'
+			}
+			if(q.done==true && q.array_name=="g_Department"){
+					self.g_department_view='show_g_department'
+			}
+			if(q.done==true && q.array_name=="g_Office Address"){
+					self.g_office_add_view='show_g_office_add'
+			}
+			if(q.done==true && q.array_name=="g_Office Phone"){
+					self.g_office_phone_view='show_g_office_phone'
+			}
+			if(q.done==true && q.array_name=="g_Nationality"){
+					self.g_nationality_view='show_g_nationality'
+			}
+
+			if(q.done==true && q.array_name=="g_relation"){
+
+			}
+			if(q.done==true && q.array_name=="Sibling Name"){
+				self.sibling_view='show_sibling'
+			}
+			if(q.done==true && q.array_name=="Sibling Enrol Number"){
+				self.sibling_enroll_no_view='show_sibling_enroll_no'
+			}
+
+		    if(q.done==false && q.array_name=="Group"){
+	           self.title_view=''
+            }
+
+			if(q.done==false && q.array_name=="House"){
+				self.house_view=''
+			}
+			if(q.done==false && q.array_name=="Title"){
+				self.title_view=''
+			}
+
+			if(q.done==false && q.array_name== "First Name"){
+					self.first_name_view=''
+			}
+			if(q.done==false && q.array_name=="Middle Name"){
+					self.middle_name_view=''
+			}
+			if(q.done==false && q.array_name== "Last Name"){
+					self.last_name_view=''
+			}
+			if(q.done==false && q.array_name=="Full Name"){
+					self.student_view=''
+			}
+
+			if(q.done==false && q.array_name=="Class"){
+					self.class_view=''
+			}
+			if(q.done==false && q.array_name=="Enroll No"){
+					self.enroll_no_view=''
+			}
+
+			if(q.done==false && q.array_name=="Roll No"){
+					self.roll_no_view=''
+			}
+			if(q.done==false && q.array_name=="Registration No"){
+				self.reg_no_view=''
+			}
+			if(q.done==false && q.array_name=="Gender"){
+					self.gender_view=''
+			}
+
+			if(q.done==false && q.array_name=="Category"){
+					self.category_view=''
+			}
+			if(q.done==false && q.array_name=="DOB"){
+					self.dob_view=''
+			}
+			if(q.done==false && q.array_name=="age as on 1st Apr"){
+					self.age_view=''
+			}
+			if(q.done==false && q.array_name=="Income"){
+					self.annual_income_view=''
+			}
+			if(q.done==false && q.array_name=="DOA"){
+					self.doa_view=''
+			}
+			if(q.done==false && q.array_name=="DOJ"){
+					self.doj_view=''
+			}
+			if(q.done==false && q.array_name=="Old DOA"){
+					self.old_doa_view=''
+			}
+			if(q.done==false && q.array_name=="Old DOJ"){
+					self.old_doj_view=''
+			}
+			if(q.done==false && q.array_name=="Mother Tongue"){
+					self.mother_tongue_view=''
+			}
+			if(q.done==false && q.array_name=="Last School"){
+					self.last_school_view=''
+			}
+			if(q.done==false && q.array_name=="Last Class"){
+					self.last_class_view=''
+			}
+			if(q.done==false && q.array_name=="Admission for Class"){
+					self.admission_for_view=''
+			}
+			if(q.done==false && q.array_name=="Hobby"){
+					self.hobby_view=''
+			}
+			if(q.done==false && q.array_name=="Blood Group"){
+					self.blood_group_view=''
+			}
+			if(q.done==false && q.array_name=="Nationality"){
+					self.nationality_view=''
+			}
+			if(q.done==false && q.array_name=="Cast"){
+					self.cast_view=''
+			}
+			if(q.done==false && q.array_name=="Religion"){
+					self.religion_view=''
+			}
+			if(q.done==false && q.array_name=="Correspondence Address"){
+					self.c_add_view=''
+			}
+			if(q.done==false && q.array_name=="Permanent Address"){
+					self.p_add_view=''
+			}
+			if(q.done==false && q.array_name=="SMS"){
+					self.sms_no_view=''
+			}
+			if(q.done==false && q.array_name=="Residence Phone"){
+					self.residence_phone_view=''
+			}
+			if(q.done==false && q.array_name=="Fax"){
+					self.fax_view=''
+			}
+			if(q.done==false && q.array_name=="Student Type"){
+					self.student_type_view=''
+			}
+			if(q.done==false && q.array_name=="Staff Child"){
+					self.staff_child_view=''
+			}
+			if(q.done==false && q.array_name=="Staff Name"){
+					self.staff_name_view=''
+			}
+			if(q.done==false && q.array_name=="Student Email"){
+					self.student_email_view=''
+			}
+			if(q.done==false && q.array_name=="Father Title"){
+					self.f_title_view=''
+			}
+			if(q.done==false && q.array_name=="Father Name"){
+					self.f_name_view=''
+			}
+			if(q.done==false && q.array_name=="f_School Name"){
+					self.f_school_name_view=''
+			}
+			if(q.done==false && q.array_name=="f_School Exam"){
+					self.f_school_exam_view=''
+			}
+			if(q.done==false && q.array_name=="f_College Name"){
+					self.f_college_name_view=''
+			}
+			if(q.done==false && q.array_name=="f_College Exam"){
+					self.f_college_exam_view=''
+			}
+			if(q.done==false && q.array_name=="f_Occupation"){
+					self.f_occupation_view=''
+			}
+			if(q.done==false && q.array_name=="f_Address"){
+					self.f_add_view=''
+			}
+			if(q.done==false && q.array_name=="f_Phone"){
+					self.f_phone_view=''
+			}
+			if(q.done==false && q.array_name=="f_Mobile"){
+					self.f_mobile_view=''
+			}
+			if(q.done==false && q.array_name=="f_Fax"){
+					self.f_fax_view=''
+			}
+			if(q.done==false && q.array_name=="f_Email"){
+					self.f_email_view=''
+			}
+			if(q.done==false && q.array_name=="f_Organisation Type"){
+					self.f_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="f_Annual Income"){
+					self.f_annual_income_view=''
+			}
+			if(q.done==false && q.array_name=="f_Organisation Name"){
+					self.f_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="f_Designation"){
+					self.f_designation_view=''
+			}
+			if(q.done==false && q.array_name=="f_Department"){
+					self.f_department_view=''
+			}
+			if(q.done==false && q.array_name=="f_Office Address"){
+					self.f_office_add_view=''
+			}
+			if(q.done==false && q.array_name=="f_Office Phone"){
+					self.f_office_phone_view=''
+			}
+			if(q.done==false && q.array_name=="f_Nationality"){
+					self.f_nationality_view=''
+			}
+
+			if(q.done==false && q.array_name=="Mother Title"){
+					self.m_title_view=''
+			}
+			if(q.done==false && q.array_name=="Mother Name"){
+					self.m_name_view=''
+			}
+			if(q.done==false && q.array_name=="m_School Name"){
+					self.m_school_name_view=''
+			}
+			if(q.done==false && q.array_name=="m_School Exam"){
+					self.m_school_exam_view=''
+			}
+			if(q.done==false && q.array_name=="m_College Name"){
+					self.m_college_name_view=''
+			}
+			if(q.done==false && q.array_name=="m_College Exam"){
+					self.m_college_exam_view=''
+			}
+			if(q.done==false && q.array_name=="m_Occupation"){
+					self.m_occupation_view=''
+			}
+			if(q.done==false && q.array_name=="m_Address"){
+					self.m_add_view=''
+			}
+			if(q.done==false && q.array_name=="m_Phone"){
+					self.m_phone_view=''
+			}
+			if(q.done==false && q.array_name=="m_Mobile"){
+					self.m_mobile_view=''
+			}
+			if(q.done==false && q.array_name=="m_Fax"){
+					self.m_fax_view=''
+			}
+			if(q.done==false && q.array_name=="m_Email"){
+					self.m_email_view=''
+			}
+			if(q.done==false && q.array_name=="m_Organisation Type"){
+					self.m_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="m_Annual Income"){
+					self.m_annual_income_view=''
+			}
+			if(q.done==false && q.array_name=="m_Organisation Name"){
+					self.m_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="m_Designation"){
+					self.m_designation_view=''
+			}
+			if(q.done==false && q.array_name=="m_Department"){
+					self.m_department_view=''
+			}
+			if(q.done==false && q.array_name=="m_Office Address"){
+					self.m_office_add_view=''
+			}
+			if(q.done==false && q.array_name=="m_Office Phone"){
+					self.m_office_phone_view=''
+			}
+			if(q.done==false && q.array_name=="m_Nationality"){
+					self.m_nationality_view=''
+			}
+
+			if(q.done==false && q.array_name=="Guardian Title"){
+					self.g_title_view=''
+			}
+			if(q.done==false && q.array_name=="Guardian Name"){
+					self.g_name_view=''
+			}
+			if(q.done==false && q.array_name=="g_School Name"){
+					self.g_school_name_view=''
+			}
+			if(q.done==false && q.array_name=="g_School Exam"){
+					self.g_school_exag_view=''
+			}
+			if(q.done==false && q.array_name=="g_College Name"){
+					self.g_college_name_view=''
+			}
+			if(q.done==false && q.array_name=="g_College Exam"){
+					self.g_college_exag_view=''
+			}
+			if(q.done==false && q.array_name=="g_Occupation"){
+					self.g_occupation_view=''
+			}
+			if(q.done==false && q.array_name=="g_Address"){
+					self.g_add_view=''
+			}
+			if(q.done==false && q.array_name=="g_Phone"){
+					self.g_phone_view=''
+			}
+			if(q.done==false && q.array_name=="g_Mobile"){
+					self.g_mobile_view=''
+			}
+			if(q.done==false && q.array_name=="g_Fax"){
+					self.g_fax_view=''
+			}
+			if(q.done==false && q.array_name=="g_Email"){
+					self.g_email_view=''
+			}
+			if(q.done==false && q.array_name=="g_Organisation Type"){
+					self.g_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="g_Annual Income"){
+					self.g_annual_income_view=''
+			}
+			if(q.done==false && q.array_name=="g_Organisation Name"){
+					self.g_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="g_Designation"){
+					self.g_designation_view=''
+			}
+			if(q.done==false && q.array_name=="g_Department"){
+					self.department_view=''
+			}
+			if(q.done==false && q.array_name=="g_Office Address"){
+					self.g_office_add_view=''
+			}
+			if(q.done==false && q.array_name=="g_Office Phone"){
+					self.g_office_phone_view=''
+			}
+			if(q.done==false && q.array_name=="g_Nationality"){
+					self.g_nationality_view=''
+			}
+
+			if(q.done==false && q.array_name=="g_relation"){
+
+			}
+			if(q.done==false && q.array_name=="Sibling Name"){
+				self.sibling_view=''
+			}
+			if(q.done==false && q.array_name=="Sibling Enrol Number"){
+				self.sibling_enroll_no_view=''
+			}
+
+        })
+    }
+
+    self.showStudentField = () =>{
+       $("#columnSetting").addClass("is-active")
 
     }
 
@@ -17559,11 +19562,12 @@ riot.tag2('student-class-teacher-report', '<section class=" is-fluid"> <div clas
     }
 
 });
-riot.tag2('student-group-report', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Students</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getReadSection}"> <option>Choose Standard</option> <option value="-1">All</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option>Choose Section</option> <option value="-1">All</option> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readStudentGroupReport}">GO </button> <input type="checkbox" id="checkTable" checked="{e.done}" onclick="{viewTable}" style="margin-top: 12px;"> Table </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow" show="{report_view ==\'show_table\'}"> <thead> <tr> <th>#</th> <th>Student Group</th> <th>Strength</th> </tr> </thead> <tbody> <tr each="{st, i in studentGroupReports}"> <td>{i+1}</td> <td>{st.group_name}</td> <td>{st.total}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('student-group-report', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Students</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getReadSection}"> <option>Choose Standard</option> <option value="-1">All</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option>Choose Section</option> <option value="-1">All</option> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readStudentGroupReport}">GO </button> <input type="checkbox" id="checkTable" checked="{e.done}" onclick="{viewTable}" style="margin-top: 12px;"> Table </div> </div> </div> <canvas id="canvas_pie" show="{report_view ==\'show_graph\'}"></canvas> <table class="table is-fullwidth is-striped is-hoverable is-narrow" show="{report_view ==\'show_table\'}"> <thead> <tr> <th>#</th> <th>Student Group</th> <th>Strength</th> </tr> </thead> <tbody> <tr each="{st, i in studentGroupReports}"> <td>{i+1}</td> <td>{st.group_name}</td> <td>{st.total}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
 
 	var self = this
     self.on("mount", function(){
     	self.title='Add'
+    	self.report_view='show_graph'
     	self.readStandard()
     	self.readSection()
     	self.role = getCookie('role')
@@ -17621,12 +19625,54 @@ riot.tag2('student-group-report', '<section class=" is-fluid"> <div class="level
       self.getReadSection()
     }
     adminReportStore.on('read_student_group_report_change',ReadStudentGroupReportChanged)
-    function ReadStudentGroupReportChanged(studentGroupReports){
-
+    function ReadStudentGroupReportChanged(studentGroupReports,grandTotal){
+       console.log(grandTotal)
       self.title='Create'
       self.loading = false
       self.studentGroupReports = studentGroupReports
-      self.update()
+      self.grand_total = grandTotal
+
+     var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
+
+		var labels = []
+		var chart_percentage = []
+        var backgroundColor = []
+
+		 for (var i = self.studentGroupReports.length - 1; i >= 0; i--) {
+		 	var total_percentage = ((self.studentGroupReports[i].total*100)/self.grand_total).toFixed(2);
+		    var percentage = self.studentGroupReports[i].group_name + ' ( ' + self.studentGroupReports[i].total + ' , ' + total_percentage + '% )';
+
+		    labels.push(percentage)
+		    chart_percentage.push(self.studentGroupReports[i].total)
+		    if(typeof chartColors[i] != "undefined"){
+		    	backgroundColor.push(chartColors[i])
+		    }
+
+		 }
+
+		  console.log(labels);
+		  console.log(chart_percentage);
+
+		  var config = {
+		    type: 'pie',
+		    data: {
+		      datasets: [{
+		        data: chart_percentage,
+		        backgroundColor: backgroundColor,
+		        label: 'labels'
+		      }],
+		      labels: labels
+		    },
+		    options: {
+		      responsive: true
+		    }
+		  };
+
+		  var ctx = document.getElementById('canvas_pie').getContext('2d');
+		  window.myPie = new Chart(ctx, config);
+	      self.update()
+	      console.log(self.studentGroupReports)
+	      self.update()
 
     }
 
@@ -18229,11 +20275,12 @@ riot.tag2('student-group-student', '<loading-bar if="{loading}"></loading-bar> <
     }
 
 });
-riot.tag2('student-house-report', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Student House Report</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getReadSection}"> <option>Choose Standard</option> <option value="-1">All</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option>Choose Section</option> <option value="-1">All</option> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readStudentHouseReport}">GO </button> <input type="checkbox" id="checkTable" checked="{e.done}" onclick="{viewTable}" style="margin-top: 12px;"> Table </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow" show="{report_view ==\'show_table\'}"> <thead> <tr> <th>#</th> <th>Student House</th> <th>Strength</th> </tr> </thead> <tbody> <tr each="{st, i in studentHouseReports}"> <td>{i+1}</td> <td>{st.house_name}</td> <td>{st.total}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('student-house-report', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Student House Report</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getReadSection}"> <option>Choose Standard</option> <option value="-1">All</option> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id"> <option>Choose Section</option> <option value="-1">All</option> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readStudentHouseReport}">GO </button> <input type="checkbox" id="checkTable" checked="{e.done}" onclick="{viewTable}" style="margin-top: 12px;"> Table </div> </div> </div> <canvas id="canvas_pie" show="{report_view ==\'show_graph\'}"></canvas> <table class="table is-fullwidth is-striped is-hoverable is-narrow" show="{report_view ==\'show_table\'}"> <thead> <tr> <th>#</th> <th>Student House</th> <th>Strength</th> </tr> </thead> <tbody> <tr each="{st, i in studentHouseReports}"> <td>{i+1}</td> <td>{st.house_name}</td> <td>{st.total}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
 
 	var self = this
     self.on("mount", function(){
     	self.title='Add'
+    	self.report_view ='show_graph'
     	self.readStandard()
     	self.readSection()
     	self.role = getCookie('role')
@@ -18291,11 +20338,53 @@ riot.tag2('student-house-report', '<section class=" is-fluid"> <div class="level
       self.getReadSection()
     }
     adminReportStore.on('read_student_house_report_change',ReadStudentHouseReportChanged)
-    function ReadStudentHouseReportChanged(studentHouseReports){
+    function ReadStudentHouseReportChanged(studentHouseReports,grandTotal){
 
       self.title='Create'
       self.loading = false
       self.studentHouseReports = studentHouseReports
+       self.grand_total = grandTotal
+
+      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
+
+		var labels = []
+		var chart_percentage = []
+        var backgroundColor = []
+
+		 for (var i = self.studentHouseReports.length - 1; i >= 0; i--) {
+		 	var total_percentage = ((self.studentHouseReports[i].total*100)/self.grand_total).toFixed(2);
+		    var percentage = self.studentHouseReports[i].house_name + ' ( ' + self.studentHouseReports[i].total + ' , ' + total_percentage + '% )';
+
+		    labels.push(percentage)
+		    chart_percentage.push(self.studentHouseReports[i].total)
+		    if(typeof chartColors[i] != "undefined"){
+		    	backgroundColor.push(chartColors[i])
+		    }
+
+		 }
+
+		  console.log(labels);
+		  console.log(chart_percentage);
+
+		  var config = {
+		    type: 'pie',
+		    data: {
+		      datasets: [{
+		        data: chart_percentage,
+		        backgroundColor: backgroundColor,
+		        label: 'labels'
+		      }],
+		      labels: labels
+		    },
+		    options: {
+		      responsive: true
+		    }
+		  };
+
+		  var ctx = document.getElementById('canvas_pie').getContext('2d');
+		  window.myPie = new Chart(ctx, config);
+	      self.update()
+	      console.log(self.studentHouseReports)
       self.update()
 
     }
@@ -19050,12 +21139,130 @@ riot.tag2('student-school-leaving', '<loading-bar if="{loading}"></loading-bar> 
     }
 
 });
-riot.tag2('student-search', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Students</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <label class="label">Roll No</label> </div> </div> <div class="column is-narrow"> <div class="control"> <input type="text" name="" ref="roll_no" class="input"> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{searchByField}">Go </button> <button class="button is-danger has-text-weight-bold" onclick="{showSearchBox}"><b>>></b> </button> </div> </div> </div> <div class="box" show="{search_view ==\'more_search_box\'}"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <label class="label">Name</label> </div> </div> <div class="column is-narrow"> <div class="control"> <input type="text" name="" ref="student_name" class="input"> </div> </div> <div class="column is-narrow"> <div class="control"> <label class="label">Reg.Number</label> </div> </div> <div class="column is-narrow"> <div class="control"> <input type="text" name="" ref="reg_number" class="input"> </div> </div> </div> <div class="columns"> <div class="column is-narrow"> <div class="control"> <label class="label">F Name</label> </div> </div> <div class="column is-narrow"> <div class="control"> <input type="text" name="" ref="f_name" class="input"> </div> </div> <div class="column is-narrow"> <div class="control"> <label class="label">M Name</label> </div> </div> <div class="column is-narrow"> <div class="control"> <input type="text" name="" ref="m_name" class="input"> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{searchByField}">Search </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Student Name</th> <th>Withdrawn</th> <th>Enroll No</th> <th>Reg. No</th> <th>Roll No</th> <th>House</th> <th>Class</th> <th>Father\'s Name</th> <th>Mother\'s Name</th> </tr> </thead> <tbody> <tr each="{st, i in searchStudents}"> <td>{i+1}</td> <td>{st.first_name} {st.middle_name} {st.last_name}</td> <td>{st.withdraw}</td> <td> {st.enroll_number}</td> <td> {st.reg_number}</td> <td>{st.roll_number}</td> <td>{st.house_name}</td> <td>{st.standard}</td> <td>{st.f_name}</td> <td>{st.m_name}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('student-search', '<section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Students</h2> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <label class="label">Roll No</label> </div> </div> <div class="column is-narrow"> <div class="control"> <input type="text" name="" ref="roll_no" class="input"> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{searchByField}">Go </button> <button class="button is-danger has-text-weight-bold" onclick="{showSearchBox}"><b>>></b> </button> <button class="button is-primary has-text-weight-bold" onclick="{showStudentField}">Setting </button> </div> </div> </div> <div class="box" show="{search_view ==\'more_search_box\'}"> <div class="columns"> <div class="column is-narrow"> <div class="control"> <label class="label">Name</label> </div> </div> <div class="column is-narrow"> <div class="control"> <input type="text" name="" ref="student_name" class="input"> </div> </div> <div class="column is-narrow"> <div class="control"> <label class="label">Reg.Number</label> </div> </div> <div class="column is-narrow"> <div class="control"> <input type="text" name="" ref="reg_number" class="input"> </div> </div> </div> <div class="columns"> <div class="column is-narrow"> <div class="control"> <label class="label">F Name</label> </div> </div> <div class="column is-narrow"> <div class="control"> <input type="text" name="" ref="f_name" class="input"> </div> </div> <div class="column is-narrow"> <div class="control"> <label class="label">M Name</label> </div> </div> <div class="column is-narrow"> <div class="control"> <input type="text" name="" ref="m_name" class="input"> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{searchByField}">Search </button> </div> </div> </div> <div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;"> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th show="{title_view ==\'show_title\'}">Title</th> <th show="{first_name_view ==\'show_first_name\'}">First Name</th> <th show="{middle_name_view ==\'show_middle_name\'}">Middle Name </th> <th show="{last_name_view ==\'show_last_name\'}">Last Name</th> <th show="{student_view ==\'show_student\'}">Student Name</th> <th show="{withdrawn_view ==\'show_withdrawn\'}">Withdrawn</th> <th show="{enroll_no_view ==\'show_enroll_no\'}">Enroll No</th> <th show="{reg_no_view ==\'show_reg_no\'}">Reg. No</th> <th show="{roll_no_view ==\'show_roll_no\'}">Roll No</th> <th show="{group_view ==\'show_group\'}">Group</th> <th show="{house_view ==\'show_house\'}">House</th> <th show="{class_view ==\'show_class\'}">Class</th> <th show="{gender_view ==\'show_gender\'}">Gender</th> <th show="{category_view ==\'show_category\'}">Category</th> <th show="{dob_view ==\'show_dob\'}">DOB</th> <th show="{doa_view ==\'show_doa\'}">DOA</th> <th show="{doj_view ==\'show_doj\'}">DOJ</th> <th show="{mother_tongue_view ==\'show_mother_tongue\'}">Mother Tongue</th> <th show="{last_school_view ==\'show_last_school\'}">Last School</th> <th show="{last_class_view ==\'show_last_class\'}">Last Class</th> <th show="{admission_for_view ==\'show_admission_for\'}">Admission For</th> <th show="{hobby_view ==\'show_hobby\'}">Hobby</th> <th show="{blood_group_view ==\'show_blood_group\'}">Blood Group</th> <th show="{nationality_view ==\'show_nationality\'}">Nationality</th> <th show="{cast_view ==\'show_cast\'}">Cast</th> <th show="{religion_view ==\'show_religion\'}">Religion</th> <th show="{c_add_view ==\'show_c_add\'}">C Add</th> <th show="{p_add_view ==\'show_p_add\'}">P Add</th> <th show="{sms_view ==\'show_sms\'}">SMS</th> <th show="{residence_phone_view ==\'show_residence_phone\'}">Residence Phone </th> <th show="{fax_view ==\'show_fax\'}">Fax</th> <th show="{student_type_view ==\'show_student_type\'}">Student Type</th> <th show="{staff_child_view ==\'show_staff_child\'}">Staff Child</th> <th show="{staff_name_view ==\'show_staff_name\'}">Staff Name</th> <th show="{student_email_view ==\'show_student_email\'}">Student Email</th> <th show="{f_title_view ==\'show_f_title\'}">Father Title</th> <th show="{f_name_view ==\'show_f_name\'}">Father\'s Name</th> <th show="{f_school_name_view ==\'show_f_school_name\'}">Father\'s School Name</th> <th show="{f_school_exam__view ==\'show_f_school_exam_\'}">Father\'s School Exam</th> <th show="{f_college_name_view ==\'show_f_college_name\'}">Father\'s College Name</th> <th show="{f_college_exam_view ==\'show_f_college_exam\'}">Father\'s College Exam</th> <th show="{f_occupation_view ==\'show_f_occupation\'}">Father\'s Occupation</th> <th show="{f_add_view ==\'show_f_add\'}">Father\'s Address</th> <th show="{f_phone_view ==\'show_f_phone\'}">Father\'s Phone</th> <th show="{f_mobile_view ==\'show_f_mobile\'}">Father\'s Mobile</th> <th show="{f_fax_view ==\'show_f_fax\'}">Father\'s Fax</th> <th show="{f_email_view ==\'show_f_email\'}">Father\'s Email</th> <th show="{f_organisation_view ==\'show_f_organisation\'}">Father\'s Organisation</th> <th show="{f_annual_income_view ==\'show_f_annual_income\'}">Father\'s AnnualIncome</th> <th show="{f_designation_view ==\'show_f_designation\'}">Father\'s Designation</th> <th show="{f_department_view ==\'show_f_department\'}">Father\'s Department</th> <th show="{f_office_add_view ==\'show_f_office_add\'}">Father\'s Office Add</th> <th show="{f_office_phone_view ==\'show_f_office_phone\'}">Father\'s Office Phone</th> <th show="{f_nationality_view ==\'show_f_nationality\'}">Father\'s Nationality</th> <th show="{m_title_view ==\'show_m_title\'}">Mother Title</th> <th show="{m_name_view ==\'show_m_name\'}">Mother\'s Name</th> <th show="{m_school_exam_view ==\'show_m_school_exam\'}">Mother\'s School Name</th> <th show="{m_exam_exam_view ==\'show_m_exam_exam\'}">Mother\'s School Exam</th> <th show="{m_college_exam_view ==\'show_m_college_exam\'}">Mother\'s College Name</th> <th show="{m_college_name_view ==\'show_m_college_name\'}">Mother\'s College Exam</th> <th show="{m_occupation_view ==\'show_m_occupation\'}">Mother\'s Occupation</th> <th show="{m_add_view ==\'show_m_add\'}">Mother\'s Address</th> <th show="{m_phone_view ==\'show_m_phone\'}">Mother\'s Phone</th> <th show="{m-mobile_view ==\'show_m-mobile\'}">Mother\'s Mobile</th> <th show="{m_fax_view ==\'show_m_fax\'}">Mother\'s Fax</th> <th show="{m_email_view ==\'show_m_email\'}">Mother\'s Email</th> <th show="{m_organisation_view ==\'show_m_organisation\'}">Mother\'s Organisation</th> <th show="{m_annual_income_view ==\'show_m_annual_income\'}">Mother\'s AnnualIncome</th> <th show="{m_designation_view ==\'show_m_designation\'}">Mother\'s Designation</th> <th show="{m_department_view ==\'show_m_department\'}">Mother\'s Department</th> <th show="{m_office_add_view ==\'show_m_office_add\'}">Mother\'s Office Add</th> <th show="{m_office_phone_view ==\'show_m_office_phone\'}">Mother\'s Office Phone</th> <th show="{m_nationality_view ==\'show_m_nationality\'}">Mother\'s Nationality</th> <th show="{g_name_view ==\'show_g_name\'}">Guardian\'s Name</th> <th show="{g_school_name_view ==\'show_g_school_name\'}">Guardian\'s School Name</th> <th show="{g_school_exam_view ==\'show_g_school_exam\'}">Guardian\'s School Exam</th> <th show="{g_college_name_view ==\'show_g_college_name\'}">Guardian\'s College Name</th> <th show="{g-college_exam_view ==\'show_g-college_exam\'}">Guardian\'s College Exam</th> <th show="{g_occupation_view ==\'show_g_occupation\'}">Guardian\'s Occupation</th> <th show="{g_add_view ==\'show_g_add\'}">Guardian\'s Address</th> <th show="{g_phone_view ==\'show_g_phone\'}">Guardian\'s Phone</th> <th show="{g_mobile_view ==\'show_g_mobile\'}">Guardian\'s Mobile</th> <th show="{g_fax_view ==\'show_g_fax\'}">Guardian\'s Fax</th> <th show="{g_email_view ==\'show_g_email\'}">Guardian\'s Email</th> <th show="{g_organisation_view ==\'show_g_organisation\'}">Guardian\'s Organisation</th> <th show="{g_annual_income_view ==\'show_g_annual_income\'}">Guardian\'s AnnualIncome</th> <th show="{g_designation_view ==\'show_g_designation\'}">Guardian\'s Designation</th> <th show="{g_department_view ==\'show_g_department\'}">Guardian\'s Department</th> <th show="{g_office_add_view ==\'show_g_office_add\'}">Guardian\'s Office Add</th> <th show="{g_office_phone_view ==\'show_g_office_phone\'}">Guardian\'s Office Phone</th> <th show="{g_nationality_view ==\'show_g_nationality\'}">Guardian\'s Nationality</th> <th show="{sibling_name_view ==\'show_sibling_name\'}">Sibling Name</th> <th show="{sibling_enroll_no_view ==\'show_sibling_enroll_no\'}">Sibling Enroll No</th> </tr> </thead> <tbody> <tr each="{st, i in searchStudents}"> <td>{i+1}</td> <td show="{title_view ==\'show_title\'}">{st.title}</td> <td show="{first_name_view ==\'show_first_name\'}">{st.first_name}</td> <td show="{middle_name_view ==\'show_middle_name\'}">{st.middle_name}</td> <td show="{last_name_view ==\'show_last_name\'}">{st.last_name}</td> <td show="{student_view ==\'show_student\'}">{st.student_name}</td> <td show="{withdrawn_view ==\'show_withdrawn\'}">{st.withdrawn}</td> <td show="{enroll_no_view ==\'show_enroll_no\'}">{st.enroll_number}</td> <td show="{reg_no_view ==\'show_reg_no\'}">{st.reg_number}</td> <td show="{roll_no_view ==\'show_roll_no\'}">{st.roll_number}</td> <td show="{group_view ==\'show_group\'}">{st.group_name}</td> <td show="{house_view ==\'show_house\'}">{st.house_name}</td> <td show="{class_view ==\'show_class\'}">{st.standard}</td> <td show="{gender_view ==\'show_gender\'}">{st.gender}</td> <td show="{category_view ==\'show_category\'}">{st.category_name}</td> <td show="{dob_view ==\'show_dob\'}">{st.dob}</td> <td show="{doa_view ==\'show_doa\'}">{st.doa}</td> <td show="{doj_view ==\'show_doj\'}">{st.doj}</td> <td show="{mother_tongue_view ==\'show_mother_tongue\'}">{st.mother_tongue}</td> <td show="{last_school_view ==\'show_last_school\'}">{st.last_school}</td> <td show="{last_class_view ==\'show_last_class\'}">{st.last_class}</td> <td show="{admission_for_view ==\'show_admission_for\'}">{st.admission_for_class}</td> <td show="{hobby_view ==\'show_hobby\'}">{st.hobby}</td> <td show="{blood_group_view ==\'show_blood_group\'}">{st.blood_group}</td> <td show="{nationality_view ==\'show_nationality\'}">{st.nationality}</td> <td show="{cast_view ==\'show_cast\'}">{st.cast}</td> <td show="{religion_view ==\'show_religion\'}">{st.religion}</td> <td show="{c_add_view ==\'show_c_add\'}">{st.c_add_l1} {st.c_add_l2} <br> {st.c_city}-{st.c_zip} <br>{st.c_state}, {st.c_country}</td> <td show="{p_add_view ==\'show_p_add\'}">{st.p_add_l1} {st.p_add_l2} <br> {st.p_city}-{st.p_zip} <br>{st.p_state}, {st.p_country}</td> <td show="{mobile_view ==\'show_mobile\'}">{st.mobile}</td> <td show="{residence_phone_view ==\'show_residence_phone\'}">{st.residence_phone}</td> <td show="{fax_view ==\'show_fax\'}">{st.fax}</td> <td show="{student_type_view ==\'show_student_type\'}">{st.student_type}</td> <td show="{staff_child_view ==\'show_staff_child\'}">{st.staff_child}</td> <td show="{staff_name_view ==\'show_staff_name\'}">{st.staff_name}</td> <td show="{email_view ==\'show_email\'}">{st.email}</td> <td show="{f_title_view ==\'show_f_title\'}">{f_title}</td> <td show="{f_name_view ==\'show_f_name\'}">{f_name}</td> <td show="{f_school_name_view ==\'show_f_school_name\'}">{f_school_name}</td> <td show="{f_school_exam_view ==\'show_f_school_exam\'}">{f_school_exam_passed}</td> <td show="{f_college_name_view ==\'show_f_college_name\'}">{st.f_college_name}</td> <td show="{f_college_exam ==\'show_f_college_exam\'}">{st.f_college_exam_passed}</td> <td show="{occupation_view ==\'show_occupation\'}">{f_occupation}</td> <td show="{f_add_view ==\'show_f_add\'}">{st.f_add_l1} {st.f_add_l2} <br> {st.f_city}-{st.f_zip} <br>{st.f_state}, {st.f_country}</td> <td show="{f_phone_view ==\'show_f_phone\'}">{st.f_phone}</td> <td show="{f_mobile_view ==\'show_f_mobile\'}">{st.f_mobile}</td> <td show="{f_fax_view ==\'show_f_fax\'}">{st.f_fax}</td> <td show="{f_email_view ==\'show_f_email\'}">{st.f_email}</td> <td show="{f_organisation_view ==\'show_f_organisation\'}">{st.f_organisation_name}</td> <td show="{f_annual_income_view ==\'show_f_annual_income\'}">{st.f_annual_income}</td> <td show="{f_designation_view ==\'show_f_designation\'}">{st.f_designation}</td> <td show="{f_department_view ==\'show_f_department\'}">{st.f_department}</td> <td show="{f_office_add_view ==\'show_f_office_add\'}">{st.f_office_add_l1} {st.f_office_add_l2} <br> {st.f_office_city}-{st.f_office_zip} <br>{st.f_office_state}, {st.f_office_country}</td> <td show="{f_office_phone_view ==\'show_f_office_phone\'}">{st.f_office_phone}</td> <td show="{f_nationality_view ==\'show_f_nationality\'}">{st.f_nationality}</td> <td show="{m_title_view ==\'show_itle\'}">{m_title}</td> <td show="{m_name_view ==\'show_m_name\'}">{m_name}</td> <td show="{m_school_name_view ==\'show_m_school_name\'}">{m_school_name}</td> <td show="{m_school_exam_view ==\'show_chool_exam\'}">{m_school_exam_passed}</td> <td show="{m_college_name_view ==\'show_m_college_name\'}">{st.m_college_name}</td> <td show="{m_college_exam_view ==\'show_m_college_exam\'}">{st.m_college_exam_passed}</td> <td show="{occupation_view ==\'show_occupation\'}">{m_occupation}</td> <td show="{m_add_view ==\'show_m_add\'}">{st.m_add_l1} {st.m_add_l2} <br> {st.m_city}-{st.m_zip} <br>{st.m_state}, {st.m_country}</td> <td show="{m_phone_view ==\'show_m_phone\'}">{st.m_phone}</td> <td show="{m_mobile_view ==\'show_m_mobile\'}">{st.m_mobile}</td> <td show="{m_fax_view ==\'show_m_fax\'}">{st.m_fax}</td> <td show="{m_email_view ==\'show_m_email\'}">{st.m_email}</td> <td show="{m_organisation_view ==\'show_m_organisation\'}">{st.m_organisation_name}</td> <td show="{m_annual_income_view ==\'show_m_annual_income\'}">{st.m_annual_income}</td> <td show="{m_designation_view ==\'show_m_designation\'}">{st.m_designation}</td> <td show="{m_department_view ==\'show_m_department\'}">{st.m_department}</td> <td show="{m_office_add_view ==\'show_m_office_add\'}">{st.m_office_add_l1} {st.m_office_add_l2} <br> {st.m_office_city}-{st.m_office_zip} <br>{st.m_office_state}, {st.m_office_country}</td> <td show="{m_office_phone_view ==\'show_m_office_phone\'}">{st.m_office_phone}</td> <td show="{m_nationality_view ==\'show_m_nationality\'}">{st.m_nationality}</td> <td show="{g_title_view ==\'show_g_title\'}">{g_title}</td> <td show="{g_name_view ==\'show_g_name\'}">{g_name}</td> <td show="{g_school_name_view ==\'show_g_school_name\'}">{g_school_name}</td> <td show="{g_school_exam_view ==\'show_g_school_exam\'}">{g_school_exag_passed}</td> <td show="{g_college_name_view ==\'show_g_college_name\'}">{st.g_college_name}</td> <td show="{g_college_exam_view ==\'show_g_college_exam\'}">{st.g_college_exag_passed}</td> <td show="{occupation_view ==\'show_occupation\'}">{g_occupation}</td> <td show="{g_add_view ==\'show_g_add\'}">{st.g_add_l1} {st.g_add_l2} <br> {st.g_city}-{st.g_zip} <br>{st.g_state}, {st.g_country}</td> <td show="{g_phone_view ==\'show_g_phone\'}">{st.g_phone}</td> <td show="{g_mobile_view ==\'show_g_mobile\'}">{st.g_mobile}</td> <td show="{g_fax_view ==\'show_g_fax\'}">{st.g_fax}</td> <td show="{g_email_view ==\'show_g_email\'}">{st.g_email}</td> <td show="{g_organisation_view ==\'show_g_organisation\'}">{st.g_organisation_name}</td> <td show="{g_annual_income_view ==\'show_g_annual_income\'}">{st.g_annual_income}</td> <td show="{g_designation_view ==\'show_g_designation\'}">{st.g_designation}</td> <td show="{g_department_view ==\'show_g_department\'}">{st.g_department}</td> <td show="{g_office_add_view ==\'show_g_office_add\'}">{st.g_office_add_l1} {st.g_office_add_l2} <br> {st.g_office_city}-{st.g_office_zip} <br>{st.g_office_state}, {st.g_office_country}</td> <td show="{g_office_phone_view ==\'show_g_office_phone\'}">{st.g_office_phone}</td> <td show="{g_nationality_view ==\'show_g_nationality\'}">{st.g_nationality}</td> <td show="{sibling_view ==\'show_sibling\'}">{st.sibling_name}</td> <td show="{sibling_enroll_no_view ==\'show_sibling_enroll_no\'}">{st.sibling_enroll_number}</td> </tr> </tbody> </table> </div> </section> <section> <div id="columnSetting" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Setting Configuaration</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <label class="label" for="role"></label> <div class="control" each="{st, i in fieldList}"> <input class="checkbox" type="checkbox" checked="{st.done}" id="{\'addStudentName\' + st.array_name}" onclick="{addCheckedColumn.bind(this,st)}">{st.field_name} </div> </div> </div> </div> </section> <footer class="modal-card-foot"> <div class="control"> <input type="checkbox" id="checkAllCheckBox" onclick="{selectAllCheckBox}"> All </div> <button class="button" id="item-modal-close" onclick="{closeCheckBoxModal}">Close</button> </footer> </div> </div> </section>', '', '', function(opts) {
 
 	var self = this
     self.on("mount", function(){
     	self.title='Add'
     	self.search_by='more'
+
+    	self.fieldList =[
+			{ field_name : "Group", array_name : "Group"},
+			{ field_name : "House", array_name : "House"},
+			{ field_name : "Title", array_name : "Title"},
+			{ field_name : "FirstName", array_name : "First Name"},
+			{ field_name : "MiddleName", array_name : "Middle Name"},
+			{ field_name : "LastName", array_name : "Last Name"},
+			{ field_name : "FullName" , array_name : "Full Name"},
+			{ field_name : "Standard" , array_name : "Class"},
+			{ field_name : "Enroll" , array_name : "Enroll No"},
+			{ field_name : "Roll" , array_name : "Roll No"},
+			{ field_name : "Registration", array_name : "Registration No"},
+			{ field_name : "Gender", array_name : "Gender"},
+			{ field_name : "Category", array_name : "Category"},
+			{ field_name : "DOB", array_name : "DOB"},
+			{ field_name : "Age", array_name : "Age as on 1st Apr"},
+			{ field_name : "Income", array_name : "Income"},
+			{ field_name : "DOA", array_name : "DOA"},
+			{ field_name : "DOj", array_name : "DOJ"},
+			{ field_name : "OldDOA", array_name : "Old DOA"},
+			{ field_name : "OldDOj", array_name : "Old DOJ"},
+			{ field_name : "MotherTongue", array_name : "Mother Tongue"},
+			{ field_name : "LastSchool", array_name : "Last School"},
+			{ field_name : "LastClass", array_name : "Last Class"},
+			{ field_name : "AdmissionforClass", array_name : "Admission for Class"},
+			{ field_name : "Hobby", array_name : "Hobby"},
+			{ field_name : "BloodGroup", array_name : "Blood Group"},
+			{ field_name : "Nationality", array_name : "Nationality"},
+			{ field_name : "Cast", array_name : "Cast"},
+			{ field_name : "Religion", array_name : "Religion"},
+			{ field_name : "c_Address", array_name : "Correspondence Address"},
+			{ field_name : "p_Address", array_name : "Permanent Address"},
+			{ field_name : "Mobile" , array_name : "SMS"},
+			{ field_name : "ResidencePhone", array_name : "Residence Phone"},
+			{ field_name : "Fax", array_name : "Fax"},
+			{ field_name : "StudentType", array_name : "Student Type"},
+			{ field_name : "StaffChild", array_name : "Staff Child"},
+			{ field_name : "StaffName", array_name : "Staff Name"},
+			{ field_name : "stdEmail" , array_name : "Student Email"},
+			{ field_name : "f_Title", array_name : "Father Title"},
+			{ field_name : "f_Name" , array_name :"Father Name"},
+			{ field_name : "f_School" , array_name :"f_School Name"},
+			{ field_name : "f_School_Exam" , array_name :"f_School Exam"},
+			{ field_name : "f_College" , array_name :"f_College Name"},
+			{ field_name : "f_College_Exam" , array_name :"f_College Exam"},
+			{ field_name : "f_Occupation" , array_name :"f_Occupation"},
+			{ field_name : "f_Address" , array_name :"f_Address"},
+			{ field_name : "f_Phone" , array_name :"f_Phone"},
+			{ field_name : "f_Mobile" , array_name :"f_Mobile"},
+			{ field_name : "f_Fax" , array_name :"f_Fax"},
+			{ field_name : "f_Email" , array_name :"f_Email"},
+			{ field_name : "f_OrganisationType" , array_name :"f_Organisation Type"},
+			{ field_name : "f_AnnualIncom" , array_name :"f_Annual Income"},
+			{ field_name : "f_OrganisationName" , array_name :"f_Organisation Name"},
+			{ field_name : "f_Designation" , array_name :"f_Designation"},
+			{ field_name : "f_Department" , array_name :"f_Department"},
+			{ field_name : "f_OfficeAddess" , array_name :"f_Office Address"},
+			{ field_name : "f_OfficePhone" , array_name :"f_Office Phone"},
+			{ field_name : "f_Nationality" , array_name :"f_Nationality"},
+
+			{ field_name : "m_Title" , array_name :"Mother Title"},
+			{ field_name : "m_Name" , array_name :"Mother Name"},
+			{ field_name : "m_School" , array_name :"m_School Name"},
+			{ field_name : "m_School_Exam" , array_name :"m_School Exam"},
+			{ field_name : "m_College" , array_name :"m_College Name"},
+			{ field_name : "m_College_Exam" , array_name :"m_College Exam"},
+			{ field_name : "m_Occupation" , array_name :"m_Occupation"},
+			{ field_name : "m_Address" , array_name :"m_Address"},
+			{ field_name : "m_Phone" , array_name :"m_Phone"},
+			{ field_name : "m_Mobile" , array_name :"m_Mobile"},
+			{ field_name : "m_Fax" , array_name :"m_Fax"},
+			{ field_name : "m_Email" , array_name :"m_Email"},
+			{ field_name : "m_OrganisationType" , array_name :"m_Organisation Type"},
+			{ field_name : "m_AnnualIncom" , array_name :"m_Annual Income"},
+			{ field_name : "m_OrganisationName" , array_name :"m_Organisation Name"},
+			{ field_name : "m_Designation" , array_name :"m_Designation"},
+			{ field_name : "m_Department" , array_name :"m_Department"},
+			{ field_name : "m_OfficeAddess" , array_name :"m_Office Address"},
+			{ field_name : "m_OfficePhone" , array_name :"m_Office Phone"},
+			{ field_name : "m_Nationality" , array_name :"m_Nationality"},
+			{ field_name : "g_Title" , array_name :"Guardian Title"},
+			{ field_name : "g_Name" , array_name :"Guardian Name"},
+			{ field_name : "g_School" , array_name :"g_School Name"},
+			{ field_name : "g_School_Exam" , array_name :"g_School Exam"},
+			{ field_name : "g_College" , array_name :"g_College Name"},
+			{ field_name : "g_College_Exam" , array_name :"g_College Exam"},
+			{ field_name : "g_Occupation" , array_name :"g_Occupation"},
+			{ field_name : "g_Address" , array_name :"g_Address"},
+			{ field_name : "g_Phone" , array_name :"g_Phone"},
+			{ field_name : "g_Mobile" , array_name :"g_Mobile"},
+			{ field_name : "g_Fax" , array_name :"g_Fax"},
+			{ field_name : "g_Email" , array_name :"g_Email"},
+			{ field_name : "g_OrganisationType" , array_name :"g_Organisation Type"},
+			{ field_name : "g_AnnualIncom" , array_name :"g_Annual Income"},
+			{ field_name : "g_OrganisationName" , array_name :"g_Organisation Name"},
+			{ field_name : "g_Designation" , array_name :"g_Designation"},
+			{ field_name : "g_Department" , array_name :"g_Department"},
+			{ field_name : "g_OfficeAddess" , array_name :"g_Office Address"},
+			{ field_name : "g_OfficePhone" , array_name :"g_Office Phone"},
+			{ field_name : "g_Nationality" , array_name :"g_Nationality"},
+			{ field_name : "g_relation" , array_name :"g_relation" },
+			{ field_name : "sibling_Name" , array_name :"Sibling Name"},
+			{ field_name : "siblingEnrollNumber" , array_name :"Sibling Enrol Number"}
+
+			  ];
+    	self.first_name_view ='show_first_name'
+		self.middle_name_view ='show_middle_name'
+		self.last_name_view ='show_last_name'
+		self.student_view ='show_student'
+		self.withdrawn_view ='show_withdrawn'
+		self.enroll_no_view ='show_enroll_no'
+		self.reg_no_view ='show_reg_no'
+		self.roll_no_view ='show_roll_no'
+		self.group_view ='show_group'
+		self.house_view ='show_house'
+		self.class_view ='show_class'
+		self.gender_view ='show_gender'
     	self.role = getCookie('role')
         self.update()
         flatpickr(".date", {
@@ -19069,6 +21276,665 @@ riot.tag2('student-search', '<section class=" is-fluid"> <div class="level"> <di
       studentSearchStore.off('read_by_field_change',ReadByFieldChanged)
     })
 
+    self.closeCheckBoxModal=()=>{
+    	 $("#columnSetting").removeClass("is-active");
+
+    }
+    self.selectAllCheckBox = () => {
+    	console.log("checkAlll")
+      if($('#checkAllCheckBox').is(":checked")){
+        self.fieldList.map(i=>{
+        	console.log(i)
+          i.done = true;
+          $('addStudentName'+i.array_name).prop('checked', true);
+        })
+      }else{
+        self.fieldList.map(i=>{
+          i.done = false;
+          $('addStudentName'+i.array_name).prop('checked', false);
+        })
+      }
+      	var item=''
+      	var event=''
+       self.addCheckedColumn(item,event)
+    }
+
+     self.addCheckedColumn = (item, event) => {
+     	console.log(item)
+     	if(item!=''){
+    	 item.done=!event.item.st.done
+     	}
+
+        self.fieldList.map( q => {
+        	console.log(q.field_name)
+        	let a={}
+	        if(q.done==true && q.array_name=="Group"){
+	           self.group_view='show_group'
+            }
+
+			if(q.done==true && q.array_name=="House"){
+				self.house_view='show_house'
+			}
+			if(q.done==true && q.array_name=="Title"){
+				self.title_view='show_title'
+			}
+
+			if(q.done==true && q.array_name== "First Name"){
+					self.first_name_view='show_first_name'
+			}
+			if(q.done==true && q.array_name=="Middle Name"){
+					self.middle_name_view='show_middle_name'
+			}
+			if(q.done==true && q.array_name== "Last Name"){
+					self.last_name_view='show_last_name'
+			}
+			if(q.done==true && q.array_name=="Full Name"){
+					self.student_view='show_student'
+			}
+
+			if(q.done==true && q.array_name=="Class"){
+					self.class_view='show_class'
+			}
+			if(q.done==true && q.array_name=="Enroll No"){
+					self.enroll_no_view='show_enroll_no'
+			}
+
+			if(q.done==true && q.array_name=="Roll No"){
+					self.roll_no_view='show_roll_no'
+			}
+			if(q.done==true && q.array_name=="Registration No"){
+				self.reg_no_view='show_reg_no'
+			}
+			if(q.done==true && q.array_name=="Gender"){
+					self.gender_view='show_gender'
+			}
+
+			if(q.done==true && q.array_name=="Category"){
+					self.category_view='show_category'
+			}
+			if(q.done==true && q.array_name=="DOB"){
+					self.dob_view='show_dob'
+			}
+			if(q.done==true && q.array_name=="age as on 1st Apr"){
+					self.age_view='show_age'
+			}
+			if(q.done==true && q.array_name=="Income"){
+					self.annual_income_view='show_annual_income'
+			}
+			if(q.done==true && q.array_name=="DOA"){
+					self.doa_view='show_doa'
+			}
+			if(q.done==true && q.array_name=="DOJ"){
+					self.doj_view='show_doj'
+			}
+			if(q.done==true && q.array_name=="Old DOA"){
+					self.old_doa_view='show_old_doa'
+			}
+			if(q.done==true && q.array_name=="Old DOJ"){
+					self.old_doj_view='show_old_doj'
+			}
+			if(q.done==true && q.array_name=="Mother Tongue"){
+					self.mother_tongue_view='show_mother_tongue'
+			}
+			if(q.done==true && q.array_name=="Last School"){
+					self.last_school_view='show_last_school'
+			}
+			if(q.done==true && q.array_name=="Last Class"){
+					self.last_class_view='show_last_class'
+			}
+			if(q.done==true && q.array_name=="Admission for Class"){
+					self.admission_for_view='show_title'
+			}
+			if(q.done==true && q.array_name=="Hobby"){
+					self.hobby_view='show_hobby'
+			}
+			if(q.done==true && q.array_name=="Blood Group"){
+					self.blood_group_view='show_blood_group'
+			}
+			if(q.done==true && q.array_name=="Nationality"){
+					self.nationality_view='show_nationality'
+			}
+			if(q.done==true && q.array_name=="Cast"){
+					self.cast_view='show_cast'
+			}
+			if(q.done==true && q.array_name=="Religion"){
+					self.religion_view='show_religion'
+			}
+			if(q.done==true && q.array_name=="Correspondence Address"){
+					self.c_add_view='show_c_add'
+			}
+			if(q.done==true && q.array_name=="Permanent Address"){
+					self.p_add_view='show_p_add'
+			}
+			if(q.done==true && q.array_name=="SMS"){
+					self.sms_no_view='show_sms_no'
+			}
+			if(q.done==true && q.array_name=="Residence Phone"){
+					self.residence_phone_view='show_residence_phone'
+			}
+			if(q.done==true && q.array_name=="Fax"){
+					self.fax_view='show_fax'
+			}
+			if(q.done==true && q.array_name=="Student Type"){
+					self.student_type_view='show_student_type'
+			}
+			if(q.done==true && q.array_name=="Staff Child"){
+					self.staff_child_view='show_staff_child'
+			}
+			if(q.done==true && q.array_name=="Staff Name"){
+					self.staff_name_view='show_staff_name'
+			}
+			if(q.done==true && q.array_name=="Student Email"){
+					self.student_email_view='show_student_email'
+			}
+			if(q.done==true && q.array_name=="Father Title"){
+					self.f_title_view='show_f_title'
+			}
+			if(q.done==true && q.array_name=="Father Name"){
+					self.f_name_view='show_f_name'
+			}
+			if(q.done==true && q.array_name=="f_School Name"){
+					self.f_school_name_view='show_f_school_name'
+			}
+			if(q.done==true && q.array_name=="f_School Exam"){
+					self.f_school_exam_view='show_f_school_exam'
+			}
+			if(q.done==true && q.array_name=="f_College Name"){
+					self.f_college_name_view='show_f_college_name'
+			}
+			if(q.done==true && q.array_name=="f_College Exam"){
+					self.f_college_exam_view='show_f_college_exam'
+			}
+			if(q.done==true && q.array_name=="f_Occupation"){
+					self.f_occupation_view='show_f_occupation'
+			}
+			if(q.done==true && q.array_name=="f_Address"){
+					self.f_add_view='show_f_add'
+			}
+			if(q.done==true && q.array_name=="f_Phone"){
+					self.f_phone_view='show_f_phone'
+			}
+			if(q.done==true && q.array_name=="f_Mobile"){
+					self.f_mobile_view='show_f_mobile'
+			}
+			if(q.done==true && q.array_name=="f_Fax"){
+					self.f_fax_view='show_f_fax'
+			}
+			if(q.done==true && q.array_name=="f_Email"){
+					self.f_email_view='show_f_email'
+			}
+			if(q.done==true && q.array_name=="f_Organisation Type"){
+					self.f_organisation_view='show_f_organisation'
+			}
+			if(q.done==true && q.array_name=="f_Annual Income"){
+					self.f_annual_income_view='show_f_annual_income'
+			}
+			if(q.done==true && q.array_name=="f_Organisation Name"){
+					self.f_organisation_view='show_f_organisation'
+			}
+			if(q.done==true && q.array_name=="f_Designation"){
+					self.f_designation_view='show_f_designation'
+			}
+			if(q.done==true && q.array_name=="f_Department"){
+					self.f_department_view='show_f_department'
+			}
+			if(q.done==true && q.array_name=="f_Office Address"){
+					self.f_office_add_view='show_f_office_add'
+			}
+			if(q.done==true && q.array_name=="f_Office Phone"){
+					self.f_office_phone_view='show_f_office_phone'
+			}
+			if(q.done==true && q.array_name=="f_Nationality"){
+					self.f_nationality_view='show_f_nationality'
+			}
+
+			if(q.done==true && q.array_name=="Mother Title"){
+					self.m_title_view='show_m_title'
+			}
+			if(q.done==true && q.array_name=="Mother Name"){
+					self.m_name_view='show_m_name'
+			}
+			if(q.done==true && q.array_name=="m_School Name"){
+					self.m_school_name_view='show_m_school_name'
+			}
+			if(q.done==true && q.array_name=="m_School Exam"){
+					self.m_school_exam_view='show_m_school_exam'
+			}
+			if(q.done==true && q.array_name=="m_College Name"){
+					self.m_college_name_view='show_m_college_name'
+			}
+			if(q.done==true && q.array_name=="m_College Exam"){
+					self.m_college_exam_view='show_m_college_exam'
+			}
+			if(q.done==true && q.array_name=="m_Occupation"){
+					self.m_occupation_view='show_m_occupation'
+			}
+			if(q.done==true && q.array_name=="m_Address"){
+					self.m_add_view='show_m_add'
+			}
+			if(q.done==true && q.array_name=="m_Phone"){
+					self.m_phone_view='show_m_phone'
+			}
+			if(q.done==true && q.array_name=="m_Mobile"){
+					self.m_mobile_view='show_m_mobile'
+			}
+			if(q.done==true && q.array_name=="m_Fax"){
+					self.m_fax_view='show_m_fax'
+			}
+			if(q.done==true && q.array_name=="m_Email"){
+					self.m_email_view='show_m_email'
+			}
+			if(q.done==true && q.array_name=="m_Organisation Type"){
+					self.m_organisation_view='show_m_organisation'
+			}
+			if(q.done==true && q.array_name=="m_Annual Income"){
+					self.m_annual_income_view='show_m_annual_income'
+			}
+			if(q.done==true && q.array_name=="m_Organisation Name"){
+					self.m_organisation_view='show_m_organisation'
+			}
+			if(q.done==true && q.array_name=="m_Designation"){
+					self.m_designation_view='show_m_designation'
+			}
+			if(q.done==true && q.array_name=="m_Department"){
+					self.m_department_view='show_m_department'
+			}
+			if(q.done==true && q.array_name=="m_Office Address"){
+					self.m_office_add_view='show_m_office_add'
+			}
+			if(q.done==true && q.array_name=="m_Office Phone"){
+					self.m_office_phone_view='show_m_office_phone'
+			}
+			if(q.done==true && q.array_name=="m_Nationality"){
+					self.m_nationality_view='show_m_nationality'
+			}
+
+			if(q.done==true && q.array_name=="Guardian Title"){
+					self.g_title_view='show_g_title'
+			}
+			if(q.done==true && q.array_name=="Guardian Name"){
+					self.g_name_view='show_g_name'
+			}
+			if(q.done==true && q.array_name=="g_School Name"){
+					self.g_school_name_view='show_g_school_name'
+			}
+			if(q.done==true && q.array_name=="g_School Exam"){
+					self.g_school_exag_view='show_g_school_exam'
+			}
+			if(q.done==true && q.array_name=="g_College Name"){
+					self.g_college_name_view='show_g_college_name'
+			}
+			if(q.done==true && q.array_name=="g_College Exam"){
+					self.g_college_exag_view='show_g_college_exam'
+			}
+			if(q.done==true && q.array_name=="g_Occupation"){
+					self.g_occupation_view='show_g_occupation'
+			}
+			if(q.done==true && q.array_name=="g_Address"){
+					self.g_add_view='show_g_add'
+			}
+			if(q.done==true && q.array_name=="g_Phone"){
+					self.g_phone_view='show_g_phone'
+			}
+			if(q.done==true && q.array_name=="g_Mobile"){
+					self.g_mobile_view='show_g_mobile'
+			}
+			if(q.done==true && q.array_name=="g_Fax"){
+					self.g_fax_view='show_g_fax'
+			}
+			if(q.done==true && q.array_name=="g_Email"){
+					self.g_email_view='show_g_email'
+			}
+			if(q.done==true && q.array_name=="g_Organisation Type"){
+					self.g_organisation_view='show_g_organisation'
+			}
+			if(q.done==true && q.array_name=="g_Annual Income"){
+					self.g_annual_income_view='show_g_annual_income'
+			}
+			if(q.done==true && q.array_name=="g_Organisation Name"){
+					self.g_organisation_view='show_g_organisation'
+			}
+			if(q.done==true && q.array_name=="g_Designation"){
+					self.g_designation_view='show_g_designation'
+			}
+			if(q.done==true && q.array_name=="g_Department"){
+					self.g_department_view='show_g_department'
+			}
+			if(q.done==true && q.array_name=="g_Office Address"){
+					self.g_office_add_view='show_g_office_add'
+			}
+			if(q.done==true && q.array_name=="g_Office Phone"){
+					self.g_office_phone_view='show_g_office_phone'
+			}
+			if(q.done==true && q.array_name=="g_Nationality"){
+					self.g_nationality_view='show_g_nationality'
+			}
+
+			if(q.done==true && q.array_name=="g_relation"){
+
+			}
+			if(q.done==true && q.array_name=="Sibling Name"){
+				self.sibling_view='show_sibling'
+			}
+			if(q.done==true && q.array_name=="Sibling Enrol Number"){
+				self.sibling_enroll_no_view='show_sibling_enroll_no'
+			}
+
+		    if(q.done==false && q.array_name=="Group"){
+	           self.title_view=''
+            }
+
+			if(q.done==false && q.array_name=="House"){
+				self.house_view=''
+			}
+			if(q.done==false && q.array_name=="Title"){
+				self.title_view=''
+			}
+
+			if(q.done==false && q.array_name== "First Name"){
+					self.first_name_view=''
+			}
+			if(q.done==false && q.array_name=="Middle Name"){
+					self.middle_name_view=''
+			}
+			if(q.done==false && q.array_name== "Last Name"){
+					self.last_name_view=''
+			}
+			if(q.done==false && q.array_name=="Full Name"){
+					self.student_view=''
+			}
+
+			if(q.done==false && q.array_name=="Class"){
+					self.class_view=''
+			}
+			if(q.done==false && q.array_name=="Enroll No"){
+					self.enroll_no_view=''
+			}
+
+			if(q.done==false && q.array_name=="Roll No"){
+					self.roll_no_view=''
+			}
+			if(q.done==false && q.array_name=="Registration No"){
+				self.reg_no_view=''
+			}
+			if(q.done==false && q.array_name=="Gender"){
+					self.gender_view=''
+			}
+
+			if(q.done==false && q.array_name=="Category"){
+					self.category_view=''
+			}
+			if(q.done==false && q.array_name=="DOB"){
+					self.dob_view=''
+			}
+			if(q.done==false && q.array_name=="age as on 1st Apr"){
+					self.age_view=''
+			}
+			if(q.done==false && q.array_name=="Income"){
+					self.annual_income_view=''
+			}
+			if(q.done==false && q.array_name=="DOA"){
+					self.doa_view=''
+			}
+			if(q.done==false && q.array_name=="DOJ"){
+					self.doj_view=''
+			}
+			if(q.done==false && q.array_name=="Old DOA"){
+					self.old_doa_view=''
+			}
+			if(q.done==false && q.array_name=="Old DOJ"){
+					self.old_doj_view=''
+			}
+			if(q.done==false && q.array_name=="Mother Tongue"){
+					self.mother_tongue_view=''
+			}
+			if(q.done==false && q.array_name=="Last School"){
+					self.last_school_view=''
+			}
+			if(q.done==false && q.array_name=="Last Class"){
+					self.last_class_view=''
+			}
+			if(q.done==false && q.array_name=="Admission for Class"){
+					self.admission_for_view=''
+			}
+			if(q.done==false && q.array_name=="Hobby"){
+					self.hobby_view=''
+			}
+			if(q.done==false && q.array_name=="Blood Group"){
+					self.blood_group_view=''
+			}
+			if(q.done==false && q.array_name=="Nationality"){
+					self.nationality_view=''
+			}
+			if(q.done==false && q.array_name=="Cast"){
+					self.cast_view=''
+			}
+			if(q.done==false && q.array_name=="Religion"){
+					self.religion_view=''
+			}
+			if(q.done==false && q.array_name=="Correspondence Address"){
+					self.c_add_view=''
+			}
+			if(q.done==false && q.array_name=="Permanent Address"){
+					self.p_add_view=''
+			}
+			if(q.done==false && q.array_name=="SMS"){
+					self.sms_no_view=''
+			}
+			if(q.done==false && q.array_name=="Residence Phone"){
+					self.residence_phone_view=''
+			}
+			if(q.done==false && q.array_name=="Fax"){
+					self.fax_view=''
+			}
+			if(q.done==false && q.array_name=="Student Type"){
+					self.student_type_view=''
+			}
+			if(q.done==false && q.array_name=="Staff Child"){
+					self.staff_child_view=''
+			}
+			if(q.done==false && q.array_name=="Staff Name"){
+					self.staff_name_view=''
+			}
+			if(q.done==false && q.array_name=="Student Email"){
+					self.student_email_view=''
+			}
+			if(q.done==false && q.array_name=="Father Title"){
+					self.f_title_view=''
+			}
+			if(q.done==false && q.array_name=="Father Name"){
+					self.f_name_view=''
+			}
+			if(q.done==false && q.array_name=="f_School Name"){
+					self.f_school_name_view=''
+			}
+			if(q.done==false && q.array_name=="f_School Exam"){
+					self.f_school_exam_view=''
+			}
+			if(q.done==false && q.array_name=="f_College Name"){
+					self.f_college_name_view=''
+			}
+			if(q.done==false && q.array_name=="f_College Exam"){
+					self.f_college_exam_view=''
+			}
+			if(q.done==false && q.array_name=="f_Occupation"){
+					self.f_occupation_view=''
+			}
+			if(q.done==false && q.array_name=="f_Address"){
+					self.f_add_view=''
+			}
+			if(q.done==false && q.array_name=="f_Phone"){
+					self.f_phone_view=''
+			}
+			if(q.done==false && q.array_name=="f_Mobile"){
+					self.f_mobile_view=''
+			}
+			if(q.done==false && q.array_name=="f_Fax"){
+					self.f_fax_view=''
+			}
+			if(q.done==false && q.array_name=="f_Email"){
+					self.f_email_view=''
+			}
+			if(q.done==false && q.array_name=="f_Organisation Type"){
+					self.f_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="f_Annual Income"){
+					self.f_annual_income_view=''
+			}
+			if(q.done==false && q.array_name=="f_Organisation Name"){
+					self.f_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="f_Designation"){
+					self.f_designation_view=''
+			}
+			if(q.done==false && q.array_name=="f_Department"){
+					self.f_department_view=''
+			}
+			if(q.done==false && q.array_name=="f_Office Address"){
+					self.f_office_add_view=''
+			}
+			if(q.done==false && q.array_name=="f_Office Phone"){
+					self.f_office_phone_view=''
+			}
+			if(q.done==false && q.array_name=="f_Nationality"){
+					self.f_nationality_view=''
+			}
+
+			if(q.done==false && q.array_name=="Mother Title"){
+					self.m_title_view=''
+			}
+			if(q.done==false && q.array_name=="Mother Name"){
+					self.m_name_view=''
+			}
+			if(q.done==false && q.array_name=="m_School Name"){
+					self.m_school_name_view=''
+			}
+			if(q.done==false && q.array_name=="m_School Exam"){
+					self.m_school_exam_view=''
+			}
+			if(q.done==false && q.array_name=="m_College Name"){
+					self.m_college_name_view=''
+			}
+			if(q.done==false && q.array_name=="m_College Exam"){
+					self.m_college_exam_view=''
+			}
+			if(q.done==false && q.array_name=="m_Occupation"){
+					self.m_occupation_view=''
+			}
+			if(q.done==false && q.array_name=="m_Address"){
+					self.m_add_view=''
+			}
+			if(q.done==false && q.array_name=="m_Phone"){
+					self.m_phone_view=''
+			}
+			if(q.done==false && q.array_name=="m_Mobile"){
+					self.m_mobile_view=''
+			}
+			if(q.done==false && q.array_name=="m_Fax"){
+					self.m_fax_view=''
+			}
+			if(q.done==false && q.array_name=="m_Email"){
+					self.m_email_view=''
+			}
+			if(q.done==false && q.array_name=="m_Organisation Type"){
+					self.m_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="m_Annual Income"){
+					self.m_annual_income_view=''
+			}
+			if(q.done==false && q.array_name=="m_Organisation Name"){
+					self.m_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="m_Designation"){
+					self.m_designation_view=''
+			}
+			if(q.done==false && q.array_name=="m_Department"){
+					self.m_department_view=''
+			}
+			if(q.done==false && q.array_name=="m_Office Address"){
+					self.m_office_add_view=''
+			}
+			if(q.done==false && q.array_name=="m_Office Phone"){
+					self.m_office_phone_view=''
+			}
+			if(q.done==false && q.array_name=="m_Nationality"){
+					self.m_nationality_view=''
+			}
+
+			if(q.done==false && q.array_name=="Guardian Title"){
+					self.g_title_view=''
+			}
+			if(q.done==false && q.array_name=="Guardian Name"){
+					self.g_name_view=''
+			}
+			if(q.done==false && q.array_name=="g_School Name"){
+					self.g_school_name_view=''
+			}
+			if(q.done==false && q.array_name=="g_School Exam"){
+					self.g_school_exag_view=''
+			}
+			if(q.done==false && q.array_name=="g_College Name"){
+					self.g_college_name_view=''
+			}
+			if(q.done==false && q.array_name=="g_College Exam"){
+					self.g_college_exag_view=''
+			}
+			if(q.done==false && q.array_name=="g_Occupation"){
+					self.g_occupation_view=''
+			}
+			if(q.done==false && q.array_name=="g_Address"){
+					self.g_add_view=''
+			}
+			if(q.done==false && q.array_name=="g_Phone"){
+					self.g_phone_view=''
+			}
+			if(q.done==false && q.array_name=="g_Mobile"){
+					self.g_mobile_view=''
+			}
+			if(q.done==false && q.array_name=="g_Fax"){
+					self.g_fax_view=''
+			}
+			if(q.done==false && q.array_name=="g_Email"){
+					self.g_email_view=''
+			}
+			if(q.done==false && q.array_name=="g_Organisation Type"){
+					self.g_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="g_Annual Income"){
+					self.g_annual_income_view=''
+			}
+			if(q.done==false && q.array_name=="g_Organisation Name"){
+					self.g_organisation_view=''
+			}
+			if(q.done==false && q.array_name=="g_Designation"){
+					self.g_designation_view=''
+			}
+			if(q.done==false && q.array_name=="g_Department"){
+					self.department_view=''
+			}
+			if(q.done==false && q.array_name=="g_Office Address"){
+					self.g_office_add_view=''
+			}
+			if(q.done==false && q.array_name=="g_Office Phone"){
+					self.g_office_phone_view=''
+			}
+			if(q.done==false && q.array_name=="g_Nationality"){
+					self.g_nationality_view=''
+			}
+
+			if(q.done==false && q.array_name=="g_relation"){
+
+			}
+			if(q.done==false && q.array_name=="Sibling Name"){
+				self.sibling_view=''
+			}
+			if(q.done==false && q.array_name=="Sibling Enrol Number"){
+				self.sibling_enroll_no_view=''
+			}
+
+        })
+    }
+
     self.showSearchBox = () =>{
       if(self.search_by=='one'){
       	self.search_view='search_box'
@@ -19081,6 +21947,10 @@ riot.tag2('student-search', '<section class=" is-fluid"> <div class="level"> <di
       }
     }
 
+    self.showStudentField = () =>{
+    		$("#columnSetting").addClass("is-active")
+
+    }
     self.searchByField = () => {
     	console.log("inside")
     	console.log(self.refs.roll_no.value)
@@ -21536,73 +24406,476 @@ riot.tag2('subject', '<section class=" is-fluid"> <h2 class="title" style="color
     }
 
 });
-riot.tag2('teacher-time-table', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Teacher Time Table</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Teacher</label></div> <div class="column is-narrow"> <div class="control"> <div class="select "> <select ref="teacherSelect"> <option value="">Select Teacher</option> <option each="{teachers}" riot-value="{emp_id}">{name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <button class="button is-danger is-narrow has-text-weight-bold" onclick="{refreshTimeTable}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th class="has-text-centered" style="vertical-align: middle;">Days/Periods</th> <th each="{p, i in periods}" class="has-text-centered"> <span style="color:#ff0000">{p.period_name}</span><br> <span style="font-size:12px">{p.period_time}</span> </th> </tr> </thead> <tbody> <tr each="{d, i in days}"> <th class="has-text-centered" style="vertical-align: middle;">{d.day_name}</th> <td each="{p, j in periods}" class="has-text-centered" onclick="{openTimeTableModalEdit.bind(this, d, p)}" style="cursor: pointer;"> <div each="{t, k in time_table}"> <p if="{d.day_id==t.day_id && p.period_id==t.period_id}" style="font-size:12px"> <span style="color:#ff0000">{t.subject_short_name}({t.period_type})</span><br>{t.room_no}<br>{t.standard} </p> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('teacher-time-table', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Teacher Time Table</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Teacher</label></div> <div class="column is-narrow"> <div class="control"> <div class="select "> <select ref="teacherSelect" onchange="{refreshTimeTable}"> <option value="">Select Teacher</option> <option each="{teachers}" riot-value="{emp_id}">{name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <button class="button is-danger is-narrow has-text-weight-bold" onclick="{refreshTimeTable}">GO </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th class="has-text-centered" style="vertical-align: middle;">Days/Periods</th> <th each="{p, i in periods}" class="has-text-centered"> <span style="color:#ff0000">{p.period_name}</span><br> <span style="font-size:12px">{p.period_time}</span> </th> </tr> </thead> <tbody> <tr each="{d, i in days}"> <th class="has-text-centered" style="vertical-align: middle;">{d.day_name}</th> <td each="{p, j in periods}" class="has-text-centered" onclick="{openTimeTableModal.bind(this, d, p)}"> <div each="{t, k in time_table}"> <p if="{d.day_id==t.day_id && p.period_id==t.period_id}" style="font-size:12px"> <span style="color:#ff0000">{t.subject_short_name}({t.period_type})</span><br>{t.room_name}<br>{t.standard} </p> </div> </td> </tr> </tbody> </table> </section> <div id="timeTableModalEdit" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Day:{day} &nbsp;&nbsp;&nbsp;&nbsp; Period:{period_name}{period_time}</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column is-narrow"> <div class="field"> <label class="label" for="role">Room</label> <div class="control"> <div class="select "> <select ref="editRoomSelect"> <option value="-1">No Room</option> <option each="{rooms}" riot-value="{room_id}">{room_name}</option> </select> </div> </div> </div> <div class="field"> <label class="label" for="role">Subject</label> <div class="control is-narrow"> <div class="select "> <select ref="editSubjectSelect"> <option each="{subjects}" riot-value="{subject_id}">{subject_name}</option> </select> </div> </div> </div> </div> <div class="column is-narrow"> <div class="field"> <label class="label" for="role">Standard</label> <div class="control"> <div class="select "> <select ref="editStandardSelect" onchange="{changeSection}"> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="field"> <label class="label" for="role">Period Type</label> <div class="control"> <div class="select "> <select ref="editPeriodTypeSelect"> <option value="T">Theory</option> <option value="P">Practical</option> </select> </div> </div> </div> </div> <div class="column is-narrow"> <div class="field"> <label class="label" for="role">Section</label> <div class="control"> <div class="select "> <select ref="editSectionSelect"> <option each="{tempSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-primary" onclick="{updateTimeTable}">Update</button> <button class="button is-danger" onclick="{deleteTimeTable}">Remove</button> <button class="button" id="item-modal-close" onclick="{closeTimeTableEditModal}">Cancel</button> </footer> </div> </div> <div id="timeTableModalAdd" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Day:{day} &nbsp;&nbsp;&nbsp;&nbsp; Period:{period_name}{period_time}</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column is-narrow"> <div class="field"> <label class="label" for="role">Room</label> <div class="control"> <div class="select "> <select ref="addRoomSelect"> <option value="-1">No Room</option> <option each="{rooms}" riot-value="{room_id}">{room_name}</option> </select> </div> </div> </div> <div class="field"> <label class="label" for="role">Subject</label> <div class="control is-narrow"> <div class="select "> <select ref="addSubjectSelect"> <option each="{subjects}" riot-value="{subject_id}">{subject_name}</option> </select> </div> </div> </div> </div> <div class="column is-narrow"> <div class="field"> <label class="label" for="role">Standard</label> <div class="control"> <div class="select "> <select ref="addStandardSelect" onchange="{changeSection}"> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="field"> <label class="label" for="role">Period Type</label> <div class="control"> <div class="select "> <select ref="addPeriodTypeSelect"> <option value="T">Theory</option> <option value="P">Practical</option> </select> </div> </div> </div> </div> <div class="column is-narrow"> <div class="field"> <label class="label" for="role">Section</label> <div class="control"> <div class="select "> <select ref="addSectionSelect"> <option each="{tempSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="field"> </div> </div> </div> <div class="field"> <label class="label" for="role">Days</label> <div each="{d, i in tempDays}" style="float: left;padding-right: 15px;"> <input type="checkbox" checked="{d.checked}" id="{\'addDay\' + d.day_id}" onclick="{selectDay.bind(this,d)}"> {d.day_name} </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-primary" onclick="{addTimeTable}">Add</button> <button class="button" id="item-modal-close" onclick="{closeTimeTableAddModal}">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
 	var self = this
+    self.day = ''
+    self.period_name = ''
+    self.period_time = ''
+    self.tempSections = []
+
     self.on("mount", function(){
       self.loading = false;
-      self.readTeachers();
-
+      self.readInit();
     })
     self.on("unmount", function(){
-      teacherTimeTableStore.off('read_teachers_changed',TeachersChanged)
+      teacherTimeTableStore.off('read_init_changed',InitChanged)
       teacherTimeTableStore.off('read_periods_changed',PeriodsChanged)
+      teacherTimeTableStore.off('read_edit_time_table_changed',readEditChanged)
+      teacherTimeTableStore.off('update_time_table_changed',updateTimeTableChanged)
+      teacherTimeTableStore.off('add_time_table_changed',addTimeTableChanged)
+      teacherTimeTableStore.off('delete_time_table_changed',deleteTimeTableChanged)
     })
 
-   self.readTeachers = () => {
-     self.loading = true;
-     teacherTimeTableStore.trigger('read_teachers')
+   self.readInit = () => {
+    self.loading = true;
+    teacherTimeTableStore.trigger('read_init')
    }
 
    self.refreshTimeTable = () => {
-     self.loading = true;
-     teacherTimeTableStore.trigger('read_periods',self.refs.teacherSelect.value)
+    console.log(self.refs.teacherSelect.value)
+    if(self.refs.editStandardSelect.value==''){
+        toastr.info("Please select standard and try again")
+    }else{
+        self.loading = true;
+        teacherTimeTableStore.trigger('read_periods',self.refs.teacherSelect.value)
+    }
    }
-   self.openTimeTableModalEdit = (d,p,e) => {
-      console.log('edit')
+
+   self.changeSection = () => {
+       if(self.refs.editStandardSelect.value==''){
+        toastr.info("Please select standard and try again")
+       }else{
+        self.tempSections = []
+        self.tempSections = self.sections.filter(s=>{
+          return s.standard_id==self.refs.editStandardSelect.value
+        })
+       }
+       console.log(self.tempSections)
+    }
+
+   self.changeSectionEdit = () => {
+       if(self.refs.editStandardSelect.value==''){
+        toastr.info("Please select standard and try again")
+       }else{
+        self.tempSections = []
+        self.tempSections = self.sections.filter(s=>{
+          return s.standard_id==self.refs.editStandardSelect.value
+        })
+       }
+       console.log(self.tempSections)
+      self.refs.editSectionSelect.value=self.edit_data.section_id
+      self.update()
+    }
+
+   self.closeTimeTableEditModal = () => {
+      $("#timeTableModalEdit").removeClass("is-active");
+   }
+
+   self.closeTimeTableAddModal = () => {
+      $("#timeTableModalAdd").removeClass("is-active");
+   }
+
+   self.openTimeTableModal = (d,p,e) => {
       console.log(d)
       console.log(p)
+
+      if(p.is_break=='Y'){
+        console.log('short_break');
+        return;
+      }
+
+      self.day = d.day_name
+      self.day_id = d.day_id
+
+      self.period_name = p.period_name
+      self.period_id = p.period_id
+      self.period_time = p.period_time
+
       let edit = 0;
-      let edit_data = {};
+      self.edit_data = {};
       self.time_table.map(t=>{
         if(d.day_id==t.day_id && p.period_id==t.period_id){
           edit = 1
-          edit_data = t
+          self.edit_data = t
         }
       })
 
       if(edit==1){
         console.log('edit')
-        console.log(edit_data)
+        self.loading = true;
+        self.rooms = []
+        if(self.edit_data.room_id!==-1){
+          let obj = {}
+          obj['room_id'] = self.edit_data.room_id
+          obj['room_name'] = self.edit_data.room_name
+          self.rooms.push(obj)
+        }
+        teacherTimeTableStore.trigger('read_edit_time_table',p.period_id,d.day_id)
       }else if(edit == 0){
+
         console.log('add')
+        console.log(self.tempDays)
+        console.log(self.day_id)
+
+        self.tempDays.map(td=>{
+
+          if(self.day_id==td.day_id){
+            td.checked=true
+            $('#addDay' + td.day_id ).prop('checked', true);
+          }else{
+            td.checked=false
+            $('#addDay' + td.day_id ).prop('checked', false);
+          }
+
+        })
+        self.changeSection()
+        $("#timeTableModalAdd").addClass("is-active");
+        self.update()
       }
    }
 
-   teacherTimeTableStore.on('read_teachers_changed',TeachersChanged)
-    function TeachersChanged(teachers){
+   self.updateTimeTable = () => {
+      var obj = {}
+      obj['day_id'] = self.edit_data.day_id
+      obj['period_id'] = self.edit_data.period_id
+      obj['teacher_id'] = self.refs.teacherSelect.value
+
+      obj['subject_id'] = self.refs.editSubjectSelect.value
+      obj['period_type'] = self.refs.editPeriodTypeSelect.value
+      obj['room_id'] = self.refs.editRoomSelect.value
+      obj['section_id'] = self.refs.editSectionSelect.value
+
+      self.loading = true;
+      teacherTimeTableStore.trigger('update_time_table',obj)
+   }
+
+  self.deleteTimeTable = () => {
+      var obj = {}
+      obj['day_id'] = self.day_id
+      obj['period_id'] = self.period_id
+      obj['teacher_id'] = self.refs.teacherSelect.value
+
+      self.loading = true;
+      teacherTimeTableStore.trigger('delete_time_table',obj)
+   }
+
+   self.selectDay = (d,event) => {
+    console.log(d)
+    console.log(event)
+      d.checked=!event.item.d.checked
+      console.log(self.tempDays)
+   }
+
+   self.addTimeTable = () => {
+      var obj = {}
+      obj['day_id'] = self.day_id
+      obj['period_id'] = self.period_id
+      obj['teacher_id'] = self.refs.teacherSelect.value
+
+      obj['subject_id'] = self.refs.addSubjectSelect.value
+      obj['period_type'] = self.refs.addPeriodTypeSelect.value
+      obj['room_id'] = self.refs.addRoomSelect.value
+      obj['section_id'] = self.refs.addSectionSelect.value
+
+      obj['days'] = self.tempDays.filter(td => {
+        return td.checked == true
+      })
+
+      self.loading = true;
+      teacherTimeTableStore.trigger('add_time_table',obj)
+   }
+
+   teacherTimeTableStore.on('read_init_changed',InitChanged)
+    function InitChanged(teachers,days,periods,standards,sections,subjects){
       self.loading = false
+
       self.teachers = []
       self.teachers = teachers
-      self.update()
-      console.log(self.teachers)
-    }
-
-   teacherTimeTableStore.on('read_periods_changed',PeriodsChanged)
-    function PeriodsChanged(periods,time_table,days){
-      self.loading = false
-      self.periods = []
-      self.periods = periods
-
-      self.time_table = []
-      self.time_table = time_table
 
       self.days = []
       self.days = days
+
+      self.tempDays = []
+      self.tempDays = days
+
+      self.periods = []
+      self.periods = periods
+
+      self.standards = []
+      self.standards = standards
+
+      self.sections = []
+      self.sections = sections
+
+      self.subjects = []
+      self.subjects = subjects
+
+      self.update()
+    }
+
+    teacherTimeTableStore.on('read_edit_time_table_changed',readEditChanged)
+    function readEditChanged(rooms){
+
+      self.loading = false
+
+      rooms.map(r=>{
+        self.rooms.push(r)
+      })
+
+      self.update()
+      $("#timeTableModalEdit").addClass("is-active");
+      console.log('calling change section')
+      self.refs.editStandardSelect.value=self.edit_data.standard_id
+      self.update()
+      self.changeSectionEdit()
+
+      self.refs.editRoomSelect.value=self.edit_data.room_id
+      self.refs.editSubjectSelect.value=self.edit_data.subject_id
+      self.refs.editPeriodTypeSelect.value=self.edit_data.period_type
+      self.refs.editSectionSelect.value=self.edit_data.section_id
+      self.update()
+    }
+
+   teacherTimeTableStore.on('read_periods_changed',PeriodsChanged)
+    function PeriodsChanged(time_table){
+      self.loading = false
+
+      self.time_table = []
+      self.time_table = time_table
 
       self.update()
       console.log(self.periods)
       console.log(self.time_table)
       console.log(self.days)
+    }
+
+    teacherTimeTableStore.on('update_time_table_changed',updateTimeTableChanged)
+      function updateTimeTableChanged(){
+        self.loading = false
+        toastr.success("Time Table Updated Successfully ")
+        self.closeTimeTableEditModal()
+        self.refreshTimeTable()
+
+    }
+
+    teacherTimeTableStore.on('add_time_table_changed',addTimeTableChanged)
+      function addTimeTableChanged(){
+        self.loading = false
+        toastr.success("Time Table Added Successfully ")
+        self.closeTimeTableAddModal()
+        self.refreshTimeTable()
+    }
+
+    teacherTimeTableStore.on('delete_time_table_changed',deleteTimeTableChanged)
+      function deleteTimeTableChanged(){
+        self.loading = false
+        toastr.success("Time Table Deleted Successfully ")
+        self.closeTimeTableEditModal()
+        self.refreshTimeTable()
+    }
+
+});
+riot.tag2('time-table-substitutation', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Time Table Substitutation</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Teacher</label></div> <div class="column is-narrow"> <div class="control"> <div class="select "> <select ref="teacherSelect" onchange="{refreshTimeTable}"> <option value="">Select Teacher</option> <option each="{teachers}" riot-value="{emp_id}">{name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <button class="button is-danger is-narrow has-text-weight-bold" onclick="{resetTimeTable}">Reset </button> </div> <div class="column"> <button class="button is-warning is-rounded" style="float:right" onclick="{refreshTimeTable}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th class="has-text-centered" style="vertical-align: middle;">Days/Periods</th> <th each="{p, i in periods}" class="has-text-centered"> <span style="color:#ff0000">{p.period_name}</span><br> <span style="font-size:12px">{p.period_time}</span> </th> </tr> </thead> <tbody> <tr each="{d, i in days}"> <th class="has-text-centered" style="vertical-align: middle;">{d.day_name}</th> <td each="{p, j in periods}" class="has-text-centered" onclick="{openTimeTableModal.bind(this, d, p)}"> <div each="{t, k in time_table}"> <p if="{d.day_id==t.day_id && p.period_id==t.period_id}" style="font-size:12px"> <span style="color:#ff0000">{t.subject_short_name}({t.period_type})</span><br>{t.room_name}<br>{t.standard} </p> </div> </td> </tr> </tbody> </table> </section> <div id="timeTableModalAdd" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Day:{day} &nbsp;&nbsp;&nbsp;&nbsp; Period:{period_name}{period_time}</p> </header> <section class="modal-card-body"> <div class="field"> <label class="label" for="role">Days</label> <div each="{d, i in tempDays}" style="float: left;padding-right: 15px;"> <input type="checkbox" checked="{d.checked}" id="{\'addDay\' + d.day_id}" onclick="{selectDay.bind(this,d)}"> {d.day_name} </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-primary" onclick="{addTimeTable}">Add</button> <button class="button" id="item-modal-close" onclick="{closeTimeTableAddModal}">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
+	var self = this
+    self.day = ''
+    self.period_name = ''
+    self.period_time = ''
+    self.tempSections = []
+
+    self.on("mount", function(){
+      self.loading = false;
+      self.readInit();
+    })
+    self.on("unmount", function(){
+      timeTableSubstitutaionStore.off('read_init_changed',InitChanged)
+      timeTableSubstitutaionStore.off('read_periods_changed',PeriodsChanged)
+      timeTableSubstitutaionStore.off('reset_time_table_changed',resetTimeTableChanged)
+      timeTableSubstitutaionStore.off('read_edit_time_table_changed',readEditChanged)
+
+      timeTableSubstitutaionStore.off('update_time_table_changed',updateTimeTableChanged)
+      timeTableSubstitutaionStore.off('add_time_table_changed',addTimeTableChanged)
+    })
+
+   self.readInit = () => {
+    self.loading = true;
+    timeTableSubstitutaionStore.trigger('read_init')
+   }
+
+   self.refreshTimeTable = () => {
+    console.log(self.refs.teacherSelect.value)
+    if(self.refs.teacherSelect.value==''){
+        toastr.info("Please select standard and try again")
+    }else{
+        self.loading = true;
+        timeTableSubstitutaionStore.trigger('read_periods',self.refs.teacherSelect.value)
+    }
+   }
+
+   self.resetTimeTable = () => {
+       timeTableSubstitutaionStore.trigger('reset_time_table')
+    }
+
+   self.closeTimeTableAddModal = () => {
+      $("#timeTableModalAdd").removeClass("is-active");
+   }
+
+   self.openTimeTableModal = (d,p,e) => {
+      console.log(d)
+      console.log(p)
+
+      if(p.is_break=='Y'){
+        console.log('short_break');
+        return;
+      }
+
+      self.day = d.day_name
+      self.day_id = d.day_id
+
+      self.period_name = p.period_name
+      self.period_id = p.period_id
+      self.period_time = p.period_time
+
+      let edit = 0;
+      self.edit_data = {};
+      self.time_table.map(t=>{
+        if(d.day_id==t.day_id && p.period_id==t.period_id){
+          edit = 1
+          self.edit_data = t
+        }
+      })
+
+      var read_obj = {}
+      read_obj['day_id']=self.day_id
+      read_obj['period_id']=self.period_id
+      read_obj['emp_id']=self.refs.teacherSelect.value
+      if(self.edit_data.subject_id){
+        read_obj['emp_id']=self.edit_data.subject_id
+      }else{
+        read_obj['emp_id']=''
+      }
+
+      timeTableSubstitutaionStore.trigger('read_edit_time_table',read_obj)
+
+   }
+
+   self.updateTimeTable = () => {
+      var obj = {}
+      obj['day_id'] = self.edit_data.day_id
+      obj['period_id'] = self.edit_data.period_id
+      obj['teacher_id'] = self.refs.teacherSelect.value
+
+      obj['subject_id'] = self.refs.editSubjectSelect.value
+      obj['period_type'] = self.refs.editPeriodTypeSelect.value
+      obj['room_id'] = self.refs.editRoomSelect.value
+      obj['section_id'] = self.refs.editSectionSelect.value
+
+      self.loading = true;
+      timeTableSubstitutaionStore.trigger('update_time_table',obj)
+   }
+
+  self.deleteTimeTable = () => {
+      var obj = {}
+      obj['day_id'] = self.day_id
+      obj['period_id'] = self.period_id
+      obj['teacher_id'] = self.refs.teacherSelect.value
+
+      self.loading = true;
+      timeTableSubstitutaionStore.trigger('delete_time_table',obj)
+   }
+
+   self.selectDay = (d,event) => {
+    console.log(d)
+    console.log(event)
+      d.checked=!event.item.d.checked
+      console.log(self.tempDays)
+   }
+
+   self.addTimeTable = () => {
+      var obj = {}
+      obj['day_id'] = self.day_id
+      obj['period_id'] = self.period_id
+      obj['teacher_id'] = self.refs.teacherSelect.value
+
+      obj['subject_id'] = self.refs.addSubjectSelect.value
+      obj['period_type'] = self.refs.addPeriodTypeSelect.value
+      obj['room_id'] = self.refs.addRoomSelect.value
+      obj['section_id'] = self.refs.addSectionSelect.value
+
+      obj['days'] = self.tempDays.filter(td => {
+        return td.checked == true
+      })
+
+      self.loading = true;
+      timeTableSubstitutaionStore.trigger('add_time_table',obj)
+   }
+
+   timeTableSubstitutaionStore.on('read_init_changed',InitChanged)
+    function InitChanged(teachers,days,periods,rooms){
+      self.loading = false
+
+      self.teachers = []
+      self.teachers = teachers
+
+      self.days = []
+      self.days = days
+
+      self.tempDays = []
+      self.tempDays = days
+
+      self.periods = []
+      self.periods = periods
+
+      self.rooms = []
+      self.rooms = rooms
+
+      self.update()
+    }
+
+   timeTableSubstitutaionStore.on('reset_time_table_changed',resetTimeTableChanged)
+      function resetTimeTableChanged(){
+        self.loading = false
+        toastr.success("Time Table Reset Successfully ")
+        self.refreshTimeTable()
+    }
+
+   timeTableSubstitutaionStore.on('read_periods_changed',PeriodsChanged)
+    function PeriodsChanged(time_table){
+      self.loading = false
+
+      self.time_table = []
+      self.time_table = time_table
+
+      self.update()
+      console.log(self.periods)
+      console.log(self.time_table)
+      console.log(self.days)
+    }
+
+    timeTableSubstitutaionStore.on('read_edit_time_table_changed',readEditChanged)
+    function readEditChanged(rooms){
+
+      self.loading = false
+
+      $("#timeTableModalAdd").addClass("is-active");
+      console.log('calling change section')
+      self.update()
+    }
+
+    timeTableSubstitutaionStore.on('update_time_table_changed',updateTimeTableChanged)
+      function updateTimeTableChanged(){
+        self.loading = false
+        toastr.success("Time Table Updated Successfully ")
+        self.closeTimeTableEditModal()
+        self.refreshTimeTable()
+
+    }
+
+    timeTableSubstitutaionStore.on('add_time_table_changed',addTimeTableChanged)
+      function addTimeTableChanged(){
+        self.loading = false
+        toastr.success("Time Table Added Successfully ")
+        self.closeTimeTableAddModal()
+        self.refreshTimeTable()
     }
 
 });

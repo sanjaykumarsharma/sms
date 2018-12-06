@@ -3,6 +3,78 @@ var router = express.Router();
 var multer = require('multer')
 
 
+
+
+//staff Type Report
+
+router.get('/read_employee_type_report/:emp_type_id', function(req, res, next) {
+ var input = JSON.parse(JSON.stringify(req.body));
+  var session_id = req.cookies.session_id
+  var emp_type_id=req.params.emp_type_id
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var condition = "";
+     if(emp_type_id != -1) condition = ` and a.emp_type_id =${emp_type_id}`;
+     
+      var qry =`select a.emp_type_id,emp_type,count(*) as total 
+                from employee a
+                JOIN emp_type_master b on a.emp_type_id = b.emp_type_id
+                where a.is_active='Y'
+                ${condition}
+                group by emp_type`;
+          connection.query(qry,function(err,result)     {
+         console.log(qry)   
+      if(err){
+        console.log("Error reading employee type report : %s ",err );
+        data.status = 'e';
+
+      }else{
+            data.status='s'
+            data.employeeTypeReports = result
+            res.send(JSON.stringify(data))
+
+      }
+     
+     });
+       
+  });
+
+});
+
+//staff Gender Report
+
+router.get('/read_employee_gender_report', function(req, res, next) {
+ var input = JSON.parse(JSON.stringify(req.body));
+  var session_id = req.cookies.session_id
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    /*var condition = "";
+     if(emp_type_id != -1) condition = ` and a.emp_type_id =${emp_type_id}`;*/
+     
+      var qry =`select gender, count(*) as total 
+            from employee  
+            where is_active='Y'
+            group by gender`;
+          connection.query(qry,function(err,result)     {
+         console.log(qry)   
+      if(err){
+        console.log("Error reading employee gender report : %s ",err );
+        data.status = 'e';
+
+      }else{
+            data.status='s'
+            data.employeeGenderReports = result
+            res.send(JSON.stringify(data))
+
+      }
+     
+     });
+       
+  });
+
+});
 /* Read Cast Category */
 
 router.get('/read_cast', function(req, res, next) {
@@ -213,10 +285,10 @@ router.get('/read_staff/:emp_type_id/:department_id/:designation_id/:level_id', 
      var department_condition = "";
      var designation_condition = "";
      var level_condition = "";
-      if(emp_type_id != -1) emp_type_condition =  ` and a.emp_type_id = ${emp_type_id}`;
-      if(designation_id != -1) designation_condition = `and a.designation_id = ${designation_id}`;
-      if(level_id != -1) level_condition =` and a.level_id = ${level_id}`;
-      if(department_id != -1) department_condition = `and a.department_id =${department_id}`;
+      if(emp_type_id != -1 || emp_type_id !=-2) emp_type_condition =  ` and a.emp_type_id = ${emp_type_id}`;
+      if(designation_id != -1 || designation_id != -2) designation_condition = `and a.designation_id = ${designation_id}`;
+      if(level_id != -1 || level_id !=-2) level_condition =` and a.level_id = ${level_id}`;
+      if(department_id != -1 || department_id !=-2) department_condition = `and a.department_id =${department_id}`;
 
   req.getConnection(function(err,connection){
        
@@ -339,7 +411,6 @@ router.post('/add_staff', function(req, res, next) {
       //values_staffs.current_session_id=req.cookies.session_id;
       values_staffs.modified_by=req.cookies.role;
 
-
     req.getConnection(function(err,connection){
       connection.beginTransaction(function(err) {
         if (err) { throw err; }
@@ -351,16 +422,15 @@ router.post('/add_staff', function(req, res, next) {
           }
           var log = rows.insertId;
 
-       /* connection.query("Update student_master set student_id= ? where std_id= ? and current_session_id = ? ",[log,log,req.cookies.session_id], function(error, rows)
-          {
+        var qry =`update employee set password=md5(12345)
+          where emp_id=${log}`;
+          connection.query(qry,function(err,result){
             if (error) {
               return connection.rollback(function() {
                 throw error;
               });
             }
-          
-          });*/
-
+        
         //**********insert into Student Current Standing  ***************************
        /* var values_student_current_standing = input.student_current_standing;
         values_student_current_standing.student_id=log;
@@ -455,8 +525,8 @@ router.post('/add_staff', function(req, res, next) {
                 res.send(JSON.stringify(data))
 
               });
-          });
-
+            });
+          })
         });//end of ection con
       });
     });

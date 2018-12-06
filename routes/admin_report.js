@@ -349,7 +349,7 @@ router.post('/read_student_category_summary_report', function(req, res, next) {
                 JOIN student_current_standing c ON (b.section_id = c.section_id  and c.session_id =${req.cookies.session_id}) 
                 LEFT JOIN student_master d on (c.student_id = d.student_id and d.current_session_id = ${req.cookies.session_id} AND (d.withdraw =  'N' || d.withdraw_session > ${session_id}))
                 JOIN category_master e ON d.category_id = e.category_id 
-                group by a.standard_id,e.category_id, d.enroll_number, a.standard_id`;
+                group by a.standard_id,e.category_id`;
 
         var qry_one = `select category_name from category_master`;
 
@@ -490,7 +490,7 @@ router.post('/read_student_religion_listing_report', function(req, res, next) {
                 LEFT JOIN student_master d ON ( c.student_id = d.student_id and d.current_session_id = ${session_id}  
                   and  (d.withdraw =  'N' || d.withdraw_session > ${session_id}))
                 JOIN religion_master e ON d.religion_id = e.religion_id 
-                group by a.standard_id,e.religion_id`;
+                group by a.standard_id,e.religion_id,standard, religion`;
 
         var qry_one = `select religion from religion_master`;
 

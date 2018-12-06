@@ -393,8 +393,8 @@ tr.input-row{
   display: flex;
   align-items: center;
 }
-.time_table_box{
-  width: 100px;
+.ttbox{
+  cursor: pointer;
 }
 break{
   flex-basis: 100%;

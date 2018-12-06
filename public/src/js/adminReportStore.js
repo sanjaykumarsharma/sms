@@ -143,6 +143,35 @@ function AdminReportStore() {
       })
   })
 
+ // student  religion listing
+
+ self.on('read_student_religion_listing_report', function() {
+    let req = {}
+    $.ajax({
+      url:'/admin_report/read_student_religion_listing_report',
+         data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        type:"POST",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            //self.studentSummaryReports=[]
+            console.log("inside report")
+            self.studentReligionListingReports = data.studentReligionListingReports
+            console.log(self.studentReligionListingReports)
+            self.trigger('read_student_religion_listing_report_changed', self.studentReligionListingReports)
+          }else if(data.status == 'e'){
+            showToast("Student Religion Report Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
 
  //stdent Group Report
 
@@ -159,8 +188,11 @@ function AdminReportStore() {
             //self.studentSummaryReports=[]
             console.log("inside report")
             self.studentGroupReports = data.studentGroupReports
-            console.log(self.studentGroupReports)
-            self.trigger('read_student_group_report_change', self.studentGroupReports)
+            var grandTotal=0;
+            self.studentGroupReports.map(i=>{
+                   grandTotal=Number(grandTotal) + Number(i.total)
+                 })
+            self.trigger('read_student_group_report_change', self.studentGroupReports,grandTotal)
           }else if(data.status == 'e'){
             showToast("Student Group Report Read Error. Please try again.", data)
           }
@@ -186,8 +218,11 @@ function AdminReportStore() {
             //self.studentSummaryReports=[]
             console.log("inside report")
             self.studentHouseReports = data.studentHouseReports
-            console.log(self.studentHouseReports)
-            self.trigger('read_student_house_report_change', self.studentHouseReports)
+            var grandTotal=0;
+            self.studentHouseReports.map(i=>{
+                   grandTotal=Number(grandTotal) + Number(i.total)
+                 })
+            self.trigger('read_student_house_report_change', self.studentHouseReports,grandTotal)
           }else if(data.status == 'e'){
             showToast("Student House Report Read Error. Please try again.", data)
           }
