@@ -1206,11 +1206,17 @@ RiotControl.addStore(studentAssignHouseStore);
 var studentStudentGroupStore = new StudentStudentGroupStore();
 RiotControl.addStore(studentStudentGroupStore);
 
+var studentAssignSubjectStore = new StudentAssignSubjectStore();
+RiotControl.addStore(studentAssignSubjectStore);
+
 var teacherTimeTableStore = new TeacherTimeTableStore();
 RiotControl.addStore(teacherTimeTableStore);
 
 var timeTableSubstitutaionStore = new TimeTableSubstitutaionStore();
 RiotControl.addStore(timeTableSubstitutaionStore);
+
+var timeTableAdminStore = new TimeTableAdminStore();
+RiotControl.addStore(timeTableAdminStore);
 
 var studentWithdrawnStudentStore = new StudentWithdrawnStudentStore();
 RiotControl.addStore(studentWithdrawnStudentStore);
@@ -1504,6 +1510,22 @@ var goTo = function goTo(path1, path2, path3) {
       break;
     case 'time-table-substitutation':
       currentPage = riot.mount('div#view', 'time-table-substitutation')[0];
+      break;
+    case 'time-table-admin':
+      currentPage = riot.mount('div#view', 'time-table-admin', { selected_time_table_admin: path2 })[0];
+      switch (path2) {
+        case 'time-table-class-report':
+          riot.mount("div#time-table-admin-view", 'time-table-class-report');
+          break;
+        case 'time-table-room-report':
+          riot.mount("div#time-table-admin-view", 'time-table-room-report');
+          break;
+        case 'time-table-teacher-report':
+          riot.mount("div#time-table-admin-view", 'time-table-teacher-report');
+          break;
+        default:
+          riot.mount("div#time-table-admin-view", 'time-table-class-report');
+      }
       break;
     case 'marks-report':
       currentPage = riot.mount('div#view', 'marks-report', { selected_marks_report: path2 })[0];
@@ -16981,6 +17003,142 @@ function TeacherTimeTableStore() {
 }
 'use strict';
 
+function TimeTableAdminStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.on('read_init_class_report', function () {
+    var req = {};
+    $.ajax({
+      url: '/time-table-admin/read-init-class-report',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_init_class_report_changed', data.teachers, data.days, data.periods, data.rooms, data.standards, data.sections);
+        } else if (data.status == 'e') {
+          showToast("Teachers Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_periods_class_report', function (section_id) {
+    var req = {};
+    $.ajax({
+      url: '/time-table-admin/read-periods-class-report/' + section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_periods_class_report_changed', data.time_table);
+        } else if (data.status == 'e') {
+          showToast("Periods Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //Room Report
+
+  self.on('read_init_room_report', function () {
+    var req = {};
+    $.ajax({
+      url: '/time-table-admin/read-init-room-report',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_init_room_report_changed', data.teachers, data.days, data.periods, data.rooms, data.standards, data.sections);
+        } else if (data.status == 'e') {
+          showToast("Teachers Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_periods_room_report', function (room_id) {
+    var req = {};
+    $.ajax({
+      url: '/time-table-admin/read-periods-room-report/' + room_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_periods_room_report_changed', data.time_table);
+        } else if (data.status == 'e') {
+          showToast("Periods Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //Teacher Report
+
+  self.on('read_init_teacher_report', function () {
+    var req = {};
+    $.ajax({
+      url: '/time-table-admin/read-init-teacher-report',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_init_teacher_report_changed', data.teachers, data.days, data.periods, data.rooms, data.standards, data.sections);
+        } else if (data.status == 'e') {
+          showToast("Teachers Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_periods_teacher_report', function () {
+    var req = {};
+    $.ajax({
+      url: '/time-table-admin/read-periods-teacher-report/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_periods_teacher_report_changed', data.time_table);
+        } else if (data.status == 'e') {
+          showToast("Periods Read Error. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+'use strict';
+
 function TimeTableSubstitutaionStore() {
   riot.observable(this); // Riot provides our event emitter.
   var self = this;
@@ -17039,7 +17197,7 @@ function TimeTableSubstitutaionStore() {
       success: function success(data) {
         console.log(data);
         if (data.status == 's') {
-          self.trigger('read_edit_time_table_changed', data.free_periods, data.teacher_peiods);
+          self.trigger('read_edit_time_table_changed', data.teacher_peiods);
         } else if (data.status == 'e') {
           showToast("Free Periods Read Error. Please try again.", data.messaage);
         }
@@ -17086,28 +17244,6 @@ function TimeTableSubstitutaionStore() {
           self.trigger('update_time_table_changed');
         } else if (data.status == 'e') {
           showToast("Error updating time table. Please try again.", data.messaage);
-        }
-      },
-      error: function error(data) {
-        showToast("", data);
-      }
-    });
-  });
-
-  self.on('add_time_table', function (obj) {
-    $.ajax({
-      url: '/time-table-substitutation/add-time-table',
-      type: "POST",
-      data: JSON.stringify(obj),
-      contentType: "application/json",
-      dataType: "json",
-      headers: { "Authorization": getCookie('token') },
-      success: function success(data) {
-        console.log(data);
-        if (data.status == 's') {
-          self.trigger('add_time_table_changed');
-        } else if (data.status == 'e') {
-          showToast("Error adding time table. Please try again.", data.messaage);
         }
       },
       error: function error(data) {

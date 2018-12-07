@@ -73,11 +73,17 @@ RiotControl.addStore(studentAssignHouseStore)
 var studentStudentGroupStore = new StudentStudentGroupStore() 
 RiotControl.addStore(studentStudentGroupStore)
 
+var studentAssignSubjectStore = new StudentAssignSubjectStore() 
+RiotControl.addStore(studentAssignSubjectStore)
+
 var teacherTimeTableStore = new TeacherTimeTableStore() 
 RiotControl.addStore(teacherTimeTableStore)
 
 var timeTableSubstitutaionStore = new TimeTableSubstitutaionStore() 
 RiotControl.addStore(timeTableSubstitutaionStore)
+
+var timeTableAdminStore = new TimeTableAdminStore() 
+RiotControl.addStore(timeTableAdminStore)
 
 var studentWithdrawnStudentStore = new StudentWithdrawnStudentStore() 
 RiotControl.addStore(studentWithdrawnStudentStore)
@@ -377,6 +383,22 @@ let goTo = (path1, path2, path3) => {
     break;
     case 'time-table-substitutation':
       currentPage = riot.mount('div#view', 'time-table-substitutation')[0];
+    break;
+    case 'time-table-admin':
+      currentPage = riot.mount('div#view', 'time-table-admin', {selected_time_table_admin: path2})[0];
+      switch(path2){
+        case 'time-table-class-report':
+          riot.mount("div#time-table-admin-view", 'time-table-class-report')
+        break;
+        case 'time-table-room-report':
+          riot.mount("div#time-table-admin-view", 'time-table-room-report')
+        break;
+        case 'time-table-teacher-report':
+          riot.mount("div#time-table-admin-view", 'time-table-teacher-report')
+        break;
+        default:
+          riot.mount("div#time-table-admin-view", 'time-table-class-report')
+      }
     break;
     case 'marks-report':
       currentPage = riot.mount('div#view', 'marks-report', {selected_marks_report: path2})[0];

@@ -25,6 +25,7 @@ var studentAssignSubjectRouter = require('./routes/student-assign-subject');
 var studentWithdrawnStudentRouter = require('./routes/student-withdrawn-student');
 var teacherTimeTableRouter = require('./routes/teacher-time-table');
 var timeTableSubstitutaionRouter = require('./routes/time-table-substitutation');
+var timeTableAdminRouter = require('./routes/time-table-admin');
 //======== qadir ==================
 
 var promoteRouter = require('./routes/promote');
@@ -181,6 +182,7 @@ app.use('/student-assign-subject', verifyToken, studentAssignSubjectRouter);
 app.use('/student-withdrawn-student', verifyToken, studentWithdrawnStudentRouter);
 app.use('/teacher-time-table', verifyToken, teacherTimeTableRouter);
 app.use('/time-table-substitutation', verifyToken, timeTableSubstitutaionRouter);
+app.use('/time-table-admin', verifyToken, timeTableAdminRouter);
 //==== promotion by qadir ========
 app.use('/promote', verifyToken, promoteRouter);
 app.use('/student-assign-section', verifyToken, studentAssignSectionRouter);

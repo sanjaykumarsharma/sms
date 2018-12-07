@@ -11887,7 +11887,7 @@ riot.tag2('login', '<div class="login-banner"> <div class="columns is-gapless is
 
 });
 
-riot.tag2('main-nav', '<nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if="{showNavItems}"> <div class="container is-fluid"> <div class="navbar-brand"> <div class="navbar-item is-size-3 has-text-weight-bold has-text-wight"> Sarathi </div> <div class="navbar-burger burger" data-target="navbarExampleTransparentExample"> <span aria-hidden="true"></span> <span aria-hidden="true"></span> <span aria-hidden="true"></span> </div> </div> <div id="navbarExampleTransparentExample" class="navbar-menu has-text-weight-bold"> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Exam</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/exam-scheme">Exam Scheme</a> <a class="navbar-item" href="#/grade">Grade</a> <a class="navbar-item" href="#/marks-manager">Marks Manager</a> <a class="navbar-item" href="#/marks-entry">Marks Entry</a> <a class="navbar-item" href="#/marks-report">Marks Report</a> <a class="navbar-item" href="#/maturity-development">Maturity Development</a> <a class="navbar-item" href="#/result-activation">Result Activation</a> <a class="navbar-item" href="#/physical-fitness">Physical Fitness</a> <a class="navbar-item" href="#/subject-group-map">Subject Group Map</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Admin</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/id-card">ID Card</a> <a class="navbar-item {active: selected_nav_item == \'certificate\'}" href="#/certificate/issue-certificate">Certificate</a> <a class="navbar-item " href="#/birthday">Bithday</a> <a class="navbar-item " href="#/occupation-report">Occupation Report</a> <a class="navbar-item" href="#/id-signature">Id Signature</a> <a class="navbar-item" href="#/student-assign-house">Assign House</a> <a class="navbar-item" href="#/student-group-student">Group Student</a> <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a> <a class="navbar-item" href="#/student-assign-section">Assign Section</a> <a class="navbar-item" href="#/student-result-activation">Result Activation</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Time Table</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/teacher-time-table">Teacher Time Table</a> <a class="navbar-item" href="#/time-table-substitutation">Time Table Substitutaion</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Student</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item " href="#/student-search">Search</a> <a class="navbar-item " href="#/student-browser">Browser</a> <a class="navbar-item {active: selected_nav_item == \'admin-report\'}" href="#/admin-report/student-summary-report">Report</a> <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a> <a class="navbar-item" href="#/promote">Promote Student</a> <a class="navbar-item" href="#/student-login-slip">Login Slip</a> <a class="navbar-item" href="#/student-school-leaving">Student Leaving Certificate</a> <a class="navbar-item" href="#/student-info-update">Student Info Update</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Notification</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/student-notification">Student Email & Sms</a> <a class="navbar-item" href="#/employee-notification">Employee Email & Sms</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Fees</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'receive-fees\'}" href="#/receive-fees">Receive Fees</a> <a class="navbar-item {active: selected_nav_item == \'fee-bill\'}" href="#/fee-bill/bill">Fee Head</a> <a class="navbar-item {active: selected_nav_item == \'fees-report\'}" href="#/fees-report/month-wise">Reports</a> <a class="navbar-item {active: selected_nav_item == \'scholarship\'}" href="#/scholarship">Scholarship</a> <a class="navbar-item {active: selected_nav_item == \'fees-withdraw\'}" href="#/fees-withdraw">Withdraw</a> <a class="navbar-item {active: selected_nav_item == \'fees-setting\'}" href="#/fees-setting/fine-setting">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Mentor</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/mentor-detail">Mentor Detail</a> <a class="navbar-item" href="#/mentor-report">Report</a> <a class="navbar-item {active: selected_nav_item == \'mentor-setting\'}" href="#/mentor-setting/mentor-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Discipline</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/discipline-detail">Discipline Detail</a> <a class="navbar-item" href="#/discipline-report">Report</a> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item {active: selected_nav_item == \'discipline-setting\'}" href="#/discipline-setting/discipline-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Activity</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/activity-detail">Activity Detail</a> <a class="navbar-item" href="#/report">Report</a> <a class="navbar-item {active: selected_nav_item == \'activity-setting\'}" href="#/activity-setting/item">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Attendance</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/attendance-entry">Attendance Entry</a> <a class="navbar-item " href="#/daily-attendance">Daily Attendance</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Staff</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/staff">Staff</a> <a class="navbar-item " href="#/ex-staff">EX-Staff</a> <a class="navbar-item " href="#/browse-staff">Browse</a> </div> </div> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Master</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'master\'}" href="#/master/employee-type">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Infirmary</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'infirmary-setting\'}" href="#/infirmary-setting/infirmary-category">Setting</a> <a class="navbar-item {active: selected_nav_item == \'infirmary\'}" href="#/infirmary/infirmary-student">Infirmary Detail</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Inventory</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'inventory-setting\'}" href="#/inventory-setting/inventory-rack">Setting</a> <a class="navbar-item" href="#/inventory-stock">Stock Inwards Entry</a> <a class="navbar-item" href="#/inventory-issue">Issue</a> <a class="navbar-item" href="#/inventory-sale">Sale</a> <a class="navbar-item" href="#/inventory-returnable">Returnable</a> <a class="navbar-item {active: selected_nav_item == \'inventory-report\'}" href="#/inventory-report/inventory-received-goods-report">Report</a> </div> </div> <a class="navbar-item has-text-danger" onclick="{logout}"><i class="fas fa-power-off"></i></a> </div> </div> </div> </nav>', '', '', function(opts) {
+riot.tag2('main-nav', '<nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if="{showNavItems}"> <div class="container is-fluid"> <div class="navbar-brand"> <div class="navbar-item is-size-3 has-text-weight-bold has-text-wight"> Sarathi </div> <div class="navbar-burger burger" data-target="navbarExampleTransparentExample"> <span aria-hidden="true"></span> <span aria-hidden="true"></span> <span aria-hidden="true"></span> </div> </div> <div id="navbarExampleTransparentExample" class="navbar-menu has-text-weight-bold"> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Exam</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/exam-scheme">Exam Scheme</a> <a class="navbar-item" href="#/grade">Grade</a> <a class="navbar-item" href="#/marks-manager">Marks Manager</a> <a class="navbar-item" href="#/marks-entry">Marks Entry</a> <a class="navbar-item" href="#/marks-report">Marks Report</a> <a class="navbar-item" href="#/maturity-development">Maturity Development</a> <a class="navbar-item" href="#/result-activation">Result Activation</a> <a class="navbar-item" href="#/physical-fitness">Physical Fitness</a> <a class="navbar-item" href="#/subject-group-map">Subject Group Map</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Admin</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/id-card">ID Card</a> <a class="navbar-item {active: selected_nav_item == \'certificate\'}" href="#/certificate/issue-certificate">Certificate</a> <a class="navbar-item " href="#/birthday">Bithday</a> <a class="navbar-item " href="#/occupation-report">Occupation Report</a> <a class="navbar-item" href="#/id-signature">Id Signature</a> <a class="navbar-item" href="#/student-assign-house">Assign House</a> <a class="navbar-item" href="#/student-group-student">Group Student</a> <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a> <a class="navbar-item" href="#/student-assign-section">Assign Section</a> <a class="navbar-item" href="#/student-result-activation">Result Activation</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Time Table</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/teacher-time-table">Teacher Time Table</a> <a class="navbar-item" href="#/time-table-substitutation">Time Table Substitutaion</a> <a class="navbar-item" href="#/time-table-admin">Admin</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Student</a> <div class="navbar-dropdown"> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item " href="#/student-search">Search</a> <a class="navbar-item " href="#/student-browser">Browser</a> <a class="navbar-item {active: selected_nav_item == \'admin-report\'}" href="#/admin-report/student-summary-report">Report</a> <a class="navbar-item" href="#/student-withdrawn-student">Withdrawn Student</a> <a class="navbar-item" href="#/promote">Promote Student</a> <a class="navbar-item" href="#/student-login-slip">Login Slip</a> <a class="navbar-item" href="#/student-school-leaving">Student Leaving Certificate</a> <a class="navbar-item" href="#/student-info-update">Student Info Update</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Notification</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/student-notification">Student Email & Sms</a> <a class="navbar-item" href="#/employee-notification">Employee Email & Sms</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Fees</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'receive-fees\'}" href="#/receive-fees">Receive Fees</a> <a class="navbar-item {active: selected_nav_item == \'fee-bill\'}" href="#/fee-bill/bill">Fee Head</a> <a class="navbar-item {active: selected_nav_item == \'fees-report\'}" href="#/fees-report/month-wise">Reports</a> <a class="navbar-item {active: selected_nav_item == \'scholarship\'}" href="#/scholarship">Scholarship</a> <a class="navbar-item {active: selected_nav_item == \'fees-withdraw\'}" href="#/fees-withdraw">Withdraw</a> <a class="navbar-item {active: selected_nav_item == \'fees-setting\'}" href="#/fees-setting/fine-setting">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Mentor</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/mentor-detail">Mentor Detail</a> <a class="navbar-item" href="#/mentor-report">Report</a> <a class="navbar-item {active: selected_nav_item == \'mentor-setting\'}" href="#/mentor-setting/mentor-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Discipline</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/discipline-detail">Discipline Detail</a> <a class="navbar-item" href="#/discipline-report">Report</a> <a class="navbar-item" href="#/student">Student</a> <a class="navbar-item {active: selected_nav_item == \'discipline-setting\'}" href="#/discipline-setting/discipline-category">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Activity</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/activity-detail">Activity Detail</a> <a class="navbar-item" href="#/report">Report</a> <a class="navbar-item {active: selected_nav_item == \'activity-setting\'}" href="#/activity-setting/item">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Attendance</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/attendance-entry">Attendance Entry</a> <a class="navbar-item " href="#/daily-attendance">Daily Attendance</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Staff</a> <div class="navbar-dropdown"> <a class="navbar-item " href="#/staff">Staff</a> <a class="navbar-item " href="#/ex-staff">EX-Staff</a> <a class="navbar-item " href="#/browse-staff">Browse</a> </div> </div> <div class="navbar-end"> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Master</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'master\'}" href="#/master/employee-type">Setting</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Infirmary</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'infirmary-setting\'}" href="#/infirmary-setting/infirmary-category">Setting</a> <a class="navbar-item {active: selected_nav_item == \'infirmary\'}" href="#/infirmary/infirmary-student">Infirmary Detail</a> </div> </div> <div class="navbar-item has-dropdown is-hoverable"> <a class="navbar-item">Inventory</a> <div class="navbar-dropdown"> <a class="navbar-item {active: selected_nav_item == \'inventory-setting\'}" href="#/inventory-setting/inventory-rack">Setting</a> <a class="navbar-item" href="#/inventory-stock">Stock Inwards Entry</a> <a class="navbar-item" href="#/inventory-issue">Issue</a> <a class="navbar-item" href="#/inventory-sale">Sale</a> <a class="navbar-item" href="#/inventory-returnable">Returnable</a> <a class="navbar-item {active: selected_nav_item == \'inventory-report\'}" href="#/inventory-report/inventory-received-goods-report">Report</a> </div> </div> <a class="navbar-item has-text-danger" onclick="{logout}"><i class="fas fa-power-off"></i></a> </div> </div> </div> </nav>', '', '', function(opts) {
     var self = this
     console.log('opts.selected_nav_item')
     console.log(opts.selected_nav_item)
@@ -24675,7 +24675,175 @@ riot.tag2('teacher-time-table', '<loading-bar if="{loading}"></loading-bar> <sec
     }
 
 });
-riot.tag2('time-table-substitutation', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Time Table Substitutation</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Teacher</label></div> <div class="column is-narrow"> <div class="control"> <div class="select "> <select ref="teacherSelect" onchange="{refreshTimeTable}"> <option value="">Select Teacher</option> <option each="{teachers}" riot-value="{emp_id}">{name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <button class="button is-danger is-narrow has-text-weight-bold" onclick="{resetTimeTable}">Reset </button> </div> <div class="column"> <button class="button is-warning is-rounded" style="float:right" onclick="{refreshTimeTable}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th class="has-text-centered" style="vertical-align: middle;">Days/Periods</th> <th each="{p, i in periods}" class="has-text-centered"> <span style="color:#ff0000">{p.period_name}</span><br> <span style="font-size:12px">{p.period_time}</span> </th> </tr> </thead> <tbody> <tr each="{d, i in days}"> <th class="has-text-centered" style="vertical-align: middle;">{d.day_name}</th> <td each="{p, j in periods}" class="has-text-centered" onclick="{openTimeTableModal.bind(this, d, p)}"> <div each="{t, k in time_table}"> <p if="{d.day_id==t.day_id && p.period_id==t.period_id}" style="font-size:12px"> <span style="color:#ff0000">{t.subject_short_name}({t.period_type})</span><br>{t.room_name}<br>{t.standard} </p> </div> </td> </tr> </tbody> </table> </section> <div id="timeTableModalAdd" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Day:{day} &nbsp;&nbsp;&nbsp;&nbsp; Period:{period_name}{period_time}</p> </header> <section class="modal-card-body"> <div class="field"> <label class="label" for="role">Days</label> <div each="{d, i in tempDays}" style="float: left;padding-right: 15px;"> <input type="checkbox" checked="{d.checked}" id="{\'addDay\' + d.day_id}" onclick="{selectDay.bind(this,d)}"> {d.day_name} </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-primary" onclick="{addTimeTable}">Add</button> <button class="button" id="item-modal-close" onclick="{closeTimeTableAddModal}">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
+riot.tag2('time-table-admin', '<div class="field has-addons"> <p class="control"> <a class="button {is-active: selected_time_table_admin == \'time-table-class-report\'}" href="#/time-table-admin/time-table-class-report"> <span>Class</span> </a> </p> <p class="control"> <a class="button {is-active: selected_time_table_admin == \'time-table-room-report\'}" href="#/time-table-admin/time-table-room-report"> <span>Rom</span> </a> </p> </div> <div id="time-table-admin-view"></div>', '', '', function(opts) {
+    var self = this
+    console.log('opts.selected_time_table_admin')
+    console.log(opts.selected_time_table_admin)
+    if(!opts.selected_time_table_admin){
+      self.selected_time_table_admin = 'item'
+    }else{
+      self.selected_time_table_admin = opts.selected_time_table_admin
+    }
+});
+riot.tag2('time-table-class-report', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Time Table Class</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Standard</label></div> <div class="column is-narrow"> <div class="control"> <div class="select "> <select ref="standardSelect" onchange="{changeSection}"> <option value="">Select Teacher</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"><label class="label">Section</label></div> <div class="column is-narrow"> <div class="control"> <div class="select "> <select ref="sectionSelect"> <option value="">Select Section</option> <option each="{tempSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-rounded" onclick="{refreshTimeTable}"> Go </button> </div> <div class="column"> <button class="button is-warning is-rounded" style="float:right" onclick="{refreshTimeTable}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th class="has-text-centered" style="vertical-align: middle;">Days/Periods</th> <th each="{p, i in periods}" class="has-text-centered"> <span style="color:#ff0000">{p.period_name}</span><br> <span style="font-size:12px">{p.period_time}</span> </th> </tr> </thead> <tbody> <tr each="{d, i in days}"> <th class="has-text-centered" style="vertical-align: middle;">{d.day_name}</th> <td each="{p, j in periods}" class="has-text-centered"> <div each="{t, k in time_table}"> <p if="{d.day_id==t.day_id && p.period_id==t.period_id}" style="font-size:12px"> <span style="color:#ff0000">{t.subject_short_name}({t.period_type})</span><br>{t.room_name}<br>{t.short_name} </p> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+	var self = this
+    self.day = ''
+    self.period_name = ''
+    self.period_time = ''
+    self.tempSections = []
+
+    self.on("mount", function(){
+      self.loading = false;
+      self.readInit();
+    })
+    self.on("unmount", function(){
+      timeTableAdminStore.off('read_init_class_report_changed',InitChanged)
+      timeTableAdminStore.off('read_periods_class_report_changed',PeriodsChanged)
+    })
+
+   self.readInit = () => {
+    self.loading = true;
+    timeTableAdminStore.trigger('read_init_class_report')
+   }
+
+   self.refreshTimeTable = () => {
+    console.log(self.refs.sectionSelect.value)
+    if(self.refs.sectionSelect.value==''){
+        toastr.info("Please select section and try again")
+    }else{
+        self.loading = true;
+        timeTableAdminStore.trigger('read_periods_class_report',self.refs.sectionSelect.value)
+    }
+   }
+
+   self.changeSection = () => {
+       if(self.refs.standardSelect.value==''){
+        toastr.info("Please select standard and try again")
+       }else{
+        self.tempSections = []
+        self.tempSections = self.sections.filter(s=>{
+          return s.standard_id==self.refs.standardSelect.value
+        })
+       }
+       console.log(self.tempSections)
+    }
+
+   timeTableAdminStore.on('read_init_class_report_changed',InitChanged)
+    function InitChanged(teachers,days,periods,rooms,standards,sections){
+      self.loading = false
+
+      self.teachers = []
+      self.teachers = teachers
+
+      self.days = []
+      self.days = days
+
+      self.tempDays = []
+      self.tempDays = days
+
+      self.periods = []
+      self.periods = periods
+
+      self.rooms = []
+      self.rooms = rooms
+
+      self.standards = []
+      self.standards = standards
+
+      self.sections = []
+      self.sections = sections
+
+      self.update()
+    }
+
+   timeTableAdminStore.on('read_periods_class_report_changed',PeriodsChanged)
+    function PeriodsChanged(time_table){
+      self.loading = false
+
+      self.time_table = []
+      self.time_table = time_table
+
+      self.update()
+      console.log(self.periods)
+      console.log(self.time_table)
+      console.log(self.days)
+    }
+
+});
+riot.tag2('time-table-room-report', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Time Table Room</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Room</label></div> <div class="column is-narrow"> <div class="control"> <div class="select "> <select ref="roomSelect" onchange="{refreshTimeTable}"> <option value="">Select Room</option> <option each="{rooms}" riot-value="{room_id}">{room_name}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-rounded" onclick="{refreshTimeTable}"> Go </button> </div> <div class="column"> <button class="button is-warning is-rounded" style="float:right" onclick="{refreshTimeTable}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th class="has-text-centered" style="vertical-align: middle;">Days/Periods</th> <th each="{p, i in periods}" class="has-text-centered"> <span style="color:#ff0000">{p.period_name}</span><br> <span style="font-size:12px">{p.period_time}</span> </th> </tr> </thead> <tbody> <tr each="{d, i in days}"> <th class="has-text-centered" style="vertical-align: middle;">{d.day_name}</th> <td each="{p, j in periods}" class="has-text-centered"> <div each="{t, k in time_table}"> <p if="{d.day_id==t.day_id && p.period_id==t.period_id}" style="font-size:12px"> <span style="color:#ff0000">{t.subject_short_name}({t.period_type})</span><br>{t.standard}<br>{t.short_name} </p> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+	var self = this
+    self.day = ''
+    self.period_name = ''
+    self.period_time = ''
+    self.tempSections = []
+
+    self.on("mount", function(){
+      self.loading = false;
+      self.readInit();
+    })
+    self.on("unmount", function(){
+      timeTableAdminStore.off('read_init_room_report_changed',InitChanged)
+      timeTableAdminStore.off('read_periods_room_report_changed',PeriodsChanged)
+    })
+
+   self.readInit = () => {
+    self.loading = true;
+    timeTableAdminStore.trigger('read_init_room_report')
+   }
+
+   self.refreshTimeTable = () => {
+    console.log(self.refs.roomSelect.value)
+    if(self.refs.roomSelect.value==''){
+        toastr.info("Please select section and try again")
+    }else{
+        self.loading = true;
+        timeTableAdminStore.trigger('read_periods_room_report',self.refs.roomSelect.value)
+    }
+   }
+
+   timeTableAdminStore.on('read_init_room_report_changed',InitChanged)
+    function InitChanged(teachers,days,periods,rooms,standards,sections){
+      self.loading = false
+
+      self.teachers = []
+      self.teachers = teachers
+
+      self.days = []
+      self.days = days
+
+      self.tempDays = []
+      self.tempDays = days
+
+      self.periods = []
+      self.periods = periods
+
+      self.rooms = []
+      self.rooms = rooms
+
+      self.standards = []
+      self.standards = standards
+
+      self.sections = []
+      self.sections = sections
+
+      self.update()
+    }
+
+   timeTableAdminStore.on('read_periods_room_report_changed',PeriodsChanged)
+    function PeriodsChanged(time_table){
+      self.loading = false
+
+      self.time_table = []
+      self.time_table = time_table
+
+      self.update()
+      console.log(self.periods)
+      console.log(self.time_table)
+      console.log(self.days)
+    }
+
+});
+riot.tag2('time-table-substitutation', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Time Table Substitutation</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Teacher</label></div> <div class="column is-narrow"> <div class="control"> <div class="select "> <select ref="teacherSelect" onchange="{refreshTimeTable}"> <option value="">Select Teacher</option> <option each="{teachers}" riot-value="{emp_id}">{name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <button class="button is-danger is-narrow has-text-weight-bold" onclick="{resetTimeTable}">Reset </button> </div> <div class="column"> <button class="button is-warning is-rounded" style="float:right" onclick="{refreshTimeTable}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th class="has-text-centered" style="vertical-align: middle;">Days/Periods</th> <th each="{p, i in periods}" class="has-text-centered"> <span style="color:#ff0000">{p.period_name}</span><br> <span style="font-size:12px">{p.period_time}</span> </th> </tr> </thead> <tbody> <tr each="{d, i in days}"> <th class="has-text-centered" style="vertical-align: middle;">{d.day_name}</th> <td each="{p, j in periods}" class="has-text-centered" onclick="{openTimeTableModal.bind(this, d, p)}"> <div each="{t, k in time_table}"> <p if="{d.day_id==t.day_id && p.period_id==t.period_id}" style="font-size:12px"> <span style="color:#ff0000">{t.subject_short_name}({t.period_type})</span><br>{t.room_name}<br>{t.standard} </p> </div> </td> </tr> </tbody> </table> </section> <div id="timeTableModalEdit" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Day:{day} &nbsp;&nbsp;&nbsp;&nbsp; Period:{period_name}{period_time}</p> </header> <section class="modal-card-body"> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th class="has-text-centered">Teacher</th> <th class="has-text-centered">Periods of Day</th> <th></th> </tr> </thead> <tbody> <tr each="{t, i in teacher_peiods}"> <td>{t.teacher}</td> <td class="has-text-centered">{t.period_count_day}</td> <td> <span><a class="button is-small is-rounded is-primary" onclick="{updateTimeTable.bind(this, t)}">Assign</a></span> </td> </tr> </tbody> </table> </section> <footer class="modal-card-foot"> <button class="button" id="item-modal-close" onclick="{closeTimeTableAddModal}">Cancel</button> </footer> </div> </div>', '', '', function(opts) {
 	var self = this
     self.day = ''
     self.period_name = ''
@@ -24691,9 +24859,7 @@ riot.tag2('time-table-substitutation', '<loading-bar if="{loading}"></loading-ba
       timeTableSubstitutaionStore.off('read_periods_changed',PeriodsChanged)
       timeTableSubstitutaionStore.off('reset_time_table_changed',resetTimeTableChanged)
       timeTableSubstitutaionStore.off('read_edit_time_table_changed',readEditChanged)
-
       timeTableSubstitutaionStore.off('update_time_table_changed',updateTimeTableChanged)
-      timeTableSubstitutaionStore.off('add_time_table_changed',addTimeTableChanged)
     })
 
    self.readInit = () => {
@@ -24716,7 +24882,7 @@ riot.tag2('time-table-substitutation', '<loading-bar if="{loading}"></loading-ba
     }
 
    self.closeTimeTableAddModal = () => {
-      $("#timeTableModalAdd").removeClass("is-active");
+      $("#timeTableModalEdit").removeClass("is-active");
    }
 
    self.openTimeTableModal = (d,p,e) => {
@@ -24744,69 +24910,33 @@ riot.tag2('time-table-substitutation', '<loading-bar if="{loading}"></loading-ba
         }
       })
 
-      var read_obj = {}
-      read_obj['day_id']=self.day_id
-      read_obj['period_id']=self.period_id
-      read_obj['emp_id']=self.refs.teacherSelect.value
-      if(self.edit_data.subject_id){
-        read_obj['emp_id']=self.edit_data.subject_id
-      }else{
-        read_obj['emp_id']=''
-      }
+      if(edit==1){
 
-      timeTableSubstitutaionStore.trigger('read_edit_time_table',read_obj)
+        console.log('edit')
+        var read_obj = {}
+        read_obj['day_id']=self.day_id
+        read_obj['period_id']=self.period_id
+        read_obj['emp_id']=self.refs.teacherSelect.value
+        timeTableSubstitutaionStore.trigger('read_edit_time_table',read_obj)
+
+      }else if(edit == 0){
+
+        console.log('add')
+        toastr.error("This teacher is not assigned for this class")
+
+      }
 
    }
 
-   self.updateTimeTable = () => {
+   self.updateTimeTable = (t,e) => {
       var obj = {}
       obj['day_id'] = self.edit_data.day_id
       obj['period_id'] = self.edit_data.period_id
-      obj['teacher_id'] = self.refs.teacherSelect.value
-
-      obj['subject_id'] = self.refs.editSubjectSelect.value
-      obj['period_type'] = self.refs.editPeriodTypeSelect.value
-      obj['room_id'] = self.refs.editRoomSelect.value
-      obj['section_id'] = self.refs.editSectionSelect.value
+      obj['teacher_id'] = t.emp_id
+      obj['prev_teacher_id'] = self.refs.teacherSelect.value
 
       self.loading = true;
       timeTableSubstitutaionStore.trigger('update_time_table',obj)
-   }
-
-  self.deleteTimeTable = () => {
-      var obj = {}
-      obj['day_id'] = self.day_id
-      obj['period_id'] = self.period_id
-      obj['teacher_id'] = self.refs.teacherSelect.value
-
-      self.loading = true;
-      timeTableSubstitutaionStore.trigger('delete_time_table',obj)
-   }
-
-   self.selectDay = (d,event) => {
-    console.log(d)
-    console.log(event)
-      d.checked=!event.item.d.checked
-      console.log(self.tempDays)
-   }
-
-   self.addTimeTable = () => {
-      var obj = {}
-      obj['day_id'] = self.day_id
-      obj['period_id'] = self.period_id
-      obj['teacher_id'] = self.refs.teacherSelect.value
-
-      obj['subject_id'] = self.refs.addSubjectSelect.value
-      obj['period_type'] = self.refs.addPeriodTypeSelect.value
-      obj['room_id'] = self.refs.addRoomSelect.value
-      obj['section_id'] = self.refs.addSectionSelect.value
-
-      obj['days'] = self.tempDays.filter(td => {
-        return td.checked == true
-      })
-
-      self.loading = true;
-      timeTableSubstitutaionStore.trigger('add_time_table',obj)
    }
 
    timeTableSubstitutaionStore.on('read_init_changed',InitChanged)
@@ -24852,12 +24982,13 @@ riot.tag2('time-table-substitutation', '<loading-bar if="{loading}"></loading-ba
     }
 
     timeTableSubstitutaionStore.on('read_edit_time_table_changed',readEditChanged)
-    function readEditChanged(rooms){
+    function readEditChanged(teacher_peiods){
 
       self.loading = false
+      self.teacher_peiods = []
+      self.teacher_peiods = teacher_peiods
 
-      $("#timeTableModalAdd").addClass("is-active");
-      console.log('calling change section')
+      $("#timeTableModalEdit").addClass("is-active");
       self.update()
     }
 
@@ -24865,17 +24996,77 @@ riot.tag2('time-table-substitutation', '<loading-bar if="{loading}"></loading-ba
       function updateTimeTableChanged(){
         self.loading = false
         toastr.success("Time Table Updated Successfully ")
-        self.closeTimeTableEditModal()
+        self.closeTimeTableAddModal()
         self.refreshTimeTable()
 
     }
 
-    timeTableSubstitutaionStore.on('add_time_table_changed',addTimeTableChanged)
-      function addTimeTableChanged(){
-        self.loading = false
-        toastr.success("Time Table Added Successfully ")
-        self.closeTimeTableAddModal()
-        self.refreshTimeTable()
+});
+riot.tag2('time-table-teacher-report', '<loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Time Table Teacher</h2> </div> <div class="level-right"> </div> </div> <div class="box"> <div class="columns"> <div class="column is-narrow"><label class="label">Room</label></div> <div class="column is-narrow"> <div class="control"> <div class="select "> <select ref="roomSelect" onchange="{refreshTimeTable}"> <option value="">Select Room</option> <option each="{rooms}" riot-value="{room_id}">{room_name}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-rounded" onclick="{refreshTimeTable}"> Go </button> </div> <div class="column"> <button class="button is-warning is-rounded" style="float:right" onclick="{refreshTimeTable}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th class="has-text-centered" style="vertical-align: middle;">Teacher/Day</th> <th each="{d, i in days}" class="has-text-centered"> <span style="color:#ff0000">{d.day_name}</span> </th> </tr> </thead> <tbody> </tbody> </table> </section>', '', '', function(opts) {
+	var self = this
+    self.day = ''
+    self.period_name = ''
+    self.period_time = ''
+    self.tempSections = []
+
+    self.on("mount", function(){
+      self.loading = false;
+      self.readInit();
+    })
+    self.on("unmount", function(){
+      timeTableAdminStore.off('read_init_teacher_report_changed',InitChanged)
+      timeTableAdminStore.off('read_periods_teacher_report_changed',PeriodsChanged)
+    })
+
+   self.readInit = () => {
+    self.loading = true;
+    timeTableAdminStore.trigger('read_init_teacher_report')
+   }
+
+   self.refreshTimeTable = () => {
+      self.loading = true;
+      timeTableAdminStore.trigger('read_periods_teacher_report',self.refs.roomSelect.value)
+   }
+
+   timeTableAdminStore.on('read_init_teacher_report_changed',InitChanged)
+    function InitChanged(teachers,days,periods,rooms,standards,sections){
+      self.loading = false
+
+      self.teachers = []
+      self.teachers = teachers
+
+      self.days = []
+      self.days = days
+
+      self.tempDays = []
+      self.tempDays = days
+
+      self.periods = []
+      self.periods = periods
+
+      self.rooms = []
+      self.rooms = rooms
+
+      self.standards = []
+      self.standards = standards
+
+      self.sections = []
+      self.sections = sections
+
+      self.update()
+    }
+
+   timeTableAdminStore.on('read_periods_teacher_report_changed',PeriodsChanged)
+    function PeriodsChanged(time_table){
+      self.loading = false
+
+      self.time_table = []
+      self.time_table = time_table
+
+      self.update()
+      console.log(self.periods)
+      console.log(self.time_table)
+      console.log(self.days)
     }
 
 });

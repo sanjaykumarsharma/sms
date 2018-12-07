@@ -68,7 +68,7 @@
   </section>
 
 <!-- Open Add Time Table Modal Start -->
-  <div id="timeTableModalAdd" class="modal ">
+  <div id="timeTableModalEdit" class="modal ">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
@@ -77,17 +77,28 @@
       <section class="modal-card-body">
         
 
-        <div class="field">
-          <label class="label" for="role">Days</label>
-          <div each={d, i in tempDays} style="float: left;padding-right: 15px;">
-            <input type="checkbox" checked={d.checked} id="{ 'addDay' + d.day_id }" onclick={ selectDay.bind(this,d) }> {d.day_name}
-          </div> 
-        </div>
+         <table class="table is-fullwidth is-bordered is-hoverable">
+          <thead>
+            <tr>
+              <th class="has-text-centered">Teacher</th>
+              <th class="has-text-centered">Periods of Day</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr each={t, i in teacher_peiods}>
+              <td>{t.teacher}</td>
+              <td class="has-text-centered">{t.period_count_day}</td>
+              <td>
+                <span><a class="button is-small is-rounded is-primary" onclick={updateTimeTable.bind(this, t)}>Assign</a></span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
         
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-primary" onclick={addTimeTable} >Add</button>
         <button class="button" id="item-modal-close" onclick={closeTimeTableAddModal}>Cancel</button>
       </footer>
     </div>
@@ -110,10 +121,7 @@
       timeTableSubstitutaionStore.off('read_periods_changed',PeriodsChanged)
       timeTableSubstitutaionStore.off('reset_time_table_changed',resetTimeTableChanged)
       timeTableSubstitutaionStore.off('read_edit_time_table_changed',readEditChanged)
-
-
       timeTableSubstitutaionStore.off('update_time_table_changed',updateTimeTableChanged)
-      timeTableSubstitutaionStore.off('add_time_table_changed',addTimeTableChanged)
     })
   
    self.readInit = () => {
@@ -136,7 +144,7 @@
     }
 
    self.closeTimeTableAddModal = () => {
-      $("#timeTableModalAdd").removeClass("is-active");
+      $("#timeTableModalEdit").removeClass("is-active");
    }
 
    self.openTimeTableModal = (d,p,e) => {
@@ -155,8 +163,6 @@
       self.period_id = p.period_id
       self.period_time = p.period_time
 
-      
-
       let edit = 0;
       self.edit_data = {};
       self.time_table.map(t=>{
@@ -166,76 +172,33 @@
         }
       })
       
-      
-      var read_obj = {}
-      read_obj['day_id']=self.day_id
-      read_obj['period_id']=self.period_id
-      read_obj['emp_id']=self.refs.teacherSelect.value
-      if(self.edit_data.subject_id){
-        read_obj['emp_id']=self.edit_data.subject_id
-      }else{
-        read_obj['emp_id']=''
-      }
+      if(edit==1){
 
-      timeTableSubstitutaionStore.trigger('read_edit_time_table',read_obj)
+        console.log('edit')
+        var read_obj = {}
+        read_obj['day_id']=self.day_id
+        read_obj['period_id']=self.period_id
+        read_obj['emp_id']=self.refs.teacherSelect.value
+        timeTableSubstitutaionStore.trigger('read_edit_time_table',read_obj) 
+
+      }else if(edit == 0){
+
+        console.log('add')
+        toastr.error("This teacher is not assigned for this class")
+        
+      }
 
    }
 
-
-
-
-   self.updateTimeTable = () => {
+   self.updateTimeTable = (t,e) => {
       var obj = {}
       obj['day_id'] = self.edit_data.day_id
       obj['period_id'] = self.edit_data.period_id
-      obj['teacher_id'] = self.refs.teacherSelect.value
-
-      obj['subject_id'] = self.refs.editSubjectSelect.value
-      obj['period_type'] = self.refs.editPeriodTypeSelect.value
-      obj['room_id'] = self.refs.editRoomSelect.value
-      obj['section_id'] = self.refs.editSectionSelect.value
-
+      obj['teacher_id'] = t.emp_id
+      obj['prev_teacher_id'] = self.refs.teacherSelect.value
 
       self.loading = true;
       timeTableSubstitutaionStore.trigger('update_time_table',obj)
-   }
-
-  self.deleteTimeTable = () => {
-      var obj = {}
-      obj['day_id'] = self.day_id
-      obj['period_id'] = self.period_id
-      obj['teacher_id'] = self.refs.teacherSelect.value
-
-      self.loading = true;
-      timeTableSubstitutaionStore.trigger('delete_time_table',obj)
-   }
-
-   //add
-
-   self.selectDay = (d,event) => {
-    console.log(d)
-    console.log(event)
-      d.checked=!event.item.d.checked
-      console.log(self.tempDays)
-   }
-   
-   self.addTimeTable = () => {
-      var obj = {}
-      obj['day_id'] = self.day_id
-      obj['period_id'] = self.period_id
-      obj['teacher_id'] = self.refs.teacherSelect.value
-
-      obj['subject_id'] = self.refs.addSubjectSelect.value
-      obj['period_type'] = self.refs.addPeriodTypeSelect.value
-      obj['room_id'] = self.refs.addRoomSelect.value
-      obj['section_id'] = self.refs.addSectionSelect.value
-
-      obj['days'] = self.tempDays.filter(td => {
-        return td.checked == true
-      })
-
-      self.loading = true;
-      timeTableSubstitutaionStore.trigger('add_time_table',obj)
    }
 
    /************************************************ Students Changed Method ************************************************/
@@ -282,34 +245,23 @@
     }
 
     timeTableSubstitutaionStore.on('read_edit_time_table_changed',readEditChanged)
-    function readEditChanged(rooms){
+    function readEditChanged(teacher_peiods){
 
       self.loading = false
-      
-      $("#timeTableModalAdd").addClass("is-active");
-      console.log('calling change section')
+      self.teacher_peiods = []
+      self.teacher_peiods = teacher_peiods
+
+      $("#timeTableModalEdit").addClass("is-active");
       self.update()
     }
-    
-
-
-   
      
     timeTableSubstitutaionStore.on('update_time_table_changed',updateTimeTableChanged)
       function updateTimeTableChanged(){
         self.loading = false
         toastr.success("Time Table Updated Successfully ")
-        self.closeTimeTableEditModal()
-        self.refreshTimeTable()
-
-    }
-    
-    timeTableSubstitutaionStore.on('add_time_table_changed',addTimeTableChanged)
-      function addTimeTableChanged(){
-        self.loading = false
-        toastr.success("Time Table Added Successfully ")
         self.closeTimeTableAddModal()
         self.refreshTimeTable()
+
     }
     
     

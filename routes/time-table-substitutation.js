@@ -154,7 +154,7 @@ router.post('/read-edit-time-table', function(req, res, next) {
 
      var free_periods = `select * from
                         (select emp_id, concat(first_name, ' ', middle_name, ' ', last_name)as teacher,a.department_id,
-                        count(period_id)as period_count_day
+                        CAST(COUNT(period_id) AS CHAR) as period_count_day
                         from employee a
                         join time_table_substitution b on a.emp_id=b.teacher_id
                         where emp_type_id!=5 and is_active='Y' and b.teacher_id not in((select teacher_id from time_table_substitution 
@@ -171,7 +171,7 @@ router.post('/read-edit-time-table', function(req, res, next) {
                                              where session_id=${req.cookies.session_id}))a  
                         order by teacher`;
 
-      var teacher_peiods = `select * from
+      /*var teacher_peiods = `select * from
                           (select emp_id, concat(first_name, ' ', middle_name, ' ', last_name)as teacher,a.department_id,
                           count(period_id)as period_count_day
                           from employee a
@@ -188,9 +188,9 @@ router.post('/read-edit-time-table', function(req, res, next) {
                           from employee a
                           where emp_type_id!=5 and is_active='Y' and emp_id not in (select distinct teacher_id from time_table 
                                                where session_id=${req.cookies.session_id}))a  
-                          order by teacher`;                  
+                          order by teacher`;    */              
 
-      var qry = free_periods+';'+teacher_peiods;
+      var qry = free_periods;//+';'+teacher_peiods;
       console.log(qry);
 
      pool.query(qry,function(err,result)     {
@@ -202,8 +202,9 @@ router.post('/read-edit-time-table', function(req, res, next) {
            data.messaage = err.sqlMessage
         }else{
           data.status = 's';
-          data.free_periods = result[0];
-          data.teacher_peiods = result[1];
+          console.log(result)
+          data.teacher_peiods = result;
+          // data.teacher_peiods = result[1];
           res.send(data)
         }
      
@@ -225,9 +226,11 @@ router.post('/edit-time-table', function(req, res, next) {
       connection.beginTransaction(function(err) {
         if (err) { throw err; }
 
-        var query = `delete from time_table where day_id = ${input.day_id} and period_id=${input.period_id} and teacher_id=${input.teacher_id}
-                     and session_id=${req.cookies.session_id} `;
-
+        var query = `select count(*) as count from time_table_substitution 
+                     where teacher_id=${input.teacher_id} and 
+                     period_id=${input.period_id} and day_id=${input.day_id}
+                     and session_id=${req.cookies.session_id}`;
+        console.log(query)
         connection.query(query, function (error, rows) {
           if (error) {
             return connection.rollback(function() {
@@ -235,98 +238,17 @@ router.post('/edit-time-table', function(req, res, next) {
             });
           }
 
-          var sql = `insert into time_table(teacher_id,subject_id,period_type,period_id,room_id,section_id,day_id,session_id,creation_date,modified_by)
-                     values(${input.teacher_id},${input.subject_id},'${input.period_type}',${input.period_id},${input.room_id},${input.section_id},
-                     ${input.day_id},${req.cookies.session_id},curdate(),'${req.cookies.user}')`;
+          console.log(rows[0].count)
+          if(rows[0].count==0){
 
-          connection.query(sql, function(error, rows)
-          {
-            if (error) {
-              return connection.rollback(function() {
-                throw error;
-              });
-            }
-            connection.commit(function(err) {
-              if (err) {
-                return connection.rollback(function() {
-                  throw err;
-                });
-              }
-              data.status = 's';
-              console.log(data);
-              res.send(data)
-            });
-          });
-        });//main query
-      });
-    });
-  });
-
-
-router.post('/add-time-table', function(req, res, next) {
-
-  var input = JSON.parse(JSON.stringify(req.body));
-  console.log(input)
-
-  var data = {} 
-
-    req.getConnection(function(err,connection){
-      connection.beginTransaction(function(err) {
-        if (err) { throw err; }
-
-        var query = '';
-
-        input.days.map(d=>{
-           var  q = `select count(section_id) as section_id_count from time_table
-                       where period_id=${input.period_id} and day_id=${d.day_id} and teacher_id=${input.teacher_id}
-                       and session_id= ${req.cookies.session_id} `;
-
-            if(query==''){
-              query = q;
-            }else{
-              query = query+';'+q;
-            }
-        })             
-
-        console.log(query)             
-
-        connection.query(query, function (error, rows) {
-          if (error) {
-            return connection.rollback(function() {
-              throw error;
-            });
-          }
-
-          console.log(rows)
-          console.log(rows.length)
-          var count = 0;
-          if(rows.length==1){
-            count = rows[0].section_id_count 
-          }else if(rows.length>1){
-            rows.map(c=>{
-              count = count + c[0].section_id_count 
-            })
-          }
+            var sql = `update time_table_substitution set teacher_id=${input.teacher_id},
+                       substitution_date=curdate()
+                       where teacher_id=${input.prev_teacher_id} and 
+                       period_id=${input.period_id} and day_id=${input.day_id} 
+                       and session_id=${req.cookies.session_id}`;
           
+            console.log(sql)
 
-          console.log(count)
-
-          if(count==0){
-             
-             var sql = ''
-
-             input.days.map(d=>{
-                 var  q = `insert into time_table(teacher_id,subject_id,period_type,period_id,room_id,section_id,day_id,session_id,creation_date,modified_by)
-                           values(${input.teacher_id},${input.subject_id},'${input.period_type}',${input.period_id},${input.room_id},${input.section_id},
-                           ${d.day_id},${req.cookies.session_id},curdate(),'${req.cookies.user}')`;
-
-                  if(sql==''){
-                    sql = q;
-                  }else{
-                    sql = sql+';'+q;
-                  }
-              })             
-       
             connection.query(sql, function(error, rows)
             {
               if (error) {
@@ -345,20 +267,22 @@ router.post('/add-time-table', function(req, res, next) {
                 res.send(data)
               });
             });
-
           }else{
-            data.status = 'e';
-            data.messaage = 'Please Check Your Selection';
-            console.log(data);
-            res.send(data)
+                data.status = 'e';
+                data.messaage = 'Selected teacher is not free in this period';
+                console.log(data);
+                res.send(data)
           }
-
           
+
+
         });//main query
       });
     });
   });
 
+
+///////
 
 router.post('/delete-time-table', function(req, res, next) {
 
