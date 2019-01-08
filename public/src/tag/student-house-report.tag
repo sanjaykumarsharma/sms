@@ -1,16 +1,15 @@
 <student-house-report>
+	<header></header>
+	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Student House Report</h2>
-			</div>
-		</div>
-		<div class="box">
+			<h4 class="title has-text-centered" style="color: #ff3860;">House Wise Report ({session_name})<br> Grand Total ({grand_total})
+			</h4>
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="standard_id" onchange={getReadSection}>
+							<select ref="standard_id" onchange={getReadSection} onkeyup={addEnter}>
 								<option>Choose Standard</option>
 								<option value='-1'>All</option>
 								<option each={standards} value={standard_id}>{standard}
@@ -22,7 +21,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 			        	<div class="select is-fullwidth">
-							<select ref="section_id">
+							<select ref="section_id" onkeyup={addEnter}>
 								<option>Choose Section</option>
 								<option value='-1'>All</option>
 								<option each={readfilteredSections} value={section_id}>{section}
@@ -37,6 +36,15 @@
 					</button>
 					<input type="checkbox" id="checkTable" checked={e.done}
 				    onclick={viewTable}  style="margin-top: 12px;"> Table
+
+				     <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+			          <span class="icon"> <i class="fas fa-print"></i></span>
+			        </button>
+				    <button class="button is-warning is-rounded is-pulled-right" onclick={readStudentGroupReport} style="margin-left:5px;margin-right:5px">
+			        <span class="icon">
+			          <span class="fas fa-sync-alt"></span>
+			        </span>
+			        </button>
 				</div>
 			</div>
 		</div>
@@ -80,6 +88,11 @@
       studentStore.off('read_section_changed',SectionChanged)
       adminReportStore.off('read_student_house_report_change',ReadStudentHouseReportChanged)
     })
+     self.addEnter = (e) => {
+      if(e.which == 13){
+        self.readStudentHouseReport()
+      }
+    }
 
      self.viewTable = () => {
     	if($('#checkTable').is(":checked")){
@@ -104,6 +117,7 @@
     	})
     }
     self.readStudentHouseReport = () => {
+    	self.loading=true
        adminReportStore.trigger('read_student_house_report',self.refs.standard_id.value,self.refs.section_id.value)
     }
     
@@ -122,12 +136,13 @@
       self.getReadSection()
     }
     adminReportStore.on('read_student_house_report_change',ReadStudentHouseReportChanged)
-    function ReadStudentHouseReportChanged(studentHouseReports,grandTotal){
+    function ReadStudentHouseReportChanged(studentHouseReports,grandTotal,session_name){
       //console.log(studentHouseReports) 
       self.title='Create'
       self.loading = false
       self.studentHouseReports = studentHouseReports
-       self.grand_total = grandTotal
+      self.session_name = session_name
+      self.grand_total = grandTotal
 
       var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
 

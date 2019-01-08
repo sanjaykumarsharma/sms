@@ -132,5 +132,52 @@ function TimeTableAdminStore() {
         }
       })
   })
+  
+
+  self.on('read_init_assign_teacher', function() {
+    let req = {}
+    $.ajax({
+      url:'/time-table-admin/read-init-assign-teacher',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_init_assign_teacher_changed', data.teachers)
+          }else if(data.status == 'e'){
+            showToast("Teachers Read Error. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('assign_teacher_time_table', function(teacher_one,teacher_two) {
+    let req = {}
+    req.teacher_one=teacher_one
+    req.teacher_two=teacher_two
+    $.ajax({
+      url:'/time-table-admin/assign-teacher-time-table',
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('assign_teacher_time_table_changed')
+          }else if(data.status == 'e'){
+            showToast("Error assigning teacher. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
 
 }

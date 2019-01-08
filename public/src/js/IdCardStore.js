@@ -46,14 +46,16 @@ function IdCardStore() {
       })
   })
 
-  self.on('read_student', function(standard_id,section_id) {
+  self.on('read_student', function(standard_id,section_id,enroll_number) {
     console.log(standard_id)
     console.log(section_id)
+    console.log(enroll_number)
     let req = {}
     req.standard_id=standard_id
     req.section_id=section_id
+    req.enroll_number=enroll_number
     $.ajax({
-      url:'/id_card/read_student/'+standard_id+'/'+section_id,
+      url:'/id_card/read_student/'+standard_id+'/'+section_id+'/'+enroll_number,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -86,6 +88,30 @@ function IdCardStore() {
           if(data.status == 's'){
             self.students = data.students
             self.trigger('read_id_card_changed', data.students_id_card_details)
+          }else if(data.status == 'e'){
+            showToast("Student Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('read_escort_card', function(student_id) {
+    console.log(student_id)
+    let req = {}
+    req.student_id=student_id
+    $.ajax({
+      url:'/id_card/read_escort_card/'+student_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.students = data.students
+            self.trigger('read_escort_card_changed', data.students_escort_card_details)
           }else if(data.status == 'e'){
             showToast("Student Read Error. Please try again.", data)
           }

@@ -1,5 +1,5 @@
 <infirmary-setting>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_master == 'infirmary-category' }" href="#/infirmary-setting/infirmary-category">
 		      <span>Category</span>

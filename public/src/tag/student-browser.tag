@@ -1,16 +1,18 @@
 <student-browser>
+	<header></header>
+	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Students</h2>
-			</div>
-		</div>
-		<div class="box">
+		<!-- <div class="level">
+			<div class="level-left"> -->
+				<h4 class="title has-text-centered" style="color: #ff3860;">Students Details <br> Session: {session_name}</h4>
+		<!-- 	</div>
+				</div> -->
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="standard_id" onchange={getReadSection}>
+							<select ref="standard_id" onchange={getReadSection} onkeyup={addEnter}>
 								<option>Choose Standard</option>
 								<option each={standards} value={standard_id}>{standard}
 	                            </option>
@@ -21,7 +23,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 			        	<div class="select is-fullwidth">
-							<select ref="section_id">
+							<select ref="section_id" onkeyup={addEnter}>
 								<option>Choose Section</option>
 								<option each={readfilteredSections} value={section_id}>{section}
 	                            </option>
@@ -33,33 +35,42 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={readStudentBrowserData} >GO
 					</button>
-					<button class="button is-primary has-text-weight-bold"
+
+					<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print" style="margin-left:5px">
+	                  <span class="icon">
+	                     <i class="fas fa-print"></i>
+	                 </span>
+	                </button>
+
+					<button class="button is-warning has-text-weight-bold is-pulled-right"
 				      onclick={showStudentField}>Setting
 				    </button>
 				</div>
 			</div>
 		</div>
-		<div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;">
-		    <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+		<!-- <div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;"> -->
+		    <table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 			<thead>
 				<tr>
 					<th>#</th>
+					<th show={roll_no_view =='show_roll_no'}>Roll No</th>
+					<th show={enroll_no_view =='show_enroll_no'}>Enroll No</th>
+					<th show={student_view =='show_student'}>Student Name</th>
+					<th show={class_view =='show_class'}>Class</th>
+					<th show={group_view =='show_group'}>Group</th>
+					<th show={house_view =='show_house'}>House</th>
+					<th show={reg_no_view =='show_reg_no'}>Reg. No</th>
+					<th show={gender_view =='show_gender'}>Gender</th>
+					<th show={category_view =='show_category'}>Category</th>
+					<th show={dob_view =='show_dob'}>DOB</th>
+					<th show={f_annual_income_view =='show_f_annual_income'}>Father's AnnualIncome</th>
+					<th show={doa_view =='show_doa'}>DOA</th>
 					<th show={title_view =='show_title'}>Title</th>
 					<th show={first_name_view =='show_first_name'}>First Name</th>
 					<th show={middle_name_view =='show_middle_name'}>Middle Name </th>
 					<th show={last_name_view =='show_last_name'}>Last Name</th>
-					<th show={student_view =='show_student'}>Student Name</th>
 					<th show={withdrawn_view =='show_withdrawn'}>Withdrawn</th>
-					<th show={enroll_no_view =='show_enroll_no'}>Enroll No</th>
-					<th show={reg_no_view =='show_reg_no'}>Reg. No</th>
-					<th show={roll_no_view =='show_roll_no'}>Roll No</th>
-					<th show={group_view =='show_group'}>Group</th>
-					<th show={house_view =='show_house'}>House</th>
-					<th show={class_view =='show_class'}>Class</th>
-					<th show={gender_view =='show_gender'}>Gender</th>
-					<th show={category_view =='show_category'}>Category</th>
-					<th show={dob_view =='show_dob'}>DOB</th>
-					<th show={doa_view =='show_doa'}>DOA</th>
+					
 					<th show={doj_view =='show_doj'}>DOJ</th>
 					<th show={mother_tongue_view =='show_mother_tongue'}>Mother Tongue</th>
 					<th show={last_school_view =='show_last_school'}>Last School</th>
@@ -92,7 +103,6 @@
 					<th show={f_fax_view =='show_f_fax'}>Father's Fax</th>
 					<th show={f_email_view =='show_f_email'}>Father's Email</th>
 					<th show={f_organisation_view =='show_f_organisation'}>Father's Organisation</th>
-					<th show={f_annual_income_view =='show_f_annual_income'}>Father's AnnualIncome</th>
 					<th show={f_designation_view =='show_f_designation'}>Father's Designation</th>
 					<th show={f_department_view =='show_f_department'}>Father's Department</th>
 					<th show={f_office_add_view =='show_f_office_add'}>Father's Office  Add</th>
@@ -143,22 +153,23 @@
 			<tbody>
 				<tr each={st, i in browseStudents}>
 					<td>{i+1}</td>
+					<td show={roll_no_view =='show_roll_no'}>{st.roll_number}</td>
+					<td show={enroll_no_view =='show_enroll_no'}>{st.enroll_number}</td>
+					<td show={student_view =='show_student'}>{st.first_name} {st.middle_name} {st.last_name}</td>
+					<td show={class_view =='show_class'}>{st.standard}</td>
+					<td show={group_view =='show_group'}>{st.group_name}</td>
+					<td show={house_view =='show_house'}>{st.house_name}</td>
+					<td show={reg_no_view =='show_reg_no'}>{st.reg_number}</td>
+					<td show={gender_view =='show_gender'}>{st.gender}</td>
+					<td show={category_view =='show_category'}>{st.category_name}</td>
+					<td show={dob_view =='show_dob'}>{st.dob}</td>
+					<td show={f_annual_income_view =='show_f_annual_income'}>{st.f_annual_income}</td>
+					<td show={doa_view =='show_doa'}>{st.doa}</td>
 					<td show={title_view =='show_title'}>{st.title}</td>
 					<td show={first_name_view =='show_first_name'}>{st.first_name}</td>
 					<td show={middle_name_view =='show_middle_name'}>{st.middle_name}</td>
 					<td show={last_name_view =='show_last_name'}>{st.last_name}</td>
-					<td show={student_view =='show_student'}>{st.student_name}</td>
 					<td show={withdrawn_view =='show_withdrawn'}>{st.withdrawn}</td>
-					<td show={enroll_no_view =='show_enroll_no'}>{st.enroll_number}</td>
-					<td show={reg_no_view =='show_reg_no'}>{st.reg_number}</td>
-					<td show={roll_no_view =='show_roll_no'}>{st.roll_number}</td>
-					<td show={group_view =='show_group'}>{st.group_name}</td>
-					<td show={house_view =='show_house'}>{st.house_name}</td>
-					<td show={class_view =='show_class'}>{st.standard}</td>
-					<td show={gender_view =='show_gender'}>{st.gender}</td>
-					<td show={category_view =='show_category'}>{st.category_name}</td>
-					<td show={dob_view =='show_dob'}>{st.dob}</td>
-					<td show={doa_view =='show_doa'}>{st.doa}</td>
 					<td show={doj_view =='show_doj'}>{st.doj}</td>
 					<td show={mother_tongue_view =='show_mother_tongue'}>{st.mother_tongue}</td>
 					<td show={last_school_view =='show_last_school'}>{st.last_school}</td>
@@ -178,10 +189,10 @@
 					<td show={staff_child_view =='show_staff_child'}>{st.staff_child}</td>
 					<td show={staff_name_view =='show_staff_name'}>{st.staff_name}</td>
 					<td show={email_view =='show_email'}>{st.email}</td>
-					<td show={f_title_view =='show_f_title'}>{f_title}</td>
-					<td show={f_name_view =='show_f_name'}>{f_name}</td>
-					<td show={f_school_name_view =='show_f_school_name'}>{f_school_name}</td>
-					<td show={f_school_exam_view =='show_f_school_exam'}>{f_school_exam_passed}</td>
+					<td show={f_title_view =='show_f_title'}>{st.f_title}</td>
+					<td show={f_name_view =='show_f_name'}>{st.f_name}</td>
+					<td show={f_school_name_view =='show_f_school_name'}>{st.f_school_name}</td>
+					<td show={f_school_exam_view =='show_f_school_exam'}>{st.f_school_exam_passed}</td>
 					<td show={f_college_name_view =='show_f_college_name'}>{st.f_college_name}</td>
 					<td show={f_college_exam =='show_f_college_exam'}>{st.f_college_exam_passed}</td>
 					<td show={occupation_view =='show_occupation'}>{f_occupation}</td>
@@ -191,16 +202,15 @@
 					<td show={f_fax_view =='show_f_fax'}>{st.f_fax}</td>
 					<td show={f_email_view =='show_f_email'}>{st.f_email}</td>
 					<td show={f_organisation_view =='show_f_organisation'}>{st.f_organisation_name}</td>
-					<td show={f_annual_income_view =='show_f_annual_income'}>{st.f_annual_income}</td>
 					<td show={f_designation_view =='show_f_designation'}>{st.f_designation}</td>
 					<td show={f_department_view =='show_f_department'}>{st.f_department}</td>
 					<td show={f_office_add_view =='show_f_office_add'}>{st.f_office_add_l1} {st.f_office_add_l2} <br> {st.f_office_city}-{st.f_office_zip} <br>{st.f_office_state}, {st.f_office_country}</td>
 					<td show={f_office_phone_view =='show_f_office_phone'}>{st.f_office_phone}</td>
 					<td show={f_nationality_view =='show_f_nationality'}>{st.f_nationality}</td>
-					<td show={m_title_view =='show_itle'}>{m_title}</td>
-					<td show={m_name_view =='show_m_name'}>{m_name}</td>
-					<td show={m_school_name_view =='show_m_school_name'}>{m_school_name}</td>
-					<td show={m_school_exam_view =='show_chool_exam'}>{m_school_exam_passed}</td>
+					<td show={m_title_view =='show_itle'}>{st.m_title}</td>
+					<td show={m_name_view =='show_m_name'}>{st.m_name}</td>
+					<td show={m_school_name_view =='show_m_school_name'}>{st.m_school_name}</td>
+					<td show={m_school_exam_view =='show_chool_exam'}>{st.m_school_exam_passed}</td>
 					<td show={m_college_name_view =='show_m_college_name'}>{st.m_college_name}</td>
 					<td show={m_college_exam_view =='show_m_college_exam'}>{st.m_college_exam_passed}</td>
 					<td show={occupation_view =='show_occupation'}>{m_occupation}</td>
@@ -216,10 +226,10 @@
 					<td show={m_office_add_view =='show_m_office_add'}>{st.m_office_add_l1} {st.m_office_add_l2} <br> {st.m_office_city}-{st.m_office_zip} <br>{st.m_office_state}, {st.m_office_country}</td>
 					<td show={m_office_phone_view =='show_m_office_phone'}>{st.m_office_phone}</td>
 					<td show={m_nationality_view =='show_m_nationality'}>{st.m_nationality}</td>
-					<td show={g_title_view =='show_g_title'}>{g_title}</td>
-					<td show={g_name_view =='show_g_name'}>{g_name}</td>
-					<td show={g_school_name_view =='show_g_school_name'}>{g_school_name}</td>
-					<td show={g_school_exam_view =='show_g_school_exam'}>{g_school_exag_passed}</td>
+					<td show={g_title_view =='show_g_title'}>{st.g_title}</td>
+					<td show={g_name_view =='show_g_name'}>{st.g_name}</td>
+					<td show={g_school_name_view =='show_g_school_name'}>{st.g_school_name}</td>
+					<td show={g_school_exam_view =='show_g_school_exam'}>{st.g_school_exag_passed}</td>
 					<td show={g_college_name_view =='show_g_college_name'}>{st.g_college_name}</td>
 					<td show={g_college_exam_view =='show_g_college_exam'}>{st.g_college_exag_passed}</td>
 					<td show={occupation_view =='show_occupation'}>{g_occupation}</td>
@@ -240,7 +250,7 @@
 				</tr>
 			</tbody>
 		   </table>
-	    </div>
+	   <!--  </div> -->
 <!-- 		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
 	<thead>
 		<tr>
@@ -409,18 +419,16 @@
 			{ field_name : "siblingEnrollNumber" , array_name :"Sibling Enrol Number"}
 			                    
 			  ];
-    	self.first_name_view ='show_first_name'
-		self.middle_name_view ='show_middle_name'
-		self.last_name_view ='show_last_name'
+    	self.sms_no_view ='show_sms_no'
+		self.f_name_view ='show_f_name'
+		self.m_name_view ='show_m_name'
 		self.student_view ='show_student'
-		self.withdrawn_view ='show_withdrawn'
+		//self.withdrawn_view ='show_withdrawn'
 		self.enroll_no_view ='show_enroll_no'
-		self.reg_no_view ='show_reg_no'
+		//self.reg_no_view ='show_reg_no'
 		self.roll_no_view ='show_roll_no'
-		self.group_view ='show_group'
-		self.house_view ='show_house'
 		self.class_view ='show_class'
-		self.gender_view ='show_gender'
+		//self.gender_view ='show_gender'
     	self.readStandard()
     	self.readSection()
     	self.role = getCookie('role') 
@@ -452,7 +460,14 @@
     		return s.standard_id == self.refs.standard_id.value
     	})
     }
+     self.addEnter = (e) => {
+    	console.log("inside enter")
+      if(e.which == 13){
+        self.readStudentBrowserData()
+      }
+    }
     self.readStudentBrowserData = () => {
+    	self.loading=true
        studentSearchStore.trigger('read_student_browser',self.refs.standard_id.value,self.refs.section_id.value)
     }
     
@@ -471,11 +486,12 @@
       self.getReadSection()
     }
     studentSearchStore.on('read_student_browser_change',ReadStudentBrowserChanged)
-    function ReadStudentBrowserChanged(browseStudents){
+    function ReadStudentBrowserChanged(browseStudents,session_name){
       //console.log(browseStudents) 
       self.title='Create'
       self.loading = false
       self.browseStudents = browseStudents
+      self.session_name=session_name
       self.update()
       //console.log(self.employeeTypes)
     }

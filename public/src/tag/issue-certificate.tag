@@ -1,5 +1,7 @@
 <issue-certificate>
-	<section class=" is-fluid">
+ <header></header>
+	 <loading-bar if={loading}></loading-bar>  
+	<section class=" is-fluid no-print" show={view_print =='hide_print'}>
 		<div class="level">
 			<div class="level-left">
 				<h2 class="title" style="color: #ff3860;">Print Certificate</h2>
@@ -95,6 +97,11 @@
 	    </div>	    
 	</div>
 	</section>
+	<section>
+		<div show={view_print =='show_print'} each={st, i in certificates}>  
+			<raw content="{st.certificate_text}"></raw>
+	    </div>
+	</section>
 
 
 <!-- End Other Information -->
@@ -104,6 +111,7 @@
     self.on("mount", function(){
     	self.title='Add'
     	self.report_view = 'show_old_text_box'
+    	self.view_print='hide_print'
     	self.readStandard()
     	self.readSection()
     	self.readCertificate()
@@ -176,6 +184,7 @@
     	})
     }
     self.readStudent= () => {
+    	self.loading=true
        certificateStore.trigger('read_student',self.refs.standard_id.value,self.refs.section_id.value)
     }
 
@@ -197,13 +206,16 @@
         })
         console.log(studentData)
         self.c_type='O'
+         self.view_print='show_print'   
         certificateStore.trigger('add_issue_certificate', studentData,self.refs.c_id.value,self.refs.standard_id.value,self.refs.section_id.value,certificateKey,self.c_type)  
+      
     }
 
     certificateStore.on('read_certificate_changed',ReadCertificateChanged)
     function ReadCertificateChanged(certificates){
       console.log(certificates) 
       self.certificates = certificates
+      //self.certificate_text1 = certificates[4].certificate_text
       self.update()
     }
 
@@ -214,9 +226,11 @@
 	      if(i.c_id==self.refs.c_id.value){
 	      	self.certificate_text=i.certificate_text
 		      var str=self.certificate_text
-		       var res = str.replace("|name|", "Tarique");
-		       self.res1 = res.replace("|hesheCaps|", "HE");
-		      //console.log(res1)
+              var  res1 = str.replace(/|name|/, "Tarique")
+
+		       /*var res = str.replace("|name|", );
+		       self.res1 = res.replace("|hesheCaps|", "HE");*/
+		       console.log(res1)
 		      console.log("inside chnage method")
 		     // console.log(res)
 	      }

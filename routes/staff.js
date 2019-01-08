@@ -326,6 +326,54 @@ router.get('/read_staff/:emp_type_id/:department_id/:designation_id/:level_id', 
 
 });
 
+// read Temp Staff
+
+/* Read Staff */
+
+router.get('/read_temp_staff/:emp_type_id', function(req, res, next) {
+
+  var emp_type_id = req.params.emp_type_id;
+
+     var emp_type_condition = "";
+      if(emp_type_id != -1) emp_type_condition =  ` where a.emp_type_id = ${emp_type_id}`;
+     /* if(designation_id != -1 || designation_id != -2) designation_condition = `and a.designation_id = ${designation_id}`;
+      if(level_id != -1 || level_id !=-2) level_condition =` and a.level_id = ${level_id}`;
+      if(department_id != -1 || department_id !=-2) department_condition = `and a.department_id =${department_id}`;*/
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+      var qry =` select  a.emp_id, employee_id, first_name, middle_name, last_name, 
+        office_phone, mobile, email,b.department_name,
+        a.designation_id, c.designation
+        from employee_temp a
+        LEFT JOIN department_master b on a.department_id = b.department_id 
+        LEFT JOIN designation_master c on a.designation_id = c.designation_id
+        LEFT JOIN emp_type_master e on a.emp_type_id = e.emp_type_id
+         ${emp_type_condition}
+        order by first_name, middle_name, last_name`;
+   
+    connection.query(qry,function(err,result)     {
+            
+      if(err){
+        console.log("Error reading Satff : %s ",err );
+        data.status = 'e';
+
+      }else{
+        // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+        data.status = 's';
+        data.staffs = result;
+        //connection.end()
+
+        res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});
+
 /* Read staff Details */
 
 router.get('/read_for_edit_staff/:emp_id', function(req, res, next) {
@@ -336,6 +384,7 @@ router.get('/read_for_edit_staff/:emp_id', function(req, res, next) {
   req.getConnection(function(err,connection){
        
     var data = {}
+    var workExperienceArray=''
 
     var qry =` select a.employee_id, a.emp_id,title,first_name, middle_name, last_name, short_name,gender,marital_status,father_name,father_occupation,spouse,spouse_occupation,
         date_format(anniversary, '%d/%m/%Y') as anniversary,id_mark,blood_group,qualification,a.emp_type_id,e.emp_type,category_id,  
@@ -376,6 +425,93 @@ router.get('/read_for_edit_staff/:emp_id', function(req, res, next) {
         where a.is_active='Y'            
         and a.emp_id=${emp_id}
         order by 3`;
+
+      var query_one = `select institution,date_format(date_of_joining, '%d/%m/%Y') as  date_of_joining,
+            date_format(date_of_leaving, '%d/%m/%Y') as  date_of_leaving, position, subjects_taught
+            from work_experience
+            where emp_id=${emp_id}`;  
+
+        connection.query(query_one, function (error, result1) {
+          if (error) {
+             data.status = 'e';
+          }
+
+    
+    
+      connection.query(qry,function(err,result) {
+            
+      if(err){
+        console.log("Error reading Student Details : %s ",err );
+        data.status = 'e';
+
+      }
+
+        data.status = 's';
+        data.staff_details = result;
+        data.workExperienceArray = result1;
+        res.send(JSON.stringify(data))
+    
+   });
+
+    
+   })
+ 
+  })
+
+});
+
+
+/* Read for temp staff Details */
+
+router.get('/read_for_edit_temp_staff/:emp_id', function(req, res, next) {
+
+  var emp_id = req.params.emp_id;
+ // var session_id = req.cookies.session_id
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+
+    var qry =` select a.employee_id, a.emp_id,title,first_name, middle_name, last_name, short_name,
+        gender,marital_status,father_name,father_occupation,spouse,spouse_occupation,
+        date_format(anniversary, '%d/%m/%Y') as anniversary,id_mark,blood_group,qualification,a.emp_type_id,
+        e.emp_type,category_id,  
+        a.department_id, b.department_name, a.subject_id, d.subject_name,  
+        a.designation_id,c.designation,date_format(dob, '%d/%m/%Y') as dob,date_format(doj, '%d/%m/%Y') as doj,
+        add_l1,add_l2,city,zip,state,country,same_as_p_add,c_add_l1,c_add_l2,c_city,c_zip,c_state,c_country, 
+        place_of_birth, nationality, religion_id, language,
+        residence_phone,office_phone,mobile,email,
+        child1_first_name,child1_last_name,child1_sex,date_format(child1_dob, '%d/%m/%Y') as child1_dob,child1_school,
+        child2_first_name,child2_last_name,child2_sex,date_format(child2_dob, '%d/%m/%Y') as child2_dob,child2_school,
+        child3_first_name,child3_last_name,child3_sex,date_format(child3_dob, '%d/%m/%Y') as child3_dob,child3_school,
+        x_subject , x_institution, x_board, x_yop, x_marks, x_div,
+        xii_subject, xii_institution, xii_board, xii_yop, xii_marks, xii_div,
+        ug_course, ug_institution, ug_university, ug_yop, ug_marks, ug_div,
+        pg_course, pg_institution, pg_university, pg_yop, pg_marks, pg_div,
+        bed_stream, bed_institution, bed_university, bed_yop, bed_marks, bed_div,
+        bt_stream, bt_institution, bt_university, bt_yop, bt_marks, bt_div,
+        bped_stream, bped_institution, bped_university, bped_yop, bped_marks,bped_div ,
+        dped_stream, dped_institution, dped_university, dped_yop, dped_marks, dped_div,
+        mped_stream, mped_institution, mped_university, mped_yop, mped_marks, mped_div,
+        med_stream, med_institution, med_university, med_yop, med_marks, med_div,
+        mphil_stream, mphil_institution, mphil_university, mphil_yop, mphil_marks, mphil_div,
+        phd_stream, phd_institution, phd_university, phd_yop, phd_marks, phd_div,
+        other_stream, other_institution, other_university, other_yop, other_marks, other_div,
+        details_scholarship, details_awards, details_honours, details_publication ,details_curricular_activities, details_sport,
+        organization_of_previous_job,add_l1_of_previous_job,add_l2_of_previous_job,
+        city_of_previous_job,zip_of_previous_job,state_of_previous_job,country_of_previous_job,
+        designation_of_previous_job,date_format(doj_of_previous_job, '%d/%m/%Y') as doj_of_previous_job,salary_of_previous_job,basic_of_previous_job,
+        allowances_of_previous_job,other_benefits_of_previous_job,bond_details_of_previous_job
+        from employee_temp a
+        LEFT JOIN department_master b on a.department_id = b.department_id 
+        LEFT JOIN designation_master c on a.designation_id = c.designation_id
+        LEFT JOIN subject_master d on a.subject_id = d.subject_id
+        LEFT JOIN emp_type_master e on a.emp_type_id = e.emp_type_id
+        LEFT JOIN employee_temp_qualification f on a.emp_id = f.emp_id
+        LEFT JOIN employee_temp_previous_job g on a.emp_id=g.emp_id
+        LEFT JOIN employee_temp_children h on a.emp_id=h.emp_id              
+        and a.emp_id=${emp_id}
+        order by 3`;
     
     connection.query(qry,function(err,result)     {
             
@@ -409,7 +545,8 @@ router.post('/add_staff', function(req, res, next) {
       var values_staffs = input.staff
       values_staffs.creation_date=formatted;
       //values_staffs.current_session_id=req.cookies.session_id;
-      values_staffs.modified_by=req.cookies.role;
+      values_staffs.modified_by=req.cookies.user;
+      var user=req.cookies.user;
 
     req.getConnection(function(err,connection){
       connection.beginTransaction(function(err) {
@@ -430,6 +567,156 @@ router.post('/add_staff', function(req, res, next) {
                 throw error;
               });
             }
+        
+
+        var values_family = input.family;
+        values_family.creation_date=formatted;
+        values_family.emp_id=log;
+        values_family.modification_date=formatted;
+        values_family.modified_by=req.cookies.user;
+
+        connection.query("INSERT INTO employee_children set ? ", values_family, function(error, rows)
+          {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+          
+          });
+
+        var values_previous_job = input.previous_job;
+        values_previous_job.creation_date=formatted;
+        values_previous_job.emp_id=log;
+        values_previous_job.modification_date=formatted;
+        values_previous_job.modified_by=req.cookies.user;
+
+        connection.query("INSERT INTO previous_job set ? ", values_previous_job, function(error, rows)
+          {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+          
+          });
+
+        console.log("inser into work experience")
+
+        // work Experience 
+          var workExperienceValues =[];
+         // console.log(input.workExperienceArray)
+          var workExperienceArray = input.workExperienceArray
+          workExperienceArray.emp_id=log;
+          workExperienceArray.creation_date=formatted;
+          workExperienceArray.modification_date=formatted;
+          workExperienceArray.modified_by=req.cookies.user;
+          for(var i=0; i<workExperienceArray.length; i++){
+            var emp_id=log
+            var institution=workExperienceArray[i].institution
+            var date_of_joining=workExperienceArray[i].date_of_joining
+            var date_of_leaving=workExperienceArray[i].date_of_leaving
+            var position=workExperienceArray[i].position
+            var subjects_taught=workExperienceArray[i].subjects_taught
+
+             workExperienceValues.push([emp_id,institution,date_of_joining,date_of_leaving,position,subjects_taught,formatted,formatted,user])      
+          }
+
+        console.log("VALUES")
+        console.log(workExperienceValues)
+
+
+        var sql = "insert into work_experience(emp_id,institution,date_of_joining, date_of_leaving, position,subjects_taught,creation_date,modification_date,modified_by) VALUES ?";
+        connection.query(sql,[workExperienceValues], function(err, result) 
+        {
+           console.log(sql)
+          if(err){
+           return connection.rollback(function() {
+                throw error;
+              });
+
+          }
+        });
+
+         //**********insert into Parent Data  ***************************
+          var values_qualification = input.qualification;
+          values_qualification.emp_id=log;
+          values_qualification.creation_date=formatted;
+          values_qualification.modified_by=req.cookies.user;
+
+          connection.query("INSERT INTO employee_qualification set ? ", values_qualification, function(error, rows)
+          {
+              if (error) {
+                return connection.rollback(function() {
+                  throw error;
+                });
+              }
+
+          
+              connection.commit(function(err) {
+                if (err) {
+                  return connection.rollback(function() {
+                    throw err;
+                  });
+                }
+                data.status = 's';
+                data.staff_id=log
+                console.log('success!');
+                console.log(data);
+                res.send(JSON.stringify(data))
+
+              });
+            });
+          })
+        });//end of ection con
+      });
+    });
+  });
+
+/* Update Staff. */
+router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
+  var emp_id = req.params.emp_id;
+  var editType=req.params.editType
+  var data = {} 
+
+      var values_staffs = input.staff
+      values_staffs.creation_date=formatted;
+      values_staffs.modified_by=req.cookies.role;
+
+      if(editType=='tempEditProfile'){
+            req.getConnection(function(err,connection){
+      connection.beginTransaction(function(err) {
+
+        if (err) { throw err; }
+            connection.query('delete from employee_temp WHERE emp_id = ?', [emp_id], function (error, rows) {
+              if (error) {
+                return connection.rollback(function() {
+                  throw error;
+                });
+              }
+
+        if (err) { throw err; }
+        connection.query('INSERT INTO employee_temp set ?', values_staffs, function (error, rows) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }
+          var log = rows.insertId;
+
+       /* var qry =`update employee set password=md5(12345)
+          where emp_id=${log}`;
+          connection.query(qry,function(err,result){
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }*/
         
         //**********insert into Student Current Standing  ***************************
        /* var values_student_current_standing = input.student_current_standing;
@@ -466,11 +753,11 @@ router.post('/add_staff', function(req, res, next) {
 
         var values_family = input.family;
         values_family.creation_date=formatted;
-        values_family.emp_id=log;
+        values_family.emp_id=emp_id;
         values_family.modification_date=formatted;
         values_family.modified_by=req.cookies.role;
 
-        connection.query("INSERT INTO employee_children set ? ", values_family, function(error, rows)
+        connection.query("INSERT INTO employee_temp_children set ? ", values_family, function(error, rows)
           {
             if (error) {
               return connection.rollback(function() {
@@ -482,11 +769,11 @@ router.post('/add_staff', function(req, res, next) {
 
         var values_previous_job = input.previous_job;
         values_previous_job.creation_date=formatted;
-        values_previous_job.emp_id=log;
+        values_previous_job.emp_id=emp_id;
         values_previous_job.modification_date=formatted;
         values_previous_job.modified_by=req.cookies.role;
 
-        connection.query("INSERT INTO previous_job set ? ", values_previous_job, function(error, rows)
+        connection.query("INSERT INTO employee_temp_previous_job set ? ", values_previous_job, function(error, rows)
           {
             if (error) {
               return connection.rollback(function() {
@@ -498,12 +785,12 @@ router.post('/add_staff', function(req, res, next) {
 
          //**********insert into Parent Data  ***************************
           var values_qualification = input.qualification;
-          values_qualification.emp_id=log;
+          values_qualification.emp_id=emp_id;
           values_qualification.creation_date=formatted;
           //values_qualification.current_session_id=req.cookies.session_id;
           values_qualification.modified_by=req.cookies.role;
 
-          connection.query("INSERT INTO employee_qualification set ? ", values_qualification, function(error, rows)
+          connection.query("INSERT INTO employee_temp_qualification set ? ", values_qualification, function(error, rows)
           {
               if (error) {
                 return connection.rollback(function() {
@@ -519,33 +806,21 @@ router.post('/add_staff', function(req, res, next) {
                   });
                 }
                 data.status = 's';
-                data.staff_id=log
+                data.staff_id=emp_id
                 console.log('success!');
                 console.log(data);
                 res.send(JSON.stringify(data))
 
               });
             });
-          })
+          //})//update password
         });//end of ection con
+        })
       });
     });
-  });
+  }else{
 
-/* Update Staff. */
-router.post('/edit_staff/:emp_id', function(req, res, next) {
-
-  var input = JSON.parse(JSON.stringify(req.body));
-  var now = new Date();
-  var jsonDate = now.toJSON();
-  var formatted = new Date(jsonDate);
-  var emp_id = req.params.emp_id;
-  var data = {} 
-
-      var values_staffs = input.staff
-      values_staffs.creation_date=formatted;
-      values_staffs.modified_by=req.cookies.role;
-
+    console.log("inside else")
 
     req.getConnection(function(err,connection){
       connection.beginTransaction(function(err) {
@@ -607,7 +882,123 @@ router.post('/edit_staff/:emp_id', function(req, res, next) {
         });//end of ection con
       });
     });
-  });
+
+  } //end of else
+
+});
+
+
+
+/* Update temp Staff into main staff table */
+router.post('/edit_temp_staff/:emp_id', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
+  var emp_id = req.params.emp_id;
+//  var editType=req.params.editType
+
+  console.log("inside temp stff update")
+  var data = {} 
+  var values_staffs = input.staff
+  values_staffs.creation_date=formatted;
+  values_staffs.modified_by=req.cookies.role;
+
+    req.getConnection(function(err,connection){
+      connection.beginTransaction(function(err) {
+
+
+        if (err) { throw err; }
+        connection.query('update employee set ? WHERE emp_id = ?', [values_staffs, emp_id], function (error, rows) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }
+
+        console.log("1") 
+
+        var values_family = input.family;
+        values_family.creation_date=formatted;
+        //values_family.emp_id=log;
+        values_family.modification_date=formatted;
+        values_family.modified_by=req.cookies.role;
+
+        connection.query("update employee_children set ? WHERE emp_id = ?", [values_family, emp_id],  function(error, rows)
+          {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+          
+          });
+            console.log("2") 
+        //update previous job
+
+        var values_previous_job = input.previous_job;
+       // values_previous_job.creation_date=formatted;
+       // values_previous_job.emp_id=emp_id;
+        values_previous_job.modification_date=formatted;
+        values_previous_job.modified_by=req.cookies.role;
+
+        connection.query("update previous_job set ? WHERE emp_id = ?", [values_previous_job, emp_id], function(error, rows)
+          {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+          
+          });
+          console.log("3") 
+
+         //**********insert into Parent Data  ***************************
+          var values_qualification = input.qualification;
+         // values_qualification.emp_id=log;
+          values_qualification.creation_date=formatted;
+          //values_qualification.current_session_id=req.cookies.session_id;
+          values_qualification.modified_by=req.cookies.role;
+
+          connection.query("update employee_qualification set ? WHERE emp_id = ?", [values_qualification, emp_id], function(error, rows)
+          {
+              if (error) {
+                return connection.rollback(function() {
+                  throw error;
+                });
+              }
+            if (err) { throw err; }
+            connection.query('delete from employee_temp WHERE emp_id = ?', [emp_id], function (error, rows) {
+              if (error) {
+                return connection.rollback(function() {
+                  throw error;
+                });
+              }
+
+          
+              connection.commit(function(err) {
+                if (err) {
+                  return connection.rollback(function() {
+                    throw err;
+                  });
+                }
+                data.status = 's';
+                data.staff_id=emp_id
+                console.log('success!');
+                console.log(data);
+                res.send(JSON.stringify(data))
+
+              });
+          });
+
+        });//end of ection con
+       })
+      })
+    });
+});
+
+
 
 //delete staff
 

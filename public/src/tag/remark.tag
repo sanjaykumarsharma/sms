@@ -1,12 +1,9 @@
 <remark>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<h2 class="title" style="color: #ff3860;">Remarks</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label">Remark</label>
@@ -15,7 +12,7 @@
 					<div class="control">
 						<div class="control">
 							<input class=" input"
-              ref="addRemarkInput" type="text">
+              ref="addRemarkInput" type="text" onkeyup={addEnter}>
 						</div>
 					</div>
 				</div>
@@ -25,13 +22,26 @@
         <div class="column is-narrow">
           <div class="control">
             <input class=" input"
-              ref="addShortRemarkInput" type="text">
+              ref="addShortRemarkInput" type="text" onkeyup={addEnter}>
           </div>
         </div>
 				<div class="column">
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
+
+          <button class="button is-warning is-rounded is-pulled-right" onclick={readRemark} style="margin-left:5px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+        </button>
+
 				</div>
 			</div>
 		</div>
@@ -49,7 +59,7 @@
 					<td>{ i+1 }</td>
 					<td>{ ev.remark}</td>
 					<td>{ ev.short_remark}</td>
-		          	<td class="has-text-right">
+		          	<td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -80,6 +90,7 @@
 
     //read employe_roles
     self.readRemark = () => {
+      self.loading=true
        remarkStore.trigger('read_remark')
     }
 

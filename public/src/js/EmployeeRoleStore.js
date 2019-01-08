@@ -18,7 +18,7 @@ function EmployeeRoleStore() {
             self.employees = data.employees
             self.trigger('read_employees_changed', data.employees)
           }else if(data.status == 'e'){
-            showToast("Categories Read Error. Please try again.", data)
+            showToast("Role Read Error. Please try again.", data)
           }
         },
         error: function(data){
@@ -41,7 +41,7 @@ function EmployeeRoleStore() {
             self.employeeRoles = data.employeeRoles
             self.trigger('read_employee_role_changed', data.employeeRoles)
           }else if(data.status == 'e'){
-            showToast("Events Read Error. Please try again.", data)
+            showToast("Role Read Error. Please try again.", data)
           }
         },
         error: function(data){
@@ -62,10 +62,10 @@ function EmployeeRoleStore() {
               return c.id != id
             })
             self.employeeRoles = tempEmployeeRoles
-            toastr.info("Event Deleted Successfully")
+            toastr.info("Role Deleted Successfully")
             self.trigger('delete_employee_role_changed', self.employeeRoles)
           }else if(data.status == 'e'){
-            showToast("Error Deleting Event. Please try again.", data)
+            showToast("Error Deleting Role. Please try again.", data)
           }
         },
         error: function(data){
@@ -97,7 +97,7 @@ function EmployeeRoleStore() {
               // cat.confirmEdit = false
               return cat
             })
-            toastr.success("Event Updated Successfully ")
+            toastr.success("Role Updated Successfully ")
             self.trigger('edit_employee_role_changed', self.employeeRoles)
           }else if(data.status == 'e'){
             showToast("Error updating employeeRoles. Please try again.", data)

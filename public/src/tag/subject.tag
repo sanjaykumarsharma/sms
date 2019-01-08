@@ -1,7 +1,21 @@
 <subject>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<h2 class="title" style="color: #ff3860;">Subject</h2>
-		<div class="box">
+      <h2 class="title has-text-centered" style="color: #ff3860;">Subject Details</h2>
+	<!-- <div class="level">
+        <div class="level-left">
+          <h2 class="title has-text-centered" style="color: #ff3860;">Subject Details</h2>
+        </div>
+        <div class="level-right no-print">
+          <button class="button is-warning is-rounded" onclick={readSubject} style="margin-left:2px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+        </div>
+      </div> -->
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label">Name</label>
@@ -18,7 +32,7 @@
         <div class="column is-narrow">
           <div class="control">
             <input class=" input"
-              ref="subject_short_name" type="text">
+              ref="subject_short_name" type="text" style="width:150px">
           </div>
         </div>
          <div class="column is-narrow">
@@ -39,6 +53,14 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
+          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+        </button>
+          <button class="button is-warning is-rounded is-pulled-right" onclick={readSubject} style="margin-right:3px;margin-left:2px">
+          <span class="icon"><span class="fas fa-sync-alt"></span></span>
+        </button>
 				</div>
 			</div>
 		</div>
@@ -58,7 +80,7 @@
 					<td>{ ev.subject_name}</td>
           <td>{ ev.subject_short_name}</td>
 					<td>{ ev.department_name}</td>
-		          	<td class="has-text-right">
+		          	<td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -77,6 +99,7 @@
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
+      self.loading=false
       self.readDepartment()
       self.readSubject()
       self.update()
@@ -91,11 +114,13 @@
 
     //read courses
     self.readDepartment = () => {
+       self.loading=true
        departmentStore.trigger('read_department')
     }
 
     //read employe_roles
     self.readSubject = () => {
+        self.loading=true
        subjectStore.trigger('read_subject')
     }
 
@@ -105,13 +130,15 @@
       }else{
         self.loading = true
         if(self.title=='Create'){
-          console.log('create')
+          self.loading=true
           subjectStore.trigger('add_subject', self.refs.subject_name.value,
            self.refs.subject_short_name.value,self.refs.department_id.value)
+         
         }else if(self.title=='Update'){
-          console.log('update')
+          self.loading=true
           subjectStore.trigger('edit_subject', self.refs.subject_name.value,
             self.refs.subject_short_name.value, self.refs.department_id.value, self.edit_id)
+           //self.readSubject()
         }
       }
     }
@@ -168,6 +195,7 @@
       self.refs.department_id.value = ''
       self.loading = false
       self.subjects = subjects
+      self.readSubject()
       self.update()
     }
 
@@ -204,6 +232,7 @@
     function ReadSubjectChanged(subjects){
       console.log(subjects) 
       self.subjects = subjects
+       self.loading=false
       self.update()
       console.log(self.subjects)
     }

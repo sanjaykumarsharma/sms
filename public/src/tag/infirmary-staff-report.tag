@@ -1,5 +1,5 @@
 <infirmary-staff-report>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_infirmary_staff_report == 'infirmary-staff-date-wise-case-report'}" href="#/infirmary/infirmary-staff-report/infirmary-staff-date-wise-case-report">
 		      <span>Date Wise Case Report</span>

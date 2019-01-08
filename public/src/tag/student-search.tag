@@ -1,11 +1,13 @@
 <student-search>
+	<header></header>
+	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<div class="level">
 			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Students</h2>
+				<h2 class="title has-text-centered" style="color: #ff3860;">Searched Student's Details</h2>
 			</div>
 		</div>
-		<div class="box">
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<div class="control">
@@ -14,7 +16,7 @@
 			    </div> 
 				<div class="column is-narrow">
 					<div class="control">
-						<input type="text" name="" ref='roll_no' class="input">
+						<input type="text" name="" ref='roll_no' class="input" onkeyup={addEnter}>
 					</div>
 				</div>
 				<div class="column">
@@ -25,13 +27,20 @@
 				onclick={showSearchBox}><b>>></b>
 				</button>
 
-				<button class="button is-primary has-text-weight-bold"
+				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print" style="margin-left:5px">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+                </button>
+				
+				<button class="button is-warning has-text-weight-bold is-pulled-right"
 				onclick={showStudentField}>Setting
 				</button>
+
 			   </div>
 			</div>
 		</div>
-		<div class="box" show={search_view =='more_search_box'}>
+		<div class="box no-print" show={search_view =='more_search_box'}>
 			<div class="columns">
 				<div class="column is-narrow">
 					<div class="control">
@@ -40,7 +49,7 @@
 			    </div> 
 				<div class="column is-narrow">
 					<div class="control">
-						<input type="text" name="" ref='student_name' class="input">
+						<input type="text" name="" ref='student_name' class="input" onkeyup={addEnter}>
 					</div>
 				</div>
 				<div class="column is-narrow">
@@ -50,7 +59,7 @@
 			    </div> 
 				<div class="column is-narrow">
 					<div class="control">
-						<input type="text" name="" ref='reg_number' class="input">
+						<input type="text" name="" ref='reg_number' class="input" onkeyup={addEnter}>
 					</div>
 				</div>
 			</div>
@@ -62,7 +71,7 @@
 			    </div> 
 				<div class="column is-narrow">
 					<div class="control">
-						<input type="text" name="" ref='f_name' class="input">
+						<input type="text" name="" ref='f_name' class="input" onkeyup={addEnter}>
 					</div>
 				</div>
 				<div class="column is-narrow">
@@ -72,7 +81,7 @@
 			    </div> 
 				<div class="column is-narrow">
 					<div class="control">
-						<input type="text" name="" ref='m_name' class="input">
+						<input type="text" name="" ref='m_name' class="input" onkeyup={addEnter}>
 					</div>
 				</div>
 				<div class="column">
@@ -82,8 +91,8 @@
 			   </div>
 			</div>
 		</div>
-		<div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;">
-		    <table class="table is-fullwidth is-striped is-hoverable is-narrow">
+	<!-- 	<div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;"> -->
+		    <table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 			<thead>
 				<tr>
 					<th>#</th>
@@ -190,7 +199,7 @@
 					<td show={first_name_view =='show_first_name'}>{st.first_name}</td>
 					<td show={middle_name_view =='show_middle_name'}>{st.middle_name}</td>
 					<td show={last_name_view =='show_last_name'}>{st.last_name}</td>
-					<td show={student_view =='show_student'}>{st.student_name}</td>
+					<td show={student_view =='show_student'}>{st.first_name} {st.middle_name} {st.last_name}</td>
 					<td show={withdrawn_view =='show_withdrawn'}>{st.withdrawn}</td>
 					<td show={enroll_no_view =='show_enroll_no'}>{st.enroll_number}</td>
 					<td show={reg_no_view =='show_reg_no'}>{st.reg_number}</td>
@@ -221,13 +230,13 @@
 					<td show={staff_child_view =='show_staff_child'}>{st.staff_child}</td>
 					<td show={staff_name_view =='show_staff_name'}>{st.staff_name}</td>
 					<td show={email_view =='show_email'}>{st.email}</td>
-					<td show={f_title_view =='show_f_title'}>{f_title}</td>
-					<td show={f_name_view =='show_f_name'}>{f_name}</td>
-					<td show={f_school_name_view =='show_f_school_name'}>{f_school_name}</td>
-					<td show={f_school_exam_view =='show_f_school_exam'}>{f_school_exam_passed}</td>
+					<td show={f_title_view =='show_f_title'}>{st.f_title}</td>
+					<td show={f_name_view =='show_f_name'}>{st.f_name}</td>
+					<td show={f_school_name_view =='show_f_school_name'}>{st.f_school_name}</td>
+					<td show={f_school_exam_view =='show_f_school_exam'}>{st.f_school_exam_passed}</td>
 					<td show={f_college_name_view =='show_f_college_name'}>{st.f_college_name}</td>
 					<td show={f_college_exam =='show_f_college_exam'}>{st.f_college_exam_passed}</td>
-					<td show={occupation_view =='show_occupation'}>{f_occupation}</td>
+					<td show={occupation_view =='show_occupation'}>{st.f_occupation}</td>
 					<td show={f_add_view =='show_f_add'}>{st.f_add_l1} {st.f_add_l2} <br> {st.f_city}-{st.f_zip} <br>{st.f_state}, {st.f_country}</td>
 					<td show={f_phone_view =='show_f_phone'}>{st.f_phone}</td>
 					<td show={f_mobile_view =='show_f_mobile'}>{st.f_mobile}</td>
@@ -240,10 +249,10 @@
 					<td show={f_office_add_view =='show_f_office_add'}>{st.f_office_add_l1} {st.f_office_add_l2} <br> {st.f_office_city}-{st.f_office_zip} <br>{st.f_office_state}, {st.f_office_country}</td>
 					<td show={f_office_phone_view =='show_f_office_phone'}>{st.f_office_phone}</td>
 					<td show={f_nationality_view =='show_f_nationality'}>{st.f_nationality}</td>
-					<td show={m_title_view =='show_itle'}>{m_title}</td>
-					<td show={m_name_view =='show_m_name'}>{m_name}</td>
-					<td show={m_school_name_view =='show_m_school_name'}>{m_school_name}</td>
-					<td show={m_school_exam_view =='show_chool_exam'}>{m_school_exam_passed}</td>
+					<td show={m_title_view =='show_itle'}>{st.m_title}</td>
+					<td show={m_name_view =='show_m_name'}>{st.m_name}</td>
+					<td show={m_school_name_view =='show_m_school_name'}>{st.m_school_name}</td>
+					<td show={m_school_exam_view =='show_chool_exam'}>{st.m_school_exam_passed}</td>
 					<td show={m_college_name_view =='show_m_college_name'}>{st.m_college_name}</td>
 					<td show={m_college_exam_view =='show_m_college_exam'}>{st.m_college_exam_passed}</td>
 					<td show={occupation_view =='show_occupation'}>{m_occupation}</td>
@@ -259,10 +268,10 @@
 					<td show={m_office_add_view =='show_m_office_add'}>{st.m_office_add_l1} {st.m_office_add_l2} <br> {st.m_office_city}-{st.m_office_zip} <br>{st.m_office_state}, {st.m_office_country}</td>
 					<td show={m_office_phone_view =='show_m_office_phone'}>{st.m_office_phone}</td>
 					<td show={m_nationality_view =='show_m_nationality'}>{st.m_nationality}</td>
-					<td show={g_title_view =='show_g_title'}>{g_title}</td>
-					<td show={g_name_view =='show_g_name'}>{g_name}</td>
-					<td show={g_school_name_view =='show_g_school_name'}>{g_school_name}</td>
-					<td show={g_school_exam_view =='show_g_school_exam'}>{g_school_exag_passed}</td>
+					<td show={g_title_view =='show_g_title'}>{st.g_title}</td>
+					<td show={g_name_view =='show_g_name'}>{st.g_name}</td>
+					<td show={g_school_name_view =='show_g_school_name'}>{st.g_school_name}</td>
+					<td show={g_school_exam_view =='show_g_school_exam'}>{st.g_school_exag_passed}</td>
 					<td show={g_college_name_view =='show_g_college_name'}>{st.g_college_name}</td>
 					<td show={g_college_exam_view =='show_g_college_exam'}>{st.g_college_exag_passed}</td>
 					<td show={occupation_view =='show_occupation'}>{g_occupation}</td>
@@ -283,7 +292,7 @@
 				</tr>
 			</tbody>
 		   </table>
-	    </div>
+	  <!--   </div> -->
 	</section>
 	 <!-- Open Exam Scheme Modal Start -->
     <section>	
@@ -429,18 +438,19 @@
 			{ field_name : "siblingEnrollNumber" , array_name :"Sibling Enrol Number"}
 			                    
 			  ];
-    	self.first_name_view ='show_first_name'
-		self.middle_name_view ='show_middle_name'
-		self.last_name_view ='show_last_name'
+    	//self.first_name_view ='show_first_name'
+		//self.middle_name_view ='show_middle_name'
+		//self.last_name_view ='show_last_name'
 		self.student_view ='show_student'
 		self.withdrawn_view ='show_withdrawn'
 		self.enroll_no_view ='show_enroll_no'
 		self.reg_no_view ='show_reg_no'
 		self.roll_no_view ='show_roll_no'
-		self.group_view ='show_group'
+		//self.group_view ='show_group'
 		self.house_view ='show_house'
 		self.class_view ='show_class'
-		self.gender_view ='show_gender'
+		self.f_name_view ='show_f_name'
+		self.m_name_view ='show_m_name'
     	self.role = getCookie('role') 
         self.update()
         flatpickr(".date", {
@@ -1118,7 +1128,12 @@
         })
     }
 
-
+    self.addEnter = (e) => {
+    	console.log("inside enter")
+      if(e.which == 13){
+        self.searchByField()
+      }
+    }
     self.showSearchBox = () =>{
       if(self.search_by=='one'){
       	self.search_view='search_box'
@@ -1138,6 +1153,7 @@
     self.searchByField = () => {
     	console.log("inside")
     	console.log(self.refs.roll_no.value)
+    	self.loading=true
        studentSearchStore.trigger('read_by_field',self.refs.roll_no.value,self.refs.student_name.value,self.refs.reg_number.value,self.refs.f_name.value,self.refs.m_name.value)
     }
     
@@ -1150,6 +1166,8 @@
       self.update()
       //self.ReadBrowseStaff()
     }*/
+    
+
     studentSearchStore.on('read_by_field_change',ReadByFieldChanged)
     function ReadByFieldChanged(searchStudents){
       //console.log(searchStudents) 

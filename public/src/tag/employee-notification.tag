@@ -2,7 +2,7 @@
 	<section class=" is-fluid" >
     <div class="level">
       <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">Employees</h2>
+        <h2 class="title" style="color: #ff3860;">Employees Notification</h2>
       </div>
     </div>
     <div class="box">
@@ -14,9 +14,8 @@
           <div class="control">
             <div class="select">
               <select ref="emp_type_id" onchange={getEmployeeData}>
-                <option>Select Staff Type</option>
-                <option value="-1">ALL</option>
                 <option each={staffDepartments} value={emp_type_id}>{emp_type}
+                <option value="-1">ALL</option>
                 </option>
               </select>
             </div>
@@ -26,9 +25,8 @@
           <div class="control">
             <div class="select">
               <select ref="get_message_type" onchange={getMessageType}>
-                <option>Select Message Type</option>
-                <option value="SMS">SMS</option>
                 <option value="Email">Email</option>
+                <option value="SMS">SMS</option>
                 <option value="Both">Both</option>
               </select>
             </div>
@@ -43,6 +41,11 @@
         </div>
       </div>
     </div>
+    <input class="input" style="margin-bottom: 12px;" type="text" id="employee_subject" ref="employee_subject" 
+    show={employee_subject} placeholder="SUBJECT"><br>
+    <textarea class="textarea" id="employee_message" ref="employee_message" placeholder="MESSAGE"></textarea><br>
+    <button class="button is-info is-pulled-right ml5" onclick={clear} >Reset</button>
+    <button class="button is-danger is-pulled-right" onclick={sendEmployeeNotification} >Send</button>
     <table class="table is-fullwidth is-striped is-hoverable is-narrow" show={employee_table}>
       <thead>
         <tr>
@@ -72,11 +75,7 @@
         </tr>
       </tbody>
     </table>
-    <input class="input" style="margin-bottom: 12px;" type="text" id="employee_subject" ref="employee_subject" 
-    show={employee_subject} placeholder="SUBJECT"><br>
-    <textarea class="textarea" id="employee_message" ref="employee_message" placeholder="MESSAGE"></textarea><br>
-    <button class="button is-info is-pulled-right ml5" onclick={clear} >Reset</button>
-    <button class="button is-danger is-pulled-right" onclick={sendEmployeeNotification} >Send</button>
+    
   </section>
 
   
@@ -90,11 +89,6 @@
       self.choose_button = true
       self.close_button = false
       self.update()
-      flatpickr(".date", {
-      altInput: true,
-      altFormat: "d/m/Y",
-      dateFormat: "Y-m-d",
-      })
       self.readDepartments()
 
     })
@@ -179,8 +173,20 @@
       console.log(mobile);
       console.log(email);
       if(self.refs.get_message_type.value =='SMS'){
+        if(self.refs.employee_message.value == ""){
+          toastr.error("Please enter Valid Message and try again")
+          return;
+        }
         employeeNotificationStore.trigger('send_sms',mobile,self.refs.employee_message.value)
       }else if(self.refs.get_message_type.value =='Email'){
+        if(self.refs.employee_subject.value == ""){
+          toastr.error("Please enter Valid Subject and try again")
+          return;
+        }
+        if(self.refs.employee_message.value == ""){
+          toastr.error("Please enter Valid Message and try again")
+          return;
+        }
         employeeNotificationStore.trigger('send_email',email,self.refs.employee_subject.value,self.refs.employee_message.value)
       }else if(self.refs.get_message_type.value=='Both'){
         employeeNotificationStore.trigger('send_sms',mobile,self.refs.employee_message.value)
@@ -206,6 +212,7 @@
       self.staffDepartments = []
       self.staffDepartments = staff_departments
       self.update()
+      self.getEmployeeData()
     }
     employeeNotificationStore.on('employees_changed',EmployeeChanged)
     function EmployeeChanged(employees){

@@ -4,6 +4,27 @@ function ActivityEventStore() {
 
   self.events = []
 
+  self.on('csv_export_activity_event', function() {
+    console.log('i am in csv_export_department api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/activity_event/csv_export_activity_event',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+            // self.trigger('departments_changed', data.departments)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('read_categories', function() {
     console.log('i am in read_categories api call from ajax')
     let req = {}

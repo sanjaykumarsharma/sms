@@ -92,8 +92,7 @@ router.get('/read_head_wise_fees/:start_date/:end_date', function(req, res, next
               throw error;
             });
           }else{
-            /*console.log("======result===============")
-            console.log(result)*/
+
             for(var i=0; i<result.length;i++){
               var count = 0;
               var temp = {}
@@ -141,9 +140,12 @@ router.get('/read_head_wise_fees/:start_date/:end_date', function(req, res, next
           }
 
           }
-
             console.log("----------student data------")
             console.log(stdData)
+          
+           
+          
+
             data.status = 's';
             data.headWiseData = stdData;
             res.send(data)
@@ -890,8 +892,10 @@ router.post('/read_collection_summary', function(req, res, next) {
               }
             }
           }
+          if(temp){
           temp['total'] = Number(temp['cash']) + Number(temp['cheque']);
           feeData.push(temp)
+          }
           
 
 
@@ -1150,6 +1154,14 @@ router.get('/read_fees_register/:start_date/:end_date', function(req, res, next)
     var count=0;
     var slNo =0;
     var error = 1;
+
+    var prev_sub_amount= 0
+    var prev_sub_fine= 0
+    var prev_sub_scholorship= 0
+    var prev_sub_total = 0
+
+
+
     var registerData = []
 
    
@@ -1360,7 +1372,8 @@ router.get('/read_fees_register/:start_date/:end_date', function(req, res, next)
             prev_total= result[i].total   
 
       }else{
-              prev_fee_slip_name= Number(prev_fee_slip_name) + ", " + Number(result[i].fee_slip_name)
+
+              prev_fee_slip_name= prev_fee_slip_name + ", " + result[i].fee_slip_name
               prev_amount_due= Number(prev_amount_due) + Number(result[i].amount_due) 
               prev_fine = Number(prev_fine) +  Number(result[i].fine)
               prev_scholorship_amount = Number(prev_scholorship_amount) + Number(result[i].scholorship_amount)
@@ -1533,11 +1546,12 @@ router.get('/read_monthly_fees/:start_date/:end_date', function(req, res, next) 
      var data = {}
      var condition = "";
      var session_id = req.cookies.session_id
+
      
-     var qry = `select date_format(receipt_date, '%M') as month, sum(fees) as fees, sum(fine) as fine,
+     var qry = `select month, month_no, sum(fees) as fees, sum(fine) as fine,
         sum(scholarship) as scholarship, sum(fees + fine - scholarship ) as total 
         from
-        (select receipt_date, sum(amount_due) as fees , sum(fine_recevied) as fine,
+        (select date_format(receipt_date, '%M') as month,  MONTH(receipt_date)as month_no, sum(amount_due) as fees , sum(fine_recevied) as fine,
           sum(if(scholorship_amount is not null, scholorship_amount, 0)) as scholarship
           from fee_received a
           JOIN fee_received_details b on a.receipt_id = b.receipt_id
@@ -1545,8 +1559,8 @@ router.get('/read_monthly_fees/:start_date/:end_date', function(req, res, next) 
           where b.receipt_date between ? and ?
           and b.session_id=${session_id}
           group by receipt_date ) a
-          group by month
-          order by receipt_date`;
+          group by month, month_no
+          order by  month_no`;
 
      connection.query(qry,[start_date,end_date], function(err, result)     
      {
@@ -1558,6 +1572,8 @@ router.get('/read_monthly_fees/:start_date/:end_date', function(req, res, next) 
         }else{
           // res.render('customers',{page_title:"Customers - Node.js",data:rows});
             data.status = 's';
+            console.log("session name =" + req.cookies.session_name)
+            data.session_name = req.cookies.session_name
             data.monthlyData = result;
            //connection.end()
             res.send(data)
@@ -1575,6 +1591,11 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
   var end_date = req.params.end_date;
   var session_id = req.cookies.session_id
   var data = {}
+
+  var grand_amount_due = 0
+  var  grand_total_fine = 0
+  var  grand_scholorship_amount= 0
+  var grand_total=0
 
   req.getConnection(function(err,connection){
     connection.beginTransaction(function(err) {
@@ -1725,14 +1746,11 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
           var sub_total_amount_due=0; 
           var sub_total_fine = 0;
           var sub_total_scholorship_amount = 0;
-          var grand_amount_due = 0
-          var  grand_total_fine = 0
-          var  grand_scholorship_amount= 0
-          var grand_total=0
+          
 
           var slNo=1 
-          console.log("result")
-          console.log(result);
+          /*console.log("result")
+          console.log(result);*/
           for (var i=0; i<result.length; i++) {
             obj = {}
             obj['slNo'] = slNo;
@@ -1759,11 +1777,50 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
            grand_total_fine = Number(grand_total_fine) + Number(result[i].fine)
            grand_scholorship_amount= Number(grand_scholorship_amount) + Number(result[i].scholorship_amount)
            grand_total=Number(grand_total)+Number(result[i].total)
-            
-            dailyData.push(obj)
+           
+
+           dailyData.push(obj)
             slNo++;
 
           }
+          // ======================= sub total ===========
+          obj = {}
+          obj['slNo'] = "========="
+          obj["receipt_date"]=""
+          obj['receipt_id'] = ""
+          obj["enroll_number"] = ""
+          obj["name"] = ""
+          obj['fee_slip_name'] = ""
+          obj["class"] = ""
+          obj["bank_name"] = ""
+          obj["item_no"] = ""
+          obj["mode"] = "Sub Total"
+          obj["amount_due"] = sub_total_amount_due
+          obj["fine"] = sub_total_fine
+          obj["scholorship_amount"] = sub_total_scholorship_amount
+          obj["total"] =online_sub_total 
+          dailyData.push(obj)
+
+          //========= Grand Total ===============
+        // ======================= Grand Total ===========
+          obj = {}
+          obj['slNo'] = ""
+          obj["receipt_date"]=""
+          obj['receipt_id'] = ""
+          obj["enroll_number"] = ""
+          obj["name"] = ""
+          obj['fee_slip_name'] = ""
+          obj["class"] = ""
+          obj["bank_name"] = ""
+          obj["item_no"] = ""
+          obj["mode"] = "Grand Total"
+          obj["amount_due"] = grand_amount_due
+          obj["fine"] = grand_total_fine
+          obj["scholorship_amount"] = grand_scholorship_amount
+          obj["total"] =grand_total 
+          dailyData.push(obj)
+          
+          console.log("Grand Total Section");
              
       }
 //============ for quer1-------------------
@@ -1812,10 +1869,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
           var sub_total_amount_due=0; 
           var sub_total_fine = 0;
           var sub_total_scholorship_amount = 0;
-          var grand_amount_due = 0
-          var  grand_total_fine = 0
-          var  grand_scholorship_amount= 0
-          var grand_total=0
+          
 
           var slNo=1 
           console.log("result")
@@ -1851,6 +1905,24 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
             slNo++;
 
           }
+
+           // ======================= sub total ===========
+          obj = {}
+          obj['slNo'] = ""
+          obj["receipt_date"]=""
+          obj['receipt_id'] = ""
+          obj["enroll_number"] = ""
+          obj["name"] = ""
+          obj['fee_slip_name'] = ""
+          obj["class"] = ""
+          obj["bank_name"] = ""
+          obj["item_no"] = ""
+          obj["mode"] = "Sub Total"
+          obj["amount_due"] = sub_total_amount_due
+          obj["fine"] = sub_total_fine
+          obj["scholorship_amount"] = sub_total_scholorship_amount
+          obj["total"] =online_sub_total 
+          dailyData.push(obj)
         
           
       } 
@@ -1902,10 +1974,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
           var sub_total_amount_due=0; 
           var sub_total_fine = 0;
           var sub_total_scholorship_amount = 0;
-          var grand_amount_due = 0
-          var  grand_total_fine = 0
-          var  grand_scholorship_amount= 0
-          var grand_total=0
+          
 
           var slNo=1 
           console.log("result")
@@ -1941,6 +2010,24 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
             slNo++;
 
           }
+
+           // ======================= sub total ===========
+          obj = {}
+          obj['slNo'] = ""
+          obj["receipt_date"]=""
+          obj['receipt_id'] = ""
+          obj["enroll_number"] = ""
+          obj["name"] = ""
+          obj['fee_slip_name'] = ""
+          obj["class"] = ""
+          obj["bank_name"] = ""
+          obj["item_no"] = ""
+          obj["mode"] = "Sub Total"
+          obj["amount_due"] = sub_total_amount_due
+          obj["fine"] = sub_total_fine
+          obj["scholorship_amount"] = sub_total_scholorship_amount
+          obj["total"] =online_sub_total 
+          dailyData.push(obj)
         
           
       } 
@@ -1993,10 +2080,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
           var sub_total_amount_due=0; 
           var sub_total_fine = 0;
           var sub_total_scholorship_amount = 0;
-          var grand_amount_due = 0
-          var  grand_total_fine = 0
-          var  grand_scholorship_amount= 0
-          var grand_total=0
+          
 
           var slNo=1 
           console.log("result")
@@ -2032,6 +2116,25 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
             slNo++;
 
           }
+
+           // ======================= sub total ===========
+          obj = {}
+          obj['slNo'] = ""
+          obj["receipt_date"]=""
+          obj['receipt_id'] = ""
+          obj["enroll_number"] = ""
+          obj["name"] = ""
+          obj['fee_slip_name'] = ""
+          obj["class"] = ""
+          obj["bank_name"] = ""
+          obj["item_no"] = ""
+          obj["mode"] = "Sub Total"
+          obj["amount_due"] = sub_total_amount_due
+          obj["fine"] = sub_total_fine
+          obj["scholorship_amount"] = sub_total_scholorship_amount
+          obj["total"] =online_sub_total 
+
+          dailyData.push(obj)
         
           
       } 
@@ -2084,10 +2187,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
           var sub_total_amount_due=0; 
           var sub_total_fine = 0;
           var sub_total_scholorship_amount = 0;
-          var grand_amount_due = 0
-          var  grand_total_fine = 0
-          var  grand_scholorship_amount= 0
-          var grand_total=0
+         
 
           var slNo=1 
           console.log("result")
@@ -2123,6 +2223,25 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
             slNo++;
 
           }
+
+           // ======================= sub total ===========
+          obj = {}
+          obj['slNo'] = ""
+          obj["receipt_date"]=""
+          obj['receipt_id'] = ""
+          obj["enroll_number"] = ""
+          obj["name"] = ""
+          obj['fee_slip_name'] = ""
+          obj["class"] = ""
+          obj["bank_name"] = ""
+          obj["item_no"] = ""
+          obj["mode"] = "Sub Total"
+          obj["amount_due"] = sub_total_amount_due
+          obj["fine"] = sub_total_fine
+          obj["scholorship_amount"] = sub_total_scholorship_amount
+          obj["total"] =online_sub_total 
+          dailyData.push(obj)
+
         
           data.status = 's';
           data.dailyData = dailyData;
@@ -2588,8 +2707,10 @@ router.post('/read_estimated_fees', function(req, res, next) {
             temp = {}
             temp['total'] = "NET FEES DUE";
             temp['total_fees'] =total;
-            stdData.push(temp)
 
+            stdData.push(temp)
+            console.log("=======estimated fees===========")
+            console.log(stdData) 
 
             data.status = 's';
             data.estimatedFees = stdData;
@@ -2617,14 +2738,16 @@ router.post('/read_bank_wise_fees', function(req, res, next) {
      var session_id = req.cookies.session_id
 
      if(bank_id == -1 && mode== "All") condition = ``;
-      else if(bank_id != -1 && mode=="Cash") condition = `and b.bank_id is NULL and b.mode='${mode}'`;
-      else if(bank_id==-1 && mode=="Online")condition = `and b.mode='${mode}'`;
-      else if(bank_id!=-1 && mode=="Online")condition = `and b.mode='${mode}' and b.bank_id='${bank_id}'`; 
+      else if(bank_id > 0 && mode=="Cash") condition = `and b.bank_id= '${bank_id}' and b.mode='${mode}'`;
+      else if(bank_id==-2 && mode=="Online") condition = `and b.mode='${mode}'`;
+      else if(bank_id==-3 && mode=="Cash") condition = `and b.mode='${mode}'`;
+
+      else if(bank_id > 0 && mode=="Online") condition = `and b.mode='${mode}' and b.bank_id='${bank_id}'`; 
       else if(bank_id == -1 && mode=="Bank") condition = `and b.mode='${mode}'`;
       else if(bank_id == -1 && mode=="Cheque") condition = `and b.mode='${mode}'`;
-      else if(bank_id != -1 && mode=="Cheque") condition = `and b.mode='${mode}' and b.bank_id='${bank_id}'`;
-      else if(bank_id != -1 && mode=="All") condition = `and b.bank_id = '${bank_id}'`;
-      else if(bank_id != -1 && mode=="Bank") condition = `and b.bank_id = '${bank_id}' and b.mode='${mode}'`;
+      else if(bank_id > 0 && mode=="Cheque") condition = `and b.mode='${mode}' and b.bank_id='${bank_id}'`;
+      else if(bank_id > 0 && mode=="All") condition = `and b.bank_id = '${bank_id}'`;
+      else if(bank_id > 0 && mode=="Bank") condition = `and b.bank_id = '${bank_id}' and b.mode='${mode}'`;
       
      var qry = `SELECT enroll_number, a.receipt_id, concat(first_name,' ', middle_name, ' ', last_name) as student_name,
         concat(standard, ' ', section) as class, coalesce(bank_name, 'School') as bank, mode, 

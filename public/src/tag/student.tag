@@ -1,24 +1,29 @@
 <student>
+	<print-header></print-header>
 	<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid" show={student_view =='show_student'}>
-		<div class="level">
+		<div class="level no-print">
 			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Students</h2>
+				<h2 class="title is-size-5" style="color: #ff3860;">Students</h2>
 			</div>
 			<div class="level-right">
-				<button class="button is-primary is-rounded" onclick={print_list} show={print_list_button}>
+				<button class="button is-primary is-rounded is-small" onclick={first_edit} >
+				<span>Fast Edit</span>
+				</button>
+
+				<button class="button is-link is-rounded is-small ml5" onclick={print_list} show={print_list_button}>
 				<span>Print List</span>
 				</button>
 
-				<button class="button is-primary is-rounded ml10" onclick={student_list} show={student_list_button}>
+				<button class="button is-info is-rounded ml5 is-small" onclick={student_list} show={student_list_button}>
 				<span>Student List</span>
 				</button>
 
-				<button class="button is-primary is-rounded ml10" onclick={regenerate_roll_no} show={regenerate_roll_no_button}>
+				<button class="button is-success is-rounded ml5 is-small" onclick={regenerate_roll_no} show={regenerate_roll_no_button}>
 				<span>Regenerate Roll No</span>
 				</button>
 
-				<button class="button is-warning is-rounded ml10" onclick={add_new_student}>
+				<button class="button is-warning is-rounded ml5 is-small" onclick={add_new_student}>
 				<span class="icon">
 					<span class="fas fa-plus"></span>
 				</span>
@@ -26,23 +31,29 @@
 				</button>
 			</div>
 		</div>
-		<div class="level box">
+		<div class="level box no-print">
 			<div class="level-left">
 				<div class="columns">
 					<div class="column is-narrow">
+						<label class="label">Standard</label>
+					</div>
+					<div class="column is-narrow">
 						<div class="control">
 							<div class="select">
-								<select ref="read_standard_id" onchange={getReadSection}>
+								<select ref="read_standard_id" id="read_standard_id" onchange={getReadSection}>
 									<option each={standards} value={standard_id}>
 									{standard}</option>
 								</select>
 							</div>
 						</div>
 					</div>
+						<div class="column is-narrow">
+							<label class="label">Section</label>
+						</div>
 					<div class="column is-narrow">
 						<div class="control">
 				        	<div class="select is-fullwidth">
-								<select ref="read_section_id" onchange={getStudentData}>
+								<select ref="read_section_id" id="read_section_id" onchange={getStudentData}>
 									<option each={readfilteredSections} value={section_id}>{section}</option>
 								</select>
 							</div>
@@ -56,17 +67,30 @@
 				    	<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
 				  	</div>
 			    	<div class="control">
-			    		<a class="button is-info" onclick={getStudentData}>Search</a>
+			    		<a class="button is-info " onclick={getStudentData}>Search</a>
 			  		</div>
 				</div>
-				<button class="button is-warning is-rounded ml5" style="margin-bottom:12px;" onclick={getStudentData}>
+				<button class="button is-link has-text-weight-bold ml5 " style="margin-bottom:12px;" onclick={getStudentData}>
 			        <span class="icon">
 			          <span class="fas fa-sync-alt"></span>
 			        </span>
 	        	</button>
+	        	<button class="button is-success has-text-weight-bold  ml5" style="margin-bottom:12px;"
+	        	onclick={downloadCSV}>
+        			<span class="icon">
+          				<i class="far fa-file-excel"></i>
+        			</span>
+        		</button>
+	        	<button class="button is-primary has-text-weight-bold  ml5" style="margin-bottom:12px;"
+	        	onclick="window.print()">
+        			<span class="icon">
+          				<i class="fas fa-print"></i>
+        			</span>
+        		</button>
 			</div>
 		</div>
-		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
+		<table class="table is-fullwidth is-bordered is-hoverable is-narrow">
+			<p><center><strong>Class:{StandardName}-{SectionName}  Session:{session_name}</strong></center></p>
 			<thead>
 				<tr>
 					<th>Roll no</th>
@@ -75,7 +99,7 @@
 					<th>Registration No</th>
 					<th>SMS</th>
 					<th>Father's Name</th>
-					<th></th>
+					<th class="no-print" style="width:358px;"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -86,7 +110,7 @@
 					<td>{st.reg_number}</td>
 					<td>{st.mobile}</td>
 					<td>{st.f_name}</td>
-					<td class="has-text-right">
+					<td class="has-text-right no-print">
 		            <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
 		              <span><a class="button is-small is-rounded " onclick={withdraw_student.bind(this, st.student_id)}>WithDraw Student</a></span>
 		              <span><a class="button is-small is-rounded" onclick={view_profile.bind(this, st.student_id)}>Profile</a></span>
@@ -151,8 +175,8 @@
 		        	</div>
 		        </section>
 	      	<footer class="modal-card-foot">
-	        	<button class="button is-danger" onclick={WithdrawStudent} >Add</button>
-	        	<button class="button" id="item-modal-close" onclick={closewithdrawModal}>Cancel</button>
+	        	<button class="button is-success" onclick={WithdrawStudent} >Add</button>
+	        	<button class="button is-danger" id="item-modal-close" onclick={closewithdrawModal}>Cancel</button>
 	      	</footer>
     	</div>
   	</div>
@@ -160,12 +184,12 @@
 
 	<!-- Print List view start -->
 	<section class=" is-fluid" show={student_view =='print_list'}>
-		<div class="level">
+		<div class="level no-print">
 			<div class="level-left">
 			</div>
 			<div class="level-right">
 				<div class="control no-print">
-	        		<div class="select is-fullwidth">
+	        		<div class="select is-fullwidth is-small">
 						<select id="add_column" ref="add_column" onchange={AddColumn}>
 							<option value="0">Select Column</option>
 							<option value="1">1</option>
@@ -181,41 +205,27 @@
 					</div>
 	      		</div>
 				<input type="checkbox" id="checkHouse" checked={e.done} 
-				onclick={viewHouse}  class="no-print ml10"> <b class="no-print">House</b>
+				onclick={viewHouse}  class="no-print ml5"> <b class="ml5">House</b>
 
 				<!-- <a class="button no-print ml10" onclick={}>Back</a> -->
-				<button class="button is-warning is-rounded no-print" onclick={close_print_list}>
+				<button class="button is-primary has-text-weight-bold ml5 is-small" onclick="window.print()">
+		            <span class="icon">
+		              <i class="fas fa-print"></i>
+		            </span>
+		        </button>
+				<button class="button is-warning has-text-weight-bold ml5 is-small " onclick={close_print_list}>
 		    		<span class="icon">
           				<span class="fas fa-arrow-left"></span>
         			</span>
 		    	</button>
+
 			</div>
 		</div>
-		<center>
-			<table class=" table" style="border-style:none;">
-	      		<tr style="border-style:none;">
-	          		<td style="padding-left:5px;border:none;width:100px"><img src="/images/school_small.png" height="60"></td>
-	          		<td  style="text-align:center;border-style:none">
-	            		<h2>M. C. Kejriwal Vidyapeeth</h2>
-	            		<p style="text-align:center; font-size:12px;">243 G. T. Road(N) Liluah, Howrah - 711204, West Bengal, India
-	            		<br/> PHONE - (033) 2654-3387/89 - EMAIL - info@mckvie.edu.in - WEB - http://www.mckv.edu.in</p>
-	          		</td>
-	          		<td style="padding-right:5px;border:none;width:100px">
-	          			<img src="/images/nabet.JPG" height="60">
-	          		</td>
-	      		</tr>
-	    	</table>
-    		<hr style="border:none;border-top:solid #dd0000 2px;margin:10px 0;">
-    	
-    		<div style="">
-     			<div style="text-align:right;"> Printed on:{print_date} </div>
-    		</div>
+		<center>			
 
-    		<table class="table is-fullwidth is-bordered" style="">
-    			<caption class="caption">Students List {pl.standard} - {pl.section} ({pl.session_name})  </caption>
-    		</table>	  
 	      	<div style="text-align:left;">
 		      	<table class="table is-fullwidth is-bordered" >
+		      		<caption class="caption">Students List {pl.standard} - {pl.section} ({pl.session_name})  </caption>
 			        <tr>
 			        	<th style="">Roll No</th>
 	          			<th style="">Enrol No</th>
@@ -256,12 +266,16 @@
 
 	<!-- Student List view start -->
 	<section class=" is-fluid" show={student_view =='student_list'}>
-		<div class="level">
+		<div class="level no-print">
 			<div class="level-left">
 			</div>
 			<div class="level-right">
-				<!-- <a class="button no-print" onclick={}>Back</a> -->
-				<button class="button is-warning is-rounded no-print" onclick={close_student_list}>
+				<button class="button is-primary has-text-weight-bold is-small" onclick="window.print()">
+		            <span class="icon">
+		              <i class="fas fa-print"></i>
+		            </span>
+		        </button>
+				<button class="button is-warning has-text-weight-bold ml5 is-small" onclick={close_student_list}>
 		    		<span class="icon">
           				<span class="fas fa-arrow-left"></span>
         			</span>
@@ -269,43 +283,20 @@
 			</div>
 		</div>
 		<center>
-			<table class=" " style="border-style:none;width:860px;">
-	      		<tr style="border-style:none;">
-	          		<td style="padding-left:5px;border:none;width:100px"><img src="/images/school_small.png" height="60"></td>
-	          		<td  style="text-align:center;border-style:none">
-	            		<h2>M. C. Kejriwal Vidyapeeth</h2>
-	            		<p style="text-align:center; font-size:12px;">243 G. T. Road(N) Liluah, Howrah - 711204, West Bengal, India
-	            		<br/> PHONE - (033) 2654-3387/89 - EMAIL - info@mckvie.edu.in - WEB - http://www.mckv.edu.in</p>
-	          		</td>
-	          		<td style="padding-right:5px;border:none;width:100px">
-	          			<img src="/images/nabet.JPG" height="60">
-	          		</td>
-	      		</tr>
-	    	</table>
-    		<hr style="border:none;border-top:solid #dd0000 2px;margin:10px 0;width:860px;">
-    	
-	    	<div style="width:860px;">
-	     		<div style="text-align:right;"> Printed on:{print_date} </div>
-	    	</div>
-
-    		<table class="table is-fullwidth is-bordered" style="width:860px;"><caption class="caption">Student Listing of {sl.standard} {sl.section}[{total_student}]  </caption>
-    		</table>	  
-	      	<div style="text-align:left;width:860px;">
+	      	<div style="text-align:left;">
 		      	<table class="table is-fullwidth is-bordered" >
+		      		<caption class="caption">Student Listing of {sl.standard} {sl.section}[{total_student}]  </caption>
 			        <tr>
 			        	<th style="">Sl No</th>
 	          			<th style="">Enrol No</th>
-	          			<th style="">Name</th>
-			         	
+	          			<th style="">Name</th> 	
 			        </tr>     	
 					<tr each={student, i in student_list}>
-						
 		           		<td >{i +1}</td> 
 		           		<td >{student.enroll_number}</td> 
 		            	<td >{student.name}</td>
 		            	
 		           	</tr>
-		   
 		        </table>
 	    	</div>
     	</center>
@@ -317,11 +308,16 @@
 	<section class=" is-fluid" show={student_view =='student_profile'}>
 		<div class="level no-print">
 			<div class="level-left">
-				<h2 class="title has-text-danger">Profile of {st.first_name}{st.middle_name}{st.last_name}</h2>
+				<h2 class="title has-text-danger is-size-5">Profile of {st.first_name}{st.middle_name}{st.last_name}</h2>
 			</div>
 			<div class="level-right">
 				<!-- <a class="button no-print" onclick={}>Back</a> -->
-				<button class="button is-warning is-rounded no-print" onclick={close_student_profile}>
+				<button class="button is-primary has-text-weight-bold " onclick="window.print()">
+		    		<span class="icon">
+          				<span class="fas fa-print"></span>
+        			</span>
+		    	</button>
+		    	<button class="button is-warning has-text-weight-bold ml5" onclick={close_student_profile}>
 		    		<span class="icon">
           				<span class="fas fa-arrow-left"></span>
         			</span>
@@ -771,7 +767,7 @@
 			      	<div class="column is-2">
 		        		<div class=" select is-fullwidth is-small">
 							<select ref="house_id">
-								<option value="-1">None</option>
+								<option value="0">None</option>
 								<option each={houses} value={house_id}>{house_name}</option>
 							</select>
 						</div>
@@ -855,6 +851,12 @@
 					</div>
 	      		</div>
 	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="nationality">Nationality</label>
+	      	</div>
+	      	<div class="column is-2">
+				<input class="input is-small" ref="nationality" type="text">
+			</div>
 	    </div>  
 	    <div class="columns mt30">
 			<div class="column is-full">
@@ -1917,12 +1919,6 @@
 	      	<div class="column is-2 ">
 				<input class="input is-small" id="g_relation" ref="g_relation" type="text">
 	      	</div>
-	      	<div class="column is-2">
-				<label class="label is-small" for="g_email">Email</label>
-	      	</div>
-	      	<div class="column is-2">
-        		<input class="input is-small" id="g_email" ref="g_email" type="email">
-	      	</div>
 		</div>
 
 		<div class="columns mt30">
@@ -2321,12 +2317,104 @@
 	</div>
 </section>
 <!-- End Other Information -->
+
+<!-- Start First Edit View -->
+<section class=" is-fluid" show={student_view =='first_edit_view'}>
+	<div class="level">
+		<div class="level-left">
+		   	<div class="level-item">
+		    	<h2 class="title is-size-5" style="color: #ff3860;">First Edit Student</h2>
+		    </div>
+		  </div>
+	  	<div class="level-right">
+	    	<button class="button is-warning has-text-weight-bold is-small" onclick={close_first_edit}>
+      			<span class="icon">
+        			<span class="fas fa-arrow-left"></span>
+      			</span>
+    		</button>
+	  	</div>
+	</div>
+	<div class=" box">
+		<div class="columns">
+			<div class="column is-narrow">
+				<div class="control">
+					<div class="select">
+						<select ref="firstEditValue" onchange={getFirstEditData}>
+							<option value="0">Choose Any Field</option>
+							<option value="reg_number">Registration No</option>
+							<option value="enroll_number">Enroll No</option>
+							<option value="mobile">SMS</option>
+							<option value="residence_phone">Student's Phone(R)</option>
+							<option value="fax">Emergency No</option>
+							<option value="email">Student Email</option>
+							<option value="blood_group">Blood Group</option>
+							<option value="f_mobile">Father's Mobile</option>
+							<option value="f_email">Father's Email</option>
+							<option value="m_mobile">Mother's Mobile</option>
+							<option value="m_email">Mother's Email</option>
+							<option value="reference_enrol">Reference Enrol</option>
+						</select>
+					</div>
+				</div>
+			</div>		
+		</div>
+	</div>
+
+	<table class="table is-fullwidth is-striped is-hoverable is-narrow">
+		<thead>
+			<tr>
+				<th>SL No</th>
+				<th>Enroll No</th>
+				<th>Name</th>
+				<th>Father's Name</th>
+				<th ></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr each={st, i in student_first_edit}>
+				<td>{i+1}</td>
+				<td>{st.enroll_number}</td>
+				<td>{st.name}</td>
+				<td>{st.f_name}</td>
+				<td >
+					<input class="input is-small" type="text"
+					value={st.edit_field} id="{ 'first_edit_field' + st.student_id }" if={text_box}>
+					
+					<select class="select is-small" id="{ 'first_edit_field'+st.student_id }" if={!text_box} value={st.edit_field}>
+						<option value="A+">A+</option>
+						<option value="A-">A-</option>
+						<option value="AB+">AB+</option>
+						<option value="AB-">AB-</option>
+						<option value="B+">B+</option>
+						<option value="B-">B-</option>
+						<option value="O+">O+</option>
+						<option value="O-">O-</option>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="level">
+	  	<div class="level-left">
+	    	<div class="level-item"></div>
+		</div>
+	  	<div class="level-right">
+	    	<button class="button is-success has-text-weight-bold adjusted-top" 
+				onclick={EditFirstData}>Submit</button>
+			<button class="button is-danger has-text-weight-bold adjusted-top ml10" 
+				onclick={close_first_edit}>Cancel</button>
+	  	</div>
+	</div>
+
+</section>
+<!-- End First Edit View -->
 <script>
 	
 	var self = this
 	self.st={}
 	self.sl={}
 	self.pl={}
+	self.text_box = true;
     self.on("mount", function(){
     	self.title='Add'
     	self.student_view = 'show_student'
@@ -2352,6 +2440,8 @@
 		self.column_seven = false  		
 		self.column_eight = false   		
 		self.column_nine = false
+		/*first edit column*/
+		
         self.update()
         flatpickr(".date", {
 	    	allowInput: true,
@@ -2372,9 +2462,12 @@
       studentStore.off('upload_father_image_changed',UploadFatherImage)
       studentStore.off('upload_mother_image_changed',UploadMotherImage)
       studentStore.off('upload_guardian_image_changed',UploadGuardianImage)
+      studentStore.off('upload_copy_father_image_changed',UploadGuardianCopyFatherImage)
+      studentStore.off('upload_copy_mother_image_changed',UploadGuardianCopyMotherImage)
       studentStore.off('edit_student_changed',EditStudentChanged)
       studentStore.off('read_student_profile_changed',StudentProfileChanged)
       studentStore.off('student_list_changed',StudentListChanged)
+      studentStore.off('regenerate_roll_no_changed',RegenerateRollNoChanged)
     })
 
     self.getStudentData = () =>{
@@ -2400,15 +2493,40 @@
     	}
     }
 
+    self.downloadCSV = () =>{
+        
+        if(self.refs.read_section_id.value !=""){
+    		self.print_list_button = true;
+    		self.student_list_button = true;
+    		self.regenerate_roll_no_button = true;
+    	}
+    	
+    	if(self.refs.read_section_id.value ==""){
+    		self.print_list_button = false;
+    		self.student_list_button = false;
+    		self.regenerate_roll_no_button = false;
+    		return;
+    	}
+    	if(self.refs.read_enroll_number.value=="" ){
+    	
+    		studentStore.trigger('read_student_csv', self.refs.read_standard_id.value,self.refs.read_section_id.value,0)
+    	}else{
+    	
+    		studentStore.trigger('read_student_csv', self.refs.read_standard_id.value,
+    			self.refs.read_section_id.value,self.refs.read_enroll_number.value)
+    	}
+    }
+
     self.add_new_student = () =>{
     	self.student_view='add_student'
+    	self.title='Add'
     	self.clearForm()
     	self.update()
-    	document.getElementById(item2).value = ""
     	self.refs.p_state.value = "West Bengal"
     	self.refs.c_state.value = "West Bengal"
     	self.refs.p_country.value = "India"
     	self.refs.c_country.value = "India"
+    	self.refs.nationality.value = "India"
     	document.getElementById("first_name").focus()
     }
 
@@ -2436,19 +2554,28 @@
       	}else if((self.refs.enroll_number.value).length!=8){
         	toastr.error("Please enter Valid Enroll No and try again")
         	return;
-      	}else if((self.refs.p_zip.value).length!=6){
-        	toastr.error("Please enter Valid Zip Code and try again")
+      	}else if((self.refs.reg_number.value).length<16 && (self.refs.reg_number.value).length!=0){
+          	toastr.error("Please enter Valid Registration No and try again")
         	return;
-      	}else if(!self.refs.dob.value){
+        }else if((self.refs.p_zip.value).length!=6 && (self.refs.p_zip.value).length!=0){
+          	toastr.error("Please enter Valid Zip Code and try again")
+          	return;
+        }else if(!self.refs.dob.value){
         	toastr.error("Please enter DOB and try again")
         	return;
-      	}else if(!self.refs.mobile.value){
+      	}else if((self.refs.residence_phone.value).length<16 && (self.refs.residence_phone.value).length!=0){
+          	toastr.error("Please enter Valid PhoneNo No and try again")
+          	return;
+        }else if(!self.refs.mobile.value){
         	toastr.error("Please enter SMS No and try again")
         	return;
       	}else if(!self.refs.mobile.value.match(phoneno)){
         	toastr.error("Please enter Valid SMS No and try again")
         	return;
-      	}else if(!self.refs.doa.value){
+      	}else if((self.refs.aadhar_no.value).length!=12 && (self.refs.aadhar_no.value).length!=0){
+          	toastr.error("Please enter Valid Aadhar No and try again")
+          	return;
+        }else if(!self.refs.doa.value){
         	toastr.error("Please enter DOA and try again")
         	return;
       	}else if(!self.refs.doj.value){
@@ -2468,10 +2595,27 @@
     	self.update()
     }
     self.addMotherInformation = () =>{
+    	var phoneno = /^\d{10}$/;
+    	var validate_email = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
     	if(!self.refs.f_name.value){
     		toastr.error("Please enter Father Name and try again")
     		return;
-    	}else{
+    	}else if((self.refs.f_office_zip.value).length!=6 && (self.refs.f_office_zip.value).length!=0){
+        	toastr.error("Please enter Valid Office Zip Code and try again")
+        	return;
+      	}else if((self.refs.f_office_phone.value).length<16 && (self.refs.f_office_phone.value).length!=0){
+        	toastr.error("Please enter Valid Office Phone No and try again")
+        	return;
+      	}else if((self.refs.f_zip.value).length!=6 && (self.refs.f_zip.value).length!=0){
+        	toastr.error("Please enter Valid Zip Code and try again")
+        	return;
+      	}else if(!self.refs.f_mobile.value.match(phoneno) && (self.refs.f_mobile.value).length!=0){
+        	toastr.error("Please enter Valid Mobile No and try again")
+        	return;
+      	}else if(!self.refs.f_email.value.match(validate_email) && (self.refs.f_email.value).length!=0){
+        	toastr.error("Please enter Valid Email Address and try again")
+        	return;
+      	}else{
     		self.student_view='add_mother_information'
     		self.update()
     		document.getElementById("m_name").focus()
@@ -2483,10 +2627,28 @@
     }
 
     self.addGuardianInformation = () =>{
+    	var phoneno = /^\d{10}$/;
+    	var validate_email = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
     	if(!self.refs.m_name.value){
     		toastr.error("Please enter Mother Name and try again")
     		return;
-    	}else{
+    	}else if((self.refs.m_office_zip.value).length!=6 && (self.refs.m_office_zip.value).length!=0){
+        	toastr.error("Please enter Valid Office Zip Code and try again")
+        	return;
+      	}else if((self.refs.m_office_phone.value).length<16 && (self.refs.m_office_phone.value).length!=0){
+        	toastr.error("Please enter Valid Office Phone No and try again")
+        	return;
+      	}else if((self.refs.m_zip.value).length!=6 && (self.refs.m_zip.value).length!=0){
+        	toastr.error("Please enter Valid Zip Code and try again")
+        	return;
+      	}else if(!self.refs.m_mobile.value.match(phoneno) && (self.refs.m_mobile.value).length!=0){
+        	toastr.error("Please enter Valid Mobile No and try again")
+        	return;
+      	}else if(!self.refs.m_email.value.match(validate_email) && (self.refs.m_email.value).length!=0){
+        	toastr.error("Please enter Valid Email Address and try again")
+        	return;
+      	}else{
     		self.student_view='add_guardian_information'
     		self.update()
     		document.getElementById("guardian").focus()
@@ -2505,10 +2667,31 @@
     }
 
     self.addSiblingInformation = () =>{
+    	var phoneno = /^\d{10}$/;
+    	var validate_email = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
+
     	if(!self.refs.g_name.value){
     		toastr.error("Please enter Guardian Name and try again")
     		return;
-    	}else{
+    	}else if((self.refs.g_office_zip.value).length!=6 && (self.refs.g_office_zip.value).length!=0){
+        	toastr.error("Please enter Valid Office Zip Code and try again")
+        	return;
+      	}else if((self.refs.g_office_phone.value).length<16 && (self.refs.g_office_phone.value).length!=0){
+        	toastr.error("Please enter Valid Office Phone No and try again")
+        	return;
+      	}else if((self.refs.g_zip.value).length!=6 && (self.refs.g_zip.value).length!=0){
+        	toastr.error("Please enter Valid Zip Code and try again")
+        	return;
+      	}else if((self.refs.g_phone.value).length<16 && (self.refs.g_phone.value).length!=0){
+        	toastr.error("Please enter Valid Mobile No and try again")
+        	return;
+      	}else if(!self.refs.g_mobile.value.match(phoneno) && (self.refs.g_mobile.value).length!=0){
+        	toastr.error("Please enter Valid Mobile No and try again")
+        	return;
+      	}else if(!self.refs.g_email.value.match(validate_email) && (self.refs.g_email.value).length!=0){
+        	toastr.error("Please enter Valid Email Address and try again")
+        	return;
+      	}else{
     		self.student_view='add_sibling_information'
     		self.update()
     	}
@@ -2544,7 +2727,9 @@
     }
 
     self.getGuardianInformation = () =>{
+    	self.copyGuardianImage=self.refs.is_guardian.value
     	if(self.refs.is_guardian.value == 'Father'){
+    		
     		document.getElementById("g_name").disabled = true;
     		document.getElementById("g_occupation").disabled = true;
     		document.getElementById("g_organisation_type").disabled = true;
@@ -2573,10 +2758,11 @@
     		document.getElementById("g_email").disabled = true;
     		document.getElementById("g_nationality").disabled = true;
     		document.getElementById("g_relation").disabled = true;
+    		console.log(self.session_id)
     		if(self.title == 'Add'){
     			document.getElementById("g_pp_box").style.backgroundImage = 'url(' + self.f_image + ')';
     		}else if(self.title == "Update"){
-    			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/father/'+self.student_id+'.jpg)';
+    			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/fatherImages/'+self.student_id+'.jpg)';
     		}
     		self.refs.g_name.value = self.refs.f_name.value
     		self.refs.g_occupation.value = self.refs.f_occupation.value
@@ -2607,6 +2793,8 @@
     		self.refs.g_relation.value = self.refs.is_guardian.value
 
     	}else if(self.refs.is_guardian.value == 'Mother'){
+    		
+    		
     		document.getElementById("g_name").disabled = true;
     		document.getElementById("g_occupation").disabled = true;
     		document.getElementById("g_organisation_type").disabled = true;
@@ -2639,7 +2827,7 @@
     		if(self.title == 'Add'){
     			document.getElementById("g_pp_box").style.backgroundImage = 'url(' + self.m_image + ')';
     		}else if(self.title == "Update"){
-    			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/mother/'+self.student_id+'.jpg)';
+    			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/motherImages/'+self.student_id+'.jpg)';
     		}
     		self.refs.g_name.value = self.refs.m_name.value
     		self.refs.g_occupation.value = self.refs.m_occupation.value
@@ -2669,6 +2857,7 @@
     		self.refs.g_nationality.value = self.refs.m_nationality.value
     		self.refs.g_relation.value = self.refs.is_guardian.value
     	}else {
+    		
     		document.getElementById("g_name").disabled = false;
     		document.getElementById("g_occupation").disabled = false;
     		document.getElementById("g_organisation_type").disabled = false;
@@ -2701,7 +2890,7 @@
     		if(self.title == 'Add'){
     			document.getElementById("g_pp_box").style.backgroundImage = "";
     		}else if(self.title == "Update"){
-    			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/guardian/'+self.student_id+'.jpg)';
+    			document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/guardianImages/'+self.student_id+'.jpg)';
     		}
     		self.refs.g_name.value = ''
     		self.refs.g_occupation.value = ''
@@ -2906,14 +3095,25 @@
 		}
     }
 
+    self.uploadCopyFatherImage = (student_id) => {
+		
+    	studentStore.trigger('upload_copy_father_image',student_id)
+		
+    }
+
+    self.uploadCopyMotherImage = (student_id) => {
+    	studentStore.trigger('upload_copy_mother_image',student_id)
+    }
+
+
 	/* End */
 
 	/* Start Guardian Image*/
 	self.remove_guardian_picture = (item1, item2, e) => {
 		console.log('item1'+item1)
 		console.log('item2'+item2)
-		var m_pp_box = document.getElementById(item1);
-		m_pp_box.style.backgroundImage = "";
+		var g_pp_box = document.getElementById(item1);
+		g_pp_box.style.backgroundImage = "";
 		document.getElementById(item2).value = ""
 		event.stopPropagation();
 	}
@@ -2929,10 +3129,12 @@
 			console.log(item)
 			document.getElementById(item).style.backgroundImage = 'url(' + e.target.result + ')';
 			console.log(e.target.result)
+			self.g_image=e.target.result
 			self.is_guardian_image=true
 		};
 		reader.readAsDataURL(event.target.files[0]);
 		
+		console.log("event.target.files[0]")
 		console.log(event.target.files[0])
 		self.guardian_picture = event.target.files[0]
 	}
@@ -2978,6 +3180,7 @@
     		return s.standard_id == self.refs.read_standard_id.value
     	})
     	self.update()
+    	self.getStudentData()
     	console.log(self.readfilteredSections)
     }
     self.getReadSectionForWithdraw = () => {
@@ -2994,6 +3197,7 @@
     	/*Student Information */
         var student={};
 
+    	/*student['student_id']=null*/
     	student['first_name']=self.refs.first_name.value
     	student['middle_name']=self.refs.middle_name.value
     	student['last_name']=self.refs.last_name.value
@@ -3004,6 +3208,7 @@
     	student['category_id']=self.refs.category_id.value
     	student['dob']=convertDate(self.refs.dob.value)
     	student['blood_group']=self.refs.blood_group.value
+    	student['nationality']=self.refs.nationality.value
     	student['p_add_l1']=self.refs.p_add_l1.value
     	student['p_add_l2']=self.refs.p_add_l2.value
     	student['p_city']=self.refs.p_city.value
@@ -3319,6 +3524,8 @@
     	obj['parent']=parent
 
     	if(self.title=='Add'){
+    	  
+    	  obj['student'].student_id=null
           studentStore.trigger('add_student', obj)
           
         }else if(self.title=='Update'){
@@ -3334,20 +3541,20 @@
 	    allowInput: true,
         dateFormat: "d/m/Y",
   		})
+      self.student_view = 'add_student'
       self.title='Update'
       studentStore.trigger('read_for_edit_student',self.student_id)
-      document.getElementById('pp_box').style.backgroundImage = 'url(/images/7/student/'+c+'.jpg)';
-      document.getElementById('f_pp_box').style.backgroundImage = 'url(/images/7/father/'+c+'.jpg)';
-      document.getElementById('m_pp_box').style.backgroundImage = 'url(/images/7/mother/'+c+'.jpg)';
-      document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/guardian/'+c+'.jpg)';
+      document.getElementById('pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/studentImages/'+c+'.jpg)';
+      document.getElementById('f_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/fatherImages/'+c+'.jpg)';
+      document.getElementById('m_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/motherImages/'+c+'.jpg)';
+      document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/guardianImages/'+c+'.jpg)';
       if(self.refs.is_guardian.value == 'Father'){
-      	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/father/'+c+'.jpg)';
+      	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/fatherImages/'+c+'.jpg)';
       }else if(self.refs.is_guardian.value == 'Mother'){
-      	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/mother/'+c+'.jpg)';
+      	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/motherImages/'+c+'.jpg)';
       }else{
-      	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/7/guardian/'+c+'.jpg)';
+      	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/guardianImages/'+c+'.jpg)';
       }
-      self.add_new_student()
       
     }
 
@@ -3534,13 +3741,15 @@
     }
 
     self.view_profile = (c,st) => {
+    	console.log("self.session_id")
+    	console.log(self.session_id)
     	self.student_id = c
     	self.student_view = 'student_profile'
     	studentStore.trigger('read_student_profile', self.student_id)
-    	document.getElementById('pp_box1').src = '/images/7/student/'+c+'.jpg';
-    	document.getElementById('f_pp_box1').src = '/images/7/father/'+c+'.jpg';
-        document.getElementById('m_pp_box1').src = '/images/7/mother/'+c+'.jpg';
-        document.getElementById('g_pp_box1').src = '/images/7/guardian/'+c+'.jpg';
+    	document.getElementById('pp_box1').src = '/images/'+self.session_id+'/studentImages/'+c+'.jpg';
+    	document.getElementById('f_pp_box1').src = '/images/'+self.session_id+'/fatherImages/'+c+'.jpg';
+        document.getElementById('m_pp_box1').src = '/images/'+self.session_id+'/motherImages/'+c+'.jpg';
+        document.getElementById('g_pp_box1').src = '/images/'+self.session_id+'/guardianImages/'+c+'.jpg';
    
     }
 
@@ -3552,15 +3761,12 @@
     	self.refs.first_name.value = ""
     	self.refs.middle_name.value = ""
     	self.refs.last_name.value = ""
-    	self.refs.standard_id.value = ""
-    	self.refs.section_id.value = ""
     	self.refs.enroll_number.value = ""
     	self.refs.roll_number.value = ""
     	self.refs.reg_number.value = ""
-    	self.refs.gender.value = ""
-    	self.refs.category_id.value = ""
+    	self.refs.gender.value = "M"
     	self.refs.dob.value = ""
-    	self.refs.blood_group.value = ""
+    	self.refs.blood_group.value = "A+"
     	self.refs.p_add_l1.value = ""
     	self.refs.p_add_l2.value = ""
     	self.refs.p_city.value = ""
@@ -3576,7 +3782,7 @@
     	self.refs.residence_phone.value = ""
     	self.refs.mobile.value = ""
     	self.refs.emergency_no.value = ""
-    	self.refs.student_type.value = ""
+    	self.refs.student_type.value = "Day Scholar"
     	self.refs.aadhar_no.value = ""
     	self.refs.doa.value= ""
     	self.refs.old_doa.value= ""
@@ -3589,15 +3795,17 @@
     	self.refs.hobby.value = ""
     	self.refs.cast.value = ""
     	self.refs.religion_id.value = ""
-    	self.refs.staff_child.value = ""
+    	self.refs.staff_child.value = "N"
     	self.refs.staff_name.value = ""
+    	self.GetStaffName()
+    	$('#correspondenceCheckbox').prop('checked', false)
 
     	self.refs.transport_mode.value = ""
     	self.refs.school_distance.value = ""
     	self.refs.differently_abled.value = ""
 
     	self.refs.section_id.value = ""
-    	self.refs.house_id.value = ""
+    	self.refs.house_id.value = "0"
 
     	self.refs.enroll_number.value = ""
     	self.refs.dob.value =""
@@ -3714,6 +3922,68 @@
     	self.refs.fourth_child_section.value = ""
     	self.refs.fourth_enrol.value = ""
     	self.refs.fourth_child_school.value = ""
+    	pp_box.style.backgroundImage = "";
+		f_pp_box.style.backgroundImage = "";
+		m_pp_box.style.backgroundImage = "";
+		g_pp_box.style.backgroundImage = "";
+    	self.getSection()
+    	self.readSection()
+    	self.readCategory()
+    	self.readReligion()
+    	self.readHouse()
+    }
+
+    self.first_edit = ()=>{
+    	self.student_view = 'first_edit_view'
+    }
+
+    self.close_first_edit = () => {
+    	self.student_view = 'show_student'	
+    }
+
+    self.getFirstEditData = ()=>{
+    	
+    	if(self.refs.firstEditValue.value=='blood_group'){
+    		self.text_box=false
+    	}else{
+    		self.text_box=true
+    	}
+    	if(self.refs.firstEditValue.value=='0'){
+    		toastr.info("Please Select Any Field");
+    		return;
+    	}
+    	self.loading = true
+    	studentStore.trigger('read_student_first_edit', self.refs.read_standard_id.value,
+    		self.refs.read_section_id.value,self.refs.firstEditValue.value)
+    }
+
+    self.EditFirstData = ()=>{
+    	self.loading = true
+    	var editValues = []
+    	console.log(self.student_first_edit)
+    	self.student_first_edit.map( q => {
+    		var obj={}
+    		obj['student_id'] = q.student_id
+    		obj['value'] = $('#first_edit_field'+q.student_id).val();
+    		editValues.push(obj);
+    	})
+    	studentStore.trigger('edit_student_first',editValues,self.refs.firstEditValue.value)
+    }
+
+    studentStore.on('read_student_first_edit_changed',ReadStudentFirstEditChanged)
+    function ReadStudentFirstEditChanged(student_first_edit){
+      console.log(student_first_edit) 
+      self.loading=false
+      self.student_first_edit = student_first_edit
+      self.update()
+    }
+
+    studentStore.on('edit_student_first_changed',EditStudentFirstEditChanged)
+    function EditStudentFirstEditChanged(){
+      self.loading=false
+      self.student_view = 'show_student'
+      self.update()
+      self.getStudentData()
     }
 
     studentStore.on('read_standard_changed',StandardChanged)
@@ -3722,6 +3992,7 @@
       self.standards = standards
       self.update()
       self.readSection()
+
     }
 
     studentStore.on('read_section_changed',SectionChanged)
@@ -3757,14 +4028,23 @@
     }
 
     studentStore.on('read_student_changed',StudentChanged)
-    function StudentChanged(students){
+    function StudentChanged(students,session_id,session_name){
       self.loading = false
       self.students = students
+      self.session_id = session_id
+      self.session_name = session_name
+      self.StandardName = $("#read_standard_id option:selected").text();
+      self.SectionName = $("#read_section_id option:selected").text();
+      if(self.students.length==0){
+      	toastr.info("No Data Found")
+      }
       self.update()
     }
 
     studentStore.on('read_student_profile_changed',StudentProfileChanged)
-    function StudentProfileChanged(student_profile_details){
+    function StudentProfileChanged(student_profile_details,session_id){
+    	self.session_id = session_id
+    	console.log(self.session_id)
     	self.st=student_profile_details[0]
     	console.log(student_profile_details) 
       	self.student_profile_details = student_profile_details
@@ -4084,9 +4364,18 @@
       self.uploadStudentImage(student_id)
       self.uploadFatherImage(student_id)
       self.uploadMotherImage(student_id)
-      self.uploadGuardianImage(student_id)
-      //self.getStudentData()
+      console.log("self.copyGuardianImage")
+      console.log(self.copyGuardianImage)
+      if(self.copyGuardianImage =='Father'){
+      	self.uploadCopyFatherImage(student_id)
+      }else if(self.copyGuardianImage=='Mother'){
+      	self.uploadCopyMotherImage(student_id)
+      }else{
+      	self.uploadGuardianImage(student_id)
+      }
+
       self.student_view = 'show_student'
+      self.getStudentData()
       self.update()
     }
 
@@ -4100,16 +4389,22 @@
       self.uploadMotherImage(self.student_id)
       self.uploadGuardianImage(self.student_id)
       self.clearForm()
-      //self.getStudentData()
+      self.getStudentData()
       self.student_view = 'show_student'
       self.update()
     }
 
     studentStore.on('delete_student_changed',DeleteStudentChanged)
-    function DeleteStudentChanged(students){
-      console.log(students) 
-      self.students = students
+    function DeleteStudentChanged(){
       self.loading = false
+      self.getStudentData()
+      self.update()
+    }
+
+    studentStore.on('regenerate_roll_no_changed',RegenerateRollNoChanged)
+    function RegenerateRollNoChanged(){
+      self.loading = false
+      self.getStudentData()
       self.update()
     }
 
@@ -4137,8 +4432,10 @@
     }
 
     studentStore.on('read_for_edit_student_changed',ReadForEditStudentChanged)
-    function ReadForEditStudentChanged(student_details){
+    function ReadForEditStudentChanged(student_details,session_id){
      	console.log(student_details) 
+     	console.log(session_id) 
+     	self.session_id = session_id
       	self.student_details = student_details
       	self.refs.first_name.value = student_details[0].first_name
       	self.refs.middle_name.value = student_details[0].middle_name
@@ -4149,6 +4446,9 @@
     		return s.standard_id == student_details[0].standard_id
     	})
     	self.refs.house_id.value = student_details[0].house_id
+    	if(student_details[0].house_id==null){
+    		self.refs.house_id.value=0
+    	}
     	self.refs.enroll_number.value = student_details[0].enroll_number
 		self.refs.roll_number.value = student_details[0].roll_number
 		self.refs.reg_number.value = student_details[0].reg_number
@@ -4445,6 +4745,7 @@
 		self.refs.school_distance.value = student_details[0].school_distance
 		self.refs.differently_abled.value = student_details[0].differently_abled
 		self.student_id = student_details[0].student_id
+		self.edit_student_id = student_details[0].student_id
 		self.update()
 		self.refs.staff_name.value = student_details[0].staff_name
         self.refs.section_id.value = student_details[0].section_id
@@ -4471,6 +4772,18 @@
 
     studentStore.on('upload_guardian_image_changed',UploadGuardianImage)
     function UploadGuardianImage(image_name){
+      console.log(image_name) 
+      self.guardian_profile_picture = image_name
+    }
+
+    studentStore.on('upload_copy_father_image_changed',UploadGuardianCopyFatherImage)
+    function UploadGuardianCopyFatherImage(image_name){
+      console.log(image_name) 
+      self.guardian_profile_picture = image_name
+    }
+
+    studentStore.on('upload_copy_mother_image_changed',UploadGuardianCopyMotherImage)
+    function UploadGuardianCopyMotherImage(image_name){
       console.log(image_name) 
       self.guardian_profile_picture = image_name
     }

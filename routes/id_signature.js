@@ -55,9 +55,6 @@ router.post('/add_signature', function(req, res, next) {
         modified_by    : req.cookies.user,
       };
 
-     /*var qry = `insert into signature_image(type, creation_date, modification_date, modified_by)
-                values(:type, :creation_date, :modification_date, :modified_by)`;*/
-
      var query = connection.query("INSERT INTO signature_image set ? ",values, function(err, result)    {
 
       var log = result.type;
@@ -133,7 +130,7 @@ router.post('/edit_signature/:type/:old_type', function(req, res, next) {
                 }
 
                 //rename code
-                fs.rename('./public/images/7/signature/'+req.params.old_type+'.jpg', './public/images/7/signature/'+req.params.type+'.jpg', function(err) {
+                fs.rename('./public/images/7/signatureImages/'+req.params.old_type+'.jpg', './public/images/7/signatureImages/'+req.params.type+'.jpg', function(err) {
                    if ( err ) console.log('ERROR: ' + err);
                 });
                 data.status = 's';
@@ -177,7 +174,7 @@ router.post('/delete_signature/:type', function(req, res, next) {
 
         }else{
             //Delete Image Form Folder code
-            fs.unlink('./public/images/7/signature/'+req.params.type+'.jpg', (err) => {
+            fs.unlink('./public/images/7/signatureImages/'+req.params.type+'.jpg', (err) => {
               if (err) throw err; console.log('path/file.txt was deleted');
             });
             data.status = 's';
@@ -266,7 +263,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: multer.diskStorage({
     destination: function(req, file, cb) {
-      cb(null, './public/images/'+req.cookies.session_id+'/'+req.params.folder_name);
+      cb(null, './public/images/'+req.params.folder_name);
     },
     filename: function(req, file, cb) {
       image_name= req.params.image_name+'.jpg';

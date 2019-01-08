@@ -4,6 +4,27 @@ function ActivityItemStore() {
 
   self.items = []
 
+  self.on('csv_export_activity_item', function() {
+    console.log('i am in csv_export_department api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/activity_item/csv_export_activity_item',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+            // self.trigger('departments_changed', data.departments)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('read_items', function() {
     console.log('i am in read_courses api call from ajax')
     let req = {}

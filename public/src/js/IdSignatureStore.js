@@ -132,7 +132,7 @@ function IdSignatureStore() {
     var form_data = new FormData(); 
     form_data.append("signature_picture", signature_image);
     $.ajax({
-      url:'/id_signature/upload_signature_image/signature/'+type,
+      url:'/id_signature/upload_signature_image/signatureImages/'+type,
         type:"POST",
         dataType: 'script',
         processData: false,

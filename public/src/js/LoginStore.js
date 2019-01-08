@@ -44,7 +44,7 @@ function LoginStore() {
           console.log(getCookie('token'));
           if(data.status == 's'){
             console.log('login after')
-            self.trigger('login_changed')
+            self.trigger('login_changed',data.result.role)
             self.trigger('login_changed_main_nav',data.result)
             self.trigger('login_changed_footer',data.result)
           }else if(data.status == 'e'){
@@ -70,6 +70,30 @@ function LoginStore() {
             self.trigger('logOut_changed')
           }else if(data.status == 'e'){
             showToast("Error in Logout.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('change_password', function(old_password,new_password) {
+    
+    let req = {}
+    req.action = 'changePassword'
+    req.old_password=old_password
+    req.new_password=new_password
+
+    $.ajax({
+        url:'/login/change-password',
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        success: function(data){
+          if(data.status=='s'){
+            self.trigger('change_password_completed',data.rows)
           }
         },
         error: function(data){

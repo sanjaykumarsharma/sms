@@ -1,6 +1,12 @@
 <infirmary-date-wise-case-report>
-<section class="is-fluid">
-  <div class="box">
+  <header></header>
+  <loading-bar if={loading}></loading-bar>
+  <section class="is-fluid">
+      <h2 class="title has-text-centered" style="color: #ff3860;">Student Wise Infirmary Case Report<br>
+             <span style='font-size:18px'> Session : {session_name} <br>
+             Category: {category_name} From: {start_date} To: {end_date}</span>
+      </h2> 
+  <div class="box  no-print">
       <div class="columns">
         <div class="column is-narrow">
           <label class="label">Category</label>
@@ -8,7 +14,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="read_category_id">
+              <select ref="read_category_id" id="category_id">
                 <option each={infirmaryCategories} value={category_id}>{category_name}
                               </option>
               </select>
@@ -20,7 +26,7 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text">
+             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text" style="width:130px">
           </div>
         </div>
           <div class="column is-narrow">
@@ -28,30 +34,42 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text">
+              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text" style="width:130px">
           </div>
         </div>
         <div class="column">
           <button class="button is-danger has-text-weight-bold"
-          onclick={readStudentInfirmaryDateWiseCaseReport} >Go
+               onclick={readStudentInfirmaryDateWiseCaseReport} >Go
           </button>
+
+          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+           </button>
+          <button class="button is-warning is-rounded is-pulled-right" onclick={readStudentInfirmaryDateWiseCaseReport} style="margin-left:34;margin-right:4px">
+              <span class="icon">
+                <span class="fas fa-sync-alt"></span>
+              </span>
+          </button>
+          <button class="button is-info is-rounded is-pulled-right" onclick={add_student_infirmary}>
+              <span class="icon">
+                <span class="fas fa-plus"></span>
+              </span>
+          </button>
+
+         
         </div>
       </div>
     </div>
-  <div class="level">
+<!--   <div class="level">
     <div class="level-left">
       <h4 class="title" style="color: #ff3860;">Student Date Wise Case Report</h4>
     </div>
-
-    <!-- <div class="level-right">
-      <button class="button is-warning is-rounded" onclick={add_student_infirmary}>
-      <span class="icon">
-        <span class="fas fa-plus"></span>
-      </span>
-      <span>Student Date Wise Case Re</span>
-      </button>
-    </div> -->
-  </div>
+     <div class="level-right no-print">
+     
+    </div>
+  </div> -->
 
   <table class="table is-fullwidth is-striped is-hoverable is-bordered">
       <thead>
@@ -118,7 +136,11 @@
 
      //read courses
      self.readStudentInfirmaryDateWiseCaseReport = () => {
-         self.infirmary_student_view='show_student_table'
+          self.loading=true
+           self.infirmary_student_view='show_student_table'
+           self.category_name = $("#category_id option:selected").text();
+            self.start_date=self.refs.start_date.value,
+            self.end_date=self.refs.end_date.value
            studentinfirmaryStore.trigger('read_student_date_wise_case_report', self.refs.read_category_id.value,self.refs.start_date.value,self.refs.end_date.value,)
            //studentStore.trigger('read_students', obj)
      }
@@ -141,10 +163,11 @@
 
     
      studentinfirmaryStore.on('read_student_date_wise_case_report_changed',ReadStudentDateWiseCaseReportChanged)
-     function ReadStudentDateWiseCaseReportChanged(studentDateWiseCaseReports){
+     function ReadStudentDateWiseCaseReportChanged(studentDateWiseCaseReports,session_name){
        console.log(studentDateWiseCaseReports) 
        self.loading = false
        self.studentDateWiseCaseReports = studentDateWiseCaseReports
+       self.session_name=session_name
        self.update()
        console.log(self.studentDateWiseCaseReports)
      }
@@ -153,6 +176,7 @@
      function InfirmaryCategoryChanged(infirmaryCategories){
        console.log(infirmaryCategories) 
        self.infirmaryCategories = infirmaryCategories
+       self.loading=false
        self.update()
        console.log(self.infirmaryCategories)
      }

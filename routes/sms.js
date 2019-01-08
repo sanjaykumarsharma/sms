@@ -8,13 +8,16 @@ const request = require('request');
 router.post('/', function(req, res, next) {
   var input = JSON.parse(JSON.stringify(req.body));
 
-  var username = 'ezy-mittin';
-  var password = 'tin357';
+  var username = 'ezy-mckvgr';
+  var password = 'kvgr579';
   var type = input.type;
-  var mobile_nos = '8820260073,8910832121';
-  //var mobile_nos = input.mobile_no;
+  //var mobile_nos = '8820260073,8910832121';
+  //var default_mobile_nos = "919831449575,919831009339,919748400081,919830473328,919836152046,919748967191,919831340971,919830132305";
+  var default_mobile_nos = '919830132305';
+  var mobile_nos = input.mobile_no + ','+default_mobile_nos;
   var message = input.message;
-  var url = ' http://103.16.101.52:8080/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+mobile_nos+'&source=MITTIN&message='+message;
+  console.log(mobile_nos);
+  var url = ' http://103.16.101.52/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+mobile_nos+'&source=MCKVGR&message='+message;
   
 
   var data = {}

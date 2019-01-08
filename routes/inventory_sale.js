@@ -70,14 +70,14 @@ router.get('/read_qunatity/:id', function(req, res, next) {
         var user_condition = "";*/
         //if(session_id['role'] != 'ADMINISTRATOR') user_condition =`and a.created_by = ${user}`;
        // and received_date between :dtf and :dto
-        var qry = `select a.item_id, total_received, total_issued, total_sale, unit, a.unit_id, a.rack_id
+        var qry = `select a.item_id, total_received, total_issued, total_sale, unit, a.unit_id
               from
               (select item_id, c.unit_id,c.rack_id, sum(quantity) as total_received, unit             
               from received_goods c  
               join unit_master d on c.unit_id=d.unit_id
               where item_id = ${item_id}
               and c.received_date between '${start_date}' and '${end_date}'
-              group by item_id) a
+              group by item_id,c.unit_id) a
               left join
               (select issue_item_id as item_id, sum(issue_quantity) as total_issued
               from issue_goods 
@@ -155,13 +155,13 @@ router.get('/:id', function(req, res, next) {
          console.log(end_date) 
 
        
-      //  var user=req.cookies.session_id['user']
+        var user=req.cookies.user
         var condition = "";
         if(category_id !=-1){
           condition = ` a.sale_category_id = ${category_id}`;
          }
         var user_condition = "";
-        //if(session_id['role'] != 'ADMINISTRATOR') user_condition =`and a.created_by = ${user}`;
+       if(req.cookies.role != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select sale_id, sale_item_id as item_id, sale_category_id as category_id, sale_sub_category_id as sub_category_id,
                 date_format(sale_date,'%d/%m/%Y') as sa_date, date_format(sale_date,'%Y-%m-%d') as sale_date, sale_date as s_date,

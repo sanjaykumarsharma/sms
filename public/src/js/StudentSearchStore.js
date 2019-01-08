@@ -51,8 +51,9 @@ function StudentSearchStore() {
           console.log(data)
           if(data.status == 's'){
              self.browseStudents=data.browseStudents
+             self.session_name=data.session_name
             toastr.success("Successfully")
-            self.trigger('read_student_browser_change', self.browseStudents)
+            self.trigger('read_student_browser_change', self.browseStudents, self.session_name)
           }else if(data.status == 'e'){
             showToast("Error search Student. Please try again.", data)
           }

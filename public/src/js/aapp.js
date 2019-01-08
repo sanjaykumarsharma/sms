@@ -18,7 +18,7 @@ var convertDate = (inputDate) => {//inputDate(d/m/Y) => output(Y-m-d)
   }
 }
 
-function getCookie(c_name)
+function getCookie(c_name) 
 {
    var i,x,y,ARRcookies=document.cookie.split(";");
    for (i=0; i<ARRcookies.length; i++)
@@ -66,6 +66,7 @@ RiotControl.addStore(examSubjectGroupMapStore)
 var examSubjectGroupMapStore = new ExamSubjectGroupMapStore() 
 RiotControl.addStore(examSubjectGroupMapStore)
 
+
 //student
 var studentAssignHouseStore = new StudentAssignHouseStore() 
 RiotControl.addStore(studentAssignHouseStore)
@@ -85,6 +86,19 @@ RiotControl.addStore(timeTableSubstitutaionStore)
 var timeTableAdminStore = new TimeTableAdminStore() 
 RiotControl.addStore(timeTableAdminStore)
 
+var timeTableRoomSettingsStore = new TimeTableRoomSettingsStore() 
+RiotControl.addStore(timeTableRoomSettingsStore)
+
+var timeTablePeriodSettingsStore = new TimeTablePeriodSettingsStore() 
+RiotControl.addStore(timeTablePeriodSettingsStore)
+
+var timeTableDaySettingsStore = new TimeTableDaySettingsStore() 
+RiotControl.addStore(timeTableDaySettingsStore)
+
+var timeTableReportStore = new TimeTableReportStore() 
+RiotControl.addStore(timeTableReportStore)
+
+
 var studentWithdrawnStudentStore = new StudentWithdrawnStudentStore() 
 RiotControl.addStore(studentWithdrawnStudentStore)
 
@@ -102,6 +116,7 @@ RiotControl.addStore(studentResultActivationStore)
 
 var certificateStore  = new CertificateStore() 
 RiotControl.addStore(certificateStore)
+
 
 
 //****************************************************ghulam
@@ -329,9 +344,6 @@ RiotControl.addStore(staffStore)
 var studentSearchStore  = new StudentSearchStore() 
 RiotControl.addStore(studentSearchStore)
 
-var certificateStore  = new CertificateStore() 
-RiotControl.addStore(certificateStore)
-
 var birthDayStore  = new BirthDayStore() 
 RiotControl.addStore(birthDayStore)
 
@@ -342,10 +354,335 @@ var adminReportStore  = new AdminReportStore()
 RiotControl.addStore(adminReportStore)
 
 
-
 var currentPage = null;
 
-let goTo = (path1, path2, path3) => {
+let loginRoute = (path1, path2, path3) => {
+  riot.mount('main-nav', {selected_nav_item: path1});
+  if (currentPage) {
+    currentPage.unmount(true);
+  }
+  switch(path1) {
+    case 'login':
+      currentPage = riot.mount('div#view', 'login')[0];
+    break;
+  }
+}
+//========== activity Route Route ===========   
+let activityRoute = (path1, path2, path3) => {
+  riot.mount('main-nav', {selected_nav_item: path1});
+  if (currentPage) {
+    currentPage.unmount(true);
+  }
+  switch(path1) {
+    /*case 'login':
+      currentPage = riot.mount('div#view', 'login')[0];
+    break;*/
+    case 'student-browser':
+          riot.mount("div#view", 'student-browser')
+    break;
+    
+    case 'activity-detail':
+      currentPage = riot.mount('div#view', 'activity-detail')[0];
+    break;
+    case 'activity-setting':
+      currentPage = riot.mount('div#view', 'activity-setting', {selected_master: path2})[0];
+      switch(path2){
+        case 'activity-item':
+          riot.mount("div#activity-setting-view", 'activity-item')
+        break;
+        case 'activity-event':
+          riot.mount("div#activity-setting-view", 'activity-event')
+        break;
+        case 'activity-category':
+          riot.mount("div#activity-setting-view", 'activity-category')
+        break;
+        default:
+          riot.mount("div#activity-setting-view", 'activity-item')
+      }
+    break;
+  }
+}
+
+//========== Mentor Route ===========   
+let mentorRoute = (path1, path2, path3) => {
+ riot.mount('main-nav', {selected_nav_item: path1});
+ if (currentPage) {
+   currentPage.unmount(true);
+ }
+ switch(path1) {
+   /*case 'login':
+     currentPage = riot.mount('div#view', 'login')[0];
+   break;*/
+   case 'student-browser':
+         riot.mount("div#view", 'student-browser')
+   break;
+   
+   case 'mentor-detail':
+     currentPage = riot.mount('div#view', 'mentor-detail')[0];
+   break;
+   case 'mentor-setting':
+     currentPage = riot.mount('div#view', 'mentor-setting', {selected_master: path2})[0];
+     switch(path2){
+       case 'mentor-category':
+         riot.mount("div#mentor-setting-view", 'mentor-category')
+       break;
+       case 'mentor-case':
+         riot.mount("div#mentor-setting-view", 'mentor-case')
+       break;
+       default:
+         riot.mount("div#mentor-setting-view", 'mentor-category')
+     }
+   break;
+   case 'mentor-report':
+     currentPage = riot.mount('div#view', 'mentor-report', {selected_master: path2})[0];
+     switch(path2){
+       case 'mentor-case-wise-report':
+         riot.mount("div#mentor-report-view", 'mentor-case-wise-report')
+       break;
+       case 'mentor-class-wise-report':
+         riot.mount("div#mentor-report-view", 'mentor-class-wise-report')
+       break;
+       case 'mentor-date-wise-case-report':
+         riot.mount("div#mentor-report-view", 'mentor-date-wise-case-report')
+       break;
+       default:
+         riot.mount("div#mentor-report-view", 'mentor-case-wise-report')
+     }
+   break;
+ }
+}
+//========== Class Teacher Route ===========   
+let classTeacherRoute = (path1, path2, path3) => {
+  riot.mount('main-nav', {selected_nav_item: path1});
+  if (currentPage) {
+    currentPage.unmount(true);
+  }
+  switch(path1) {
+    /*case 'login':
+      currentPage = riot.mount('div#view', 'login')[0];
+    break;*/
+    case 'student-browser':
+          riot.mount("div#view", 'student-browser')
+    break;
+    case 'attendance-entry':
+      currentPage = riot.mount('div#view', 'attendance-entry')[0];
+    break;
+    case 'daily-attendance':
+          riot.mount("div#view", 'daily-attendance')[0];
+    break;
+    case 'consolidate-tabulation-sheet':
+      riot.mount("div#marks-report-view", 'consolidate-tabulation-sheet')
+    break;
+  }
+}
+//========== Teacher Route ===========   
+let teacherRoute = (path1, path2, path3) => {
+  riot.mount('main-nav', {selected_nav_item: path1});
+  if (currentPage) {
+    currentPage.unmount(true);
+  }
+  switch(path1) {
+    /*case 'login':
+      currentPage = riot.mount('div#view', 'login')[0];
+    break;*/
+    case 'student-browser':
+          riot.mount("div#view", 'student-browser')
+    break;
+    case 'marks-entry':
+      currentPage = riot.mount('div#view', 'marks-entry')[0];
+    break;
+    case 'consolidate-tabulation-sheet':
+      riot.mount("div#marks-report-view", 'consolidate-tabulation-sheet')
+    break;
+  }
+}
+
+// Inventory Route For Store By Tarique
+let inventoryRoute = (path1, path2, path3) => {
+  riot.mount('main-nav', {selected_nav_item: path1});
+  if (currentPage) {
+    currentPage.unmount(true);
+  }
+  switch(path1) {
+    case 'staff-profile':
+      currentPage = riot.mount('div#view', 'staff-profile')[0];
+    break;
+    case 'inventory-stock':
+      currentPage = riot.mount('div#view', 'inventory-stock')[0];
+    break; 
+    case 'inventory-sale':
+      currentPage = riot.mount('div#view', 'inventory-sale')[0];
+    break;
+    case 'inventory-issue':
+      currentPage = riot.mount('div#view', 'inventory-issue')[0];
+    break;
+     case 'inventory-returnable':
+      currentPage = riot.mount('div#view', 'inventory-returnable')[0];
+    break;
+    case 'inventory-setting':
+      currentPage = riot.mount('div#view', 'inventory-setting', {selected_master: path2})[0];
+      switch(path2){
+        case 'inventory-rack':
+          riot.mount("div#inventory-setting-view", 'inventory-rack')
+        break;
+        case 'inventory-unit':
+          riot.mount("div#inventory-setting-view", 'inventory-unit')
+        break;
+         case 'inventory-subcategory':
+          riot.mount("div#inventory-setting-view", 'inventory-subcategory')
+        break;
+         case 'inventory-category':
+          riot.mount("div#inventory-setting-view", 'inventory-category')
+        break;
+         case 'inventory-item':
+          riot.mount("div#inventory-setting-view", 'inventory-item')
+        break;
+        default:
+          riot.mount("div#inventory-setting-view", 'inventory-rack')
+      } 
+      break;  
+    case 'inventory-report':
+      currentPage = riot.mount('div#view', 'inventory-report', {selected_inventory_report: path2})[0];
+      switch(path2){
+        case 'inventory-received-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-received-goods-report')
+        break;
+        case 'inventory-issued-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-issued-goods-report')
+        break;
+        case 'inventory-person-wise-issued-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-person-wise-issued-goods-report')
+        break;
+        case 'inventory-item-wise-issued-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-item-wise-issued-goods-report')
+        break;
+        case 'inventory-sales-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-sales-goods-report')
+        break;
+        case 'inventory-return-goods-report':
+          riot.mount("div#inventory-report-view", 'inventory-return-goods-report')
+        break;
+         case 'inventory-summary-report':
+          riot.mount("div#inventory-report-view", 'inventory-summary-report')
+        break;
+        default:
+          riot.mount("div#inventory-report-view", 'inventory-received-goods-report')
+        }
+    break;
+  }
+
+}
+
+
+// infirmary sub anv Route
+
+
+let infirmaryRoute = (path1, path2, path3) => {
+  riot.mount('main-nav', {selected_nav_item: path1});
+  if (currentPage) {
+    currentPage.unmount(true);
+  }
+  switch(path1) {
+      case 'staff-profile':
+          currentPage = riot.mount('div#view', 'staff-profile')[0];
+      break;
+
+      case 'infirmary-setting':
+     
+      currentPage = riot.mount('div#view', 'infirmary-setting', {selected_master: path2})[0];
+      switch(path2){
+        case 'infirmary-category':
+          riot.mount("div#infirmary-setting-view", 'infirmary-category')[0]
+        break;
+        case 'infirmary-case':
+          riot.mount("div#infirmary-setting-view", 'infirmary-case')[0]
+        break;
+         default:
+          riot.mount("div#infirmary-setting-view", 'infirmary-case')[0]
+      } 
+     break; 
+
+     case 'infirmary':
+      currentPage = riot.mount('div#view', 'infirmary', {selected_master: path2})[0];
+      switch(path2){
+        case 'infirmary-student':
+          riot.mount("div#infirmary-view", 'infirmary-student')
+        break;
+        case 'student-report':
+          riot.mount("div#infirmary-view", 'infirmary-student')
+        break;
+        case 'infirmary-staff':
+          riot.mount("div#infirmary-view", 'infirmary-staff')
+        break;
+        case 'infirmary-lab-test':
+          riot.mount("div#infirmary-view", 'infirmary-lab-test')
+        break;
+         case 'infirmary-staff-bp-weight':
+          riot.mount("div#infirmary-view", 'infirmary-staff-bp-weight')
+         break; 
+          case 'infirmary-student-report':
+          currentPage = riot.mount('div#infirmary-view', 'infirmary-student-report', {selected_infirmary_student_report: path3})[0];
+          switch(path3){
+            case 'infirmary-date-wise-case-report':
+              riot.mount("div#infirmary-student-report-view", 'infirmary-date-wise-case-report')
+              console.log("inside main")
+            break;
+              case 'infirmary-student-class-wise-report':
+              riot.mount("div#infirmary-student-report-view", 'infirmary-student-class-wise-report')
+            break;
+            case 'infirmary-student-case-wise-report':
+              riot.mount("div#infirmary-student-report-view", 'infirmary-student-case-wise-report')
+            break;
+            default:
+              riot.mount("div#infirmary-student-report-view", 'infirmary-date-wise-case-report')
+          }
+        break 
+       
+       case 'infirmary-staff-report':
+          currentPage = riot.mount('div#infirmary-view', 'infirmary-staff-report', {selected_infirmary_staff_report: path3})[0];
+          switch(path3){
+            case 'infirmary-staff-date-wise-case-report':
+              riot.mount("div#infirmary-staff-report-view", 'infirmary-staff-date-wise-case-report')
+              console.log("inside main")
+            break;
+            case 'infirmary-staff-monthly-report':
+              riot.mount("div#infirmary-staff-report-view", 'infirmary-staff-monthly-report')
+            break;
+              case 'infirmary-staff-health-card-report':
+              riot.mount("div#infirmary-staff-report-view", 'infirmary-staff-health-card-report')
+            break;
+            default:
+              riot.mount("div#infirmary-staff-report-view", 'infirmary-staff-date-wise-case-report')
+
+          }
+        break;
+
+        case 'infirmary-staff-bp-weight-report':
+          currentPage = riot.mount('div#infirmary-view', 'infirmary-staff-bp-weight-report', {selected_infirmary_staff_bp_weight_report: path3})[0];
+          switch(path3){
+            case 'infirmary-staff-wise-report':
+              riot.mount("div#infirmary-staff-bp-weight-report-view", 'infirmary-staff-wise-report')
+             // console.log("inside bp");
+            break;
+            case 'infirmary-staff-monthly-report':
+              riot.mount("div#infirmary-staff-bp-weight-report-view", 'infirmary-staff-monthly-report')
+            break;
+              case 'infirmary-staff-health-card-report':
+              riot.mount("div#infirmary-staff-bp-weight-report-view", 'infirmary-staff-health-card-report')
+            break;
+            default:
+              riot.mount("div#infirmary-staff-bp-weight-report-view", 'infirmary-staff-wise-report')
+
+          }
+        break;  
+
+      } 
+      break
+  }
+
+}
+//======== Admin Route ============== 
+let adminRoute = (path1, path2, path3) => {
   riot.mount('main-nav', {selected_nav_item: path1});
   if (currentPage) {
     currentPage.unmount(true);
@@ -384,6 +721,19 @@ let goTo = (path1, path2, path3) => {
     case 'time-table-substitutation':
       currentPage = riot.mount('div#view', 'time-table-substitutation')[0];
     break;
+    case 'time-table-report-nav':
+      currentPage = riot.mount('div#view', 'time-table-report-nav', {selected_time_table_report: path2})[0];
+      switch(path2){
+        case 'time-table-summary-report':
+          riot.mount("div#time-table-report-view", 'time-table-summary-report')
+        break;
+        case 'time-table-detail-report':
+          riot.mount("div#time-table-report-view", 'time-table-detail-report')
+        break;
+        default:
+          riot.mount("div#time-table-report-view", 'time-table-summary-report')
+      }
+    break;
     case 'time-table-admin':
       currentPage = riot.mount('div#view', 'time-table-admin', {selected_time_table_admin: path2})[0];
       switch(path2){
@@ -395,6 +745,25 @@ let goTo = (path1, path2, path3) => {
         break;
         case 'time-table-teacher-report':
           riot.mount("div#time-table-admin-view", 'time-table-teacher-report')
+        break;
+        case 'time-table-assign-teacher':
+          riot.mount("div#time-table-admin-view", 'time-table-assign-teacher')
+        break;
+        case 'time-table-settings':
+          currentPage = riot.mount('div#time-table-admin-view', 'time-table-settings', {selected_time_table_settings: path3})[0];
+          switch(path3){
+            case 'time-table-room-settings':
+              riot.mount("div#time-table-settings-view", 'time-table-room-settings')
+            break;
+            case 'time-table-period-settings':
+              riot.mount("div#time-table-settings-view", 'time-table-period-settings')
+            break;
+            case 'time-table-day-settings':
+              riot.mount("div#time-table-settings-view", 'time-table-day-settings')
+            break;
+            default:
+              riot.mount("div#time-table-settings-view", 'time-table-room-settings')
+          }
         break;
         default:
           riot.mount("div#time-table-admin-view", 'time-table-class-report')
@@ -716,6 +1085,9 @@ case 'receive-fees':
     case 'ex-staff':
           riot.mount("div#view", 'ex-staff')
     break;
+    case 'approve-staff-profile':
+          riot.mount("div#view", 'approve-staff-profile')
+    break;
     case 'browse-staff':
           riot.mount("div#view", 'browse-staff')
     break;
@@ -725,7 +1097,6 @@ case 'receive-fees':
     case 'student-browser':
           riot.mount("div#view", 'student-browser')
     break;
-
     case 'occupation-report':
           riot.mount("div#view", 'occupation-report')
     break;
@@ -738,21 +1109,6 @@ case 'receive-fees':
     case 'daily-attendance':
           riot.mount("div#view", 'daily-attendance')
     break;
-
-     case 'staff-report':
-      currentPage = riot.mount('div#view', 'staff-report', {selected_staff_report: path2})[0];
-      switch(path2){
-        case 'staff-gernder-report':
-          riot.mount("div#staff-report-view", 'staff-gernder-report')
-        break;
-        case 'staff-type-report':
-          riot.mount("div#staff-report-view", 'staff-type-report')
-        break;
-        default:
-          riot.mount("div#staff-report-view", 'staff-gender-report')
-      }
-    break;
-
     case 'admin-report':
       currentPage = riot.mount('div#view', 'admin-report', {selected_admin_report: path2})[0];
       switch(path2){
@@ -797,24 +1153,6 @@ case 'receive-fees':
         break;
         default:
           riot.mount("div#admin-report-view", 'student-summary-report')
-      }
-    break;
-
-
-    case 'certificate':
-      currentPage = riot.mount('div#view', 'certificate', {selected_certificate: path2})[0];
-      switch(path2){
-        case 'issue-certificate':
-          riot.mount("div#certificate-view", 'issue-certificate')
-        break;
-        case 'manage-certificate':
-          riot.mount("div#certificate-view", 'manage-certificate')
-        break;
-        case 'issued-certificate':
-          riot.mount("div#certificate-view", 'issued-certificate')
-        break;
-        default:
-          riot.mount("div#certificate-view", 'issue-certificate')
       }
     break;
    
@@ -992,6 +1330,23 @@ case 'receive-fees':
       }
     break;
 
+    case 'certificate':
+      currentPage = riot.mount('div#view', 'certificate', {selected_certificate: path2})[0];
+      switch(path2){
+        case 'issue-certificate':
+          riot.mount("div#certificate-view", 'issue-certificate')
+        break;
+        case 'manage-certificate':
+          riot.mount("div#certificate-view", 'manage-certificate')
+        break;
+        case 'issued-certificate':
+          riot.mount("div#certificate-view", 'issued-certificate')
+        break;
+        default:
+          riot.mount("div#certificate-view", 'issue-certificate')
+      }
+    break;
+
     case 'infirmary':
       currentPage = riot.mount('div#view', 'infirmary', {selected_master: path2})[0];
       switch(path2){
@@ -1014,15 +1369,14 @@ case 'receive-fees':
               riot.mount("div#infirmary-student-report-view", 'infirmary-date-wise-case-report')
               console.log("inside main")
             break;
-            case 'class-wise-report':
-              riot.mount("div#infirmary-student-report-view", 'class-wise-report')
+              case 'infirmary-student-class-wise-report':
+              riot.mount("div#infirmary-student-report-view", 'infirmary-student-class-wise-report')
             break;
-              case 'case-wise-report':
-              riot.mount("div#infirmary-student-report-view", 'case-wise-report')
+            case 'infirmary-student-case-wise-report':
+              riot.mount("div#infirmary-student-report-view", 'infirmary-student-case-wise-report')
             break;
             default:
               riot.mount("div#infirmary-student-report-view", 'infirmary-date-wise-case-report')
-
           }
         
         break;
@@ -1075,11 +1429,36 @@ case 'receive-fees':
       currentPage = riot.mount('div#view', 'master/employee-type')[0];
   }
 }
-
+console.log("===========")
+console.log(getCookie('role'));
+console.log("===========")
 
 route.stop()
 route.start(true)
-route(goTo);
+
+if(getCookie('role')=='ADMIN'){
+  route(adminRoute);
+
+}else if(getCookie('role')=='Teacher'){
+  console.log("teacherRoute")
+  route(teacherRoute);
+}else if(getCookie('role')=='Class Teacher'){
+  console.log("class teacher route")
+  route(classTeacherRoute);
+  
+}else if(getCookie('role')=='Activity'){
+  console.log("activity route")
+  route(activityRoute);  
+}else if(getCookie('role')=='Mentor'){
+ console.log("Mentor route")
+ route(mentorRoute);  
+}else {
+  console.log("unable to access")
+  route(loginRoute);
+  route("/login")
+  // window.location.reload(true);
+}
+//route(adminRoute);
 
 // riot.route.stop()
 // riot.route.start(true)

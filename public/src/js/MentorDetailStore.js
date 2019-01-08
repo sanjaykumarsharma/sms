@@ -48,6 +48,29 @@ function MentorDetailStore() {
       })
   })
 
+  self.on('csv_export_mentor', function(read_category_id) {
+    console.log(read_category_id)
+    let req = {}
+    req.read_category_id=read_category_id
+    $.ajax({
+      url:'/mentor_detail/csv_export_mentor/'+read_category_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
   self.on('read_mentor', function(read_category_id) {
     console.log(read_category_id)
     let req = {}
@@ -117,6 +140,31 @@ function MentorDetailStore() {
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+  self.on('read_mentor_case_csv', function(id,enroll_number) {
+    console.log(id)
+    console.log(enroll_number)
+    let req = {}
+    req.id=id
+    req.enroll_number=enroll_number
+    $.ajax({
+      url:'/mentor_detail/read_mentor_case_csv/'+id+'/'+enroll_number,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
         }
       })
   })

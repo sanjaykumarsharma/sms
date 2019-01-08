@@ -1,11 +1,6 @@
 <item>
 	<section class=" is-fluid">
 		<h2 class="title has-text-centered" style="color: #ff3860;">Item Management Console</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
 		<div class="box">
 			<div class="columns">
 				<div class="column is-half">
@@ -39,7 +34,7 @@
 				<tr each={r, i in Items}>
 					<td>{ i+1 }</td>
 					<td>{ r.item_name}</td>
-		          	<td class="has-text-right">
+		          	<td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={r.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, r)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>

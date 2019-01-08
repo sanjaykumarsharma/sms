@@ -1,12 +1,9 @@
 <infirmary-case>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-		<h2 class="title" style="color: #ff3860;">Infirmary Case</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+		<h2 class="title has-text-centered" style="color: #ff3860;">Infirmary Case Details</h2>
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label">Category</label>
@@ -34,6 +31,17 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
+             <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+          </button>
+          <button class="button is-warning is-rounded is-pulled-right" onclick={readInfirmaryCase} style="margin-left:5px;margin-right:5px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+
 				</div>
 			</div>
 		</div>
@@ -51,7 +59,7 @@
 					<td>{ i+1 }</td>
 					<td>{ ev.category_name}</td>
 					<td>{ ev.case_name}</td>
-		          	<td class="has-text-right">
+		          	<td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -89,6 +97,7 @@
 
     //read employe_roles
     self.readInfirmaryCase = () => {
+      self.loading=true
        infirmarycaseStore.trigger('read_infirmary_case')
     }
 

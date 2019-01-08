@@ -34,14 +34,15 @@ router.get('/read_inventory_received_goods_report/:received_from/:start_date/:en
        
         var data = {}
         var user_condition="";
-        var user = "";
+        var person = "";
         var received_from=req.params.received_from
        // var session_id=req.cookies.session_id
         var role=req.cookies.role
+        var user=req.cookies.user
         var start_date=req.params.start_date
         var end_date=req.params.end_date
-      if(received_from !="All") user =`and received_from='${received_from}'`;
-      //if(role != 'ADMIN') user_condition = `and a.created_by = '${user}'`;
+       if(received_from !="All") person =` and received_from= ' ${received_from}' `;
+       if(req.cookies.role != 'ADMIN') user_condition = ` and a.created_by = '${user}' `;
      var qury=`select date_format(received_date,'%d/%m/%Y')as received_date,received_date as r_date,
                 item_name,category_name, concat('',quantity,' ',unit)as quantity, rate,(quantity*rate)as amount,
                 rack_name, remark 
@@ -51,7 +52,7 @@ router.get('/read_inventory_received_goods_report/:received_from/:start_date/:en
                 left join unit_master d on a.unit_id = d.unit_id
                 left join rack_master e on a.rack_id = e.rack_id
                 where received_date between '${start_date}' and '${end_date}'
-                ${user} ${user_condition}
+                ${person} ${user_condition}
                 and is_opening = 0
                 order by r_date desc`;
           connection.query(qury,function(err,result){
@@ -80,13 +81,13 @@ router.get('/read_inventory_issued_goods_report/:issue_type/:start_date/:end_dat
        
         var data = {}
         var user_condition="";
-        var user = "";
-       // var session_id=req.cookies.session_id
+       // var user = "";
+        var user=req.cookies.user
         var role=req.cookies.role
         var start_date=req.params.start_date
         var end_date=req.params.end_date
         var issue_type=req.params.issue_type
-      //if(role != 'ADMIN') user_condition = `and a.created_by = '${user}'`;
+        if(req.cookies.role != 'ADMIN') user_condition = `and a.created_by = '${user}' `;
      var qury=`select date_format(issue_date,'%d/%m/%Y')as issue_date,issue_date as r_date,
                 item_name,category_name, concat('',issue_quantity,' ',unit)as quantity,
                 concat(first_name,' ',middle_name,' ',last_name) as staff_name,
@@ -163,14 +164,14 @@ router.get('/read_inventory_person_wise_issued_goods_report/:issue_type/:issue_t
        
         var data = {}
         var user_condition="";
-        var user = "";
-       // var session_id=req.cookies.session_id
+        //var user = "";
+        var user=req.cookies.user
         var role=req.cookies.role
         var start_date=req.params.start_date
         var end_date=req.params.end_date
         var issue_type=req.params.issue_type
         var issue_to=req.params.issue_to
-      //if(role != 'ADMIN') user_condition = `and a.created_by = '${user}'`;
+      if(req.cookies.role != 'ADMIN') user_condition = `and a.created_by = '${user}' `;
       if(issue_type=='Staff'){
             var qury=`select date_format(issue_date,'%d/%m/%Y')as issue_date,issue_date as r_date,
                 item_name,category_name, concat('',issue_quantity,' ',unit)as quantity,
@@ -258,7 +259,7 @@ router.get('/read_inventory_item_wise_issued_goods_report/:category_id/:item_id/
        
         var data = {}
         var user_condition="";
-       // var session_id=req.cookies.session_id
+        var user=req.cookies.user
         var role=req.cookies.role
         var start_date=req.params.start_date
         var end_date=req.params.end_date
@@ -266,7 +267,7 @@ router.get('/read_inventory_item_wise_issued_goods_report/:category_id/:item_id/
         var item_id=req.params.item_id
         var condtion = "";
           if(item_id =="-1") condtion =` and a.issue_item_id =${item_id}`;
-        //  if(role!= 'ADMIN') user_condition = `and a.created_by = ${user}`;
+          if(req.cookies.role != 'ADMIN') user_condition = `and a.created_by = '${user}' `;
           
      var qury=`select date_format(issue_date,'%d/%m/%Y')as issue_date,issue_date as r_date,
                 item_name,category_name, concat('',issue_quantity,' ',unit)as quantity,
@@ -306,12 +307,12 @@ router.get('/read_inventory_sale_goods_report/:start_date/:end_date', function(r
        
         var data = {}
         var user_condition="";
-       // var session_id=req.cookies.session_id
+        var user=req.cookies.user
         var role=req.cookies.role
         var start_date=req.params.start_date
         var end_date=req.params.end_date
 
-        //  if(role!= 'ADMIN') user_condition = `and a.created_by = ${user}`;
+        if(req.cookies.role != 'ADMIN') user_condition = ` and a.created_by = '${user}' `;
           
      var qury=`select date_format(sale_date,'%d/%m/%Y')as sale_date, sale_date as r_date,
               item_name, category_name, concat(sale_quantity,' ',sale_unit) as quantity,
@@ -347,12 +348,12 @@ router.get('/read_inventory_return_goods_report/:start_date/:end_date', function
        
         var data = {}
         var user_condition="";
-       // var session_id=req.cookies.session_id
+        var user=req.cookies.user
         var role=req.cookies.role
         var start_date=req.params.start_date
         var end_date=req.params.end_date
 
-        //  if(role!= 'ADMIN') user_condition = `and a.created_by = ${user}`;
+    if(req.cookies.role != 'ADMIN') user_condition = ` and a.created_by = '${user}' `;
           
      var qury=`select date_format(return_date,'%d/%m/%Y')as return_date, return_date as r_date,
               item_name, category_name, concat(return_quantity,' ',unit) as quantity,

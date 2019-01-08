@@ -36,14 +36,14 @@ router.get('/', function(req, res, next) {
      var data = {}
         var user='';
         var session_id=req.cookies.session_id
-      //  var user=req.cookies.session_id['user']
+        var user=req.cookies.user
         var condition = "";
-      /*  if(session_id['role'] != 'ADMIN'){
+        if(req.cookies.role!= 'ADMIN'){
             condition =`where a.department in (select a.department
             from inventory_store_department a
             join inventory_department_staff b on a.department = b.department
             where employee_id ='${user}') `;
-        }*/
+        }
       
      var qry = `select a.item_id, a.category_id,a.department, sub_category, subcategory_id, category_name, 
           item_name

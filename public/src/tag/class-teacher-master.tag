@@ -1,11 +1,30 @@
 <class-teacher-master>
+  <header></header>
+   <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<div class="box">
+    <div class="level">
+      <div class="level-left">
+        <h2 class="title" style="color: #ff3860;">Class Teacher</h2>
+      </div>
+      <div class="level-right no-print">
+        <button class="button is-warning is-rounded" onclick={readClassTeacher} style="margin-right:5px">
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
+        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+              <span class="icon">
+                 <i class="fas fa-print"></i>
+             </span>
+        </button>
+      </div>
+    </div>
+		<div class="box no-print">
 			<div class="columns">
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="standard_id" onchange={getReadSection}>
+              <select ref="standard_id" onchange={getReadSection} onkeyup={addEnter}>
                 <option>Choose Standard</option>
                 <!-- <option value='-1'>All</option> -->
                 <option each={standards} value={standard_id}>{standard}
@@ -17,11 +36,11 @@
         <div class="column is-narrow">
           <div class="control">
                 <div class="select is-fullwidth">
-              <select ref="section_id">
+              <select ref="section_id" onkeyup={addEnter}>
                 <option>Choose Section</option>
                <!--  <option value='-1'>All</option> -->
-                <option each={readfilteredSections} value={section_id}>{section}
-                              </option>
+                <option each={readfilteredSections} value={section_id} onkeyup={addEnter}>{section}
+                </option>
               </select>
             </div>
               </div>
@@ -32,13 +51,13 @@
         <div class="column is-narrow">
         <div class="control">
             <input class=" input"
-              ref="room_no" type="text" style="width:100px">
+              ref="room_no" type="text" style="width:100px" onkeyup={addEnter}>
           </div>
         </div>
 				<div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="class_teacher">
+              <select ref="class_teacher" onkeyup={addEnter}>
                 <option>Class Teacher</option>
                 <option each={employees} value={emp_id}>{teacher_name}
                 </option>
@@ -49,7 +68,7 @@
        <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="asst_class_teacher">
+              <select ref="asst_class_teacher" onkeyup={addEnter}>
                  <option>Asst. Class Teacher</option>
                 <option each={employees} value={emp_id}>{teacher_name}
                 </option>
@@ -84,7 +103,7 @@
           <td>{ ev.room}</td>
           <td>{ ev.class_teacher}</td>
 					<td>{ ev.assistant_teacher}</td>
-		          	<td class="has-text-right">
+		          	<td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -103,6 +122,7 @@
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
+      self.loading=false
       self.readStandard()
       self.readSection()
       self.readTeachingStaff()
@@ -120,10 +140,12 @@
     })
 
     self.readStandard = () => {
+      self.loading=true
        studentStore.trigger('read_standard')
     }
 
     self.readSection = () => {
+      self.loading=true
        studentStore.trigger('read_section')
     }
 
@@ -134,27 +156,31 @@
       })
     }
 
-    //read courses
+    //read teaching staff
     self.readTeachingStaff = () => {
+      self.loading=true
        classTeacherStore.trigger('read_teaching_staff')
     }
 
-    //read employe_roles
+    //read Class Teacher
     self.readClassTeacher = () => {
+      self.loading=true
        classTeacherStore.trigger('read_class_teacher')
     }
 
      self.add = () => {
       if(!self.refs.standard_id.value){
-        toastr.info("Please enter Subject and try again")
+        toastr.info("Please enter class and try again")
       }else{
         self.loading = true
         if(self.title=='Create'){
           console.log('create')
           classTeacherStore.trigger('add_class_teacher',self.refs.standard_id.value,self.refs.section_id.value, self.refs.class_teacher.value,self.refs.asst_class_teacher.value, self.refs.room_no.value)
+          
         }else if(self.title=='Update'){
           console.log('update')
           classTeacherStore.trigger('edit_class_teacher', self.refs.standard_id.value, self.refs.section_id.value, self.refs.class_teacher.value,self.refs.asst_class_teacher.value, self.refs.room_no.value, self.edit_id)
+            //self.readClassTeacher()
         }
       }
     }
@@ -201,10 +227,7 @@
       self.update()
       self.refs.section_id.value=ev.section_id
       self.refs.class_teacher.value=ev.c_id
-      console.log(ev.c_id)
-      console.log(ev.a_id)
       self.refs.asst_class_teacher.value=ev.a_id
-      console.log(self.refs.asst_class_teacher.value)
       self.refs.room_no.value=ev.room
       self.edit_id = ev.ts_id
     }
@@ -212,6 +235,7 @@
     studentStore.on('read_standard_changed',StandardChanged)
     function StandardChanged(standards){
       console.log(standards) 
+      self.loading = false
       self.standards = standards
       self.update()
     }
@@ -219,6 +243,7 @@
     studentStore.on('read_section_changed',SectionChanged)
     function SectionChanged(sections){
       console.log(sections) 
+      self.loading = false
       self.sections = sections
       self.update()
       self.getReadSection()
@@ -233,9 +258,9 @@
       self.refs.class_teacher.value=''
       self.refs.asst_class_teacher.value=''
       self.refs.room_no.value=''
-
       self.loading = false
       self.classTeachers = classTeachers
+      self.readClassTeacher()
       self.update()
     }
 
@@ -251,6 +276,7 @@
 
       self.loading = false
       self.classTeachers = classTeachers
+      self.readClassTeacher()
       self.update()
     }
 
@@ -275,6 +301,7 @@
     function ReadClassTeacherChanged(classTeachers){
       console.log(classTeachers) 
       self.classTeachers = classTeachers
+      self.loading = false
       self.update()
       console.log(self.classTeachers)
     }

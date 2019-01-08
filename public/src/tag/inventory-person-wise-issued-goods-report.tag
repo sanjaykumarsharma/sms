@@ -1,12 +1,11 @@
 <inventory-person-wise-issued-goods-report>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-		<h2 class="title" style="color: #ff3860;">Person wise Issue</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+    <h2 class="title has-text-centered" style="color: #ff3860;">Inventory Issue Report<br>
+     <span style='font-size:18px'>Type : {issue_type} Person: {issue_to}<br>
+      From: {start_date} To: {end_date}</span></h2>
+		<div class="box no-print">
 			<div class="columns">
         <div class="column is-narrow">
           <label class="label" style="margin-left:-14px">Type</label>
@@ -30,7 +29,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select" >
-              <select ref="issue_to" style="width:300px">
+              <select ref="issue_to" id="isue_to" style="width:300px">
                 <option each={issuedPersons} value={issue_to} >{name}
                 </option>
               </select>
@@ -57,6 +56,13 @@
         <button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
         onclick={getIssuedGoodsReport} >GO
         </button>
+
+         <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+        </button>
+       
       </div>
 			</div>
 		</div>
@@ -103,6 +109,12 @@
 
 
     self.getIssuedGoodsReport = () => {
+      self.loading=true
+      self.issue_type=self.refs.issue_type.value,
+      self.issue_to = $("#isue_to option:selected").text();
+      //self.issue_type=self.refs.issue_type.value,
+      self.start_date=self.refs.start_date.value,
+      self.end_date=self.refs.end_date.value
        inventoryReportStore.trigger('read_inventory_person_wise_issued_goods_report',self.refs.issue_type.value,self.refs.issue_to.value,self.refs.start_date.value,self.refs.end_date.value)
     }
     self.getIssueTo = () => {

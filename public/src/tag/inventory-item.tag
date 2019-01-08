@@ -1,12 +1,10 @@
 <inventory-item>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<h2 class="title" style="color: #ff3860;">Inventory Item</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+        <h2 class="title has-text-centered" style="color: #ff3860;">Inventory Item Details</h2>
+          
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label" style="margin-left:-14px">Department</label>
@@ -14,7 +12,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="department" style="margin-left:-10px" onchange={filterCategory}>
+							<select ref="department" style="margin-left:-10px" onchange={filterCategory}onkeyup={addEnter}>
 								<option each={inventoryDepartments} value={department}>{department}
 	              </option>
 							</select>
@@ -27,7 +25,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select" >
-              <select ref="category_id" style="margin-left:-10px" onchange={filterSubcategory}>
+              <select ref="category_id" style="margin-left:-10px" onchange={filterSubcategory} onkeyup={addEnter}>
                 <option each={filteredCategories} value={category_id} >{category_name}
                 </option>
               </select>
@@ -41,7 +39,7 @@
           <div class="control">
             <div class="select">
               <select ref="sub_category_id" style="margin-left:-10px">
-                <option each={filteredSubcategories} value={sub_category_id}>{sub_category}
+                <option each={filteredSubcategories} value={sub_category_id} onkeyup={addEnter}>{sub_category}
                 </option>
               </select>
             </div>
@@ -53,13 +51,22 @@
         <div class="column is-narrow">
           <div class="control">
             <input class=" input"
-              ref="item_name" type="text" style="margin-left:-10px">
+              ref="item_name" type="text" style="margin-left:-10px" onkeyup={addEnter}>
           </div>
         </div>
 				<div class="column">
 					<button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
 					onclick={add} >{title}
 					</button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+            <span class="icon"><i class="fas fa-print"></i></span>
+           </button>
+          <button class="button is-warning is-rounded is-pulled-right" onclick={readInventoryItem} style="margin-left:5px;margin-right:5px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+         
 				</div>
 			</div>
 		</div>
@@ -81,7 +88,7 @@
           <td>{ ev.category_name}</td>
           <td>{ ev.sub_category}</td>
 					<td>{ ev.item_name}</td>
-		          	<td class="has-text-right">
+		          	<td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -100,6 +107,7 @@
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
+      self.loading=false
       self.update()
       self.readInventoryDepartment()
       self.readInventoryCategory()
@@ -154,6 +162,7 @@ self.on("unmount", function(){
     }
 
     self.readInventoryItem = () => {
+      self.loading=true
        inventoryItemStore.trigger('read_inventory_item')
     }
 
@@ -311,6 +320,7 @@ self.on("unmount", function(){
       self.refs.department.value = ''
       self.refs.item_name.value = ''
       self.refs.category_id.value = ''
+      self.readInventoryItem()
       self.update()
       console.log(self.inventoryItems)
     }  

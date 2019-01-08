@@ -1,17 +1,17 @@
 <infirmary-student-report>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_infirmary_student_report == 'infirmary-date-wise-case-report'}" href="#/infirmary/infirmary-student-report/infirmary-date-wise-case-report">
 		      <span>Date Wise Case Report</span>
 		    </a>
 	  	</p>
 		<p class="control">
-		      <a class="button {is-active: selected_infirmary_student_report == 'class-wise-report' }" href="#/infirmary/infirmary-student-report/class-wise-report">
+		      <a class="button {is-active: selected_infirmary_student_report == 'infirmary-student-class-wise-report' }" href="#/infirmary/infirmary-student-report/infirmary-student-class-wise-report">
 		      <span>Class Wise Report</span>
 		      </a>
 		</p>
 	    <p class="control">
-		    <a class="button {is-active: selected_infirmary_student_report == 'case-wise-report'}" href="#/infirmary/infirmary-student-report/case-wise-report">
+		    <a class="button {is-active: selected_infirmary_student_report == 'infirmary-student-case-wise-report'}" href="#/infirmary/infirmary-student-report/infirmary-student-case-wise-report">
 		      <span>Case Wise Report</span>
 		    </a>
 	  	</p>

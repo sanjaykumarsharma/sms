@@ -1,16 +1,14 @@
 <student-group-report>
+	<header></header>
+	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Students</h2>
-			</div>
-		</div>
-		<div class="box">
+		<h4 class="title has-text-centered" style="color: #ff3860;">Student Group Report <br> Grand Total ({grand_total})</h4>
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="standard_id" onchange={getReadSection}>
+							<select ref="standard_id" onchange={getReadSection} onkeyup={addEnter}>
 								<option>Choose Standard</option>
 								<option value='-1'>All</option>
 								<option each={standards} value={standard_id}>{standard}
@@ -22,7 +20,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 			        	<div class="select is-fullwidth">
-							<select ref="section_id">
+							<select ref="section_id" onkeyup={addEnter}>
 								<option>Choose Section</option>
 								<option value='-1'>All</option>
 								<option each={readfilteredSections} value={section_id}>{section}
@@ -37,6 +35,15 @@
 					</button>
 					<input type="checkbox" id="checkTable" checked={e.done}
 				    onclick={viewTable}  style="margin-top: 12px;"> Table
+
+			        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+			          <span class="icon"> <i class="fas fa-print"></i></span>
+			        </button>
+				    <button class="button is-warning is-rounded is-pulled-right" onclick={readStudentGroupReport} style="margin-left:5px;margin-right:5px">
+			        <span class="icon">
+			          <span class="fas fa-sync-alt"></span>
+			        </span>
+			        </button>
 				</div>
 			</div>
 		</div>
@@ -103,7 +110,13 @@
     		return s.standard_id == self.refs.standard_id.value
     	})
     }
+     self.addEnter = (e) => {
+      if(e.which == 13){
+        self.readStudentGroupReport()
+      }
+    }
     self.readStudentGroupReport = () => {
+    	self.loading=true
        adminReportStore.trigger('read_student_group_report',self.refs.standard_id.value,self.refs.section_id.value)
     }
     

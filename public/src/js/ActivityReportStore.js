@@ -30,6 +30,30 @@ function ActivityReportStore() {
       })
   })
 
+  self.on('csv_activity_date_wise_report', function(obj) {
+    let req = {}
+    req.start_date=obj.start_date
+    req.end_date=obj.end_date
+    req.activity_type=obj.activity_type
+    $.ajax({
+      url:'/activity_report/csv_activity_date_wise_report/'+obj.start_date+'/'+obj.end_date+'/'+obj.activity_type,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
+
   self.on('read_activity_session_wise_report', function(activity_type,session_id) {
     console.log('i am in read_categories api call from ajax')
     let req = {}
@@ -51,6 +75,30 @@ function ActivityReportStore() {
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+  self.on('csv_activity_session_wise_report', function(activity_type,session_id) {
+    console.log('i am in read_categories api call from ajax')
+    let req = {}
+    req.activity_type=activity_type
+    req.session_id=session_id
+    $.ajax({
+      url:'/activity_report/csv_activity_session_wise_report/'+activity_type+'/'+session_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+
+          }else if(data.status == 'e'){
+           
+          }
+        },
+        error: function(data){
+          
         }
       })
   })
@@ -80,6 +128,30 @@ function ActivityReportStore() {
       })
   })
 
+  self.on('csv_activity_event_wise_report', function(activity_type,event_id) {
+    console.log('i am in read_categories api call from ajax')
+    let req = {}
+    req.activity_type=activity_type
+    req.event_id=event_id
+    $.ajax({
+      url:'/activity_report/csv_activity_event_wise_report/'+activity_type+'/'+event_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+
+          }else if(data.status == 'e'){
+
+          }
+        },
+        error: function(data){
+
+        }
+      })
+  })
+
   self.on('read_activity_event_wise_graph_report', function(activity_type,session_id) {
     console.log('i am in read_categories api call from ajax')
     let req = {}
@@ -100,6 +172,29 @@ function ActivityReportStore() {
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+  self.on('csv_activity_event_wise_graph_report', function(activity_type,session_id) {
+    let req = {}
+    req.activity_type=activity_type
+    req.session_id=session_id
+    $.ajax({
+      url:'/activity_report/csv_activity_event_wise_graph_report/'+activity_type+'/'+session_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+
+          }else if(data.status == 'e'){
+
+          }
+        },
+        error: function(data){
+
         }
       })
   })
@@ -125,6 +220,29 @@ function ActivityReportStore() {
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+  self.on('csv_student_event_report', function(obj) {
+    let req = {}
+    req.start_date=obj.start_date
+    req.end_date=obj.end_date
+    $.ajax({
+      url:'/activity_report/csv_student_event_report/'+obj.start_date+'/'+obj.end_date,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+
+          }else if(data.status == 'e'){
+
+          }
+        },
+        error: function(data){
+
         }
       })
   })

@@ -1,5 +1,5 @@
 <inventory-report>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_inventory_report == 'inventory-received-goods-report' }" href="#/inventory-report/inventory-received-goods-report">
 		      <span>Received Goods</span>

@@ -1,7 +1,9 @@
 <department>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>  
   <section class="is-fluid">
-    <h2 class="title" style="color: #ff3860;">Departments</h2>
-    <div class="box">
+    <h2 class="title has-text-centered" style="color: #ff3860;">Department Details</h2>
+    <div class="box no-print">
       <div class="columns">
         <div class="column is-narrow">
           <label class="label">Department</label>
@@ -29,6 +31,16 @@
           <button class="button is-danger has-text-weight-bold"
           onclick={add} >{title}
           </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+            </button>
+           <button class="button is-warning is-rounded is-pulled-right" onclick={readDepartment} style="margin-right:2px">
+            <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button> 
         </div>
       </div>
     </div>
@@ -46,7 +58,7 @@
           <td>{i + 1}</td>
           <td>{d.department_name}</td>
           <td>{d.hod}</td>
-          <td class="has-text-right">
+          <td class="has-text-right no-print">
             <div class="inline-flex rounded border border-grey overflow-hidden" hide={d.confirmDelete}>
               <span><a class="button is-small is-rounded" onclick={edit.bind(this, d)}>Edit</a></span>
               <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -77,6 +89,7 @@
 
     //read Department
     self.readDepartment = () => {
+      self.loading=true
        departmentStore.trigger('read_department')
     }
     self.readHod = () => {

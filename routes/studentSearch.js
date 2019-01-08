@@ -150,6 +150,7 @@ router.post('/read_student_browser', function(req, res, next) {
   var standard_id = input.standard_id;
   var section_id = input.section_id;
   var session_id = req.cookies.session_id
+  var session_name = req.cookies.session_name
   var condition = "";
   //var condition = "";
  
@@ -217,6 +218,7 @@ router.post('/read_student_browser', function(req, res, next) {
       }else{
         // res.render('customers',{page_title:"Customers - Node.js",data:rows});
         data.status = 's';
+        data.session_name = session_name;
         data.browseStudents = result;
         //connection.end()
 
@@ -263,6 +265,7 @@ router.get('/read_occupation', function(req, res, next) {
       }else{
         // res.render('customers',{page_title:"Customers - Node.js",data:rows});
         data.status = 's';
+        data.session_name = session_name;
         data.parentOccupations = result;
         //connection.end()
 

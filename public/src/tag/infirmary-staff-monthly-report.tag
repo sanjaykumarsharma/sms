@@ -1,6 +1,9 @@
 <infirmary-staff-monthly-report>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>
 <section class="is-fluid">
-  <div class="box">
+  <h4 class="title has-text-centered" style="color: #ff3860;">Detail of All Staff Illness for the Month of {month}</h4>
+  <div class="box no-print">
       <div class="columns">
         <div class="column is-narrow">
           <label class="label">Month</label>
@@ -8,7 +11,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="month_id">
+              <select ref="month_id" id="month_id">
                 <option value="01">JANUARY</option>
                 <option value="02">FEBRUARY</option>
                 <option value="03">MARCH</option>
@@ -29,14 +32,14 @@
           <button class="button is-danger has-text-weight-bold"
           onclick={readStaffMonthlyCaseReport} >Go
           </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+        </button>
         </div>
       </div>
     </div>
-  <div class="level">
-    <div class="level-left">
-      <h4 class="title" style="color: #ff3860;">Staff Monthly Case Report</h4>
-    </div>
-  </div>
 
   <table class="table is-fullwidth is-striped is-hoverable is-bordered">
       <thead>
@@ -91,7 +94,7 @@
            //staffStore.trigger('read_staffs', obj)
      }*/
      self.readStaffMonthlyCaseReport = () => {
-         //  self.infirmary_staff_view='show_staff_monthly_report_table'
+           self.month = $("#month_id option:selected").text();
            staffinfirmaryStore.trigger('read_staff_monthly_case_report', self.refs.month_id.value)
      }
       /*self.readInfirmaryCategory = () => {

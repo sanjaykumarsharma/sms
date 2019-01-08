@@ -50,8 +50,9 @@ function AdminReportStore() {
             //self.studentSummaryReports=[]
             console.log("inside report")
             self.studentSummaryReports = data.studentSummaryReports
+            self.session_name = data.session_name
            // console.log(self.studentSummaryReports[0])
-            self.trigger('read_student_summary_report_changed', self.studentSummaryReports)
+            self.trigger('read_student_summary_report_changed', self.studentSummaryReports,self.session_name)
           }else if(data.status == 'e'){
             showToast("Student Summary Report Read Error. Please try again.", data)
           }
@@ -75,8 +76,9 @@ function AdminReportStore() {
             //self.studentSummaryReports=[]
             console.log("inside report")
             self.studentStrengthReports = data.studentStrengthReports
+            self.session_name = data.session_name
            // console.log(self.studentStrengthReports[0])
-            self.trigger('read_student_strength_report_changed', self.studentStrengthReports)
+            self.trigger('read_student_strength_report_changed', self.studentStrengthReports,self.session_name )
           }else if(data.status == 'e'){
             showToast("Student Strength Report Read Error. Please try again.", data)
           }
@@ -104,8 +106,9 @@ function AdminReportStore() {
             //self.studentSummaryReports=[]
             console.log("inside report")
             self.studentCategorySummaryReports = data.studentCategorySummaryReports
+            self.session_name = data.session_name
             console.log(self.studentCategorySummaryReports)
-            self.trigger('read_student_category_summary_report_changed', self.studentCategorySummaryReports)
+            self.trigger('read_student_category_summary_report_changed', self.studentCategorySummaryReports,self.session_name)
           }else if(data.status == 'e'){
             showToast("Student Category Report Read Error. Please try again.", data)
           }
@@ -131,8 +134,9 @@ function AdminReportStore() {
             //self.studentSummaryReports=[]
             console.log("inside report")
             self.studentCategoryStrengthReports = data.studentCategoryStrengthReports
+            self.session_name = data.session_name
             console.log(self.studentCategoryStrengthReports)
-            self.trigger('read_student_category_strength_report_changed', self.studentCategoryStrengthReports)
+            self.trigger('read_student_category_strength_report_changed', self.studentCategoryStrengthReports,self.session_name)
           }else if(data.status == 'e'){
             showToast("Student Category Report Read Error. Please try again.", data)
           }
@@ -160,10 +164,41 @@ function AdminReportStore() {
             //self.studentSummaryReports=[]
             console.log("inside report")
             self.studentReligionListingReports = data.studentReligionListingReports
+            self.session_name = data.session_name
             console.log(self.studentReligionListingReports)
-            self.trigger('read_student_religion_listing_report_changed', self.studentReligionListingReports)
+            self.trigger('read_student_religion_listing_report_changed', self.studentReligionListingReports,self.session_name)
           }else if(data.status == 'e'){
             showToast("Student Religion Report Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+ // student  Blood Grooup listing
+
+ self.on('read_student_blood_group_listing_report', function() {
+    let req = {}
+    $.ajax({
+      url:'/admin_report/read_student_blood_group_listing_report',
+         data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        type:"POST",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            //self.studentSummaryReports=[]
+            console.log("inside report")
+            self.session_name = data.session_name
+            self.studentBloodGroupListingReports = data.studentBloodGroupListingReports
+            console.log(self.studentBloodGroupListingReports)
+            self.trigger('read_student_blood_group_listing_report_changed', self.studentBloodGroupListingReports,self.session_name)
+          }else if(data.status == 'e'){
+            showToast("Student Blood Group Report Read Error. Please try again.", data)
           }
         },
         error: function(data){
@@ -217,12 +252,13 @@ function AdminReportStore() {
           if(data.status == 's'){
             //self.studentSummaryReports=[]
             console.log("inside report")
+            self.session_name = data.session_name
             self.studentHouseReports = data.studentHouseReports
             var grandTotal=0;
             self.studentHouseReports.map(i=>{
                    grandTotal=Number(grandTotal) + Number(i.total)
                  })
-            self.trigger('read_student_house_report_change', self.studentHouseReports,grandTotal)
+            self.trigger('read_student_house_report_change', self.studentHouseReports,grandTotal,self.session_name)
           }else if(data.status == 'e'){
             showToast("Student House Report Read Error. Please try again.", data)
           }
@@ -248,8 +284,9 @@ function AdminReportStore() {
             //self.studentSummaryReports=[]
             console.log("inside report")
             self.studentClassTeacherReports = data.studentClassTeacherReports
+            self.session_name = data.session_name
             console.log(self.studentClassTeacherReports)
-            self.trigger('read_class_teacher_report_change', self.studentClassTeacherReports)
+            self.trigger('read_class_teacher_report_change', self.studentClassTeacherReports,self.session_name)
           }else if(data.status == 'e'){
             showToast("Student Class teacher Report Read Error. Please try again.", data)
           }
@@ -262,7 +299,7 @@ function AdminReportStore() {
 
  // new stdent list report
 
- self.on('read_new_student_list_report', function() {
+self.on('read_new_student_list_report', function() {
     let req = {}
     $.ajax({
       url:'/admin_report/read_new_student_list_report',
@@ -274,11 +311,36 @@ function AdminReportStore() {
           if(data.status == 's'){
             //self.studentSummaryReports=[]
             console.log("inside report")
+            self.session_name=getCookie('session_name')
             self.newStudentListReports = data.newStudentListReports
             console.log(self.newStudentListReports)
-            self.trigger('read_new_student_list_report_changed', self.newStudentListReports)
+            self.trigger('read_new_student_list_report_changed', self.newStudentListReports,self.session_name)
           }else if(data.status == 'e'){
             showToast("Student List Report Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+//read new student caTEGORY REPORT
+self.on('read_new_student_category_report', function() {
+    let req = {}
+    $.ajax({
+      url:'/admin_report/read_new_student_category_report',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.session_name =data.session_name
+            self.newStudentCategoryReports = data.newStudentCategoryReports
+            self.trigger('read_new_student_category_report_changed', self.newStudentCategoryReports,self.session_name)
+          }else if(data.status == 'e'){
+            showToast("New Student Category Report Read Error. Please try again.", data)
           }
         },
         error: function(data){

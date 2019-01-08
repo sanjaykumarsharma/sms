@@ -1,42 +1,56 @@
 <mentor-detail>
+	<print-header></print-header>
+	<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid" show={mentor_view =='show_mentor'}>
-		<div class="level">
+	<h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Mentor Detail</h2>
+		<div class="level box no-print">
 			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Mentor Detail</h2>
-			</div>
-			<div class="level-right">
-				<button class="button is-warning is-rounded" onclick={add_new_mentor}>
-				<span class="icon">
-					<span class="fas fa-plus"></span>
-				</span>
-				<span>Add Detail</span>
-				</button>
-			</div>
-		</div>
-		<div class="box">
-			<div class="columns">
-				<div class="column is-narrow">
-					<label class="label">Category</label>
-				</div>
-				<div class="column is-narrow">
-					<div class="control">
-						<div class="select">
-							<select ref="category_id">
-								<option value="-1">ALL</option>
-								<option each={categories} value={category_id}>{category_name}
-	                            </option>
-							</select>
+				<div class="columns">
+					<div class="column is-narrow"><label class="label">Category</label></div> 
+					<div class="column is-narrow">
+						<div class="control">
+							<div class="select">
+								<select ref="category_id" id="CategoryName" onchange={getMentorData}>
+									<option value="-1">ALL</option>
+									<option each={categories} value={category_id}>{category_name}
+		                            </option>
+								</select>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="column">
-					<button class="button is-danger has-text-weight-bold"
-					onclick={getMentorData} >GO
-					</button>
-				</div>
+			</div>
+			<div class="level-right">
+
+				<button class="button is-warning has-text-weight-bold  is-small" onclick={add_new_mentor}>
+				<span class="icon">
+					<span class="fas fa-plus"></span>
+				</span>
+				
+				</button>
+	        	<button class="button is-link has-text-weight-bold is-small ml5" onclick={getMentorData}>
+			        <span class="icon">
+			          <span class="fas fa-sync-alt"></span>
+			        </span>
+	        	</button>
+
+	        	<button class="button is-success has-text-weight-bold is-small ml5" onclick={downloadCSV}>
+        			<span class="icon">
+          				<i class="far fa-file-excel"></i>
+        			</span>
+        		</button>
+
+        		<a class="button is-primary has-text-weight-bold is-small ml5" onclick="window.print()">
+        			<span class="icon">
+          				<i class="fas fa-print"></i>
+        			</span>
+        		</a>
+        		
 			</div>
 		</div>
-		<table class="table is-bordered is-fullwidth is-striped is-hoverable is-narrow">
+
+		<table class="table is-fullwidth is-bordered is-hoverable is-narrow">
+			<p><center><strong>Category:{categoryName}</strong></center></p>
 			<thead>
 				<tr>
           			<th>SL No</th>
@@ -50,7 +64,7 @@
 					<th>Time Out</th>
 					<th>Diagnosis</th>
 					<th>Suggestion</th>
-					<th style="width: 100px;"></th>
+					<th style="width: 230px;" class="no-print"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -66,15 +80,15 @@
 					<td>{ac.time_out}</td>
 					<td>{ac.diagnosis}</td>
 					<td>{ac.suggestion}</td>
-					<td class="has-text-right">
-			            <div class="inline-flex rounded border border-grey overflow-hidden" hide={ac.confirmDelete}>
-			              <span><a class="" onclick={case_detail.bind(this, ac)}>
-			              	<i class=" fas fa-plus"></i></a></span>
+					<td class="has-text-right no-print">
+			            <div class="inline-flex rounded border border-grey overflow-hidden " hide={ac.confirmDelete}>
+			              <span><a class="button is-small is-rounded" onclick={case_detail.bind(this, ac)}>
+			              	Case Detail</a></span>
 
-			              <span><a class="" onclick={edit.bind(this, ac.id)}>
-			              	<i class="fas fa-edit"></i></a></span>
+			              <span><a class="button is-small is-rounded" onclick={edit.bind(this, ac.id)}>
+			              	Edit</i></a></span>
 
-			              <span if={role=='ADMIN'} > <a class="" rel="nofollow" onclick={confirmDelete}><i class="fas fa-trash-alt"></i></a></span>
+			              <span if={role=='ADMIN'} > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
 			            </div>
 			            <div class="table-buttons" if={ac.confirmDelete}>
 			              <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
@@ -89,24 +103,26 @@
 		<div class="level">
 		  <div class="level-left">
 		    <div class="level-item">
-		    	<h2 class="title" style="color: #ff3860;">{title} Detail</h2>
+		    	<h2 class="title is-size-5" style="color: #ff3860;">{title} Detail</h2>
 		    </div>
 		  </div>
 		  <div class="level-right">
-		    <a class="button" onclick={close_new_mentor}>Back</a>
+		    <button class="button is-warning has-text-weight-bold is-small" onclick={close_new_mentor}>
+		    <span class="icon">
+          		<span class="fas fa-arrow-left"></span>
+        	</span>
+		    </button>
 		  </div>
-		</div>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10"></div>
-			<div class="bg-grey h-px flex-auto"></div>
 		</div>	
+
 		<div class="box">
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-			<label class="label" for="referredInput">Referred by</label>
-				<div class="control ">
-					<div class="select is-fullwidth">
-						<select ref="referredInput">
+			<div class="columns">
+				<div class="column is-2">
+					<label class="label is-small" for="referredInput">Referred by</label>
+				</div>
+				<div class="column is-2">
+					<div class="select is-fullwidth is-small">
+						<select ref="referredInput" id="referredInput">
 							<option value="Class Teacher">Class Teacher</option>
 							<option value="School Authority">School Authority</option>
 							<option value="Parent">Parent</option>
@@ -114,82 +130,124 @@
 							<option value="Student Directly">Student Directly</option>
 						</select>
 					</div>
-				</div>
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="enrollInput">Enroll No</label>
-				<input class="input" ref="enrollInput" type="text">
-		    </div>
-
-    		<div class="column is-one-third">
-			<label class="label" for="student_dob">Category</label>
-				<div class="control ">
-					<div class="select is-fullwidth">
-						<select ref="CategoryidInput" onchange={readCategoryCase}>
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="enrollInput">Enroll No</label>
+		      	</div>
+		      	<div class="column is-2 ">
+					<input class="input is-small" type="text" ref="enrollInput" >
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="CategoryidInput">Category</label>
+		      	</div>
+		      	<div class="column is-2">
+	        		<div class="select is-fullwidth is-small">
+  						<select ref="CategoryidInput" onchange={readCategoryCase}>
 							<option each={categories} value={category_id}>{category_name}
                             </option>
 						</select>
-					</div>
-				</div>
-    		</div>
+	  				</div>
+		      	</div>
+			</div>
 
-		    <div class="column is-one-third">
-			<label class="label" for="student_gender">Case</label>
-			<div class="control ">
-		        <div class="select is-fullwidth">
+			<div class="columns mt30">
+				<div class="column is-2">
+					<label class="label is-small" for="case_id">Case</label>
+				</div>
+				<div class="column is-2">
+					<div class="select is-fullwidth is-small">
 						<select ref="case_id">
 							<option each={cases} value={case_id}>{case_name}
                             </option>
 						</select>
 					</div>
-		      </div>
-		    </div>
-
-
-		    <div class="column is-one-third">
-			<label class="label" for="mentorDateInput">Date</label>      
-				<input class="date input flatpickr-input form-control input" 
-				ref="mentorDateInput" placeholder="" tabindex="0" type="text" readonly="readonly">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="inTimeInput">Time In</label>      
-				<input class="input" ref="inTimeInput" type="time">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="outTimeInput">Time Out</label>      
-				<input class="input" ref="outTimeInput" type="time">
-		    </div>
-
-		    <div class="column is-two-thirds">
-			<label class="label" for="diagnosisInput">Diagnosis</label>  
-			    <input class="input" ref="diagnosisInput"  type="text">
-		    </div>
-		    <div class="column is-full">
-				<label class="label" for="suggestionInput">Suggestion</label>
-					<textarea class="textarea" ref="suggestionInput" rows="2"></textarea>
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="mentorDateInput">Date</label>
+		      	</div>
+		      	<div class="column is-2 ">
+					<input class="input date is-small" type="text" ref="mentorDateInput" readonly>
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="inTimeInput">Time In</label>
+		      	</div>
+		      	<div class="column is-2">
+	        		<input class="input is-small" ref="inTimeInput" type="time">
+		      	</div>
 			</div>
 
-		    <div class="column is-full">
-			    <button class="button is-danger has-text-weight-bold adjusted-top"
-			     onclick={add}>Submit</button>    
-		   </div>
-  		</div>
-	</div>
-</section>
+			<div class="columns mt30">
+				<div class="column is-2">
+					<label class="label is-small" for="outTimeInput">Time Out</label>
+				</div>
+				<div class="column is-2">
+					<input class="input is-small" ref="outTimeInput" type="time">
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="diagnosisInput">Diagnosis</label>
+				</div>
+				<div class="column is-2">
+					<input class="input is-small" ref="diagnosisInput"  type="text">
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="suggestionInput">Suggestion</label>
+		      	</div>
+		      	<div class="column is-2 ">
+					<textarea class="textarea is-small" ref="suggestionInput" rows="3"></textarea>
+		      	</div>
+			</div>
+			<div class="columns mt60">
+				<div class="column is-full">
+				    <button class="button is-success has-text-weight-bold adjusted-top" 
+				    	onclick={add}>Submit
+				    </button>
+				    <button class="button is-danger has-text-weight-bold adjusted-top" 
+				    	onclick={close_new_mentor}>Cancel
+				    </button>    
+			    </div>
+			</div>
+		</div>	
+	</section>
 
 	<section class=" is-fluid" show={mentor_view =='view_case_detail'}>
-		<div class="level">
+		<div class="level no-print">
 		  <div class="level-left">
 		    <div class="level-item">
-		    	<h2 class="title" style="color: #ff3860;">Case : { case_name }  </h2>
+		    	
 		    </div>
 		  </div>
 		  <div class="level-right">
-		    <a class="button is-primary" style="margin-right: 4px;" onclick={add_case_detail}>Add</a>
-		    <a class="button" onclick={close_case_detail_view}>Back</a>
+		    <button class="button is-warning has-text-weight-bold is-small" onclick={add_case_detail} title="Add Case
+		    ">
+				<span class="icon">
+					<span class="fas fa-plus"></span>
+				</span>
+			</button>
+			<button class="button is-link has-text-weight-bold is-small ml10" onclick={refress_case_detail}>
+		        <span class="icon">
+		          <span class="fas fa-sync-alt"></span>
+		        </span>
+        	</button>
+        	<button class="button is-success has-text-weight-bold is-small ml5" onclick={downloadCaseCSV}>
+    			<span class="icon">
+      				<i class="far fa-file-excel"></i>
+    			</span>
+        	</button>
+        	<a class="button is-primary has-text-weight-bold is-small ml5" onclick="window.print()">
+    			<span class="icon">
+      				<i class="fas fa-print"></i>
+    			</span>
+        	</a>
+		    <button class="button is-warning has-text-weight-bold is-small ml10" onclick={close_case_detail_view}>
+	        	<span class="icon">
+	          		<span class="fas fa-arrow-left"></span>
+	        	</span>
+        	</button>
 		  </div>
 		</div>
-		<table class="table is-bordered is-fullwidth is-striped is-hoverable is-narrow">
+		<table class="table is-fullwidth is-bordered is-hoverable is-narrow">
+			
+			<p class="is-size-5 has-text-centered" style="color: #ff3860;">Case: { case_name }  </p>
 			<thead>
 				<tr>
           			<th>SL No</th>
@@ -199,7 +257,7 @@
 					<th>Time Out</th>
 					<th>Suggestion</th>
 					<th>Status</th>
-					<th style="width: 100px;"></th>
+					<th style="width: 130px;" class="no-print"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -211,12 +269,12 @@
 					<td>{ca.time_out}</td>
 					<td>{ca.suggestion}</td>
 					<td>{ca.status}</td>
-					<td class="has-text-right">
+					<td class="has-text-right no-print">
 			            <div class="inline-flex rounded border border-grey overflow-hidden" hide={ca.confirmCaseDelete}>
-			              <span><a class="" onclick={editCase.bind(this, ca.id)}>
-			              	<i class="fas fa-edit"></i></a></span>
+			              <span><a class="button is-small is-rounded" onclick={editCase.bind(this, ca.id)}>
+			              	Edit</a></span>
 
-			              <span if={role=='ADMIN'} > <a class="" rel="nofollow" onclick={confirmCaseDelete}><i class="fas fa-trash-alt"></i></a></span>
+			              <span if={role=='ADMIN'} > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmCaseDelete}>Delete</a></span>
 			            </div>
 			            <div class="table-buttons" if={ca.confirmCaseDelete}>
 			              <span disabled={loading} class="button is-small is-rounded" onclick={deleteCase}><i class="fa fa-check" ></i></span>
@@ -233,73 +291,90 @@
 		<div class="level">
 		  <div class="level-left">
 		    <div class="level-item">
-		    	<h2 class="title" style="color: #ff3860;">{title} Case Detail</h2>
+		    	<h2 class="title is-size-5" style="color: #ff3860;">{title} Case Detail</h2>
 		    </div>
 		  </div>
 		  <div class="level-right">
-		    <a class="button" onclick={close_add_case}>Back</a>
+		    <button class="button is-warning has-text-weight-bold is-small" onclick={close_add_case}>
+		    <span class="icon">
+          		<span class="fas fa-arrow-left"></span>
+        	</span>
+		    </button>
 		  </div>
 		</div>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10"></div>
-			<div class="bg-grey h-px flex-auto"></div>
-		</div>	
 		<div class="box">
-		<div class="columns is-variable is-1 is-multiline">
-		    <div class="column is-one-third">
-			<label class="label" for="visitorInput">Visitor</label>
-				<div class="control ">
-					<div class="select is-fullwidth">
-						<select ref="visitorInput">
+			<div class="columns">
+				<div class="column is-2">
+					<label class="label is-small" for="visitorInput">Visitor</label>
+				</div>
+				<div class="column is-2">
+					<div class="select is-fullwidth is-small">
+						<select ref="visitorInput" id="visitorInput">
 							<option value="Student">Student</option>
 							<option value="Class Teacher">Class Teacher</option>
 							<option value="Parent">Parent</option>
 						</select>
 					</div>
-				</div>
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="visitingDateInput">Visiting Date</label>      
-				<input class="date input flatpickr-input form-control input" 
-				ref="visitingDateInput" placeholder="" tabindex="0" type="text" readonly="readonly">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="addCaseinTimeInput">Time In</label>      
-				<input class="input" ref="addCaseinTimeInput" type="time">
-		    </div>
-		    <div class="column is-one-third">
-			<label class="label" for="addCaseoutTimeInput">Time Out</label>      
-				<input class="input" ref="addCaseoutTimeInput" type="time">
-		    </div>
-		    <div class="column is-two-thirds">
-			<label class="label" for="statusInput">Status</label>      
-				<input class="input" ref="statusInput" type="text">
-		    </div>
-
-		    <div class="column is-full">
-				<label class="label" for="addCasesuggestionInput">Suggestion</label>
-					<textarea class="textarea" ref="addCasesuggestionInput" rows="2"></textarea>
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="visitingDateInput">Visiting Date</label>
+		      	</div>
+		      	<div class="column is-2 ">
+					<input class="input date is-small" type="text" ref="visitingDateInput" readonly>
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="addCaseinTimeInput">Time In</label>
+		      	</div>
+		      	<div class="column is-2">
+	        		<input class="input is-small" ref="addCaseinTimeInput" type="time">
+		      	</div>
 			</div>
-		    <div class="column is-full">
-			    <button class="button is-danger has-text-weight-bold adjusted-top"
-			     onclick={addCase}>Submit</button>    
-		   </div>
-  		</div>
-	</div>
-</section>
+
+			<div class="columns mt30">
+				<div class="column is-2">
+					<label class="label is-small" for="addCaseoutTimeInput">Time Out</label>
+				</div>
+				<div class="column is-2">
+					<input class="input is-small" ref="addCaseoutTimeInput" type="time">
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="statusInput">Status</label>
+		      	</div>
+		      	<div class="column is-2 ">
+					<input class="input is-small" ref="statusInput" type="text">
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="addCasesuggestionInput">Suggestion</label>
+		      	</div>
+		      	<div class="column is-2">
+	        		<textarea class="textarea is-small" ref="addCasesuggestionInput" rows="3"></textarea>
+		      	</div>
+			</div>
+			<div class="columns mt60">
+				<div class="column is-full">
+				    <button class="button is-success has-text-weight-bold adjusted-top" 
+				    	onclick={addCase}>Submit
+				    </button>
+				    <button class="button is-danger has-text-weight-bold adjusted-top" 
+				    	onclick={close_add_case}>Cancel
+				    </button>    
+			    </div>
+			</div>
+		</div>
+	</section>
 
 <script>
 	var self = this
     self.on("mount", function(){
+    self.loading = false;
     self.title='Add'
     self.mentor_view = 'show_mentor'
     self.role = getCookie('role')
     self.update()
-      flatpickr(".date", {
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
-  		})
+    flatpickr(".date", {
+	   allowInput: true,
+       dateFormat: "d/m/Y",
+  	})
     self.readCategories()
     self.readCase()
     })
@@ -331,11 +406,14 @@
     }
 
     self.getMentorData = () =>{
+      self.loading = true;
       mentordetailStore.trigger('read_mentor', self.refs.category_id.value)
     }
-    self.readMentor = () =>{
-      mentordetailStore.trigger('read_mentor', self.refs.CategoryidInput.value)
+
+    self.downloadCSV = () =>{
+      mentordetailStore.trigger('csv_export_mentor', self.refs.category_id.value)
     }
+
     self.add_new_mentor = () =>{
     	self.mentor_view='add_mentor'
     	self.title='Add'
@@ -363,7 +441,7 @@
       	}else{
      	var obj={}
      	obj['visitor']=self.refs.visitorInput.value
-     	obj['visit_date']=self.refs.visitingDateInput.value
+     	obj['visit_date']=convertDate(self.refs.visitingDateInput.value)
      	obj['time_in']=self.refs.addCaseinTimeInput.value
      	obj['time_out']=self.refs.addCaseoutTimeInput.value
      	obj['status']=self.refs.statusInput.value
@@ -385,13 +463,8 @@
     self.edit = (c,ac) => {
       console.log(c)
       self.id = c
-      flatpickr(".date", {
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
-  		})
       mentordetailStore.trigger('read_for_edit_mentor',self.id)
-      self.add_new_mentor()
+      self.mentor_view='add_mentor'
       self.title='Update'
       
     }
@@ -399,11 +472,6 @@
     self.editCase = (c,ca) => {
       console.log(c)
       self.id = c
-      flatpickr(".date", {
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
-  		})
       mentordetailStore.trigger('read_for_edit_case',self.id)
       self.add_case_detail()
       self.title='Update'
@@ -463,7 +531,7 @@
      	obj['enroll_number']=self.refs.enrollInput.value
      	obj['category_id']=self.refs.CategoryidInput.value
      	obj['case_id']=self.refs.case_id.value
-     	obj['consult_date']=self.refs.mentorDateInput.value
+     	obj['consult_date']=convertDate(self.refs.mentorDateInput.value)
      	obj['time_in']=self.refs.inTimeInput.value
      	obj['time_out']=self.refs.outTimeInput.value
      	obj['diagnosis']=self.refs.diagnosisInput.value
@@ -479,29 +547,38 @@
         }
     }
     self.case_detail = (c,ac) => {
-    	console.log(c)
     	self.case_name = c.case_name
     	self.case_id = c.id
     	self.enroll_number = c.enroll_number
     	self.mentor_view = 'view_case_detail'
+    	self.loading = true;
     	mentordetailStore.trigger('read_mentor_case', c.id,c.enroll_number)
+    }
+
+    self.refress_case_detail = () => {
+    	self.loading = true;
+    	mentordetailStore.trigger('read_mentor_case', self.case_id,self.enroll_number)
+    }
+
+    self.downloadCaseCSV = () => {
+    	mentordetailStore.trigger('read_mentor_case_csv', self.case_id,self.enroll_number)
     }
     self.close_case_detail_view = ()=>{
     	self.mentor_view = 'show_mentor'
     }
     self.clearForm = () =>{
-    	self.refs.referredInput.value = ''
+    	self.refs.referredInput.value = 'Class Teacher'
 	    self.refs.enrollInput.value = ''
-	    self.refs.CategoryidInput.value = ''
-	    self.refs.case_id.value = ''
 	    self.refs.mentorDateInput.value = ''
 	    self.refs.inTimeInput.value = ''
 	    self.refs.outTimeInput.value = ''
 	    self.refs.diagnosisInput.value = ''
 	    self.refs.suggestionInput.value = ''
+	    self.readCategories()
+	    self.readCategoryCase()
     }
     self.clearaddCaseForm = () => {
-		self.refs.visitorInput.value = ' '
+		self.refs.visitorInput.value = 'Student'
 		self.refs.visitingDateInput.value = ' '
 		self.refs.addCaseinTimeInput.value = ' '
 		self.refs.addCaseoutTimeInput.value = ' '
@@ -513,6 +590,7 @@
       console.log(categories) 
       self.categories = categories
       self.update()
+      self.getMentorData()
     }
 
     mentordetailStore.on('read_case_changed',CaseChanged)
@@ -526,37 +604,36 @@
     function MentorChanged(mentors){
       console.log(mentors) 
       self.mentors = mentors
+      self.mentor_view='show_mentor'
       self.clearForm()
       self.update()
+      self.getMentorData()
     }
 
     mentordetailStore.on('add_case_detail_changed',AddCaseChanged)
     function AddCaseChanged(case_details){
       console.log(case_details) 
       self.case_details = case_details
-      self.clearaddCaseForm()
+      self.refress_case_detail();
       self.update()
     }
 
     mentordetailStore.on('read_mentor_changed',ReadMentorChanged)
     function ReadMentorChanged(mentors){
-      console.log(mentors) 
+      console.log(mentors)
+      self.loading = false;
       self.mentors = mentors
-      self.clearForm()
+      self.categoryName = $("#CategoryName option:selected").text();
+      if(self.mentors.length==0){
+      	toastr.info("No Data Found")
+      }
       self.update()
-      console.log(self.mentors)
      }
 
     mentordetailStore.on('read_for_edit_mentor_changed',ReadMentorForEditChanged)
     function ReadMentorForEditChanged(mentor_details){
       console.log(mentor_details) 
-      flatpickr(".date", {
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
-  		})
       self.mentor_details = mentor_details
-      //self.clearForm()
       self.refs.referredInput.value = mentor_details[0].referred_by
       self.refs.enrollInput.value = mentor_details[0].enroll_number
       self.refs.CategoryidInput.value = mentor_details[0].category_id
@@ -564,7 +641,7 @@
 	  self.cases = self.mentor_case.filter(a => {
 	    return a.category_id == mentor_details[0].category_id
 	  })
-      self.refs.mentorDateInput.value = mentor_details[0].c_date
+      self.refs.mentorDateInput.value = mentor_details[0].consult_date
       self.refs.inTimeInput.value = mentor_details[0].time_in
       self.refs.outTimeInput.value = mentor_details[0].time_out
       self.refs.diagnosisInput.value = mentor_details[0].diagnosis
@@ -579,17 +656,22 @@
     function EditMentorChanged(mentors){
       console.log(mentors) 
       self.mentors = mentors
+      self.mentor_view='show_mentor'
       self.clearForm()
+      self.getMentorData()
       self.update()
-      console.log(self.mentors)
     }
 
     mentordetailStore.on('read_mentor_case_changed',ReadMentorCaseDetailsChanged)
     function ReadMentorCaseDetailsChanged(mentor_case_details){
-      console.log(mentor_case_details) 
+      console.log(mentor_case_details)
+      self.loading = false;
       self.mentor_case_details = mentor_case_details
       self.caseDetails = []
       self.caseDetails = self.mentor_case_details
+      if(self.caseDetails.length==0){
+      	toastr.info("No Data Found")
+      }
       self.update()
       console.log(self.caseDetails)
 
@@ -597,15 +679,9 @@
 
     mentordetailStore.on('read_for_edit_case_changed',ReadCaseDetailsForEditChanged)
     function ReadCaseDetailsForEditChanged(update_case_details_for_update){
-      console.log(update_case_details_for_update) 
-      flatpickr(".date", {
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
-  		})
       self.update_case_details_for_update = update_case_details_for_update
       self.refs.visitorInput.value = update_case_details_for_update[0].visitor
-	  self.refs.visitingDateInput.value = update_case_details_for_update[0].v_date
+	  self.refs.visitingDateInput.value = update_case_details_for_update[0].visit_date
 	  self.refs.addCaseinTimeInput.value = update_case_details_for_update[0].time_in
 	  self.refs.addCaseoutTimeInput.value = update_case_details_for_update[0].time_out
 	  self.refs.statusInput.value = update_case_details_for_update[0].status
@@ -619,18 +695,21 @@
     mentordetailStore.on('edit_case_detail_changed',EditCaseDetailsChanged)
     function EditCaseDetailsChanged(edit_case_details){
       console.log(edit_case_details) 
+      self.refress_case_detail()
       self.update()
      }
 
     mentordetailStore.on('delete_case_details_changed',DeleteCaseDetailsChanged)
     function DeleteCaseDetailsChanged(delete_case_details){
       console.log(delete_case_details) 
+      self.refress_case_detail()
       self.update()
      }
 
     mentordetailStore.on('delete_mentor_detail_changed',DeleteMentorDetailsChanged)
     function DeleteMentorDetailsChanged(delete_mentor_details){
       console.log(delete_mentor_details) 
+      self.getMentorData()
       self.update()
      }
 </script>

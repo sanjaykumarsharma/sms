@@ -7,7 +7,22 @@ router.get('/read_inventorydepartment', function(req, res, next) {
   req.getConnection(function(err,connection){
        
      var data = {}
-     connection.query('SELECT * FROM inventory_store_department',function(err,result)     {
+        
+            var user_condition=req.cookies.user;
+            console.log(user_condition)
+           $user_condition = "";
+           if(req.cookies.role=='ADMIN'){
+              var qry = `select department
+            from inventory_store_department`;
+           }else{
+            var qry = `select a.department
+                from inventory_store_department a
+                join inventory_department_staff b on a.department = b.department
+                where employee_id ='${user_condition}' `;
+           } 
+      
+
+     connection.query(qry,function(err,result){
             
         if(err){
            console.log("Error reading department : %s ",err );

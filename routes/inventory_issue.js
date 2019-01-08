@@ -59,7 +59,9 @@ router.get('/read_qunatity/:id', function(req, res, next) {
           //} 
        
 
-       //  console.log(start_date) 
+      console.log(start_date) 
+      console.log("data") 
+      console.log(end_date) 
 
        
       //  var user=req.cookies.session_id['user']
@@ -70,14 +72,14 @@ router.get('/read_qunatity/:id', function(req, res, next) {
         var user_condition = "";*/
         //if(session_id['role'] != 'ADMINISTRATOR') user_condition =`and a.created_by = ${user}`;
        // and received_date between :dtf and :dto
-        var qry = `select a.item_id, total_received, total_issued, total_sale, unit, a.unit_id, a.rack_id
+        var qry = `select a.item_id, total_received, total_issued, total_sale, unit, a.unit_id
               from
-              (select item_id, c.unit_id,c.rack_id, sum(quantity) as total_received, unit             
+              (select item_id, c.unit_id, sum(quantity) as total_received, unit             
               from received_goods c  
               join unit_master d on c.unit_id=d.unit_id
               where item_id = ${item_id}
               and c.received_date between '${start_date}' and '${end_date}'
-              group by item_id) a
+              group by item_id,c.unit_id) a
               left join
               (select issue_item_id as item_id, sum(issue_quantity) as total_issued
               from issue_goods 
@@ -130,6 +132,7 @@ router.get('/:id/:type', function(req, res, next) {
         var data = {}
         var user='';
         var session_id=req.cookies.session_id
+        var user=req.cookies.user
         var category_id=req.params.id
         var issue_type=req.params.type
         var start_date=''
@@ -161,7 +164,7 @@ router.get('/:id/:type', function(req, res, next) {
           condition = `and a.issue_category_id = ${category_id}`;
          }
         var user_condition = "";
-        //if(session_id['role'] != 'ADMINISTRATOR') user_condition =`and a.created_by = ${user}`;
+        if(req.cookies.role != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select issue_id,  c.category_id, a.issue_sub_category_id as sub_category_id, return_type,
                 a.issue_item_id as item_id, date_format(issue_date,'%d/%m/%Y') as issue_date, date_format(issue_date,'%Y-%m-%d') as iss_date,
@@ -241,14 +244,14 @@ router.get('/read_returnable/:id/:type', function(req, res, next) {
          console.log(start_date) 
 
        
-      //  var user=req.cookies.session_id['user']
+         var user=req.cookies.user
         var condition = "";
         var category_id=-1;
         if(category_id !=-1){
           condition = `and a.issue_category_id = ${category_id}`;
          }
         var user_condition = "";
-        //if(session_id['role'] != 'ADMINISTRATOR') user_condition =`and a.created_by = ${user}`;
+        if(req.cookies.role != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select issue_id, date_format(issue_date,'%d/%m/%Y') as issued_date, issue_date as r_date,
                 item_name,category_name, concat(first_name,' ',middle_name,' ',last_name ) as staff_name,

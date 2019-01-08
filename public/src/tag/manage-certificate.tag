@@ -1,13 +1,14 @@
 <manage-certificate>
+	 <header></header>
+	 <loading-bar if={loading}></loading-bar>  
 	<section>
 	   <div class="box">
 			<div class="columns">
 				<div class="column is-narrow" show={report_view =='show_old_text_box'}>
 					<div class="control">
 						<div class="select">
-							<select ref="certificate_name">
+							<select ref="certificate_name" onchange={readCertificateData} onkeyup={addEnter}>
 								<option>Choose Certificate</option>
-								<!-- <option value='-1'>All</option> -->
 								<option each={certificates} value={certificate_name}>{certificate_name}
 	                            </option>
 							</select>
@@ -15,9 +16,6 @@
 					</div>
 				</div>
 				<div class="column is-narrow">
-					<!-- <button class="button is-danger has-text-weight-bold"
-					onclick={addNewCertificate} >Add New
-					</button> -->
 					<input type="checkbox" id="checkTable" checked={e.done}
 									    onclick={viewTable}  style="margin-top: 12px;"> Add New
 				</div>
@@ -124,11 +122,13 @@
 
 
     self.on("unmount", function(){
+    	 certificateStore.off('read_certificate_data_changed',ReadCertificateDataChanged)
     	 certificateStore.off('read_certificate_change',ReadCertificateChanged)
          certificateStore.off('add_certificate_change',AddCertificateChanged)
     })
 
     self.addCertificate=()=>{
+    	self.loading=true
     	if($('#checkTable').is(":checked")){
     		self.certificate_name=self.refs.new_certificate_name.value
     	}else{
@@ -136,10 +136,17 @@
     	}
     	 certificateStore.trigger('add_certificate',self.refs.certificate_text.value,self.certificate_name,self.new_certificate)
     }
+    self.readCertificateData=()=>{
+    	self.loading=true
+    	if(self.refs.certificate_name.value!='Choose Certificate')
+	    self.certificate_name=self.refs.certificate_name.value
+    	 certificateStore.trigger('read_certificate_data',self.certificate_name)
+    }
 
     self.viewTable = () => {
     	if($('#checkTable').is(":checked")){
     		self.certificate_name=self.refs.new_certificate_name.value
+    		self.refs.certificate_text.value=''
 	        self.report_view = 'show_text_box'
     	}else{
 	        self.report_view = 'show_old_text_box'
@@ -150,38 +157,34 @@
     self.readCertificate = () => {
        certificateStore.trigger('read_certificate')
     }
+    self.deleteCertificate = () => {
+       self.refs.certificate_text.value=''
+    }
 
     certificateStore.on('read_certificate_changed',ReadCertificateChanged)
     function ReadCertificateChanged(certificates){
       console.log(certificates) 
+      self.loading=false
       self.certificates = certificates
+      self.update()
+      //self.readCertificateData()
+    }
+
+    certificateStore.on('read_certificate_data_changed',ReadCertificateDataChanged)
+    function ReadCertificateDataChanged(certificateData){
+      console.log(certificateData) 
+      self.loading=false
+      self.refs.certificate_text.value = certificateData[0].certificate_text
       self.update()
     }
 
     certificateStore.on('add_certificate_change',AddCertificateChanged)
     function AddCertificateChanged(id){
       console.log(id) 
+      self.loading=false
       self.c_id = id
       self.update()
     }
-
-    
-   /* self.readIssuedCertificateStudent= () => {
-       certificateStore.trigger('read_issued_certificate',self.refs.standard_id.value,self.refs.section_id.value)
-    }
-
-    
-
-    certificateStore.on('read_issued_certificate_change',ReadIssuedCertificateChanged)
-    function ReadIssuedCertificateChanged(issuedCertificates){
-      console.log(issuedCertificates) 
-      self.issuedCertificates = issuedCertificates
-      self.update()
-    }
-
-   */
-    
   
-    
 </script>
 </manage-certificate>

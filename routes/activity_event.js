@@ -1,7 +1,59 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var download = require('download-file')
 
-/* Read Course listing. */
+router.get('/csv_export_activity_event', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+
+     var data = {}
+     var qry = `select event_name as 'Event Name', category_name as 'Category Name'
+                from activity_event_master a
+                join activity_category_master b on a.category_id=b.category_id
+                order by 1,2`;
+
+     connection.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading Activity Event : %s ",err );
+           data.status = 'e';
+
+        }else{
+            data.status = 's';
+            data.events = result;
+
+            // console.log(result)
+
+            const fields = ['Category Name','Event Name'];
+            
+             
+            const json2csvParser = new Json2csvParser({ fields });
+            const csv = json2csvParser.parse(result);
+
+            var path='./public/csv/Event.csv'; 
+            fs.writeFile(path, csv, function(err,data) {
+              if (err) {throw err;}
+              else{ 
+                // res.download(path); // This is what you need
+                res.send(data)
+                var url='http://localhost:4000/csv/Event.csv';
+                var open = require("open","");
+                open(url);  
+              }
+            });    
+            //console.log(csv);
+        }
+     
+     });
+       
+  });
+
+});
+
+
 router.get('/', function(req, res, next) {
 
   req.getConnection(function(err,connection){
@@ -34,7 +86,10 @@ router.get('/read_event', function(req, res, next) {
   req.getConnection(function(err,connection){
        
      var data = {}
-     var qry = `SELECT event_id, event_name FROM activity_event_master e `;
+     var qry = `select event_id, a.category_id, event_name, category_name
+                from activity_event_master a
+                join activity_category_master b on a.category_id=b.category_id
+                order by 2,3`;
      connection.query(qry,function(err,result)     {
             
         if(err){

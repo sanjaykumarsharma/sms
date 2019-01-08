@@ -1,12 +1,11 @@
 <inventory-return-goods-report>
+   <header></header>
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-		<h2 class="title" style="color: #ff3860;">Return Goods</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+		<h4 class="title has-text-centered" style="color: #ff3860;">Inventory Return Report
+    <br> <span style="font-size:18px"> From: {start_date} To: {end_date}</span></h4>
+   
+		<div class="box no-print">
 			<div class="columns">
           <div class="column is-narrow">
           <label class="label">From Date</label>
@@ -28,6 +27,11 @@
         <button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
         onclick={getReturnGoodsReport} >GO
         </button>
+         <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+          </button>
       </div>
 			</div>
 		</div>
@@ -79,6 +83,9 @@
 
 
     self.getReturnGoodsReport = () => {
+      self.start_date=self.refs.start_date.value,
+      self.end_date=self.refs.end_date.value
+      self.loading=true
        inventoryReportStore.trigger('read_inventory_return_goods_report',self.refs.start_date.value,self.refs.end_date.value)
     }
     

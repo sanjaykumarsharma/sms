@@ -1,44 +1,46 @@
 <student-religion-strength-report>
+	<header></header>
+	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Religion Listing</h2>
-			</div>
-		</div>
-		<!-- <div class="box">
-			<div class="columns">
-				<div class="column is-narrow">
-					<div class="control">
-						<div class="select">
-							<select ref="emp_type_id" onchange={ReadBrowseStaff}>
-								<option value={-1}>All</option>
-								<option each={employeeTypes} value={emp_type_id}>{emp_type}
-			                            </option>
-							</select>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div> -->
+		<h4 class="title has-text-centered" style="color: #ff3860;">Class Wise Religion  Strength({session_name}) </h4>
+		<div class='box no-print'>
+	   		<div class="columns">
+			    <div class=" column">
+				<!-- <div class="level-right"> -->
+			        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+			          <span class="icon"> <i class="fas fa-print"></i></span>
+			        </button>
+			       <button class="button is-warning is-rounded is-pulled-right" onclick={readStudentReligionListingReport} style="margin-left:5px;margin-right:5px">
+			        <span class="icon">
+			          <span class="fas fa-sync-alt"></span>
+			        </span>
+			        </button>
+			    </div>
+		   </div>
+		</div>	 
 		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
 			<thead>
 				<tr>
 					<th>#</th>
 					<th>Standard</th>
-					<th>General</th>
-					<th>ST</th>
-					<th>SC</th>
-					<th>OBC</th>
+					<th>Buddhism</th>
+					<th>Christianity</th>
+					<th>Hinduism</th>
+					<th>Jainism</th>
+					<th>Islam</th>
+					<th>Sikhism</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in studentCategorySummaryReports}>
+				<tr each={st, i in studentReligionListingReports}>
 					<td>{i+1}</td>
 					<td>{st.standard}</td>
-					<td>{st.s0}</td>
-					<td>{st.s1}</td>
-					<td>{st.s2}</td>
-					<td>{st.s3}</td>
+					<td>{st.Buddhism}</td>
+					<td>{st.Christianity}</td>
+					<td>{st.Hinduism}</td>
+					<td>{st.Jainism}</td>
+					<td>{st.Islam}</td>
+					<td>{st.Sikhism}</td>
 					
 				</tr>
 			</tbody>
@@ -51,7 +53,7 @@
     self.on("mount", function(){
     	self.title='Add'
     	self.role = getCookie('role') 
-    	//self.readStudentCategorySummaryReport()	
+    	self.readStudentReligionListingReport()	
         self.update()
         flatpickr(".date", {
 	    	allowInput: true,
@@ -60,19 +62,21 @@
     })
 
     self.on("unmount", function(){
-      adminReportStore.off('read_student_category_summary_report_changed',ReadStudentCategorySummaryReportChanged)
+      adminReportStore.off('read_student_religion_listing_report_changed',ReadStudentReligionListingReportChanged)
     })
 
-    self.readStudentCategorySummaryReport = () => {
-       adminReportStore.trigger('read_student_category_summary_report')
+    self.readStudentReligionListingReport = () => {
+    	self.loading=true
+       adminReportStore.trigger('read_student_religion_listing_report')
     }
     
-    adminReportStore.on('read_student_category_summary_report_changed',ReadStudentCategorySummaryReportChanged)
-    function ReadStudentCategorySummaryReportChanged(studentCategorySummaryReports){
-      //console.log(studentCategorySummaryReports) 
+    adminReportStore.on('read_student_religion_listing_report_changed',ReadStudentReligionListingReportChanged)
+    function ReadStudentReligionListingReportChanged(studentReligionListingReports,session_name){
+      //console.log(studentReligionListingReports) 
       self.title='Create'
       self.loading = false
-      self.studentCategorySummaryReports = studentCategorySummaryReports
+      self.studentReligionListingReports = studentReligionListingReports
+      self.session_name = session_name
       self.update()
       //console.log(self.employeeTypes)
     }

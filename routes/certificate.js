@@ -35,6 +35,35 @@ router.get('/read_certificate', function(req, res, next) {
 
 });
 
+router.get('/read_certificate_data/:certificate_id', function(req, res, next) {
+ var input = JSON.parse(JSON.stringify(req.body));
+  var session_id = req.cookies.session_id
+  var certificate_id=req.params.certificate_id
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+      var qry =`select c_id,certificate_name, certificate_text
+        from certificate_master 
+        where certificate_name='${certificate_id}'
+        order by 2`;
+    connection.query(qry,function(err,result)     {
+         console.log(qry)   
+      if(err){
+        console.log("Error reading Certificate : %s ",err );
+        data.status = 'e';
+
+      }else{
+            data.status='s'
+            data.certificateData = result;
+       res.send(JSON.stringify(data))
+      }
+     
+     });
+       
+  });
+
+});
+
 
 /* Student Data */
 

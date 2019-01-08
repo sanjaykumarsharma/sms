@@ -188,6 +188,7 @@
 
         <!-- Fee Slip Head Div Start -->
         <div class="box" show={FeeSlipHead}>
+          <h4>status: {FeeSlipHead}</h4>
           <table class="table is-fullwidth is-striped is-hoverable">
             <thead>
               <tr>
@@ -366,7 +367,7 @@
 
     self.getStudentData = () =>{
       self.students = []
-      
+
       feeReceivedStore.trigger('read_student_list', self.refs.standard_id.value,self.refs.section_id.value)  
     }
     //=============== Student List===========
@@ -505,7 +506,9 @@
              var fineDays =  Math.round(diff/1000/60/60/24); 
             if (self.fine_type == 'Daily') {
               if (fineDays < self.fine_grace_preiod) {
+
                   fine = Number(fine_days) * Number(self.fine_amount);
+                  
                   o['fine'] = fine
                   }else{
                     fine = 0;
@@ -537,7 +540,7 @@
                   if (p_year > l_year) {
                     monthCount = Number((12 - l_month) + Number(p_month));
                   }else if(p_year == l_year){
-                    monthCount = Numner(p_month - l_month);
+                    monthCount = Number(p_month - l_month); 
                   }
                 }else if (p_month == l_month) {
                   if (p_year > l_year) {
@@ -546,7 +549,8 @@
                     monthCount = 0;
                   }
                 }
-                 fine = Number(monthCount*50) + Number(self.fine_amount);
+                 console.log("fine = "+ self.fine_amount)
+                 fine = Number(monthCount * 50) + Number(self.fine_amount);
                  total_fine = total_fine + (monthCount*50) + self.fine_amount;
                  o['fine'] = fine
               }
@@ -560,15 +564,12 @@
   }
   self.fineAdjustedChangeHandler =()=>{
     console.log("after  fee slip")
-    if (Number(self.refs.finePaidText.value) <= 0) {
-        self.refs.fineAdjustedText.value = self.refs.fineDueText.value;
-        return
-      }
-     // console.log("fine ="+self.refs.fineDueText.value+ " fine Paid"+ self.refs.finePaidText.value);
-      self.refs.fineAdjustedText.value = Number(self.refs.fineDueText.value) - Number(self.refs.finePaidText.value);
-     // console.log("adjusted" +self.refs.fineAdjustedText.value)
+    if(Number(self.refs.finePaidText.value) <= 0){
+      self.refs.fineAdjustedText.value = self.refs.fineDueText.value;
+      return
+    }
+    self.refs.fineAdjustedText.value = Number(self.refs.fineDueText.value) - Number(self.refs.finePaidText.value);
       self.refs.amountDueText.value = Number(self.refs.feesDueText.value) - Number(self.refs.scholorshipText.value) + Number(self.refs.finePaidText.value);
-      //console.log("after calculationg fee slip")
   }
   self.adjustedChangeHandler = () =>{
     self.refs.feesDueText.value = self.refs.feesPaidText.value;
@@ -653,7 +654,12 @@
       if(self.refs.itemDate.value!=''){
          converted_date = convertDate(self.refs.itemDate.value) 
       }
-      obj.dated = converted_date
+      if(converted_date==''){
+        obj.dated = null  
+      }else{
+        obj.dated = converted_date
+      }
+      
       obj.bank_id = self.refs.bankNameList.value != 'Select Bank' ? self.refs.bankNameList.value : null;
       obj.receipt_date = convertDate(self.refs.feesReceiveDate.value)
       obj.remarks = self.refs.remarksText.value;
@@ -682,9 +688,12 @@
         if(o.selected==true){
           var i = {}
           i.fee_slip_id = o.fee_slip_id 
-          i.a_due = o.amount
+          if(obj.tuition_fee_only == 'Y'){
+            i.a_due = self.refs.feesPaidText.value
+          }else{
+            i.a_due = o.amount
+          }
           i.fine_by_slip = o.fine        
-          i.tf = 'N'
           i.totalFineRemaining = 0
           self.selectedfeeSlips.push(i)
         }

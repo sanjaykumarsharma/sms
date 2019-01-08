@@ -1,6 +1,9 @@
 <infirmary-student>
-<section class="is-fluid" show={infirmary_student_view == 'show_student_table'}>
-  <div class="box">
+   <header></header>
+  <loading-bar if={loading}></loading-bar>
+   <section class="is-fluid" show={infirmary_student_view == 'show_student_table'}>
+      <h2 class="title has-text-centered" style="color: #ff3860;">Student Infirmary Details</h2>
+    <div class="box no-print">
       <div class="columns">
         <div class="column is-narrow">
           <label class="label">Category</label>
@@ -20,22 +23,27 @@
           onclick={readStudentInfirmary} >Go
           </button>
         </div>
+        <div class="column">
+          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+           </button>
+        
+            <button class="button is-warning is-rounded is-pulled-right" onclick={readStudentInfirmary} style="margin-left:5px;margin-right:5px">
+              <span class="icon">
+                <span class="fas fa-sync-alt"></span>
+              </span>
+          </button>
+
+          <button class="button is-info is-rounded is-pulled-right" onclick={add_student_infirmary}>
+              <span class="icon">
+            <span class="fas fa-plus"></span>
+            </span>
+          </button>
+        </div>
       </div>
     </div>
-  <div class="level">
-    <div class="level-left">
-      <h2 class="title" style="color: #ff3860;">Student Infirmary</h2>
-    </div>
-
-    <div class="level-right">
-      <button class="button is-warning is-rounded" onclick={add_student_infirmary}>
-      <span class="icon">
-        <span class="fas fa-plus"></span>
-      </span>
-      <span>Add Student Infirmary</span>
-      </button>
-    </div>
-  </div>
 
   <table class="table is-fullwidth is-striped is-hoverable is-bordered">
       <thead>
@@ -63,7 +71,7 @@
           <td>{st.time_in}</td>
           <td>{st.time_out}</td>
           <td>{st.treatment}</td>
-          <td class="has-text-right">
+          <td class="has-text-right no-print">
             <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
               <span><a class="button is-small is-rounded" onclick={edit.bind(this, st)}>Edit</a></span>
               <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -173,6 +181,7 @@
 
      //read courses
      self.readStudentInfirmary = () => {
+        self.loading=true
          self.infirmary_student_view='show_student_table'
            studentinfirmaryStore.trigger('read_student_infirmary', self.refs.read_category_id.value)
            //studentStore.trigger('read_students', obj)

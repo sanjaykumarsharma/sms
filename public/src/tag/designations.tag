@@ -1,32 +1,31 @@
 <designations>
-	<section class="is-fluid">
-    <h2 class="title" style="color: #ff3860;">Designations</h2>
-    <div class="flex items-center mt-2 mb-6 no-print">
-      <div class="bg-green py-1 rounded w-10">
-        <div class="bg-grey h-px flex-auto"></div>
+  <header></header>
+	 <loading-bar if={loading}></loading-bar>  
+  <section class="is-fluid">
+        <h2 class="title has-text-centered" style="color: #ff3860;">Designation Details</h2>
+    <div class="box no-print" >
+    <div class="columns">
+      <div class="column is-narrow">
+        <label class="label">Designation</label>
+      </div>
+      <div class="column is-narrow">
+        <input class="input  form-control input" id="addDesignationInput" ref="addDesignationInput" tabindex="0" type="text"  onkeyup={addEnter}>
+      </div>
+      <div class="column">
+        <button disabled={loading} class="button is-danger has-text-weight-bold"
+        onclick={add}>{title}
+        </button>
+        <button class="button is-warning is-rounded is-pulled-right" onclick={readDesignations} style="margin-left:5px;margin-right:5px">
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
+        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <span class="icon"> <i class="fas fa-print"></i></span>
+        </button>
       </div>
     </div>
-    <div class="box">
-      <div class="columns">
-        <div class="column is-half">
-          <div class="field">
-            <label class="label" for="designation">Designation</label>
-            <div class="control">
-              <input class="input" type="text" ref="addDesignationInput"
-              onkeyup={addEnter}>
-            </div>
-          </div>
-        </div>
-        <div class="column is-narrow">
-          <div class="field">
-            <div class="control">
-              <button class="button is-danger has-text-weight-bold adjusted-top"
-                   onclick={add} >{title}</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>  
     <table class="table is-fullwidth is-striped is-hoverable">
       <thead>
         <tr>
@@ -39,7 +38,7 @@
         <tr each={d, i in designations}>
           <td>{i + 1}</td>
           <td>{d.designation}</td>
-          <td class="has-text-right">
+          <td class="has-text-right no-print">
             <div class="inline-flex rounded border border-grey overflow-hidden" hide={d.confirmDelete}>
               <span><a class="button is-small is-rounded" onclick={edit.bind(this, d)}>Edit</a></span>
               <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -58,6 +57,7 @@
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
+      self.loading = false;
       self.update()
       self.readDesignations()
     })
@@ -68,6 +68,7 @@
 
     //read courses
     self.readDesignations = () => {
+        self.loading = true;
        designationStore.trigger('read_designations')
     }
 
@@ -79,10 +80,11 @@
         if(self.title=='Create'){
           console.log('create')
           designationStore.trigger('add_designation', self.refs.addDesignationInput.value)
+          self.readDesignations()
         }else if(self.title=='Update'){
           console.log('update')
-          designationStore.trigger('edit_designation', self.refs.addDesignationInput.value,
-            self.edit_id)
+          designationStore.trigger('edit_designation', self.refs.addDesignationInput.value,self.edit_id)
+         self.readDesignations()
         }
       }
     }
@@ -108,7 +110,9 @@
 
     self.confirmDelete = (e) => {
       self.designations.map(d => {
-        if(d.id != e.item.d.id){
+        console.log("hhjjsd")
+        console.log(e.item.d.designation_id)
+        if(d.designation_id != e.item.d.designation_id){
           d.confirmDelete = false
         }else{
           d.confirmDelete = true
@@ -118,14 +122,14 @@
 
     self.delete = (e) => {
       self.loading = true
-      designationStore.trigger('delete_designation', e.item.d.id)
+      designationStore.trigger('delete_designation', e.item.d.designation_id)
     }
 
     self.edit = (d,e) => {
       console.log(d)
       self.title='Update'
       self.refs.addDesignationInput.value = d.designation
-      self.edit_id = d.id
+      self.edit_id = d.designation_id
     }
     
 

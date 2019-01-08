@@ -1,26 +1,10 @@
 <inventory-stock>
-	<section class=" is-fluid" show={inventory_stock_view == 'show_inventory_stock_table'}>
-		<h2 class="title" style="color: #ff3860;">Inventory Stocks</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+  <header></header>
+   <loading-bar if={loading}></loading-bar>  
+	  <section class=" is-fluid" show={inventory_stock_view == 'show_inventory_stock_table'}>
+        <h4 class="title has-text-centered" style="color: #ff3860;">Goods Entry in Store Department</h4>
+		<div class="box no-print">
 			<div class="columns">
-				<!-- <div class="column is-narrow">
-          <label class="label" style="margin-left:-14px">Department</label>
-        </div> -->
-				<!-- <div class="column is-narrow">
-          <div class="control">
-            <div class="select">
-              <select ref="department" style="margin-left:-10px" onchange={filterCategory}>
-                <option each={inventoryDepartments} value={department}>{department}
-                        </option>
-              </select>
-            </div>
-          </div>
-        </div> -->
         <div class="column is-narrow">
           <label class="label" style="margin-left:-14px">Category</label>
         </div>
@@ -34,44 +18,27 @@
             </div>
           </div>
         </div>
-
-       <!--  <div class="column is-narrow">
-         <label class="label" style="margin-left:-14px">Subcategory</label>
-       </div> -->
-       <!--  <div class="column is-narrow">
-         <div class="control">
-           <div class="select">
-             <select ref="sub_category_id" style="margin-left:-10px">
-               <option each={filteredSubcategories} value={sub_category_id}>{sub_category}
-               </option>
-             </select>
-           </div>
-         </div>
-       </div> -->
-        <!-- <div class="column is-narrow">
-          <label class="label" style="margin-left:-14px">Item</label>
-        </div> -->
-        <!-- <div class="column is-narrow">
-          <div class="control">
-            <input class=" input"
-              ref="item_name" type="text" style="margin-left:-10px">
-          </div>
-        </div> -->
-			<!--   <div class="column">
-        <button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
-        onclick={getInventoryStock} >GO
+        <div class="column">
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+          </button>
+        <button class="button is-warning is-rounded is-pulled-right" onclick={readInventoryStock} style="margin-left:3px;margin-right:3px">
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
         </button>
-      </div> -->
+           <button class="button is-warning is-rounded is-pulled-right" onclick={show_inventory_stock}>
+          <span class="icon">
+            <span class="fas fa-plus"></span>
+          </span>
+        </button>
+        </div>
 			</div>
+
 		</div>
-     <div class="level-right">
-      <button class="button is-warning is-rounded" onclick={show_inventory_stock}>
-      <span class="icon">
-        <span class="fas fa-plus"></span>
-      </span>
-      <span>Add</span>
-      </button>
-    </div>
+     
 		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
@@ -100,7 +67,7 @@
           <td>{ ev.received_from}</td>
           <td>{ ev.rack_name}</td>
           <td>{ ev.remark}</td>
-		      <td class="has-text-right">
+		      <td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -260,6 +227,7 @@
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
+      self.loading=false
       self.inventory_stock_view='show_inventory_stock_table'
       flatpickr(".date", {
          allowInput: true,
@@ -290,6 +258,7 @@
 
 
     self.show_inventory_stock=()=>{
+      //self.loading=true
        self.inventory_stock_view='show_inventory_stock_form'
     }
     self.close_inventory_stock_form=()=>{
@@ -300,11 +269,11 @@
       self.filteredSubcategories = []
       self.filteredSubcategories = self.inventorySubcategories.filter(s => {
         console.log("inside")
-      return s.category_id == self.refs.category_id.value    
+       return s.category_id == self.refs.category_id.value    
     })
-      self.update()
       console.log(self.filteredSubcategories)
       self.filterItem()
+      self.update()
    }
 
     self.filterItem = () => {
@@ -317,6 +286,7 @@
    }
     
     self.readInventoryStock = () => {
+      self.loading=true
        inventoryStockStore.trigger('read_inventory_stock', self.refs.r_category_id.value)
     }
     self.readInventoryUnit = () => {
@@ -424,7 +394,6 @@
       self.refs.unit_id.value=''
       self.refs.rate.value=''
       self.refs.received_from.value=''
-      self.refs.item_id.value=''
       self.refs.rack_id.value=''
       self.refs.quantity.value=''
       self.refs.remark.value=''
@@ -443,7 +412,6 @@
       self.refs.unit_id.value=''
       self.refs.rate.value=''
       self.refs.received_from.value=''
-      self.refs.item_id.value=''
       self.refs.rack_id.value=''
       self.refs.quantity.value=''
       self.refs.remark.value=''

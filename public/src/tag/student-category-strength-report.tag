@@ -1,22 +1,31 @@
 <student-category-strength-report>
+	<header></header>
+	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Cast Category Listing</h2>
-			</div>
-		</div>
-		<div class="box">
+		<h4 class="title has-text-centered " style="color: #ff3860;">Student Category : {category_name} ({session_name})</h4>
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
 							<select ref="category_id" onchange={readStudentCategoryStrengthReport}>
 								<option each={categories} value={category_id}>{category_name}
-			                            </option>
+			                    </option>
 							</select>
 						</div>
 					</div>
 				</div>
+				<div class=" column">
+				<!-- <div class="level-right"> -->
+			        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+			          <span class="icon"> <i class="fas fa-print"></i></span>
+			        </button>
+			       <button class="button is-warning is-rounded is-pulled-right" onclick={readStudentCategoryStrengthReport} style="margin-left:5px;margin-right:5px">
+			        <span class="icon">
+			          <span class="fas fa-sync-alt"></span>
+			        </span>
+			        </button>
+			    </div>
 			</div>
 		</div>
 		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
@@ -66,6 +75,7 @@
     }
 
     self.readStudentCategoryStrengthReport = () => {
+    	self.loading=true
        adminReportStore.trigger('read_student_category_strength_report',self.refs.category_id.value)
     }
 
@@ -81,11 +91,13 @@
 
     
     adminReportStore.on('read_student_category_strength_report_changed',ReadStudentCategoryStrengthReportChanged)
-    function ReadStudentCategoryStrengthReportChanged(studentCategoryStrengthReports){
+    function ReadStudentCategoryStrengthReportChanged(studentCategoryStrengthReports,session_name){
       //console.log(studentCategoryStrengthReports) 
       self.title='Create'
       self.loading = false
       self.studentCategoryStrengthReports = studentCategoryStrengthReports
+      self.category_name = studentCategoryStrengthReports[0].category_name
+      self.session_name = session_name
       self.update()
       //console.log(self.employeeTypes)
     }

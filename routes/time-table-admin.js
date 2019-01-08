@@ -290,48 +290,88 @@ router.get('/read-periods-teacher-report/', function(req, res, next) {
           data.status = 's';
           // data.time_table = result;
 
-          var prev_teacher_id="";
-          var prev_day_id;
-          // $prev_teacher = "";
+          var prev_teacher_id=0;
+          var prev_day_id =0;
+          var prev_day_name ='';
+          var display_day_name ='';
+
           var teacher=0
-          var error_val=0
+
           var obj={}
 
           var newData = []
           
           result.map(r=>{
-               error_val=1;
+
                if(r.teacher_id!=prev_teacher_id){ // CONDITION FOR TEACHER CHANGE
+                    
+                     if(prev_day_name=='Day 1'){
+                      display_day_name='day_one';           
+                     }else if(prev_day_name=='Day 2'){
+                      display_day_name='day_two';           
+                     }else if(prev_day_name=='Day 3'){
+                      display_day_name='day_three';           
+                     }else if(prev_day_name=='Day 4'){
+                      display_day_name='day_four';           
+                     }else if(prev_day_name=='Day 5'){
+                      display_day_name='day_five';           
+                     }
+
                     if(teacher==2){
-                       obj["d"+prev_day_id]= prev_subject;
+                       obj[display_day_name]= prev_subject;
                        newData.push(obj);
+                       obj = {}
                      }
                      if(teacher==1){
                        var objChanged={};
                        objChanged['teacher']= prevr_teacher;
-                       objChanged["d"+prev_day_id]= prev_subject;
+                       objChanged[display_day_name]= prev_subject;
                        newData.push(objChanged);
                      }
+
                      prev_teacher_id=r.teacher_id;
                      prevr_teacher= r.teacher;
                      prev_day_id=r.day_id;           
-                     prev_subject= r.period_name + ". " +r.standard+ " : " +r.subject_short_name;
-                     teacher=1;
-               }else{                               // for same teacher
+                     prev_day_name=r.day_name;           
+
+                     prev_subject= '<strong>'+r.period_name+'</strong>' + ". " +r.standard+ " : " +r.subject_short_name;
+                     teacher=1; //same teacher
+               }else{                               // for same teacher picking different days
+
                     if(r.day_id!=prev_day_id ){
                       //picking old values
                       teacher=2;
                       obj['teacher']= r.teacher;
-                      obj["d"+prev_day_id]= prev_subject;
+                      if(prev_day_name=='Day 1'){
+                      display_day_name='day_one';           
+                     }else if(prev_day_name=='Day 2'){
+                      display_day_name='day_two';           
+                     }else if(prev_day_name=='Day 3'){
+                      display_day_name='day_three';           
+                     }else if(prev_day_name=='Day 4'){
+                      display_day_name='day_four';           
+                     }else if(prev_day_name=='Day 5'){
+                      display_day_name='day_five';           
+                     }
+                      obj[display_day_name]= prev_subject;
                     
                       //picking new values
                       prev_teacher_id=r.teacher_id;
-                      prev_day_id=r.day_id;            
-                      prev_subject= r.period_name + ". " +r.standard+ " : " +r.subject_short_name;
-                    }else if(r.day_id==prev_day_id){
+
+                      prev_day_id=r.day_id;           
+                      prev_day_name=r.day_name;       
+
+                      prev_subject= '<strong>'+r.period_name+'</strong>' + ". " +r.standard+ " : " +r.subject_short_name;
+
+                    }else if(r.day_id==prev_day_id){ // same day
+                      
                       prev_teacher_id=r.teacher_id;
-                      prev_day_id=r.day_id;   
-                      prev_subject= prev_subject+ r.period_name + ". " +r.standard+ " : " +r.subject_short_name;
+
+                      prev_day_id=r.day_id;           
+                      prev_day_name=r.day_name;
+
+                      prev_subject= prev_subject+ '<br>' + '<strong>'+r.period_name+'</strong>' + ". " +r.standard+ " : " +r.subject_short_name;
+
                     }
                }
           }) 
@@ -341,6 +381,73 @@ router.get('/read-periods-teacher-report/', function(req, res, next) {
         }
      
      });
+
+});
+
+
+
+// Assign Teacher
+
+router.get('/read-init-assign-teacher', function(req, res, next) {
+
+     var data = {}
+
+      var condition="";
+      if(req.cookies.role == "TEACHER"){
+        condition = ` and employee_id = ${req.cookies.role} `;
+      }
+
+      var teachers = `select emp_id, concat(first_name,' ',middle_name,' ',last_name)as name 
+                 from employee
+                 where emp_type_id!=5 and is_active='Y' ${condition} 
+                 order by name`;     
+
+      var qry = teachers;
+
+      console.log(qry);
+
+     pool.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading teachers : %s ",err );
+           data.status = 'e';
+           data.error = err
+           data.messaage = err.sqlMessage
+        }else{
+          data.status = 's';
+          data.teachers = result;
+          res.send(data)
+        }
+     
+     });
+
+});
+
+router.post('/assign-teacher-time-table', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+        var data = {}
+
+        var qry = `update time_table set teacher_id=${input.teacher_one}
+                where teacher_id =${input.teacher_two}`;
+        
+        connection.query(qry, function(err, rows)
+        {
+  
+          if(err){
+           console.log("Error assigning teacher : %s ",err );
+           data.status = 'e';
+
+         }else{
+              data.status = 's';
+              res.send(data)
+          }
+         
+          
+        });
+   });
 
 });
 

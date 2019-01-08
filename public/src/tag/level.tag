@@ -1,32 +1,33 @@
 <level>
+   <header></header>
+   <loading-bar if={loading}></loading-bar>  
 	<section class="is-fluid">
-    <h2 class="title" style="color: #ff3860;">Levels</h2>
-    <div class="flex items-center mt-2 mb-6 no-print">
-      <div class="bg-green py-1 rounded w-10">
-        <div class="bg-grey h-px flex-auto"></div>
+    <h2 class="title has-text-centered" style="color: #ff3860;">Level Details</h2>
+    <div class="box no-print" >
+    <div class="columns">
+      <div class="column is-narrow">
+        <label class="label">Level</label>
+      </div>
+      <div class="column is-narrow">
+        <input class="input  form-control input" id="addLevelInput" ref="addLevelInput" tabindex="0" type="text"  onkeyup={addEnter}>
+      </div>
+      <div class="column">
+        <button disabled={loading} class="button is-danger has-text-weight-bold"
+        onclick={add}>{title}
+        </button>
+        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+        </button>
+        <button class="button is-warning is-rounded is-pulled-right" onclick={readLevel} style="margin-right:2px">
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
       </div>
     </div>
-    <div class="box">
-      <div class="columns">
-        <div class="column is-half">
-          <div class="field">
-            <label class="label" for="level">Level</label>
-            <div class="control">
-              <input class="input" type="text" ref="addLevelInput"
-              onkeyup={addEnter}>
-            </div>
-          </div>
-        </div>
-        <div class="column is-narrow">
-          <div class="field">
-            <div class="control">
-              <button class="button is-danger has-text-weight-bold adjusted-top"
-                   onclick={add} >{title}</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  </div>  
     <table class="table is-fullwidth is-striped is-hoverable">
       <thead>
         <tr>
@@ -39,7 +40,7 @@
         <tr each={d, i in levels}>
           <td>{i + 1}</td>
           <td>{d.level}</td>
-          <td class="has-text-right">
+          <td class="has-text-right no-print">
             <div class="inline-flex rounded border border-grey overflow-hidden" hide={d.confirmDelete}>
               <span><a class="button is-small is-rounded" onclick={edit.bind(this, d)}>Edit</a></span>
               <span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -68,6 +69,7 @@
 
     //read courses
     self.readLevel = () => {
+      self.loading=true
        levelStore.trigger('read_level')
     }
 

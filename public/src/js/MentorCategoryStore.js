@@ -4,6 +4,25 @@ function MentorCategoryStore() {
 
   self.mentor_categories = []
 
+  self.on('csv_export_mentor_category', function() {
+    let req = {}
+    $.ajax({
+      url:'/mentor_category/csv_export_mentor_category',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('read_mentor_category', function() {
     console.log('i am in read_courses api call from ajax')
     let req = {}

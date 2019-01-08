@@ -1,6 +1,8 @@
 <bank-wise>
+<header></header> 
+<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" >
-		<div class="box">
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label">Bank</label>
@@ -8,10 +10,12 @@
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="bank_id">
+							<select ref="bank_id" id="bank_id">
 								<option value='-1'>All</option>
 								<option each={banks} value={bank_id}>{bank}
 	                            </option>
+                <option value='-3'>School</option>
+                <option value='-2'>Online</option>
 							</select>
 						</div>
 					</div>
@@ -34,23 +38,33 @@
 					<label class="label">From Date</label>
 				</div>
 				<div class="column is-narrow">
-					<input class="date input flatpickr-input form-control input" placeholder="" ref="start_date" tabindex="0" type="text" readonly="readonly">
+					<input class="date input  form-control input" id="start_date" ref="start_date" tabindex="0" type="text" readonly="readonly">
 				</div>
 				<div class="column is-narrow">
 					<label class="label">To Date</label>
 				</div>
 				<div class="column is-narrow">
-					<input class="date input flatpickr-input form-control input" placeholder="" ref="end_date" tabindex="0" type="text" readonly="readonly">
+					<input class="date input  form-control input" id="end_date" ref="end_date" tabindex="0" type="text" readonly="readonly">
 				</div>
 				<div class="column">
 					<button class="button is-danger has-text-weight-bold"
 					onclick={getBankWiseFees} > GO
 					</button>
+
+          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                   <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+             </button>
 					
 				</div> 
 			</div>
 		</div>
-  <div class="columns is-full">
+
+    <p class="has-text-centered" style="color: #ff3860;font-weight:bold">Fees in Bank Summary</p>
+    <p class="has-text-centered">Session: {sessionName}</p>
+    <p class="has-text-centered">Bank:{selectedBank} Mode:{selectedMode} {fromSelectedDate} - {toSelectedDate}</p>
+
     <table class="table is-fullwidth is-striped is-hoverable is-bordered" >
       <thead>
         <tr>
@@ -91,18 +105,15 @@
         </tr>
       </tbody>
     </table>
-  </div>
 </section>  
 <script>
 	var self = this
     self.on("mount", function(){
       self.role = getCookie('role')
-       flatpickr(".date", {
-    	/*altInput: true,*/
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
-  		})
+      flatpickr(".date", {
+        allowInput: true,
+        dateFormat: "d/m/Y",
+      })
       self.update()
       self.readBanks()
       self.readMode()
@@ -113,13 +124,23 @@
       feesReportStore.off('read_bank_wise_changed',BankWiseChanged)
     })
     self.getBankWiseFees = () => {
+      var startDate = document.getElementById("start_date").value
+      var endDate = document.getElementById("end_date").value
+      if(!self.refs.start_date.value){
+        toastr.info("Pleae enter From Date and try again")
+      }else if(!self.refs.end_date.value){
+        toastr.info("Pleae enter End Date and try again")
+      }else if((Date.parse(startDate)> Date.parse(endDate))){
+           toastr.info("From date can't be greater")
+      }else{
     	var obj={}
-    	  obj.bank_id = self.refs.bank_id.value
-    	  obj.mode = self.refs.mode.value
-          obj['start_date']=self.refs.start_date.value
-          obj['end_date']=self.refs.end_date.value
-          self.loading = true
-          feesReportStore.trigger('read_bank_wise_fees', obj)
+  	    obj.bank_id = self.refs.bank_id.value
+  	    obj.mode = self.refs.mode.value
+        obj['start_date']=convertDate(self.refs.start_date.value)
+        obj['end_date']=convertDate(self.refs.end_date.value)
+        self.loading = true
+        feesReportStore.trigger('read_bank_wise_fees', obj)
+        }
           
     }
     /*========== Modal ========*/
@@ -147,7 +168,7 @@
       self.update()
     }
     feesReportStore.on('read_bank_wise_changed',BankWiseChanged)
-    function BankWiseChanged(bankWiseFees){
+    function BankWiseChanged(bankWiseFees, session_name){
     	console.log("bankWiseFees")
       console.log(bankWiseFees) 
         self.bankWiseFees = bankWiseFees
@@ -162,6 +183,13 @@
         self.totalScholarship +=Number(c.scholarship)
         self.grandTotal +=Number(c.total)
       })
+
+      self.sessionName = session_name
+      self.selectedBank = $("#bank_id option:selected").text() 
+      self.selectedMode = self.refs.mode.value
+      self.fromSelectedDate = self.refs.start_date.value
+      self.toSelectedDate = self.refs.end_date.value
+      self.loading = false
       self.update()
     }
     

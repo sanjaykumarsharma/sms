@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
        
      var data = {}
      
-     var qry = 'select fee_slip_name from fee_slip_master'; 
+     var qry = 'select fee_slip_name from fee_slip_master order by slip_order'; 
 
      connection.query(qry,function(err,result)     {
             

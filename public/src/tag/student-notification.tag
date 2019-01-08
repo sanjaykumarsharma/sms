@@ -2,26 +2,30 @@
 	<section class="is-fluid">
 		<div class="level">
 			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Students</h2>
+				<h2 class="title" style="color: #ff3860;">Students Notification</h2>
 			</div>
 		</div>
 		<div class="box">
 			<div class="columns">
+        <div class="column is-narrow">
+            <label class="label">Standard</label>
+        </div>
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
 							<select ref="standard_id" onchange={getSection}>
-								<option>Choose Section</option>
 								<option each={standards} value={standard_id}>{standard}</option>
 							</select>
 						</div>
 					</div>
 				</div>
+        <div class="column is-narrow">
+            <label class="label">Section</label>
+        </div>
 				<div class="column is-narrow">
 					<div class="control">
 			      <div class="select is-fullwidth">
 							<select ref="section_id" onchange={getStudentData}>
-								<option>Choose Class</option>
 								<option value="-1">ALL</option>
 								<option each={filteredSections} value={section_id}>{section}</option>
 							</select>
@@ -29,10 +33,12 @@
 			    </div>
 			  </div>
         <div class="column is-narrow">
+          <label class="label">Select Message Type</label>
+        </div>
+        <div class="column is-narrow">
           <div class="control">
             <div class="select">
               <select ref="get_message_type" onchange={getMessageType}>
-                <option>Select Message Type</option>
                 <option value="Email">Email</option>
                 <option value="SMS">SMS</option>
                 <option value="Both">Both</option>
@@ -41,10 +47,12 @@
           </div>
         </div>
         <div class="column is-narrow">
+          <label class="label">Send To</label>
+        </div>
+        <div class="column is-narrow">
           <div class="control">
             <div class="select">
               <select ref="get_phone_no">
-                <option>Send To</option>
                 <option value="sms_number">SMS Number</option>
                 <option value="parents">Parents</option>
                 <option value="Both_Number">Both</option>
@@ -60,6 +68,11 @@
         </div>
 			</div>
 		</div>
+    <input class="input" style="margin-bottom: 12px;" type="text" id="student_subject" ref="student_subject" 
+    show={student_subject} placeholder="SUBJECT"><br>
+    <textarea class="textarea" id="student_message" ref="student_message" placeholder="MESSAGE"></textarea><br>
+    <button class="button is-info is-pulled-right ml5" onclick={clear} >Reset</button>
+    <button class="button is-danger is-pulled-right" onclick={sendStudentNotification} >Send</button>
 		<table class="table is-fullwidth is-striped is-hoverable is-narrow" show={student_table}>
 			<thead>
 				<tr>
@@ -86,27 +99,19 @@
 				</tr>
 			</tbody>
 		</table>
-    <input class="input" style="margin-bottom: 12px;" type="text" id="student_subject" ref="student_subject" 
-    show={student_subject} placeholder="SUBJECT"><br>
-		<textarea class="textarea" id="student_message" ref="student_message" placeholder="MESSAGE"></textarea><br>
-    <button class="button is-info is-pulled-right ml5" onclick={clear} >Reset</button>
-		<button class="button is-danger is-pulled-right" onclick={sendStudentNotification} >Send</button>
+    
 	</section>
 <script>
 	var self = this
     self.on("mount", function(){
     	self.role = getCookie('role')
     	self.addAllCheckBox=true;
-      	self.addCheckBox=true;
+      self.addCheckBox=true;
     	self.readStandard()
     	self.readSection()
       self.choose_button = true
       self.close_button = false
-        self.update()
-        flatpickr(".date", {
-	    	allowInput: true,
-        	dateFormat: "d/m/Y",
-  		})
+      self.update()
     })
 
     self.on("unmount", function(){
@@ -151,20 +156,17 @@
     	self.filteredSections = self.sections.filter(s => {
     		return s.standard_id == self.refs.standard_id.value
     	})
+      self.update()
     }
     self.getStudentData = ()=>{
-    	console.log("inside student")
-    	  var obj={}
-          obj['standard_id']=self.refs.standard_id.value
-          obj['section_id']=self.refs.section_id.value
-          self.loading = true
-          studentNotificationStore.trigger('read_students', obj)
-          console.log(obj)
+  	  var obj={}
+      obj['standard_id']=self.refs.standard_id.value
+      obj['section_id']=self.refs.section_id.value
+      self.loading = true
+      studentNotificationStore.trigger('read_students', obj)
     }
 
     self.selectAll = () => {
-      //self.mobile = []
-      //self.email = []
       if($('#checkStudentName').is(":checked")){
         self.students.map(i=>{
           i.done = true;
@@ -217,9 +219,11 @@
         }
       })
       
-      console.log(mobile);
-      console.log(email);
       if(self.refs.get_message_type.value =='SMS'){
+        if(self.refs.student_message.value == ""){
+          toastr.error("Please enter Valid Message and try again")
+          return;
+        }
         if(self.refs.get_phone_no.value=='sms_number'){
           studentNotificationStore.trigger('send_sms',mobile,self.refs.student_message.value)
         }else if(self.refs.get_phone_no.value=='parents') {
@@ -229,6 +233,14 @@
           studentNotificationStore.trigger('send_sms',p_mobile,self.refs.student_message.value)
         }
       }else if(self.refs.get_message_type.value =='Email'){
+        if(self.refs.student_subject.value == ""){
+          toastr.error("Please enter Valid Subject and try again")
+          return;
+        }
+        if(self.refs.student_message.value == ""){
+          toastr.error("Please enter Valid Message and try again")
+          return;
+        }
         if(self.refs.get_phone_no.value=='sms_number'){
           studentNotificationStore.trigger('send_email',email,self.refs.student_subject.value,self.refs.student_message.value)
         }else if(self.refs.get_phone_no.value=='parents') {
@@ -238,6 +250,14 @@
           studentNotificationStore.trigger('send_email',email,self.refs.student_subject.value,self.refs.student_message.value)
         }
       }else if(self.refs.get_message_type.value=='Both'){
+        if(self.refs.student_subject.value == ""){
+          toastr.error("Please enter Valid Subject and try again")
+          return;
+        }
+        if(self.refs.student_message.value == ""){
+          toastr.error("Please enter Valid Message and try again")
+          return;
+        }
         if(self.refs.get_phone_no.value=='sms_number'){
           studentNotificationStore.trigger('send_sms',mobile,self.refs.student_message.value)
           studentNotificationStore.trigger('send_email',email,self.refs.student_subject.value,self.refs.student_message.value)
@@ -272,6 +292,7 @@
       self.sections = sections
       self.update()
       self.getSection()
+      self.getStudentData()
     }
 
     studentNotificationStore.on('students_changed',StudentChanged)

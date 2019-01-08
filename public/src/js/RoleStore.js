@@ -39,10 +39,10 @@ function RoleStore() {
               return c.id != id
             })
             self.roles = temproles
-            toastr.info("Roles Deleted Successfully")
+            toastr.info("Role Deleted Successfully")
             self.trigger('roles_changed', self.roles)
           }else if(data.status == 'e'){
-            showToast("Error Deleting Course. Please try again.", data)
+            showToast("Error Deleting Role. Please try again.", data)
           }
         },
         error: function(data){

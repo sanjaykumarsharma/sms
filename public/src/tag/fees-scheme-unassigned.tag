@@ -1,13 +1,10 @@
 <fees-scheme-unassigned>
+<header></header> 
+<loading-bar if={loading}></loading-bar>
 <section class=" is-fluid">
-	<h2 class="title has-text-centered" style="color: #ff3860;">Un-assigned Students</h2>
-	<div class="flex items-center mt-2 mb-6 no-print">
-		<div class="bg-green py-1 rounded w-10">
-			<div class="bg-grey h-px flex-auto"></div>
-		</div>
-	</div>
+	<p class="has-text-centered" style="color: #ff3860;font-weight:bold">Un-assigned Students</p>
+  	<p class="has-text-centered">Session: {sessionName}</p>
 
-	<div class="columns is-full">
 		<table class="table is-fullwidth is-striped is-hoverable is-bordered" >
 			<thead>
 				<tr>
@@ -28,7 +25,6 @@
 				</tr>
 			</tbody>
 		</table>
-	</div>
 </section>
 
 <script>
@@ -53,6 +49,7 @@
       //console.log(students) 
       self.students = []
       self.students = students
+      self.loading = false
       self.update()
     }
 </script> 

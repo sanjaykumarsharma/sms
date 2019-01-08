@@ -71,7 +71,79 @@ self.on('read_student_date_wise_case_report', function(category_id,start_date,en
           if(data.status == 's'){
             toastr.success("Successfully ")
             self.studentDateWiseCaseReports = data.studentDateWiseCaseReports
-            self.trigger('read_student_date_wise_case_report_changed', self.studentDateWiseCaseReports)
+
+            self.trigger('read_student_date_wise_case_report_changed', self.studentDateWiseCaseReports, getCookie('session_name'))
+          }else if(data.status == 'e'){
+            showToast("Invalid Username or password. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+//read Class Wise student Case Report
+
+self.on('read_class_wise_report', function(standard_id,section_id) {
+    let req = {}
+     req.standard_id=standard_id
+     req.section_id=section_id
+    $.ajax({
+       url:'/infirmary_student/read_class_wise_report',
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully ")
+            self.class_wise_case_report = data.class_wise_case_report
+              self.grand_total=0
+              self.class_wise_case_report.map( q => {
+                 self.grand_total=Number(self.grand_total) + Number(q.total)
+              })
+            //self.grand_total = data.grand_total
+           //  , getCookie('session_name')
+            self.trigger('read_class_wise_report_changed', self.class_wise_case_report, self.grand_total)
+          }else if(data.status == 'e'){
+            showToast("Invalid Username or password. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+
+// infiramry student case wise report
+
+self.on('read_case_wise_report', function(obj) {
+    let req = {}
+     req.start_date=obj.start_date
+     req.end_date=obj.end_date
+    $.ajax({
+       url:'/infirmary_student/read_case_wise_report',
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully ")
+                self.case_wise_reports = data.case_wise_reports
+                self.grand_total=0
+                self.case_wise_reports.map( q => {
+                self.grand_total=Number(self.grand_total) + Number(q.total)
+              })
+            //self.grand_total = data.grand_total
+           //  , getCookie('session_name')
+            self.trigger('read_case_wise_report_changed', self.case_wise_reports, self.grand_total)
           }else if(data.status == 'e'){
             showToast("Invalid Username or password. Please try again.", data)
           }

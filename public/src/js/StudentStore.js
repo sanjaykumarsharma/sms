@@ -112,10 +112,60 @@ function StudentStore() {
       })
   })
 
+  self.on('read_student_first_edit', function(read_standard_id,read_section_id,first_edit_value) {
+   
+    let req = {}
+    req.read_standard_id=read_standard_id
+    req.read_section_id=read_section_id
+    req.first_edit_value=first_edit_value
+    $.ajax({
+      url:'/student/read_student_first_edit/'+read_standard_id+'/'+read_section_id+'/'+first_edit_value,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_student_first_edit_changed', data.student_first_edit)
+          }else if(data.status == 'e'){
+            showToast("Student Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('edit_student_first', function(obj,first_edit_value) {
+    let req = {}
+   
+    req.editValues = obj
+    console.log(first_edit_value)
+    $.ajax({
+      url:'/student/edit_student_first/'+first_edit_value,
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully Update")
+            self.trigger('edit_student_first_changed')
+          }else if(data.status == 'e'){
+            showToast("Error Updating Student. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
   self.on('read_student', function(read_standard_id,read_section_id,read_enroll_number) {
-    console.log(read_standard_id)
-    console.log(read_section_id)
-    console.log(read_enroll_number)
+ 
     let req = {}
     req.read_standard_id=read_standard_id
     req.read_section_id=read_section_id
@@ -128,14 +178,42 @@ function StudentStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.students = data.students
-            self.trigger('read_student_changed', data.students)
+            
+            if(data.students == []){
+               toastr.info("No Data Found!")
+            }
+            self.trigger('read_student_changed', data.students,getCookie('session_id'),getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Student Read Error. Please try again.", data)
           }
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+  self.on('read_student_csv', function(read_standard_id,read_section_id,read_enroll_number) {
+    
+    let req = {}
+    req.read_standard_id=read_standard_id
+    req.read_section_id=read_section_id
+    req.read_enroll_number=read_enroll_number
+    $.ajax({
+      url:'/student/read_student_csv/'+read_standard_id+'/'+read_section_id+'/'+read_enroll_number,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
         }
       })
   })
@@ -154,7 +232,7 @@ function StudentStore() {
           console.log(data)
           if(data.status == 's'){
             self.student_details = data.student_details
-            self.trigger('read_for_edit_student_changed', data.student_details)
+            self.trigger('read_for_edit_student_changed', data.student_details,getCookie('session_id'))
           }else if(data.status == 'e'){
             showToast("Student Read Error. Please try again.", data)
           }
@@ -179,7 +257,7 @@ function StudentStore() {
           console.log(data)
           if(data.status == 's'){
             self.student_profile_details = data.student_profile_details
-            self.trigger('read_student_profile_changed', data.student_profile_details)
+            self.trigger('read_student_profile_changed', data.student_profile_details,getCookie('session_id'))
           }else if(data.status == 'e'){
             showToast("Student Read Error. Please try again.", data)
           }
@@ -216,8 +294,7 @@ function StudentStore() {
 
   self.on('edit_student', function(obj,student_id) {
     let req = {}
-    console.log(obj)
-    console.log(student_id)
+   
     req.student_id=student_id
     $.ajax({
       url:'/student/edit_student/'+student_id,
@@ -241,10 +318,10 @@ function StudentStore() {
       })
   })
 
+
   self.on('create_student_withdraw', function(obj,student_id) {
     /*let req = {}*/
-    console.log(obj)
-    console.log(student_id)
+  
     /*req.student_id=student_id*/
     $.ajax({
       url:'/student/create_student_withdraw/'+student_id,
@@ -269,10 +346,10 @@ function StudentStore() {
   })
 
   self.on('delete_student', function(student_id) {
-    console.log(student_id)
+   
     let req = {}
     req.student_id=student_id
-    console.log(req.student_id)
+  
     $.ajax({
       url:'/student/delete_student/'+student_id,
         contentType: "application/json",
@@ -280,11 +357,12 @@ function StudentStore() {
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           if(data.status == 's'){
-            let tempstudents = self.students.filter(c => {
+            /*let tempstudents = self.students.filter(c => {
               return c.student_id != student_id
             })
-            self.students = tempstudents
-            self.trigger('delete_student_changed', self.students)
+            self.students = tempstudents*/
+            toastr.info("Successfully Deleted")
+            self.trigger('delete_student_changed', )
           }else if(data.status == 'e'){
             showToast("Error Deleting Student. Please try again.", data)
           }
@@ -297,7 +375,7 @@ function StudentStore() {
 
   self.on('regenerate_roll_no', function(read_section_id) {
     let req = {}
-    console.log(read_section_id)
+    
     req.read_section_id=read_section_id
     $.ajax({
       url:'/student/regenerate_roll_no/'+read_section_id,
@@ -321,7 +399,6 @@ function StudentStore() {
 
   self.on('student_list', function(read_section_id) {
     let req = {}
-    console.log(read_section_id)
     req.read_section_id=read_section_id
     $.ajax({
       url:'/student/student_list/'+read_section_id,
@@ -370,7 +447,7 @@ function StudentStore() {
     var form_data = new FormData(); 
     form_data.append("student_profile_picture", student_image);
     $.ajax({
-      url:'/student/upload_student_image/student/'+student_id,
+      url:'/student/upload_student_image/studentImages/'+student_id,
         type:"POST",
         dataType: 'script',
         processData: false,
@@ -391,7 +468,7 @@ function StudentStore() {
     var form_data = new FormData(); 
     form_data.append("father_profile_picture", father_image);
     $.ajax({
-      url:'/student/upload_father_image/father/'+student_id,
+      url:'/student/upload_father_image/fatherImages/'+student_id,
         type:"POST",
         dataType: 'script',
         processData: false,
@@ -412,7 +489,7 @@ function StudentStore() {
     var form_data = new FormData(); 
     form_data.append("mother_profile_picture", mother_image);
     $.ajax({
-      url:'/student/upload_mother_image/mother/'+student_id,
+      url:'/student/upload_mother_image/motherImages/'+student_id,
         type:"POST",
         dataType: 'script',
         processData: false,
@@ -432,8 +509,10 @@ function StudentStore() {
   self.on('upload_guardian_image', function(guardian_image,student_id) {
     var form_data = new FormData(); 
     form_data.append("guardian_profile_picture", guardian_image);
+    console.log("guardian_image")
+    console.log(guardian_image)
     $.ajax({
-      url:'/student/upload_guardian_image/guardian/'+student_id,
+      url:'/student/upload_guardian_image/guardianImages/'+student_id,
         type:"POST",
         dataType: 'script',
         processData: false,
@@ -448,6 +527,50 @@ function StudentStore() {
           showToast("", data)
         }
       })
+  })
+
+  self.on('upload_copy_father_image', function(student_id) {
+    
+    let req = {}
+    req.student_id=student_id
+    console.log("student_id")
+    console.log(req.student_id)
+    $.ajax({
+      url:'/student/upload_copy_father_image/'+student_id,
+      type:"POST",
+      data: JSON.stringify(),
+      contentType: "application/json",
+      dataType:"json",
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        self.trigger('upload_copy_father_image_changed')
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('upload_copy_mother_image', function(student_id) {
+    let req = {}
+    req.student_id=student_id
+    console.log("student_id")
+    console.log(req.student_id)
+    $.ajax({
+      url:'/student/upload_copy_mother_image/'+student_id,
+      type:"POST",
+      data: JSON.stringify(),
+      contentType: "application/json",
+      dataType:"json",
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+          
+        self.trigger('upload_copy_mother_image_changed',)
+      },
+      error: function(data){
+        showToast("", data)
+      }
+    })
   })
 
 }

@@ -1,12 +1,9 @@
 <inventory-sale>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" show={inventory_sale_view == 'show_inventory_sale_table'}>
-		<h2 class="title" style="color: #ff3860;">Sale</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+        <h4 class="title has-text-centered" style="color: #ff3860;">Goods Sale From Store Department</h4>
+		<div class="box no-print">
 			<div class="columns">
         <div class="column is-narrow">
           <label class="label" style="margin-left:-14px">Category</label>
@@ -21,16 +18,25 @@
             </div>
           </div>
         </div>
+        <div class="column">
+         <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+        </button>
+        <button class="button is-warning is-rounded is-pulled-right" onclick={readInventorySale} style="margin-left:3px;margin-right:3px">
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
+          <button class="button is-warning is-rounded is-pulled-right" onclick={show_inventory_sale}>
+          <span class="icon">
+            <span class="fas fa-plus"></span>
+          </span>
+        </button>
+        </div>
 			</div>
 		</div>
-     <div class="level-right">
-      <button class="button is-warning is-rounded" onclick={show_inventory_sale}>
-      <span class="icon">
-        <span class="fas fa-plus"></span>
-      </span>
-      <span>Add</span>
-      </button>
-    </div>
 		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
@@ -63,7 +69,7 @@
          <!--  <td>{ ev.sale_to}</td>
          <td>{ ev.rack_name}</td>
          <td>{ ev.purpose}</td> -->
-		      <td class="has-text-right">
+		      <td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -247,6 +253,7 @@
          dateFormat: "Y-m-d",
        })
       //self.showSaleType()
+      self.loading=false
       self.update()
     //  self.readInventoryDepartment()
       self.readInventoryCategory()
@@ -330,6 +337,7 @@
    }
     
     self.readInventorySale = () => {
+      self.loading=true
        inventorySaleStore.trigger('read_inventory_sale', self.refs.r_category_id.value)
     }
     
@@ -460,6 +468,7 @@
       // self.refs.staff_id.value=''
        //self.refs.purpose.value=''
       self.loading = false
+      self.readInventorySale()
       self.update()
       //self.readInventoryCategory()
       console.log(self.inventorySales)
@@ -484,6 +493,7 @@
        //self.refs.purpose.value=''
       self.loading = false
       self.inventorySales = inventorySales
+      self.readInventorySale()
       self.update()
      // self.readInventoryCategory()
       //console.log(self.empinventoryCategoriesloye_roles)
@@ -508,8 +518,7 @@
       self.inventoryCategories = inventoryCategories
       self.refs.sub_category_id.value = ''
       /*self.refs.department.value = ''*/
-      self.refs.category_id.value = ''
-      self.refs.item_id.value = ''
+      
       self.update()
       console.log(self.inventoryCategories)
       self.readInventorySale()
@@ -544,10 +553,6 @@ inventoryIssueStore.on('read_inventory_available_quantity_changed',ReadInventory
      // self.title='Create'
       self.loading = false
       self.inventorySubcategories = inventorySubcategories
-      self.refs.sub_category_id.value = ''
-      /*self.refs.department.value = ''*/
-      self.refs.item_id.value = ''
-      self.refs.category_id.value = ''
       self.update()
       console.log(self.inventorySubcategories)
     }

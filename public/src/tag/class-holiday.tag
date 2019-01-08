@@ -1,6 +1,8 @@
 <class-holiday>
-<section class="is-fluid" show={class_holiday_view =='show_holiday'}>
-  <div class="level">
+   <header></header>
+  <loading-bar if={loading}></loading-bar>
+  <section class="is-fluid" show={class_holiday_view =='show_holiday'}>
+  <div class="level no-print">
     <div class="level-left">
       <h2 class="title" style="color: #ff3860;">Class Holiday</h2>
     </div>
@@ -9,8 +11,18 @@
       <span class="icon">
         <span class="fas fa-plus"></span>
       </span>
-      <span>Class Holiday</span>
       </button>
+      <button class="button is-warning is-rounded is-pulled-right" onclick={readClassHoliday} style="margin-right:5px;margin-left:5px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+        </button>
     </div>
   </div>
 
@@ -36,7 +48,7 @@
           <td>{st.e_date}</td>
           <td>{st.holiday}</td>
           <td>{st.description}</td>
-          <td class="has-text-right">
+          <td class="has-text-right no-print">
             <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
               <span><a class="button is-small is-rounded" onclick={edit.bind(this, st)}>Edit</a></span>
               <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -149,6 +161,7 @@
 
     // read employe_roles
      self.readClassHoliday = () => {
+      self.loading=true
         classholidayStore.trigger('read_class_holiday')
      }
 

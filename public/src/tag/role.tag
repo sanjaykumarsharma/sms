@@ -1,12 +1,9 @@
 <role>
+  <header></header> 
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-		<h2 class="title" style="color: #ff3860;">Employee Role</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+		<h2 class="title has-text-centered" style="color: #ff3860;">Employee Role Details</h2>
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label">Employee</label>
@@ -26,14 +23,33 @@
 				</div>
 				<div class="column is-narrow">
 					<div class="control">
-						<input class=" input"
-						  ref="addEmployeeRoleInput" type="text">
+            <div class="select">
+              <select ref="addEmployeeRoleInput">
+                <option value='Activity'>Activity</option>
+                <option value='Mentor'>Mentor</option>
+                <option value='Infirmary'>Infirmary</option>
+                <option value='Store'>Store</option>
+                <option value='Time Table'>Time Table</option>
+                <option value='Discipline'>Discipline</option>
+                <option value='Career'>Career</option>
+                <option value='Admission'>Admission</option>
+                <option value='Fees'>Fees</option>
+                <option value='Certificate'>Certificate</option>
+              </select>
+            </div>
+						<!-- <input class=" input"
+              ref="addEmployeeRoleInput" type="text"> -->
 					</div>
 				</div>
 				<div class="column">
-					<button class="button is-danger has-text-weight-bold"
+					<button disabled={loading} class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
+          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+          </button>
 				</div>
 			</div>
 		</div>
@@ -51,7 +67,7 @@
 					<td>{ i+1 }</td>
 					<td>{ ev.employee_name}</td>
 					<td>{ ev.role}</td>
-		          	<td class="has-text-right">
+		          	<td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -84,11 +100,13 @@
 
     //read courses
     self.readEmployees = () => {
+        self.loading=true
        employeeRoleStore.trigger('read_employees')
     }
 
     //read employe_roles
     self.readEmployeeRoles = () => {
+      self.loading=true
        employeeRoleStore.trigger('read_employee_roles')
     }
 
@@ -205,6 +223,7 @@
     function EmployeesChanged(employees){
       console.log(employees) 
       self.employees = employees
+      self.loading=false
       self.update()
       console.log(self.employees)
     }

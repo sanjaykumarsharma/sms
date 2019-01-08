@@ -153,6 +153,7 @@ router.post('/read_staff_wise_report', function(req, res, next) {
        console.log(staff_id);
        var session_id=req.cookies.session_id
        var user='';
+       user=req.cookies.user
        var data = {}
        //var staff_id=-1;
        var staff_condition="";
@@ -165,9 +166,15 @@ router.post('/read_staff_wise_report', function(req, res, next) {
         }
        var condition = "";
 
-      // if(req.cookies.role != 'ADMIN') condition =  ' and a.created_by = ' + user;
+        if(req.cookies.role != 'ADMIN') condition = ` and a.created_by = ${user}' `;
 
-         var qry = "select concat(first_name,' ',middle_name,' ',last_name) as name,date_format(checkup_date,'%d/%m/%Y') as checkup_date, checkup_date as c_date, height,weight, concat(upper_bp,'/',lower_bp,' mmHg') as blood_pressure, bmi from staff_health a join employee b on a.staff_id=b.emp_id where  " + staff_condition + condition + date_condition + " order by c_date"; 
+         var qry =`select concat(first_name,' ',middle_name,' ',last_name) as name,
+         date_format(checkup_date,'%d/%m/%Y') as checkup_date, checkup_date as c_date, height,weight, 
+         concat(upper_bp,'/',lower_bp,' mmHg') as blood_pressure, bmi 
+         from staff_health a 
+         join employee b on a.staff_id=b.emp_id
+          where ${staff_condition} ${condition} ${date_condition} 
+           order by c_date`; 
          connection.query(qry,function(err,result)     {
            console.log(qry);
         if(err){
@@ -194,10 +201,11 @@ router.get('/read_staff_bp_weight', function(req, res, next) {
       
        var session_id=req.cookies.session_id
        var user='';
+       user=req.cookies.user
        var data = {}
        var condition=""
 
-      //if(req.cookies.role != 'ADMIN') condition =  ' a.created_by = ' + user;
+       if(req.cookies.role != 'ADMIN') condition =  ` a.created_by = '${user}' `;
 
          var qry =`select staff_id, health_id, b.employee_id, concat(first_name,' ',middle_name,' ',last_name)as name,
               date_format(checkup_date,'%d/%m/%Y') as checkup_date, checkup_date as c_date,

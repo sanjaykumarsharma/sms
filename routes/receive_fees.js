@@ -400,6 +400,7 @@ router.post('/add', function(req, res, next) {
         var feeSlips = [];
 
         for(i=0;i<slips.length;i++){
+
              var obj= []
               obj.push(receipt_id)
               obj.push(input.fee_plan_id)
@@ -407,8 +408,14 @@ router.post('/add', function(req, res, next) {
               obj.push(input.student_id)
               obj.push(slips[i].a_due)
               obj.push(slips[i].fine_by_slip)
-              obj.push(input.fine_recevied)
-              obj.push(input.fine_adjusted)
+              if(i >0){
+                obj.push(0)
+                obj.push(0)  
+              }else{
+                obj.push(input.fine_recevied)
+                obj.push(input.fine_adjusted)  
+              }
+              
               obj.push(session_id)
               obj.push(formatted)
               obj.push(req.cookies.role)

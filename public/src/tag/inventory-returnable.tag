@@ -1,12 +1,8 @@
 <inventory-returnable>
+  <header></header>
 	<section class=" is-fluid" show={inventory_returnable_view == 'show_inventory_returnable_table'}>
-		<h2 class="title" style="color: #ff3860;">Returnable Goods</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+		    <h4 class="title has-text-centered" style="color: #ff3860;">Returnable Goods</h4>
+		<div class="box no-print">
 			<div class="columns">
         <div class="column is-narrow">
           <label class="label" style="margin-left:-14px">Type</label>
@@ -37,16 +33,18 @@
             </div>
           </div>
         </div>
+        <div class="column">
+          <button class="button is-warning is-rounded is-pulled-right" onclick={readInventoryReturnableItem} style="margin-left:5px;margin-right:5px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+           <button class="button is-info is-rounded is-pulled-right" onclick={show_inventory_returnable_modal}>
+         <span class="icon"><span class="fas fa-plus"></span></span>
+          </button>
 			</div>
-		</div>
-     <div class="level-right">
-      <button class="button is-warning is-rounded" onclick={show_inventory_returnable_modal}>
-      <span class="icon">
-        <span class="fas fa-plus"></span>
-      </span>
-      <span>Add</span>
-      </button>
     </div>
+		</div>
 		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>

@@ -1,7 +1,8 @@
 <fees-scheme-assigned>
+<header></header> 
+<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid" >
-		<h2 class="title has-text-centered" style="color: #ff3860;">Fee Scheme Assigned Student</h2>
-		<div class="box">
+		<div class="box  no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label">Fee Scheme</label>
@@ -9,23 +10,31 @@
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="fee_plan_id">
+							<select ref="fee_plan_id" id="fee_plan_id">
 								<option>Select Fees Scheme</option>
 								<option each={feePlans} value={fee_plan_id}>{fee_plan_name}
 	                            </option>
 							</select>
 						</div>
-					</div>
-				</div>
-				<div class="column">
-					<button class="button is-danger has-text-weight-bold"
-					onclick={getAssignedStudents} > GO
-					</button>
+          </div>
+        </div>
+        <div class="column">
+          <button disabled={loading} class="button is-danger has-text-weight-bold"
+          onclick={getAssignedStudents} > GO
+          </button>
+            <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+             </button>
 					
 				</div> 
 			</div>
 		</div>
-  <div class="columns is-full">
+  <p class="has-text-centered" style="color: #ff3860;font-weight:bold">Fee Scheme Assigned Student</p>
+  <p class="has-text-centered">Session: {sessionName}</p>
+  <p class="has-text-centered">Scheme: {selectedScheme}</p>
+
     <table class="table is-fullwidth is-striped is-hoverable is-bordered" >
       <thead>
         <tr>
@@ -51,7 +60,6 @@
         </tr>
       </tbody>
     </table>
-  </div>
 </section>  
 <script>
 	var self = this
@@ -90,10 +98,13 @@
     }
       
     feesReportStore.on('read_assigned_student_changed',AssignedStudentChanged)
-    function AssignedStudentChanged(assignedStudents){
+    function AssignedStudentChanged(assignedStudents,session_name){
     	console.log("assignedStudents")
       console.log(assignedStudents) 
        self.assignedStudents = assignedStudents
+       self.selectedScheme = $("#fee_plan_id option:selected").text()
+       self.sessionName = session_name 
+      self.loading = false
        self.update()
     }
     

@@ -1,5 +1,47 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var download = require('download-file')
+
+router.get('/csv_export_mentor_case', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var qry = `SELECT case_id, a.category_id,category_name as 'Category Name', case_name as 'Case Name'
+               FROM mentor_case_master a
+               JOIN mentor_category_master b ON a.category_id = b.category_id 
+               order by category_name, case_name`;
+
+      connection.query(qry,function(err,result)     {    
+        if(err){
+          console.log("Error reading Category : %s ",err );
+          data.status = 'e';
+        }else{
+          data.status = 's';
+          data.categories = result;
+
+          const fields = ['Category Name','Case Name'];
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(result);
+
+          var path='./public/csv/MentorCase.csv'; 
+          fs.writeFile(path, csv, function(err,data) {
+            if (err) {throw err;}
+            else{ 
+              // res.download(path); // This is what you need
+              res.send(data)
+              var url='http://localhost:4000/csv/MentorCase.csv';
+              var open = require("open","");
+              open(url);  
+            }
+          });    
+        }
+     });      
+    });
+});
 
 /* Read Category listing. */
 router.get('/', function(req, res, next) {
@@ -35,9 +77,9 @@ router.get('/read_case', function(req, res, next) {
        
      var data = {}
 
-     var qry = 'SELECT case_id, a.category_id, case_name, category_name FROM mentor_case_master a';
-         qry = qry + ' JOIN mentor_category_master b ON a.category_id = b.category_id ';
-         qry = qry + ' order by category_name, case_name '; 
+     var qry =` SELECT case_id, a.category_id, case_name, category_name FROM mentor_case_master a
+                JOIN mentor_category_master b ON a.category_id = b.category_id 
+                order by category_name, case_name `; 
      connection.query(qry,function(err,result)     {
             
         if(err){

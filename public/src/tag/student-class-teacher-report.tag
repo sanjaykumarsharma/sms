@@ -1,46 +1,25 @@
 <student-class-teacher-report>
+	<header></header>
+	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-			<!-- 	<h2 class="title" style="color: #ff3860;">Student House Report</h2> -->
-			</div>
+	   <h4 class="title has-text-centered" style="color: #ff3860;">Class Teacher Listing <br> Session : ({session_name})</h4>
+	   <div class='box no-print'>
+	   		<div class="columns">
+			    <div class=" column">
+				<!-- <div class="level-right"> -->
+			        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+			          <span class="icon"> <i class="fas fa-print"></i></span>
+			        </button>
+			       <button class="button is-warning is-rounded is-pulled-right" onclick={readClassTeaherReport} style="margin-left:5px;margin-right:5px">
+			        <span class="icon">
+			          <span class="fas fa-sync-alt"></span>
+			        </span>
+			        </button>
+			    </div>
+		   </div>
 		</div>
-<!-- 		<div class="box">
-	<div class="columns">
-		<div class="column is-narrow">
-			<div class="control">
-				<div class="select">
-					<select ref="standard_id" onchange={getReadSection}>
-						<option>Choose Standard</option>
-						<option value='-1'>All</option>
-						<option each={standards} value={standard_id}>{standard}
-	                            </option>
-					</select>
-				</div>
-			</div>
-		</div>
-		<div class="column is-narrow">
-			<div class="control">
-	        	<div class="select is-fullwidth">
-					<select ref="section_id">
-						<option>Choose Section</option>
-						<option value='-1'>All</option>
-						<option each={readfilteredSections} value={section_id}>{section}
-	                            </option>
-					</select>
-				</div>
-	      	</div>
-	    </div>
-		<div class="column">
-			<button class="button is-danger has-text-weight-bold"
-			onclick={readStudentHouseReport} >GO
-			</button>
-			<input type="checkbox" id="checkTable" checked={e.done}
-		    onclick={viewTable}  style="margin-top: 12px;"> Table
-		</div>
-	</div>
-</div> -->
-		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
+
+		<table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 			<thead>
 				<tr>
 					<th>#</th>
@@ -103,6 +82,7 @@
     	})
     }*/
     self.readClassTeaherReport = () => {
+    	self.loading=true
        adminReportStore.trigger('read_class_teacher_report')
     }
     
@@ -121,10 +101,11 @@
       self.getReadSection()
     }*/
     adminReportStore.on('read_class_teacher_report_change',ReadClassTeacherReportChanged)
-    function ReadClassTeacherReportChanged(studentClassTeacherReports){
+    function ReadClassTeacherReportChanged(studentClassTeacherReports,session_name){
       //console.log(studentClassTeacherReports) 
       self.title='Create'
       self.loading = false
+      self.session_name = session_name
       self.studentClassTeacherReports = studentClassTeacherReports
       self.update()
       //console.log(self.employeeTypes)

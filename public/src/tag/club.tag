@@ -1,12 +1,7 @@
 <club>
 	<section class=" is-fluid">
 		<h2 class="title" style="color: #ff3860;">Club</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label">Club</label>
@@ -15,7 +10,7 @@
 					<div class="control">
 						<div class="control">
 							<input class=" input"
-              ref="addClubInput" type="text">
+              ref="addClubInput" type="text" onkeyup={addEnter} >
 						</div>
 					</div>
 				</div>
@@ -25,7 +20,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 						<input class=" input"
-						  ref="addCaptainInput" type="text">
+						  ref="addCaptainInput" type="text" onkeyup={addEnter}>
 					</div>
 				</div>
         <div class="column is-narrow">
@@ -34,13 +29,26 @@
         <div class="column is-narrow">
           <div class="control">
             <textarea class=" input"
-              ref="addDetailInput" type="text"></textarea> 
+              ref="addDetailInput" type="text" onkeyup={addEnter}></textarea> 
           </div>
         </div>
 				<div class="column">
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
+
+          <button class="button is-warning is-rounded is-pulled-right" onclick={readClub} style="margin-left:5px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+        </button>
+
 				</div>
 			</div>
 		</div>
@@ -60,7 +68,7 @@
 					<td>{ ev.club_name}</td>
           <td>{ ev.captain}</td>
 					<td>{ ev.club_detail}</td>
-		          	<td class="has-text-right">
+		          	<td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -91,6 +99,7 @@
 
     //read employe_roles
     self.readClub = () => {
+      self.loading=true
        clubStore.trigger('read_club')
     }
 

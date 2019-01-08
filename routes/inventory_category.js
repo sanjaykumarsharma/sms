@@ -34,12 +34,27 @@ router.get('/', function(req, res, next) {
   req.getConnection(function(err,connection){
        
      var data = {}
+     var user=req.cookies.user
+     if(req.cookies.role== 'ADMIN'){
+        var qry = `select category_id,category_name,department
+        from inventory_category_master order by 2`;
+      }else{
+        var qry = `select category_id,category_name, department
+        from inventory_category_master
+        where department in( select a.department
+            from inventory_store_department a
+            join inventory_department_staff b on a.department = b.department
+            where employee_id ='${user}')
+            order by 2`;
+      }
+
+/*
      var qry = 'SELECT e.department, category_id, category_name FROM inventory_category_master e';
-         qry = qry + ' LEFT JOIN inventory_store_department c ON e.department = c.department '; 
+         qry = qry + ' LEFT JOIN inventory_store_department c ON e.department = c.department '; */
      connection.query(qry,function(err,result)     {
             
         if(err){
-           console.log("Error reading event : %s ",err );
+           console.log("Error reading category : %s ",err );
            data.status = 'e';
 
         }else{

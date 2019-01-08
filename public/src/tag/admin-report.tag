@@ -1,5 +1,5 @@
 <admin-report>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_admin_report == 'student-summary-report' }" href="#/admin-report/student-summary-report">
 		      <span>Student Summary</span>
@@ -40,7 +40,19 @@
 		      <span>Class Teacher</span>
 		    </a>
 	  	</p>
+	  	<p class="control">
+		    <a class="button {is-active: selected_admin_report == 'student-blood-group-report'}" href="#/admin-report/student-blood-group-report">
+		      <span>Blood Group</span>
+		    </a>
+	  	</p>
 	  	 <p class="control">
+		    <a class="button {is-active: selected_admin_report == 'new-admission-report'}" href="#/admin-report/new-admission-report/new-admission-category-report">
+		      <span>New Admission</span>
+		    </a>
+	  	</p>
+</div>
+<div class="field has-addons no-print">
+	<p class="control">
 		    <a class="button {is-active: selected_admin_report == 'new-admission-report'}" href="#/admin-report/new-admission-report/new-admission-category-report">
 		      <span>New Admission</span>
 		    </a>

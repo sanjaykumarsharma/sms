@@ -16,7 +16,8 @@ function employeeTypeStore() {
           console.log(data)
           if(data.status == 's'){
             self.employeeTypes = data.employeeTypes
-            self.trigger('employeeTypes_changed', data.employeeTypes)
+            self.emp_id = getCookie('emp_id')
+            self.trigger('employeeTypes_changed', data.employeeTypes, self.emp_id)
           }else if(data.status == 'e'){
             showToast("Items Read Error. Please try again.", data)
           }

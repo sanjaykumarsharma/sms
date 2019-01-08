@@ -1,12 +1,9 @@
 <inventory-category>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<h2 class="title" style="color: #ff3860;">Inventory Category</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+		<h2 class="title has-text-centered" style="color: #ff3860;">Inventory Category Details</h2>
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label">Department</label>
@@ -14,7 +11,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="department">
+							<select ref="department" onkeyup={addEnter}>
 								<option each={inventoryDepartments} value={department}>{department}
 	              </option>
 							</select>
@@ -26,14 +23,21 @@
 				</div>
 				<div class="column is-narrow">
 					<div class="control">
-						<input class=" input"
-						  ref="category_name" type="text">
+						<input class=" input" ref="category_name" type="text" onkeyup={addEnter}>
 					</div>
 				</div>
 				<div class="column">
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
+          <button class="button is-warning is-rounded is-pulled-right" onclick={readInventoryItem} style="margin-left:5px;margin-right:5px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+            <span class="icon"><i class="fas fa-print"></i></span>
+           </button>
 				</div>
 			</div>
 		</div>
@@ -90,6 +94,7 @@
 
     //read employe_roles
     self.readInventoryCategory = () => {
+      self.loading=true
        inventoryCategoryStore.trigger('read_inventory_category')
     }
 
@@ -207,6 +212,7 @@
     function ReadInventoryDepartmentChanged(inventoryDepartments){
       console.log(inventoryDepartments) 
       self.inventoryDepartments = inventoryDepartments
+      self.loading=true
       self.update()
       console.log(self.inventoryDepartments)
     }

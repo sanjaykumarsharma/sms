@@ -1,4 +1,6 @@
 <infirmary-staff-wise-report>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>
 <section class="is-fluid">
   <div class="box">
       <div class="columns">
@@ -35,6 +37,11 @@
           <button class="button is-danger has-text-weight-bold"
           onclick={readStaffWiseReport} >Go
           </button>
+          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+        </button>
         </div>
       </div>
     </div>

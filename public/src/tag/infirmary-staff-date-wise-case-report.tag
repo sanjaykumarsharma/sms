@@ -1,6 +1,12 @@
 <infirmary-staff-date-wise-case-report>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>
 <section class="is-fluid" show={infirmary_staff_view == 'show_staff_date-wise-case-report-table'}>
-  <div class="box">
+     <h4 class="title has-text-centered" style="color: #ff3860;">Staff Wise Infirmary Case Report <br>
+        <span style='font-size:18px'> 
+             Category: {category_name} From: {start_date} To: {end_date}</span>
+     </h4>
+  <div class="box no-print">
       <div class="columns">
         <div class="column is-narrow">
           <label class="label">Category</label>
@@ -8,7 +14,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="read_category_id">
+              <select ref="read_category_id" id="read_category_id">
                 <option each={infirmaryCategories} value={category_id}>{category_name}
                 </option>
               </select>
@@ -20,7 +26,7 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text">
+             <input class="input date flatpickr-input form-control input" style="width:150px"  ref="start_date" placeholder="" tabindex="0"  type="text">
           </div>
         </div>
           <div class="column is-narrow">
@@ -28,30 +34,33 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text">
+              <input class="input date flatpickr-input form-control input" style="width:150px"  ref="end_date" placeholder="" tabindex="0"  type="text">
           </div>
         </div>
         <div class="column">
           <button class="button is-danger has-text-weight-bold"
           onclick={readStaffInfirmaryDateWiseCaseReport} >Go
           </button>
+
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+            </button>
+
+            <button class="button is-info is-rounded is-pulled-right" onclick={readStaffInfirmary} style="margin-left:5px;margin-right:5px">
+                <span class="icon">
+                  <span class="fas fa-sync-alt"></span>
+                </span>
+                </button>
+             <button class="button is-warning is-rounded is-pulled-right" onclick={add_student_infirmary}>
+                <span class="icon">
+                  <span class="fas fa-plus"></span>
+                </span>
+            </button>
         </div>
       </div>
     </div>
-  <div class="level">
-    <div class="level-left">
-      <h4 class="title" style="color: #ff3860;">Staff Date Wise Case Report</h4>
-    </div>
-
-    <!-- <div class="level-right">
-      <button class="button is-warning is-rounded" onclick={add_staff_infirmary}>
-      <span class="icon">
-        <span class="fas fa-plus"></span>
-      </span>
-      <span>Staff Date Wise Case Re</span>
-      </button>
-    </div> -->
-  </div>
 
   <table class="table is-fullwidth is-striped is-hoverable is-bordered">
       <thead>
@@ -179,7 +188,10 @@
 
      //read courses
      self.readStaffInfirmaryDateWiseCaseReport = () => {
-         //self.infirmary_staff_view='show_staff_table'
+            self.category_name = $("#read_category_id option:selected").text();
+            self.start_date=self.refs.start_date.value,
+            self.end_date=self.refs.end_date.value
+            self.loading=true
            staffinfirmaryStore.trigger('read_staff_date_wise_case_report', self.refs.read_category_id.value,self.refs.start_date.value,self.refs.end_date.value,)
            //staffStore.trigger('read_staffs', obj)
      }
@@ -218,6 +230,7 @@
      function InfirmaryCategoryChanged(infirmaryCategories){
        console.log(infirmaryCategories) 
        self.infirmaryCategories = infirmaryCategories
+       self.loading=false
        self.update()
        console.log(self.infirmaryCategories)
      }

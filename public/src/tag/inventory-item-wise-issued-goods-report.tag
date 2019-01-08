@@ -1,12 +1,9 @@
 <inventory-item-wise-issued-goods-report>
+    <header></header>
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-		<h2 class="title" style="color: #ff3860;">Item wise Issue</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+		<h2 class="title has-text-centered" style="color: #ff3860;">Inventory Item wise Issue Report</h2>
+		<div class="box no-print">
 			<div class="columns">
        <div class="column is-narrow">
           <label class="label" style="margin-left:-14px">Category</label>
@@ -101,6 +98,7 @@
 
 
     self.getItemWiseIssuedGoodsReport = () => {
+      self.loading=true
        inventoryReportStore.trigger('read_inventory_item_wise_issued_goods_report',self.refs.category_id.value,self.refs.item_id.value,self.refs.start_date.value,self.refs.end_date.value)
     }
     self.readInventoryCategory = () => {

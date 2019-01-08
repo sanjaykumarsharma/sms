@@ -1,5 +1,5 @@
 <infirmary>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_master == 'infirmary-student' }" href="#/infirmary/infirmary-student">
 		      <span>Student Infirmary</span>
@@ -12,6 +12,11 @@
 	    <p class="control">
 		    <a class="button {is-active: selected_master == 'infirmary-staff'}" href="#/infirmary/infirmary-staff">
 		      <span>Staff Infirmary</span>
+		    </a>
+	  	</p>
+	  	 <p class="control">
+		    <a class="button {is-active: selected_master == 'infirmary-lab-test'}" href="#/infirmary/infirmary-lab-test">
+		      <span>Lab Test</span>
 		    </a>
 	  	</p>
 	  	 <p class="control">

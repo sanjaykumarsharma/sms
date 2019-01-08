@@ -1,5 +1,5 @@
 <master>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_master == 'employee-type' }" href="#/master/employee-type">
 		      <span>Employee Type</span>
@@ -68,7 +68,7 @@
 	 
 	  
      </div>
-     <div class="field has-addons">
+     <div class="field has-addons no-print" >
      	 	<p class="control">
 		    <a class="button {is-active: selected_master == 'standard'}" href="#/master/standard">
 		      <span>New Class</span>
@@ -100,7 +100,11 @@
 		    </a>
 	  	</p>
 	  	<p class="control">
-		    <a class="button {is-active: selected_master == 'event-master'}" href="#/master/event-master/calender">Event Calender</a>
+		    <a class="button {is-active: selected_master == 'event-master'}" href="#/master/event-master/event-type">Event Calender</a>
+		    </a>
+	  	</p>
+	  	<p class="control">
+		    <a class="button {is-active: selected_master == 'event-master'}" href="#/master/inventory-department">Inventory Department</a>
 		    </a>
 	  	</p>
 </div>

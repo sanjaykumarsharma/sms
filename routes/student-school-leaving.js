@@ -70,11 +70,62 @@ router.post('/students', function(req, res, next) {
 
 });
 
+router.post('/create_certificate', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
+
+  req.getConnection(function(err,connection){
+    var data = {}
+
+      var values = {
+        type    : input.type,
+        student_id    : input.student_id,
+        examination_appeared    : input.examination_appeared,
+        leaving_date    : input.leaving_date,
+        conduct    : input.conduct,
+        attendance    : input.attendance,
+        faculty_relationship    : input.faculty_relationship,
+        peer_group_relationship    : input.peer_group_relationship,
+        class_responsibility    : input.class_responsibility,
+        house_responsibility    : input.house_responsibility,
+        attitude    : input.attitude,
+        punctuality    : input.punctuality,
+        remarks    : input.remarks,
+        modified_by    : req.cookies.role,
+        creation_date    : formatted,
+      };
+      if(input.examination_appeared =='TEN') values.examination_appeared ='ICSE';
+
+      if(input.examination_appeared =='TWELVE') values.examination_appeared ='ISC - ' + input.isc_stream;
+
+      var query = connection.query("INSERT INTO school_leaving set ? ",values, function(err, rows)
+      {
+
+        if(err){
+         console.log("Error Creating Certificate : %s ",err );
+         data.status = 'e';
+
+       }else{
+            data.status = 's';
+            data.id = rows.insertId;
+            res.send(JSON.stringify(data))
+        }
+        
+      });
+   });
+
+});
+
 /*update-login-status*/
 
 router.post('/print-feed-back-form', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+  var student_id = input.student_id;
+  console.log(student_id)
 
   req.getConnection(function(err,connection){
 
@@ -100,6 +151,65 @@ router.post('/print-feed-back-form', function(req, res, next) {
                 join standard_master g on f.standard_id = g.standard_id
                 left join student_master h on (b.reference_enrol = h.enroll_number  and b.current_session_id= ${req.cookies.session_id})
                 where a.student_id in (${input.student_id})
+                and d.session_id=${req.cookies.session_id}
+                group by a.student_id`;
+      
+      console.log(sql);
+
+      connection.query(sql, function(err, result)
+      {
+
+        if(err){
+          console.log("Error in updating status : %s ",err );
+          data.status = 'e';
+          data.error = err
+          data.messaage = err.sqlMessage
+        }else{
+          data.status = 's';
+          data.students = result;
+          res.send(data)
+        }
+        
+      });
+
+
+   });
+
+});
+
+
+/*Print Certificate*/
+
+router.get('/print_certificate/:student_id', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  var student_id = req.params.student_id;
+  console.log(student_id)
+
+  req.getConnection(function(err,connection){
+
+      var today = new Date();
+      var dt =today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+      var data = {}
+      
+      var sql = `select concat(b.first_name,' ',b.middle_name,' ',b.last_name) as name,
+                f_name,r_no, date_format(b.dob,'%d/%m/%Y') as dob, 
+                date_format(leaving_date, '%d/%m/%Y') as dol,
+                date_format(h.doa, '%d/%m/%Y') as doa,
+                g.standard,section,
+                h.admission_for_class, type,examination_appeared, b.enroll_number,punctuality,
+                conduct, attendance, faculty_relationship, peer_group_relationship,
+                class_responsibility, house_responsibility, attitude,remarks,house_name 
+                from school_leaving a 
+                join student_master b on (a.student_id=b.student_id and b.current_session_id=${req.cookies.session_id})
+                join student_current_standing d on (a.student_id = d.student_id and d.session_id = ${req.cookies.session_id})
+                left join house_master e on d.house_id = e.house_id 
+                join parent_master c on (a.student_id = c.student_id  and c.current_session_id=${req.cookies.session_id})
+                join section_master f on d.section_id = f.section_id
+                join standard_master g on f.standard_id = g.standard_id
+                left join student_master h on (b.reference_enrol = h.enroll_number  and b.current_session_id= ${req.cookies.session_id})
+                where a.student_id in (${student_id})
                 and d.session_id=${req.cookies.session_id}
                 group by a.student_id`;
       

@@ -23,7 +23,7 @@ function FeesReportStore(){
             console.log("===================")
             console.log(data.headWiseData)
             self.headWiseData = data.headWiseData
-            self.trigger('read_head_wise_changed', data.headWiseData)
+            self.trigger('read_head_wise_changed', data.headWiseData, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("data read Error. Please try again.", data)
           }
@@ -54,7 +54,7 @@ function FeesReportStore(){
             console.log("===================")
             console.log(data.headCategoryWiseData)
             self.headCategoryWiseData = data.headCategoryWiseData
-            self.trigger('read_head_category_wise_changed', data.headCategoryWiseData)
+            self.trigger('read_head_category_wise_changed', data.headCategoryWiseData, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("data read Error. Please try again.", data)
           }
@@ -77,7 +77,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.students = data.students
-            self.trigger('read_no_scheme_changed', data.students)
+            self.trigger('read_no_scheme_changed', data.students, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("students Read Error. Please try again.", data)
           }
@@ -100,7 +100,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.schemes = data.schemes
-            self.trigger('read_session_scheme_changed', data.schemes, data.grand_total)
+            self.trigger('read_session_scheme_changed', data.schemes, data.grand_total, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Error in reading data. Please try again.", data)
           }
@@ -124,7 +124,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.letter_students = data.letter_students
-            self.trigger('read_fees_letter_changed', data.letter_students)
+            self.trigger('read_fees_letter_changed', data.letter_students, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Error in reading data. Please try again.", data)
           }
@@ -147,7 +147,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.assignedStudents = data.assignedStudents
-            self.trigger('read_assigned_student_changed', data.assignedStudents)
+            self.trigger('read_assigned_student_changed', data.assignedStudents, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Error in reading data. Please try again.", data)
           }
@@ -173,7 +173,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.dateWiseData = data.dateWiseData
-            self.trigger('read_date_fees_changed', data.dateWiseData)
+            self.trigger('read_date_fees_changed', data.dateWiseData, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("data read Error. Please try again.", data)
           }
@@ -201,7 +201,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.advanceFees = data.advanceFees
-            self.trigger('read_advanced_fees_changed', data.advanceFees)
+            self.trigger('read_advanced_fees_changed', data.advanceFees, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("data read Error. Please try again.", data)
           }
@@ -228,7 +228,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.scholarships = data.scholarships
-            self.trigger('read_scholarship_list_changed', data.scholarships)
+            self.trigger('read_scholarship_list_changed', data.scholarships, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("data read Error. Please try again.", data)
           }
@@ -257,7 +257,7 @@ function FeesReportStore(){
           console.log("---=======---=======-----======")
           if(data.status == 's'){
             self.collectionSummary = data.collectionSummary
-            self.trigger('read_collection_summary_changed', data.collectionSummary)
+            self.trigger('read_collection_summary_changed', data.collectionSummary, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Error in reading data. Please try again.", data)
           }
@@ -283,7 +283,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.dailyData = data.dailyData
-            self.trigger('read_daily_fees_changed', data.dailyData)
+            self.trigger('read_daily_fees_changed', data.dailyData, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("data read Error. Please try again.", data)
           }
@@ -309,7 +309,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.registerData = data.registerData
-            self.trigger('read_fees_register_changed', data.registerData)
+            self.trigger('read_fees_register_changed', data.registerData, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("data read Error. Please try again.", data)
           }
@@ -335,7 +335,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.monthlyData = data.monthlyData
-            self.trigger('read_monthly_fees_changed', data.monthlyData)
+            self.trigger('read_monthly_fees_changed', data.monthlyData, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("data read Error. Please try again.", data)
           }
@@ -363,7 +363,7 @@ function FeesReportStore(){
           console.log(data)
           if(data.status == 's'){
             self.outstandingData = data.outstandingData
-            self.trigger('read_outstanding_fees_changed', data.outstandingData)
+            self.trigger('read_outstanding_fees_changed', data.outstandingData, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("data read Error. Please try again.", data)
           }
@@ -388,7 +388,7 @@ self.on('read_outstanding_classwise', function(obj) {
           console.log(data)
           if(data.status == 's'){
             self.outstandingFees = data.outstandingFees
-            self.trigger('read_outstanding_classwise_changed', data.outstandingFees)
+            self.trigger('read_outstanding_classwise_changed', data.outstandingFees, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Error in reading data. Please try again.", data)
           }
@@ -412,7 +412,7 @@ self.on('read_due_classwise', function(obj) {
           console.log(data)
           if(data.status == 's'){
             self.classWiseDueFees = data.classWiseDueFees
-            self.trigger('read_due_classwise_changed', data.classWiseDueFees)
+            self.trigger('read_due_classwise_changed', data.classWiseDueFees, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Error in reading data. Please try again.", data)
           }
@@ -438,7 +438,7 @@ self.on('read_advance_classwise', function(obj) {
           console.log(data)
           if(data.status == 's'){
             self.classWiseAdvanceFees = data.classWiseAdvanceFees
-            self.trigger('read_advance_classwise_changed', data.classWiseAdvanceFees)
+            self.trigger('read_advance_classwise_changed', data.classWiseAdvanceFees, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Error in reading data. Please try again.", data)
           }
@@ -464,7 +464,7 @@ self.on('read_estimated_fees', function(obj) {
           console.log("---=======---=======-----======")
           if(data.status == 's'){
             self.estimatedFees = data.estimatedFees
-            self.trigger('read_bank_wise_changed', data.estimatedFees)
+            self.trigger('read_estimated_fees_changed', data.estimatedFees, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Error in reading data. Please try again.", data)
           }
@@ -490,7 +490,7 @@ self.on('read_estimated_fees', function(obj) {
           console.log("---=======---=======-----======")
           if(data.status == 's'){
             self.bankWiseFees = data.bankWiseFees
-            self.trigger('read_bank_wise_changed', data.bankWiseFees)
+            self.trigger('read_bank_wise_changed', data.bankWiseFees, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Error in reading data. Please try again.", data)
           }
@@ -512,7 +512,7 @@ self.on('read_estimated_fees', function(obj) {
         success: function(data){
           if(data.status == 's'){
             self.banks = data.banks
-            self.trigger('read_bank_changed', data.banks)
+            self.trigger('read_bank_changed', data.banks, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("bank list Read Error. Please try again.", data)
           }
@@ -534,7 +534,7 @@ self.on('read_mode', function() {
         success: function(data){
           if(data.status == 's'){
             self.modes = data.modes
-            self.trigger('read_mode_changed', data.modes)
+            self.trigger('read_mode_changed', data.modes, getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("mode list Read Error. Please try again.", data)
           }

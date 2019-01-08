@@ -92,11 +92,13 @@ router.get('/read_staff_monthly_case_report/:month_id', function(req, res, next)
          //return;
        var session_id=req.cookies.session_id
        var user='';
+       user=req.cookies.user
        var data = {}
+       var condition=``
        var category_condition=""
         var d = new Date();
         var n = d.getFullYear();
-      // if(req.cookies.role != 'ADMIN') condition =  ' and a.created_by = ' + user;
+      if(req.cookies.role != 'ADMIN') condition =  ` and a.created_by = '${user}' `;
 
          //var qry = "select staff_infirmary_id, a.case_id, a.category_id, b.employee_id, concat(first_name,' ',middle_name,'',last_name) as name, f.case_name, date_format(treatment_date,'%d/%m/%Y') as t_date , date_format(treatment_date,'%Y-%m-%d') as treatment_date,  time_format(time_in, '%H:%i') as time_in, time_format(time_out,'%H:%i') as time_out, treatment from staff_infirmary a join employee b on a.staff_id=b.emp_id join infirmary_case_master f on a.case_id = f.case_id where  " + category_condition + condition + date_condition + " order by first_name, t_date"; 
          var from_date = n + "-" + month_id + "-" + '01';
@@ -108,7 +110,7 @@ router.get('/read_staff_monthly_case_report/:month_id', function(req, res, next)
                    from staff_infirmary a
                    join infirmary_category_master b on a.category_id = b.category_id
                    join employee c on a.staff_id = c.emp_id
-                   where a.treatment_date between '${from_date}' and '${to_date}'
+                   where a.treatment_date between '${from_date}' and '${to_date}' ${condition}
                    order by staff_id, category_name, t_date`;
         console.log(qry);
          connection.query(qry,function(err,result)     {
@@ -189,6 +191,7 @@ router.get('/read_staff_monthly_case_report/:month_id', function(req, res, next)
   });
 
 });
+
 // staff infirmary cae wise and date wise report 
 
 router.post('/readStaffCaseReport', function(req, res, next) {
@@ -204,6 +207,7 @@ router.post('/readStaffCaseReport', function(req, res, next) {
        console.log(category_id);
        var session_id=req.cookies.session_id
        var user='';
+       user=req.cookies.user
        var data = {}
        //var category_id=-1;
        var category_condition="";
@@ -216,9 +220,17 @@ router.post('/readStaffCaseReport', function(req, res, next) {
         }
        var condition = "";
 
-      // if(req.cookies.role != 'ADMIN') condition =  ' and a.created_by = ' + user;
+       if(req.cookies.role != 'ADMIN') condition = ` and a.created_by = '${user}' `;
 
-         var qry = "select staff_infirmary_id, a.case_id, a.category_id, b.employee_id, concat(first_name,' ',middle_name,'',last_name) as name, f.case_name, date_format(treatment_date,'%d/%m/%Y') as t_date , date_format(treatment_date,'%Y-%m-%d') as treatment_date,  time_format(time_in, '%H:%i') as time_in, time_format(time_out,'%H:%i') as time_out, treatment from staff_infirmary a join employee b on a.staff_id=b.emp_id join infirmary_case_master f on a.case_id = f.case_id where  " + category_condition + condition + date_condition + " order by first_name, t_date"; 
+         var qry =`select staff_infirmary_id, a.case_id, a.category_id, b.employee_id, 
+         concat(first_name,' ',middle_name,'',last_name) as name, f.case_name,
+          date_format(treatment_date,'%d/%m/%Y') as t_date , date_format(treatment_date,'%Y-%m-%d') as treatment_date,
+            time_format(time_in, '%H:%i') as time_in, time_format(time_out,'%H:%i') as time_out, treatment
+              from staff_infirmary a
+              join employee b on a.staff_id=b.emp_id 
+              join infirmary_case_master f on a.case_id = f.case_id 
+              where  ${category_condition} ${condition} ${date_condition}
+               order by first_name, t_date`; 
          connection.query(qry,function(err,result)     {
            console.log(qry);
         if(err){
@@ -240,6 +252,83 @@ router.post('/readStaffCaseReport', function(req, res, next) {
 
 });
 
+
+// staff infirmary health Report
+
+router.post('/read_staff_health_report', function(req, res, next) {
+     var input = JSON.parse(JSON.stringify(req.body));
+    req.getConnection(function(err,connection){
+         
+
+       var employee_id = input.employee_id;
+       var empID= employee_id.split(',')
+      
+     var str="";
+    for (var i=0; i<empID.length; i++){
+      if(i==0){
+        str="'" + empID[i] + "'";
+      }else{
+        str=str + ",'"+ empID[i] + "'"; 
+      }
+    }
+      console.log("empID")
+      console.log(employee_id)
+  
+
+       var start_date = input.start_date;
+      // console.log(start_date)
+       var end_date =input.end_date;
+     //  console.log(category_id);
+       var session_id=req.cookies.session_id
+       var user='';
+       user=req.cookies.user
+       var data = {}
+       //var category_id=-1;
+       var emp_condition=``;
+       var date_condition="";
+     //   and ${emp_condition} 
+        if(employee_id !='' ){
+          emp_condition =` and b.employee_id in (${str}) `;
+        }
+     /*   if(start_date !=''){
+          date_condition =` and treatment_date between '${start_date}' and '${end_date}' `;
+        }*/
+       var condition = "";
+
+     //  if(req.cookies.role != 'ADMIN') condition = ` and a.created_by = '${user}' `;
+
+         var qry =`select b.emp_id, employee_id, concat(first_name,' ',middle_name,' ',last_name)as name,designation, 
+              date_format(checkup_date,'%d/%m/%Y')as checkup_date, checkup_date as c_date,
+              date_format(dob,'%d/%m/%Y')as dob, department_name,
+              time_format(time_in, '%H:%i') as time_in, time_format(time_out,'%H:%i') as time_out,
+              weight, concat(upper_bp,'/',lower_bp,' mmHg')as blood_pressure,bmi,height
+              from staff_health a
+              join employee b on a.staff_id=b.emp_id
+              join department_master d on d.department_id=b.department_id
+              left join designation_master c on b.designation_id=c.designation_id
+              where checkup_date>= '${start_date}' and checkup_date<='${end_date}' ${emp_condition} 
+              order by name, c_date`; 
+         connection.query(qry,function(err,result)     {
+          console.log(qry);
+        if(err){
+           console.log("Error reading staff health report : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.staffHealthReports = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+          
+     });
+       
+  });
+
+});
+
 router.get('/read_staff_infirmary/:id', function(req, res, next) {
     req.getConnection(function(err,connection){
        var category_id = req.params.id;
@@ -250,15 +339,24 @@ router.get('/read_staff_infirmary/:id', function(req, res, next) {
        //var category_id=-1;
        var category_condition="";
         if(category_id !=-1){
-          category_condition =' a.category_id = ' + category_id;
+          category_condition =` a.category_id = ${category_id} `
         }
-       var condition = "";
+         var condition = "";
+          user=req.cookies.user
+        if(req.cookies.role != 'ADMIN') condition =  ` and a.created_by = '${user}' `
 
-       if(req.cookies.role != 'ADMIN') condition =  ' and a.created_by = ' + user;
-
-         var qry = "select staff_infirmary_id,  a.case_id,employee_id, staff_id,  concat(first_name,' ',middle_name,'',last_name) as name, a.category_id, c.case_name, date_format(treatment_date,'%d/%m/%Y') as treatment_date, date_format(treatment_date,'%d/%m/%Y') as t_date,time_format(time_in, '%H:%i') as time_in, time_format(time_out,'%H:%i') as time_out, treatment from staff_infirmary a join employee b on a.staff_id=b.emp_id join infirmary_case_master c on a.case_id = c.case_id where " + category_condition + condition + " order by name"; 
+         var qry = `select staff_infirmary_id,  a.case_id,employee_id, staff_id,
+           concat(first_name,' ',middle_name,'',last_name) as name, a.category_id, 
+           c.case_name, date_format(treatment_date,'%d/%m/%Y') as treatment_date, 
+           date_format(treatment_date,'%d/%m/%Y') as t_date,time_format(time_in, '%H:%i') as time_in, 
+           time_format(time_out,'%H:%i') as time_out, treatment 
+           from staff_infirmary a 
+           join employee b on a.staff_id=b.emp_id
+            join infirmary_case_master c on a.case_id = c.case_id 
+            where ${category_condition} ${condition} 
+            order by name`; 
          connection.query(qry,function(err,result)     {
-          //  console.log(qry);
+          console.log(qry);
         if(err){
            console.log("Error reading infirmary : %s ",err );
            data.status = 'e';
@@ -326,7 +424,7 @@ router.get('/read_staff_infirmary/:id', function(req, res, next) {
 
 });*/
 
-/* Add Event listing. */
+/* Add Staff infiramry  . */
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
@@ -365,7 +463,157 @@ router.post('/add', function(req, res, next) {
 });
 
 
-/* Edit Event listing. */
+
+// read Staff Lab test report
+
+
+router.post('/read_staff_lab_test', function(req, res, next) {
+    req.getConnection(function(err,connection){
+       var category_id = req.params.id;
+       console.log(category_id);
+       var session_id=req.cookies.session_id
+       var user='';
+       var data = {}
+       //var category_id=-1;
+    /*   var category_condition="";
+        if(category_id !=-1){
+          category_condition =` a.category_id = ${category_id} `
+        }*/
+         var condition = "";
+          user=req.cookies.user
+        if(req.cookies.user != 'ADMIN') condition =  `  a.created_by = '${user}' `
+
+         var qry = `select  lab_id,employee_id, a.emp_id, gender, first_name,middle_name,last_name, heamoglobin,platelet,creatinine,blood_sugar_f,
+            blood_sugar_p,triglyceride,total_cholesterol,sgpt,sgot,systolic_bp,diastolic_bp
+           from infirmary_lab_test a 
+           join employee b on a.emp_id=b.emp_id
+            where ${condition} 
+            and a.session_id=${session_id}
+            order by first_name`; 
+          connection.query(qry,function(err,result){
+          console.log(qry);
+        if(err){
+           console.log("Error reading infirmary lab test : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.staffInfirmaryLabTests = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+          
+     });
+       
+  });
+
+});
+
+// Add Staff Lab test
+
+router.post('/add_staff_lab_test_infirmary', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+        var now = new Date();
+        var jsonDate = now.toJSON();
+        var formatted = new Date(jsonDate);
+
+        var data = {} 
+
+        var values = {
+            emp_id : input.emp_id,
+            heamoglobin : input.heamoglobin,
+            platelet : input.platelet,
+            creatinine : input.creatinine,
+            blood_sugar_f : input.blood_sugar_f,
+            blood_sugar_p : input.blood_sugar_p,
+            triglyceride : input.triglyceride,
+            total_cholesterol : input.total_cholesterol,
+            sgpt : input.sgpt,
+            sgot : input.sgot,
+            systolic_bp : input.systolic_bp,
+            diastolic_bp : input.diastolic_bp,
+            creation_date : formatted,
+            modification_date : formatted,
+            created_by : req.cookies.user,
+            modified_by : req.cookies.user,
+            session_id : req.cookies.session_id,
+        };
+        
+        var query = connection.query("INSERT INTO infirmary_lab_test set ? ",values, function(err, rows)
+        {
+  
+          if(err){
+           console.log("Error inserting Lab test : %s ",err );
+           data.status = 'e';
+
+         }else{
+              data.status = 's';
+              data.lab_id = rows.insertId;
+              res.send(JSON.stringify(data))
+          }
+         
+          
+        });
+   });
+
+});
+
+
+/* Edit lab test. */
+router.post('/edit_staff_lab_test_infirmary/:id', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  var id = input.id;
+
+  req.getConnection(function(err,connection){
+        var data = {}
+          var now = new Date();
+          var jsonDate = now.toJSON();
+          var formatted = new Date(jsonDate);
+          var values = {
+            emp_id : input.emp_id,
+            heamoglobin : input.heamoglobin,
+            platelet : input.platelet,
+            creatinine : input.creatinine,
+            blood_sugar_f : input.blood_sugar_f,
+            blood_sugar_p : input.blood_sugar_p,
+            triglyceride : input.triglyceride,
+            total_cholesterol : input.total_cholesterol,
+            sgpt : input.sgpt,
+            sgot : input.sgot,
+            systolic_bp : input.systolic_bp,
+            diastolic_bp : input.diastolic_bp,
+            modification_date : formatted,
+            modified_by : req.cookies.user,
+        };
+        
+        var query = connection.query("UPDATE infirmary_lab_test set ? WHERE lab_id = ?",[values,id], function(err, rows)
+        {
+  
+          if(err){
+           console.log("Error updating lab test : %s ",err );
+           data.status = 'e';
+
+	       }else{
+	            data.status = 's';
+	            data.lab_id = id;
+	            res.send(JSON.stringify(data))
+	        }
+         
+          
+        });
+   });
+
+});
+
+// update staff 
+
+
 router.post('/edit/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
@@ -392,17 +640,50 @@ router.post('/edit/:id', function(req, res, next) {
            console.log("Error inserting cases : %s ",err );
            data.status = 'e';
 
-	       }else{
-	            data.status = 's';
-	            data.staff_infirmary_id = rows.insertId;
-	            res.send(JSON.stringify(data))
-	        }
+         }else{
+              data.status = 's';
+              data.staff_infirmary_id = rows.insertId;
+              res.send(JSON.stringify(data))
+          }
          
           
         });
    });
 
 });
+
+// delete staff lab test
+
+
+
+router.get('/delete_lab_test/:id', function(req, res, next) {
+
+  var id = req.params.id;
+
+  req.getConnection(function(err,connection){
+        var data = {}
+
+        var query = connection.query("DELETE from infirmary_lab_test WHERE lab_id = ?",[id], function(err, rows)
+        {
+  
+          if(err){
+           console.log("Error deleting lab test : %s ",err );
+           data.status = 'e';
+
+         }else{
+              data.status = 's';
+              res.send(JSON.stringify(data))
+          }
+         
+          
+        });
+   });
+
+});
+
+
+
+
 
 /* Delete Event listing. */
 router.get('/delete/:id', function(req, res, next) {

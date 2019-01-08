@@ -1,5 +1,5 @@
 <infirmary-staff-bp-weight-report>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_infirmary_staff_bp_weight_report == 'infirmary-staff-wise-report'}" href="#/infirmary/infirmary-staff-bp-weight-report/infirmary-staff-wise-report">
 		      <span>Staff Wise Report</span>

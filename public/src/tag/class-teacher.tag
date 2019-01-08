@@ -1,4 +1,6 @@
 <class-teacher>
+   <header></header>
+   <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<div class="level">
 			<div class="level-left">
@@ -30,7 +32,7 @@
   							<select ref="standardIdInput" onchange={readSection}>
   								<option>Select Standard</option>
   								<option each={standard} value={standard_id}>{standard}
-  			                    </option>
+  			          </option>
   							</select>
   						</div>
   					</div>
@@ -65,7 +67,7 @@
   						<div class="select">
   							<select ref="sectionIdInput">
   								<option each={section} value={section_id}>{section}
-  			                            </option>
+  			          </option>
   							</select>
   						</div>
   					</div>

@@ -61,13 +61,13 @@ router.get('/:id', function(req, res, next) {
          console.log(start_date) 
 
        
-      //  var user=req.cookies.session_id['user']
+        var user=req.cookies.user
         var condition = "";
         if(category_id !=-1){
           condition = `where a.category_id = ${category_id}`;
          }
         var user_condition = "";
-        //if(session_id['role'] != 'ADMINISTRATOR') user_condition =`and a.created_by = ${user}`;
+        if(req.cookies.role != 'ADMIN') user_condition =` and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select received_id,date_format(received_date,'%d/%m/%Y') as received_date, date_format(received_date,'%Y-%m-%d') as r_date,
                 item_name,category_name, concat('',a.quantity,' ',unit)as quantity, a.rate,(a.quantity*a.rate)as amount,

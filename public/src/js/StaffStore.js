@@ -147,6 +147,32 @@ function StaffStore() {
           console.log(data)
           if(data.status == 's'){
             self.staff_details = data.staff_details
+            self.workExperienceArray = data.workExperienceArray
+            self.trigger('read_for_edit_staff_changed', data.staff_details, self.workExperienceArray)
+          }else if(data.status == 'e'){
+            showToast("Student Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+//read temp Edit Staff
+  self.on('read_for_edit_temp_staff', function(emp_id) {
+    console.log(emp_id)
+    let req = {}
+    req.emp_id=emp_id
+
+    $.ajax({
+      url:'/staff/read_for_edit_temp_staff/'+emp_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.staff_details = data.staff_details
             self.trigger('read_for_edit_staff_changed', data.staff_details)
           }else if(data.status == 'e'){
             showToast("Student Read Error. Please try again.", data)
@@ -166,6 +192,34 @@ function StaffStore() {
     $.ajax({
       
       url:'/staff/read_staff/'+employee_type_id+'/'+department_id+'/'+designation_id+'/'+level_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.staffs = data.staffs
+            self.trigger('read_staff_changed', data.staffs)
+          }else if(data.status == 'e'){
+            showToast("Received From Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  // read for profile Approved
+
+  //read Staff
+  var Staffs=[];
+  self.on('read_temp_staff', function(employee_type_id) {
+    console.log('i am in temp staff Form api call from ajax')
+    let req = {}
+    $.ajax({
+      
+      url:'/staff/read_temp_staff/'+employee_type_id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -308,13 +362,14 @@ function StaffStore() {
 
    
 
-  self.on('edit_staff', function(obj,staff_id) {
+  self.on('edit_staff', function(obj,staff_id,editType) {
     let req = {}
     console.log(obj)
     console.log(staff_id)
+    console.log(editType)
     req.staff_id=staff_id
     $.ajax({
-      url:'/staff/edit_staff/'+staff_id,
+      url:'/staff/edit_staff/'+staff_id+'/'+editType,
         type:"POST",
         data: JSON.stringify(obj),
         contentType: "application/json",
@@ -334,6 +389,34 @@ function StaffStore() {
         }
       })
   })
+
+  // update temp  staff into main table
+
+  self.on('edit_temp_staff', function(obj,staff_id) {
+    let req = {}
+    req.staff_id=staff_id
+    $.ajax({
+      url:'/staff/edit_temp_staff/'+staff_id,
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully Update")
+            self.trigger('edit_staff_changed', self.staffs)
+          }else if(data.status == 'e'){
+            showToast("Error Updating staff. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
   self.on('update_staff_status', function(emp_id,leaving_date,remark) {
     let req = {}
     req.emp_id=emp_id
@@ -448,7 +531,7 @@ function StaffStore() {
     var form_data = new FormData(); 
     form_data.append("staff_profile_picture", staff_image);
     $.ajax({
-      url:'/staff/upload_staff_image/staff/'+staff_id,
+      url:'/staff/upload_staff_image/empImages/'+staff_id,
         type:"POST",
         dataType: 'script',
         processData: false,

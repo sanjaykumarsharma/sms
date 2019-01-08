@@ -1,12 +1,9 @@
 <fees-scheme-report>
+<header></header> 
+<loading-bar if={loading}></loading-bar>
 <section class=" is-fluid">
-	<h2 class="title has-text-centered" style="color: #ff3860;">Fee Scheme Report</h2>
-	<div class="flex items-center mt-2 mb-6 no-print">
-		<div class="bg-green py-1 rounded w-10">
-			<div class="bg-grey h-px flex-auto"></div>
-		</div>
-	</div>
-	<div class="box">
+	<h2 class="title has-text-centered" style="color: #ff3860;"></h2>
+	<div class="box no-print">
 		<div class="columns">
 			<div class="column is-narrow">
 				<label class="label">Session</label>
@@ -14,7 +11,7 @@
 			<div class="column is-narrow">
 				<div class="control">
 					<div class="select">
-						<select ref="session_id">
+						<select ref="session_id" id="session_id">
 							<option>Select Session</option>
 							<option each={sessions} value={session_id}>{session_name}
                             </option>
@@ -23,18 +20,27 @@
 				</div>
 			</div>
 			<div class="column">
-				<button class="button is-danger has-text-weight-bold"
+				<button disabled={loading} class="button is-danger has-text-weight-bold"
 				onclick={getData} > GO
 				</button>
 				<input type="checkbox" id="checkTable" checked={e.done} 
 				onclick={viewTable}  style="margin-top: 12px;"> Table
+
+				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+		              <span class="icon">
+		                 <i class="fas fa-print"></i>
+		             </span>
+		         </button>
 			</div>
 		</div>
 	</div>
 
-	<canvas id="canvas_pie" show={report_view =='show_graph'}></canvas>
+	<p class="has-text-centered" style="color: #ff3860;font-weight:bold">Fee Scheme Report</p>
+	<p class="has-text-centered">Session: {sessionName}</p>
+  <p class="has-text-centered">Scheme: {selectedScheme}</p>
 
-	<div class="columns is-centered">
+	<canvas id="canvas_pie" show={report_view =='show_graph'}></canvas>
+    <center>
 		<table class="table is-striped is-hoverable is-bordered" show={report_view =='show_table'}>
 			<thead>
 				<tr>
@@ -53,7 +59,7 @@
 				</tr>
 			</tbody>
 		</table>
-	</div>
+	</center>	
 </section>
 
 <script>
@@ -81,9 +87,12 @@
     	}
     }
     self.getData = () => {
-    	
+      if(self.refs.session_id.value){
       self.loading = true
       feesReportStore.trigger('read_session_scheme', self.refs.session_id.value)
+      }else{
+      	toastr.info("Please select session")
+      }	
     }
 
     sessionStore.on('read_session_changed',ReadSessionChanged)
@@ -95,7 +104,7 @@
     }
 
     feesReportStore.on('read_session_scheme_changed',ReadSessionSchemeChanged)
-    function ReadSessionSchemeChanged(schemes,grand_total){
+    function ReadSessionSchemeChanged(schemes,grand_total, session_name){
       self.schemes = schemes
       self.grand_total = grand_total
 
@@ -138,7 +147,13 @@
 
 		  var ctx = document.getElementById('canvas_pie').getContext('2d');
 		  window.myPie = new Chart(ctx, config);
+
+
+		  self.selectedSession = $("#session_id option:selected").text() 
+		  self.loading = false
       self.update()
+
+
       console.log(self.schemes)
     }
 </script>

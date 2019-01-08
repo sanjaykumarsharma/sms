@@ -27,7 +27,7 @@
 					<td>{ i+1 }</td>
 					<td>{st.type}</td>
 					<td>{st.active}</td>
-					<td><img src='/images/7/signature/{st.type}.jpg' width="65" height="75" ></td>
+					<td><img src='/images/signatureImages/{st.type}.jpg' width="65" height="75" ></td>
 					<td class="has-text-right">
 		            <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
 		              <span><a class="button is-small is-rounded " onclick={isActive.bind(this, st)}>Active</a></span>
@@ -194,7 +194,7 @@
       $("#signatureModal").addClass("is-active");
       self.refs.type.value = st.type
       self.old_type= st.type;
-      document.getElementById('pp_box').style.backgroundImage = 'url(/images/7/signature/'+st.type+'.jpg)';
+      document.getElementById('pp_box').style.backgroundImage = 'url(/images/signatureImages/'+st.type+'.jpg)';
     }
 
     self.isActive = (st,e) => {

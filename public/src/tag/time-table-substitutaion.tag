@@ -140,6 +140,7 @@
    }
 
    self.resetTimeTable = () => {
+       self.loading = true;
        timeTableSubstitutaionStore.trigger('reset_time_table')
     }
 

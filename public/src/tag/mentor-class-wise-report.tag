@@ -1,12 +1,11 @@
 <mentor-class-wise-report>
+	<header></header>
+	<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-	<h2 class="title has-text-centered" style="color: #ff3860;">Class Wise Mentor Report</h2>
-	<div class="flex items-center mt-2 mb-6 no-print">
-		<div class="bg-green py-1 rounded w-10">
-			<div class="bg-grey h-px flex-auto"></div>
-		</div>
-	</div>
-	<div class="box">
+    <h2 class="title has-text-centered is-size-5" style="color: #ff3860;margin-bottom: 6px;">Class Wise Mentor Report</h2>
+    <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Grand Total: {grand_total}</h2>
+	
+	<div class="box no-print">
 		<div class="columns">
 			<div class="column is-narrow">
 				<label class="label">Standard</label>
@@ -56,42 +55,68 @@
 				<input type="checkbox" id="checkTable" checked={e.done}
 				onclick={viewTable}  style="margin-top: 12px;"> Table
 			</div>
+			<div class="column">
+				<button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={csvExport}>
+          			<span class="icon">
+            			<i class="far fa-file-excel"></i>
+			        </span>
+			    </button>
+			    <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()">
+          			<span class="icon">
+            			<i class="fas fa-print"></i>
+			        </span>
+			    </button>
+			</div>
 		</div>
 	</div>
 
 	<canvas id="canvas_pie" show={report_view =='show_graph'}></canvas>
 
-	<div class="columns is-centered">
-		<table class="table is-striped is-hoverable is-bordered" show={report_view =='show_table'}>
-			<thead>
-				<tr>
-				    <th>Case</th>
-				    <th class="has-text-right">Total</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr each={cd, i in class_wise_case_report}>
-					<td>{cd.category_name}</td>
-					<td class="has-text-right">{cd.total}</td>
-				</tr>
-				<tr>
-					<td class="has-text-right">Total</td>
-					<td class="has-text-right">{grand_total}</td>
-				</tr>
-			</tbody>
-		</table>
+	<div class="printOnly">
+		<table class="table is-striped is-hoverable is-bordered is-fullwidth" style="margin-top:50px;">
+		<thead>
+			<tr>
+			    <th>Case</th>
+			    <th class="has-text-right">Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr each={cd, i in class_wise_case_report}>
+				<td>{cd.category_name}</td>
+				<td class="has-text-right">{cd.total}</td>
+			</tr>
+			<tr>
+				<td class="has-text-right">Total</td>
+				<td class="has-text-right">{grand_total}</td>
+			</tr>
+		</tbody>
+	</table>
 	</div>
+
+	<table class="table is-striped is-hoverable is-bordered is-fullwidth no-print" show={report_view =='show_table'}>
+		<thead>
+			<tr>
+			    <th>Case</th>
+			    <th class="has-text-right">Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr each={cd, i in class_wise_case_report}>
+				<td>{cd.category_name}</td>
+				<td class="has-text-right">{cd.total}</td>
+			</tr>
+			<tr>
+				<td class="has-text-right">Total</td>
+				<td class="has-text-right">{grand_total}</td>
+			</tr>
+		</tbody>
+	</table>
 </section>
 
 <script>
 	var self = this
     self.on("mount", function(){
-      flatpickr(".date", {
-    	/*altInput: true,*/
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
-  		})
+      self.loading = false;
       self.readStandard()
       self.readSection()
       self.readSession()
@@ -132,10 +157,15 @@
     	}
     }
     self.getData = () => {
-          self.loading = true
-          mentorReportStore.trigger('read_class_wise_report', self.refs.standard_id.value,
-          	self.refs.section_id.value,self.refs.session_id.value)
-          	self.report_view = 'show_graph'
+        self.loading = true
+        mentorReportStore.trigger('read_class_wise_report', self.refs.standard_id.value,
+        self.refs.section_id.value,self.refs.session_id.value)
+        self.report_view = 'show_graph'
+    }
+
+    self.csvExport = () => {
+        mentorReportStore.trigger('csv_class_wise_report', self.refs.standard_id.value,
+        self.refs.section_id.value,self.refs.session_id.value)
     }
 
     mentorReportStore.on('read_standard_changed',StandardChanged)
@@ -161,6 +191,7 @@
 
     mentorReportStore.on('read_class_wise_report_changed',ReadClassWiseReportChanged)
     function ReadClassWiseReportChanged(class_wise_case_report,grand_total){
+      self.loading = false;
       self.class_wise_case_report = class_wise_case_report
       self.grand_total = grand_total
 

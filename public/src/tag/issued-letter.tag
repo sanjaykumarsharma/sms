@@ -1,8 +1,8 @@
 <issued-letter>
-
+<header></header> 
+<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid" >
-		<h2 class="title has-text-centered" style="color: #ff3860;">Issued Letter Report</h2>
-		<div class="box">
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label">Month</label>
@@ -10,7 +10,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="monthList">
+							<select ref="monthList" id="monthList">
 								<option value="1">January</option>
 								<option value="2">February</option>
 								<option value="3">March</option>
@@ -29,14 +29,20 @@
 					</div>
 				</div>
 				<div class="column">
-					<button class="button is-danger has-text-weight-bold"
+					<button disabled={loading} class="button is-danger has-text-weight-bold"
 					onclick={getLetterStudent} > GO
 					</button>
-					
+					<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                <span class="icon">
+                   <i class="fas fa-print"></i>
+               </span>
+           </button>
 				</div> 
 			</div>
 		</div>
-  <div class="columns is-full">
+  <p class="has-text-centered" style="color: #ff3860;font-weight:bold">Issued Letter Report</p>
+  <p class="has-text-centered">Session: {sessionName}</p>
+  <p class="has-text-centered">Month: {selecteMonth}</p>
     <table class="table is-fullwidth is-striped is-hoverable is-bordered" >
       <thead>
         <tr>
@@ -64,7 +70,6 @@
         </tr>
       </tbody>
     </table>
-  </div>
 </section>  
 <script>
 	var self = this
@@ -80,15 +85,22 @@
     
  
     self.getLetterStudent = () =>{
-      self.loading = true
-      feesReportStore.trigger('read_issued_fees_letter', self.refs.monthList.value)
+      if(self.refs.monthList.value){
+        self.loading = true
+        feesReportStore.trigger('read_issued_fees_letter', self.refs.monthList.value)
+      }else{
+        toastr.info("Please select a month")
+      }
     }
     
       
     feesReportStore.on('read_fees_letter_changed',IssuedLetterChanged)
-    function IssuedLetterChanged(letter_students){
+    function IssuedLetterChanged(letter_students,session_name){
     	console.log("letter_students")
        self.letter_students = letter_students
+       self.sessionName = session_name
+       self.selectedMonth = $("#monthList option:selected").text() 
+       self.loading = false
        self.update()
     }
     

@@ -1,5 +1,5 @@
 <event-master>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_event_master == 'event-type'}" href="#/master/event-master/event-type">
 		      <span>Event Type</span>
@@ -22,7 +22,7 @@
     console.log('opts.selected_event_master')
     console.log(opts.selected_event_master)
     if(!opts.selected_event_master){
-      self.selected_event_master = 'calender'
+      self.selected_event_master = 'event-type'
     }else{
       self.selected_event_master = opts.selected_event_master
     }

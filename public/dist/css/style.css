@@ -218,6 +218,10 @@ html, body, *, .textarea, .input, .select, .button {
         .pad-bottom{
           padding-bottom: 10px !important;
         }
+        .printOnly{
+          display: block !important;
+          margin-top: -40px !important; 
+        }
       }
 
 
@@ -492,3 +496,7 @@ width: 860;
 font-size: 1.5em;-webkit-print-color-adjust: exact;
 
 }    
+/*==========Qadir*/
+.printOnly{
+  display: none;
+}

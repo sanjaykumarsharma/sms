@@ -150,6 +150,8 @@ router.post('/read_student_browser', function(req, res, next) {
   var standard_id = input.standard_id;
   var section_id = input.section_id;
   var session_id = req.cookies.session_id
+  var session_name = req.cookies.session_name
+
   var condition = "";
   //var condition = "";
  
@@ -217,6 +219,7 @@ router.post('/read_student_browser', function(req, res, next) {
       }else{
         // res.render('customers',{page_title:"Customers - Node.js",data:rows});
         data.status = 's';
+        data.session_name=session_name
         data.browseStudents = result;
         //connection.end()
 
@@ -235,6 +238,7 @@ router.post('/read_student_browser', function(req, res, next) {
 router.get('/read_student_summary_report', function(req, res, next) {
  var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
+  var session_name = req.cookies.session_name
   
   req.getConnection(function(err,connection){
        
@@ -320,6 +324,8 @@ router.get('/read_student_summary_report', function(req, res, next) {
       total["total"]=grand_total
       stdData.push(total)
       data.studentSummaryReports = stdData
+      data.session_name = session_name
+      data.status = 's'
       res.send(JSON.stringify(data))
       }
      
@@ -334,8 +340,7 @@ router.get('/read_student_summary_report', function(req, res, next) {
 router.post('/read_student_category_summary_report', function(req, res, next) {
   var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
-  /*var castCategory=Array()
-   castCategory=input.categories*/
+  var session_name = req.cookies.session_name
     req.getConnection(function(err,connection){
     var data = []
 
@@ -458,6 +463,7 @@ router.post('/read_student_category_summary_report', function(req, res, next) {
 
                 var r = {}
                 r.status = 's';
+                r.session_name = session_name;
                 r.studentCategorySummaryReports = stdData 
                 console.log(stdData);
                 res.send(r)
@@ -477,10 +483,11 @@ router.post('/read_student_category_summary_report', function(req, res, next) {
 router.post('/read_student_religion_listing_report', function(req, res, next) {
   var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
+  var session_name = req.cookies.session_name
     req.getConnection(function(err,connection){
     var data = []
 
-      connection.beginTransaction(function(err) {
+      connection.beginTransaction(function(err) {studentHouseReports
         if (err) { throw err; }
 
         var qry =`SELECT a.standard_id, standard, religion,count(d.student_id)as strength 
@@ -599,6 +606,7 @@ router.post('/read_student_religion_listing_report', function(req, res, next) {
 
                 var r = {}
                 r.status = 's';
+                r.session_name = session_name;
                 r.studentReligionListingReports = stdData 
                 console.log(stdData);
                 res.send(r)
@@ -612,12 +620,164 @@ router.post('/read_student_religion_listing_report', function(req, res, next) {
     });
 
 });
+
+/* Student Religion Listing report */
+
+router.post('/read_student_blood_group_listing_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  var session_id = req.cookies.session_id
+  var session_name = req.cookies.session_name
+    req.getConnection(function(err,connection){
+    var data = []
+
+      connection.beginTransaction(function(err) {
+        if (err) { throw err; }
+
+        var qry =`SELECT a.standard_id, standard,
+                blood_group, count(d.student_id)as strength 
+                FROM section_master b
+                JOIN standard_master a ON a.standard_id = b.standard_id
+                LEFT JOIN student_current_standing c ON ( b.section_id = c.section_id  AND c.session_id = ${session_id} ) 
+                LEFT JOIN student_master d ON ( c.student_id = d.student_id and d.current_session_id = ${session_id} 
+                AND (d.withdraw='N' || d.withdraw_session > ${session_id})) 
+                where blood_group !=''
+                group by a.standard_id, blood_group`;
+
+        var qry_one = `select blood_group
+            from student_master a
+            join student_current_standing b on (a.student_id=b.student_id and b.session_id =${session_id} )
+            where blood_group !=''
+            and a.current_session_id = ${session_id}
+            group by blood_group
+            order by blood_group`;
+
+        var error = 1;
+        var prev_standard_id="";
+        var grand_total=0;
+        var c_name= [];
+        var total= [];
+
+        connection.query(qry_one, function (error, result1) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }
+          
+          result1.map(c=>{
+            total[c.blood_group] = 0;
+          })
+           
+          
+
+        connection.query(qry, function(error, result)
+          {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+            connection.commit(function(err) {
+                if (err) {
+                  return connection.rollback(function() {
+                    throw err;
+                  });
+                }
+
+
+            var stdData = [];
+            for(var i = 0; i < result.length; i++){
+
+              error = 0;
+              if(prev_standard_id != result[i].standard_id){
+
+                 if(prev_standard_id == ""){
+                    var student = {};
+                    student["standard"] = result[i].standard;
+                    student[result[i].blood_group] = result[i].strength;            
+                    prev_standard_id=result[i].standard_id;
+
+                    //counting total
+                    total.map(c=>{
+                      if(c.blood_group == result[i].blood_group){
+                        total[result[i].blood_group] = c + result[i].strength;
+                      }
+                    })
+
+                 }else{
+
+                     stdData.push(student);        
+                     var student = {};
+                     student["standard"] = result[i].standard;
+                     student[result[i].blood_group] = result[i].strength;  
+                     prev_standard_id=result[i].standard_id;   
+
+                     //counting total
+
+                     total.map(c=>{
+                      if(c.blood_group == result[i].blood_group){
+                        total[result[i].blood_group] = c + result[i].strength;
+                      }
+                     })  
+
+                 }
+
+              }else{  
+
+                  student[result[i].blood_group] = result[i].strength;  
+                  prev_standard_id=result[i].standard_id;
+
+                  //counting total
+
+                   total.map(c=>{
+                    if(c.blood_group == result[i].blood_group){
+                      total[result[i].blood_group] = c + result[i].strength;
+                    }
+                   }) 
+
+              }
+                
+            }
+
+            stdData.push(student);
+
+      
+
+            // for last row
+
+             var student = {};
+
+             student["standard"] = "Total";
+             total.map(c=>{
+              $student[c.blood_group] = c;
+             })
+
+             stdData.push(student);
+
+                var r = {}
+                r.session_name = session_name;
+                r.status = 's';
+                r.studentBloodGroupListingReports = stdData 
+                console.log(stdData);
+                res.send(r)
+
+              });
+          
+          });
+
+        });//end of ection con
+      });
+    });
+
+});
+ 
  // read New Student List Report
 
 router.get('/read_new_student_list_report', function(req, res, next) {
  var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
   var session_name = req.cookies.session_name
+  console.log(session_name)
  // var session_name = '2018-2019'
   var regNumber='';
     var str = session_name;
@@ -727,18 +887,178 @@ router.get('/read_new_student_list_report', function(req, res, next) {
 
 });
 
+
+// read New Student List Report
+
+
+router.get('/read_new_student_category_report', function(req, res, next) {
+ var input = JSON.parse(JSON.stringify(req.body));
+  var session_id = req.cookies.session_id
+  var session_name = req.cookies.session_name
+  console.log(session_name)
+ // var session_name = '2018-2019'
+  var regNumber='';
+    var str = session_name;
+    var n = str.length
+     if(n==9){
+        var first_four = session_name.substr(0,4);
+        var last_four = session_name.substr(5,9);
+         regNumber=first_four.substr(2, 2)+'-'+ last_four.substr(2, 2);
+     }else{
+      regNumber=session_name.substr(2, 7);  
+     }
+    req.getConnection(function(err,connection){
+    var data = []
+
+      connection.beginTransaction(function(err) {
+        if (err) { throw err; }
+
+        var qry =`SELECT a.standard_id, standard,
+                category_name,count(d.student_id)as strength 
+                FROM section_master b
+                JOIN standard_master a ON a.standard_id = b.standard_id
+                LEFT JOIN student_current_standing c ON ( b.section_id = c.section_id  AND c.session_id = " . $_SESSION['session_id'] . "  ) 
+                LEFT JOIN student_master d ON ( c.student_id = d.student_id)
+                JOIN category_master e ON d.category_id = e.category_id 
+                where  reg_number LIKE concat('%/', '${regNumber}' , '/%')
+                group by a.standard_id,e.category_id`;
+
+        var qry_one = `select category_name from category_master`;
+
+        var error = 1;
+        var prev_standard_id="";
+        var grand_total=0;
+        var c_name= [];
+        var total= [];
+
+        connection.query(qry_one, function (error, result1) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }
+          
+          result1.map(c=>{
+            total[c.category_name] = 0;
+          })
+           
+          
+
+        connection.query(qry, function(error, result)
+          {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+            connection.commit(function(err) {
+                if (err) {
+                  return connection.rollback(function() {
+                    throw err;
+                  });
+                }
+
+
+            var stdData = [];
+            for(var i = 0; i < result.length; i++){
+
+              error = 0;
+              if(prev_standard_id != result[i].standard_id){
+
+                 if(prev_standard_id == ""){
+                    var student = {};
+                    student["standard"] = result[i].standard;
+                    student[result[i].category_name] = result[i].strength;            
+                    prev_standard_id=result[i].standard_id;
+
+                    //counting total
+                    total.map(c=>{
+                      if(c.category_name == result[i].category_name){
+                        total[result[i].category_name] = c + result[i].strength;
+                      }
+                    })
+
+                 }else{
+
+                     stdData.push(student);        
+                     var student = {};
+                     student["standard"] = result[i].standard;
+                     student[result[i].category_name] = result[i].strength;  
+                     prev_standard_id=result[i].standard_id;   
+
+                     //counting total
+
+                     total.map(c=>{
+                      if(c.category_name == result[i].category_name){
+                        total[result[i].category_name] = c + result[i].strength;
+                      }
+                     })  
+
+                 }
+
+              }else{  
+
+                  student[result[i].category_name] = result[i].strength;  
+                  prev_standard_id=result[i].standard_id;
+
+                  //counting total
+
+                   total.map(c=>{
+                    if(c.category_name == result[i].category_name){
+                      total[result[i].category_name] = c + result[i].strength;
+                    }
+                   }) 
+
+              }
+                
+            }
+
+            stdData.push(student);
+
+      
+
+            // for last row
+
+             var student = {};
+
+             student["standard"] = "Total";
+             total.map(c=>{
+              $student[c.category_name] = c;
+             })
+
+             stdData.push(student);
+
+                var r = {}
+                r.status = 's';
+                r.session_name = session_name;
+                r.newStudentCategoryReports = stdData 
+                console.log(stdData);
+                res.send(r)
+
+              });
+          
+          });
+
+        });//end of ection con
+      });
+    });
+
+});
+
+
 /* Student Category Strength report */
 
 router.get('/read_student_category_strength_report/:category_id', function(req, res, next) {
  var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
+  var session_name = req.cookies.session_name
   var category_id=req.params.category_id
   req.getConnection(function(err,connection){
        
     var data = {}
       var qry =`SELECT concat(first_name,' ',middle_name,' ',last_name) as name, a.enroll_number, mobile as sms, 
 
-              concat(standard,' ',section) as standard 
+              concat(standard,' ',section) as standard,category_name
 
               FROM  student_master a
 
@@ -765,6 +1085,7 @@ router.get('/read_student_category_strength_report/:category_id', function(req, 
 
       }else{
             data.status='s'
+            data.session_name=session_name
             data.studentCategoryStrengthReports = result
              res.send(JSON.stringify(data))
 
@@ -837,6 +1158,7 @@ router.get('/read_student_group_report/:standard_id/:section_id', function(req, 
 router.get('/read_student_house_report/:standard_id/:section_id', function(req, res, next) {
  var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
+  var session_name = req.cookies.session_name
   var standard_id=req.params.standard_id
   var section_id=req.params.section_id
   req.getConnection(function(err,connection){
@@ -873,6 +1195,7 @@ router.get('/read_student_house_report/:standard_id/:section_id', function(req, 
 
       }else{
             data.status='s'
+            data.session_name=session_name
             data.studentHouseReports = result
              res.send(JSON.stringify(data))
 
@@ -890,6 +1213,7 @@ router.get('/read_student_house_report/:standard_id/:section_id', function(req, 
 router.get('/read_class_teacher_report', function(req, res, next) {
   var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
+  var session_name = req.cookies.session_name
   req.getConnection(function(err,connection){
        
     var data = {}
@@ -907,6 +1231,7 @@ router.get('/read_class_teacher_report', function(req, res, next) {
         data.status = 'e';
 
       }else{
+            data.session_name=session_name
             data.status='s'
             data.studentClassTeacherReports = result
              res.send(JSON.stringify(data))
@@ -925,6 +1250,7 @@ router.get('/read_class_teacher_report', function(req, res, next) {
 router.get('/read_student_strength_report', function(req, res, next) {
  var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
+  var session_name = req.cookies.session_name
   
   req.getConnection(function(err,connection){
        
@@ -952,6 +1278,7 @@ router.get('/read_student_strength_report', function(req, res, next) {
 
       }else{
             data.status='s'
+            data.session_name=session_name
             data.studentStrengthReports = result;
        res.send(JSON.stringify(data))
       }

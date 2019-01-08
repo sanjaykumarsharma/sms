@@ -1,6 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var multer = require('multer')
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var download = require('download-file')
+const copyFile = require('fs-copy-file');
 
 /* Read Standard */
 
@@ -225,6 +230,122 @@ router.get('/read_student_profile/:student_id', function(req, res, next) {
 
 });
 
+/* Read Student For First Edit */
+
+router.get('/read_student_first_edit/:read_standard_id/:read_section_id/:first_edit_value', function(req, res, next) {
+
+  var standard_id = req.params.read_standard_id;
+  var section_id = req.params.read_section_id;
+  var first_edit_value = req.params.first_edit_value;
+  var session_id = req.cookies.session_id
+  console.log("hiiii");
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var qry =`select a.student_id, a.current_session_id, b.standard, b.standard_id, 
+              c.section_id, c.section,
+              first_name, middle_name, last_name,concat(first_name,' ',middle_name, ' ' ,last_name)as name,
+              email, enroll_number, 
+              f_name, ${first_edit_value} as edit_field
+              from student_master a
+              LEFT JOIN student_current_standing g on (a.student_id=g.student_id and a.current_session_id= ${session_id})
+              LEFT JOIN section_master c on  g.section_id = c.section_id
+              LEFT JOIN standard_master b on c.standard_id = b.standard_id
+              LEFT JOIN house_master d on g.house_id = d.house_id
+              LEFT JOIN student_group e on g.group_id = e.group_id 
+              JOIN parent_master f on (a.student_id = f.student_id  and f.current_session_id= ${session_id})
+              where b.standard_id= ${standard_id} and c.section_id= ${section_id}  
+              and (a.withdraw='N' || a.withdraw_session > ${session_id})
+              and g.session_id=${session_id} 
+              order by first_name `;
+
+    connection.query(qry,function(err,result)     {
+            
+      if(err){
+        console.log("Error reading Student For First Edit : %s ",err );
+        data.status = 'e';
+
+      }else{
+        data.status = 's';
+        data.student_first_edit = result;
+        res.send(JSON.stringify(data))
+        }
+     });    
+  });
+});
+
+/* Edit Student First */
+router.post('/edit_student_first/:first_edit_value', function(req, res, next) {
+
+  var first_edit_value = req.params.first_edit_value;
+  var input = JSON.parse(JSON.stringify(req.body));
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
+  var session_id = req.cookies.session_id
+
+  var data = {}
+
+    req.getConnection(function(err,connection){
+      connection.beginTransaction(function(err) {
+        if (err) { throw err; }
+         
+        var qry= '' 
+
+        console.log(input.editValues)
+
+        input.editValues.map(d=>{
+
+          var q ='';
+
+          if((first_edit_value != 'f_email') && (first_edit_value !='f_mobile') && (first_edit_value !='f_fax') &&
+          (first_edit_value != 'm_email') && (first_edit_value!='m_mobile') && (first_edit_value !='m_fax')){
+
+            q=`update student_master set ${first_edit_value} = '${d.value}'
+                 where student_id = ${d.student_id}
+                 and current_session_id = ${session_id}`;
+         
+          }else{
+
+           q=`update parent_master set ${first_edit_value} = '${d.value}'
+                 where student_id = ${d.student_id}
+                 and current_session_id = ${session_id}`;
+          }
+
+           if(qry==''){
+               qry = q;
+           }else{
+              qry = qry+';'+q;
+          }
+
+        })            
+        /*console.log(qry)   */ 
+        connection.query(qry, function(error, rows)
+          {
+              if (error) {
+                return connection.rollback(function() {
+                  throw error;
+                });
+              }
+          
+              connection.commit(function(err) {
+                if (err) {
+                  return connection.rollback(function() {
+                    throw err;
+                  });
+                }
+                data.status = 's';
+                console.log('success!');
+                console.log(data);
+                res.send(JSON.stringify(data))
+
+              });
+          });
+        });//end of ection con
+      });
+    });
+
 /* Read Student */
 
 router.get('/read_student/:read_standard_id/:read_section_id/:read_enroll_number', function(req, res, next) {
@@ -248,7 +369,7 @@ router.get('/read_student/:read_standard_id/:read_section_id/:read_enroll_number
                  JOIN standard_master b on c.standard_id = b.standard_id
                  JOIN parent_master f  on (a.student_id = f.student_id  and f.current_session_id= ${session_id} )
                  LEFT JOIN house_master g  on  d.house_id=g.house_id
-                 where a.enroll_number = ${enroll_number}
+                 where a.enroll_number in (${enroll_number})
                  and (a.withdraw='N' || a.withdraw_session > ${session_id} )
                  and d.session_id= ${session_id}
                  order by first_name,middle_name,last_name `;
@@ -280,6 +401,84 @@ router.get('/read_student/:read_standard_id/:read_section_id/:read_enroll_number
         //connection.end()
 
         res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});
+
+/* Read Student CSV */
+
+router.get('/read_student_csv/:read_standard_id/:read_section_id/:read_enroll_number', function(req, res, next) {
+
+  var standard_id = req.params.read_standard_id;
+  var section_id = req.params.read_section_id;
+  var enroll_number = req.params.read_enroll_number;
+  var session_id = req.cookies.session_id
+  console.log("hiiii");
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    if(enroll_number!="0"){
+      var qry =` select a.student_id, b.standard, c.standard_id, c.section_id, c.section, title, first_name,middle_name, last_name,
+                 concat(first_name,' ',middle_name, ' ' ,last_name)as 'Student Name',
+                 enroll_number,enroll_number as 'Enrolment Number',roll_number as 'Roll Number', reg_number as 'Registration Number', mobile as 'Mobile', 
+                 f_title, f_name as 'Father Name',house_name as house
+                 from student_master a
+                 JOIN student_current_standing d on (a.student_id = d.student_id and a.current_session_id= ${session_id} )
+                 JOIN section_master c  on d.section_id = c.section_id
+                 JOIN standard_master b on c.standard_id = b.standard_id
+                 JOIN parent_master f  on (a.student_id = f.student_id  and f.current_session_id= ${session_id} )
+                 LEFT JOIN house_master g  on  d.house_id=g.house_id
+                 where a.enroll_number in (${enroll_number})
+                 and (a.withdraw='N' || a.withdraw_session > ${session_id} )
+                 and d.session_id= ${session_id}
+                 order by first_name,middle_name,last_name `;
+    }else{
+      var qry =` select a.student_id, b.standard, c.standard_id, c.section_id, c.section, title, first_name,middle_name, last_name,
+                 concat(first_name,' ',middle_name, ' ' ,last_name)as 'Student Name',
+                 enroll_number,enroll_number as 'Enrolment Number', roll_number as 'Roll Number', reg_number as 'Registration Number', mobile as 'Mobile', 
+                 f_title, f_name as 'Father Name',house_name as house
+                 from student_master a
+                 JOIN student_current_standing d on (a.student_id = d.student_id and a.current_session_id= ${session_id} )
+                 JOIN section_master c  on d.section_id = c.section_id
+                 JOIN standard_master b on c.standard_id = b.standard_id
+                 JOIN parent_master f  on (a.student_id = f.student_id and f.current_session_id= ${session_id} )
+                 LEFT JOIN house_master g  on  d.house_id=g.house_id
+                 where c.standard_id= ${standard_id} and c.section_id= ${section_id}
+                 and (a.withdraw='N' || a.withdraw_session > ${session_id} )
+                 and d.session_id= ${session_id}
+                 order by first_name,middle_name,last_name,enroll_number `;
+    }
+    connection.query(qry,function(err,result)     {
+            
+      if(err){
+        console.log("Error reading Student : %s ",err );
+        data.status = 'e';
+
+      }else{
+        // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+        data.status = 's';
+        data.students = result;
+        const fields = ['Roll Number','Student Name','Enrolment Number','Registration Number','Mobile','Father Name'];
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(result);
+
+          var path='./public/csv/Student.csv'; 
+          fs.writeFile(path, csv, function(err,data) {
+            if (err) {throw err;}
+            else{ 
+              // res.download(path); // This is what you need
+              res.send(data)
+              var url='http://localhost:4000/csv/Student.csv';
+              var open = require("open","");
+              open(url);  
+            }
+          });   
+        
         }
      
      });
@@ -388,6 +587,7 @@ router.post('/add_student', function(req, res, next) {
             });
           }
           var log = rows.insertId;
+          console.log(log);
 
         connection.query("Update student_master set student_id= ? where std_id= ? and current_session_id = ? ",[log,log,req.cookies.session_id], function(error, rows)
           {
@@ -454,6 +654,8 @@ router.post('/add_student', function(req, res, next) {
                     throw err;
                   });
                 }
+                console.log(log);
+                
                 data.status = 's';
                 data.student_id=log
                 console.log('success!');
@@ -536,6 +738,25 @@ router.post('/edit_student/:student_id', function(req, res, next) {
                     throw err;
                   });
                 }
+                var guardianName = values_parent.is_guardian;
+                console.log(guardianName)
+                if(guardianName == 'Mother'){
+                  copyFile('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+                  if (err)
+                    throw err;
+    
+                    console.log('source.txt was copied to destination.txt');
+                  });
+                }
+                else if(guardianName == 'Father'){
+                  copyFile('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+                  if (err)
+                    throw err;
+    
+                    console.log('source.txt was copied to destination.txt');
+                  });
+                }
+                
                 data.status = 's';
                 console.log('success!');
                 console.log(data);
@@ -688,6 +909,18 @@ router.get('/delete_student/:student_id', function(req, res, next) {
                     throw err;
                   });
                 }
+                fs.unlink('./public/images/'+req.cookies.session_id+'/studentImages/'+req.params.student_id+'.jpg', (err) => {
+                  if (err) throw err; console.log('path/file.txt was deleted');
+                });
+                fs.unlink('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', (err) => {
+                  if (err) throw err; console.log('path/file.txt was deleted');
+                });
+                fs.unlink('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', (err) => {
+                  if (err) throw err; console.log('path/file.txt was deleted');
+                });
+                fs.unlink('./public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+                  if (err) throw err; console.log('path/file.txt was deleted');
+                });
                 data.status = 's';
                 data.students = result;
                 console.log('success!');
@@ -957,7 +1190,7 @@ const upload = multer({
 
 router.post('/upload_student_image/:folder_name/:image_name', upload.single('student_profile_picture'), function(req, res, next) {
   console.log('inside uploading images');
-  res.send('ok')
+  res.send(200)
 });
 
 // Father Image Upload
@@ -981,7 +1214,7 @@ const upload_father = multer({
 
 router.post('/upload_father_image/:folder_name/:image_name', upload_father.single('father_profile_picture'), function(req, res, next) {
   console.log('inside uploading images');
-  res.send('ok')
+  res.send(200)
 });
 
 // Mother Image Upload
@@ -1004,7 +1237,7 @@ const upload_mother = multer({
 
 router.post('/upload_mother_image/:folder_name/:image_name', upload_mother.single('mother_profile_picture'), function(req, res, next) {
   console.log('inside uploading images');
-  res.send('ok')
+  res.send(200)
 });
 
 // Guardian Image Upload
@@ -1024,11 +1257,35 @@ const upload_guardian = multer({
   fileFilter: fileFilter
 });
 
-
 router.post('/upload_guardian_image/:folder_name/:image_name', upload_guardian.single('guardian_profile_picture'), function(req, res, next) {
   console.log('inside uploading images');
-  res.send('ok')
+  res.send(200)
 });
+
+
+router.post('/upload_copy_father_image/:student_id', function(req, res, next) {
+  
+  copyFile('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+  if (err)
+    throw err;
+    console.log('source.txt was copied to destination.txt');
+  });
+  res.send(200)
+
+});
+
+router.post('/upload_copy_mother_image/:student_id', function(req, res, next) {
+  
+  copyFile('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+  if (err)
+    throw err;
+    console.log('source.txt was copied to destination.txt');
+  });
+  res.send(200)
+
+});
+
+
 // image upload end *******************************************************
 
 

@@ -1,6 +1,5 @@
-<fees-report>
-          
-	<div class="field has-addons">
+<fees-report>     
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_master == 'month-wise' }" href="#/fees-report/month-wise">
 		      <span>Month Wise</span>
@@ -45,7 +44,7 @@
 	  	
 	  
      </div>
-     <div class="field has-addons">
+     <div class="field has-addons no-print">
      	<p class="control">
 		    <a class="button {is-active: selected_master == 'outstanding-fees-class'}" href="#/fees-report/outstanding-fees-class">
 		      <span>Outstanding Fees By Class</span>
@@ -83,7 +82,7 @@
 	  	</p>
 	  	
 </div>
- <div class="field has-addons">
+ <div class="field has-addons no-print">
  </p>
 	  		<p class="control">
 		    <a class="button {is-active: selected_master == 'issued-letter'}" href="#/fees-report/issued-letter">

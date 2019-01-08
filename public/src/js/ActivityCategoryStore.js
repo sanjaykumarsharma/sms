@@ -4,6 +4,25 @@ function ActivityCategoryStore() {
 
   self.categories = []
 
+  self.on('csv_export_activity_category', function() {
+    let req = {}
+    $.ajax({
+      url:'/activity_category/csv_export_activity_category',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('read_categories', function() {
     console.log('i am in read_courses api call from ajax')
     let req = {}

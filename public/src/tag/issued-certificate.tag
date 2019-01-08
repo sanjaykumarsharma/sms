@@ -1,16 +1,15 @@
 <issued-certificate>
+	<header></header>
+	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Issued Certificate</h2>
-			</div>
+			<h4 class="title has-text-centered" style="color: #ff3860;">Issued Certificate Details</h4>
 		</div>
 		<div class="box">
 			<div class="columns">
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="standard_id" onchange={getReadSection}>
+							<select ref="standard_id" onchange={getReadSection} onkeyup={addEnter}>
 								<option>Choose Standard</option>
 								<!-- <option value='-1'>All</option> -->
 								<option each={standards} value={standard_id}>{standard}
@@ -22,7 +21,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 			        	<div class="select is-fullwidth">
-							<select ref="section_id">
+							<select ref="section_id" onkeyup={addEnter}>
 								<option>Choose Section</option>
 								<!-- <option value='-1'>All</option> -->
 								<option each={readfilteredSections} value={section_id}>{section}
@@ -31,16 +30,20 @@
 						</div>
 			      	</div>
 			    </div>
-				<div class="column is-narrow">
+				<div class="column">
 					<button class="button is-danger has-text-weight-bold"
 					onclick={readIssuedCertificateStudent} >GO
 					</button>
-					<!-- <input type="checkbox" id="checkTable" checked={e.done}
-									    onclick={viewTable}  style="margin-top: 12px;"> Add New  -->
+
+					<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+			          <span class="icon"> <i class="fas fa-print"></i></span>
+			        </button>
+			       <button class="button is-warning is-rounded is-pulled-right" onclick={readNewStudentCategoryReport} style="margin-left:5px;margin-right:5px">
+			        <span class="icon">
+			          <span class="fas fa-sync-alt"></span>
+			        </span>
+			        </button>
 				</div>
-				<!-- <div class="column is-narrow" show={report_view =='show_text_box'}>
-					    <input class="input" ref="new_certiifcate_name" type="text">
-				</div> -->
 			</div>
 		</div>
 		<!-- <div class="box">
@@ -70,8 +73,8 @@
 			    
 			</div>
 		</div> -->
-		<div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;">
-		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
+		<!-- <div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;"> -->
+		<table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 			<thead>
 				<tr>
 					<th style="width:40px">#</th>
@@ -93,7 +96,7 @@
 				</tr>
 			</tbody>
 		</table>
-	</div>
+	<!-- </div> -->
 	</section>
 <!-- End Other Information -->
 <script>
@@ -135,7 +138,13 @@
     		return s.standard_id == self.refs.standard_id.value
     	})
     }
+     self.addEnter = (e) => {
+      if(e.which == 13){
+        self.readIssuedCertificateStudent()
+      }
+    }
     self.readIssuedCertificateStudent= () => {
+    	self.loading=true
        certificateStore.trigger('read_issued_certificate',self.refs.standard_id.value,self.refs.section_id.value)
     }
 

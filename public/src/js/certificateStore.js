@@ -28,6 +28,32 @@ function CertificateStore() {
         }
       })
   })
+
+  //read Certificate Data
+ self.on('read_certificate_data', function(certificate_id) {
+    let req = {}
+    $.ajax({
+      url:'/certificate/read_certificate_data/'+certificate_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            //self.studentSummaryReports=[]
+            console.log("inside Report")
+            self.certificateData = data.certificateData
+           // console.log(self.studentSummaryReports[0])
+            self.trigger('read_certificate_data_changed', self.certificateData)
+          }else if(data.status == 'e'){
+            showToast("Certificate read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
  //stdent Group Report
 
  self.on('read_student', function(standard_id,section_id) {

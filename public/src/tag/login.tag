@@ -33,7 +33,9 @@
                   <div class="select is-fullwidth">
                     <select ref="role">
                       <option value="ADMIN">ADMIN</option>
-                      <!-- <option each={roles} value={role}>{role}</option> -->
+                      <option value="Teacher">Teacher</option>
+                      <option value="Class Teacher">Class Teacher</option>
+                      <option each={roles} value={role}>{role}</option>
                     </select>
                   </div>
                 </div>
@@ -85,10 +87,29 @@
     }
 
     loginStore.on('login_changed',LoginChanged)
-    function LoginChanged(courses){
-      console.log("Changed");
-        // riot.route("/courses")
-        route("/setting")
+    function LoginChanged(role){
+      console.log(role)
+      console.log("Login Changed");
+        
+        
+        if(role == 'ADMIN'){
+          route("/setting")
+        }else if(role =='Teacher'){
+          route("/student-browser")
+        }else if(role =='Class Teacher'){
+          route("/student-browser")
+        }else if(role =='Activity'){
+          route("/activity-detail")
+        }else if(role =='Mentor'){
+         route("/mentor-detail")
+        }else if(role =='Store'){
+          route("/inventory-stock")
+        }else if(role =='Infirmary'){
+          route("/infirmary-setting/infirmary-category")
+        }
+        window.location.reload(true);
+
+        //
     }
 
     loginStore.on('roles_for_login_changed',RolesChanged)

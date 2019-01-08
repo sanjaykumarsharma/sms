@@ -1,32 +1,34 @@
 <employee-type>
+  <header></header> 
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
 		<h2 class="title has-text-centered" style="color: #ff3860;">Employee Types</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
-			<div class="columns">
-				<div class="column is-half">
-					<div class="field">
-						<label class="label" for="role">Employee Type</label>
-						<div class="control">
-							<input class="input" type="text" ref="addEmployeeTypeInput"
-							onkeyup={addEnter}>
-						</div>
-					</div>
-				</div>
-				<div class="column is-narrow">
-					<div class="field">
-						<div class="control">
-							<button class="button is-danger has-text-weight-bold adjusted-top"
-					         onclick={add} >{title}</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		
+    <div class="box no-print" >
+    <div class="columns">
+      <div class="column is-narrow">
+        <label class="label">Employee Type</label>
+      </div>
+      <div class="column is-narrow">
+        <input class="input  form-control input" id="addEmployeeTypeInput" ref="addEmployeeTypeInput" tabindex="0" type="text"  onkeyup={addEnter}>
+      </div>
+      <div class="column">
+        <button disabled={loading} class="button is-danger has-text-weight-bold"
+        onclick={add}>{title}
+        </button>
+        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+       </button>
+        <button class="button is-warning is-rounded is-pulled-right" onclick={readEmployeeTypes} style="margin-right:2px">
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>     
+      </div>
+    </div>
+  </div>  
 		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
@@ -67,6 +69,7 @@
 
     //read courses
     self.readEmployeeTypes = () => {
+      self.loading=true
        employeeTypeStore.trigger('read_employeeTypes')
     }
 
@@ -129,11 +132,12 @@
     }
     
     employeeTypeStore.on('employeeTypes_changed',EmployeeTypesChanged)
-    function EmployeeTypesChanged(employeeTypes){
+    function EmployeeTypesChanged(employeeTypes,emp_id){
       console.log(employeeTypes) 
       self.title='Create'
       self.refs.addEmployeeTypeInput.value = ''
       self.loading = false
+      self.emp_id=emp_id
       self.employeeTypes = employeeTypes
       self.update()
       console.log(self.employeeTypes)

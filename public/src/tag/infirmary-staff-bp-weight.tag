@@ -1,4 +1,6 @@
 <infirmary-staff-bp-weight>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>
 <section class="is-fluid" show={infirmary_staff_view == 'show_staff_bp_weight_table'}>
   <!-- <div class="box">
       <div class="columns">
@@ -27,13 +29,23 @@
       <h2 class="title" style="color: #ff3860;">Staff Health Detail</h2>
     </div>
 
-    <div class="level-right">
+    <div class="level-right no-print">
       <button class="button is-warning is-rounded" onclick={add_staff_infirmary}>
       <span class="icon">
         <span class="fas fa-plus"></span>
       </span>
-      <span>Add</span>
       </button>
+       <button class="button is-warning is-rounded is-pulled-right" onclick={readStaffBPWeight} style="margin-left:5px;margin-right:5px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+        </button>
     </div>
   </div>
 
@@ -65,7 +77,7 @@
           <td>{st.height}</td>
           <td>{st.weight}</td>
           <td>{st.bmi}</td>
-          <td class="has-text-right">
+          <td class="has-text-right no-print">
             <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
               <span><a class="button is-small is-rounded" onclick={edit.bind(this, st)}>Edit</a></span>
               <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -179,6 +191,7 @@
      }
      //read courses
      self.readStaffBPWeight = () => {
+      self.loading=true
            staffbpweightStore.trigger('read_staff_bp_weight')
            //studentStore.trigger('read_students', obj)
      }

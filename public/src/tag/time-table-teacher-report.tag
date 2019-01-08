@@ -14,18 +14,6 @@
     <div class="box">
       <div class="columns">
 
-        <div class="column is-narrow"><label class="label">Room</label></div>  
-        <div class="column is-narrow">  
-          <div class="control">
-            <div class="select ">
-              <select ref="roomSelect" onchange={refreshTimeTable}>
-                <option value="">Select Room</option>
-                <option each={rooms} value={room_id}>{room_name}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
         <div class="column">
           <button class="button is-rounded" onclick={refreshTimeTable}> Go </button>
         </div>
@@ -50,16 +38,26 @@
         </tr>
       </thead>
       <tbody>
-        <!-- <tr each={d, i in teachers}>
-          <th class="has-text-centered" style="vertical-align: middle;">{d.day_name}</th>
-          <td each={p, j in periods} class="has-text-centered" >
-              <div each={t, k in time_table}>
-                  <p if={d.day_id==t.day_id && p.period_id==t.period_id} style="font-size:12px" >
-                     <span style="color:#ff0000">{t.subject_short_name}({t.period_type})</span><br>{t.standard}<br>{t.short_name}
-                  </p>
-              </div>
+        <tr each={t in time_table}>
+          <th class="has-text-centered" style="vertical-align: middle;">{t.teacher}</th>
+          <td each={d in days} class="has-text-centered" >
+              <p if={d.day_name=='Day 1'}>
+                <raw content="{t.day_one}"></raw>
+              </p>
+              <p if={d.day_name=='Day 2'}>
+                <raw content="{t.day_two}"></raw>
+              </p>
+              <p if={d.day_name=='Day 3'}>
+                <raw content="{t.day_three}"></raw>
+              </p>
+              <p if={d.day_name=='Day 4'}>
+                <raw content="{t.day_four}"></raw>
+              </p>
+              <p if={d.day_name=='Day 5'}>
+                <raw content="{t.day_five}"></raw>
+              </p>
           </td>
-        </tr> -->
+        </tr>
       </tbody>
     </table>
 
@@ -89,7 +87,7 @@
 
    self.refreshTimeTable = () => {
       self.loading = true;
-      timeTableAdminStore.trigger('read_periods_teacher_report',self.refs.roomSelect.value)
+      timeTableAdminStore.trigger('read_periods_teacher_report')
    }
 
    /************************************************ Time Table Changed Method ************************************************/

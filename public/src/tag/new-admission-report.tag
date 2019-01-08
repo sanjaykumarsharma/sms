@@ -1,5 +1,5 @@
 <new-admission-report>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_new_admission_report == 'new-admission-category-report'}" href="#/admin-report/new-admission-report/new-admission-category-report">
 		      <span>New Admission Category</span>

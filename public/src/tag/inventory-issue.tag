@@ -1,12 +1,9 @@
 <inventory-issue>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" show={inventory_issue_view == 'show_inventory_issue_table'}>
-		<h2 class="title" style="color: #ff3860;">Issue</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+        <h4 class="title has-text-centered" style="color: #ff3860;">Goods Issue from Store Department</h4>
+		<div class="box no-print">
 			<div class="columns">
         <div class="column is-narrow">
           <label class="label" style="margin-left:-14px">Type</label>
@@ -37,44 +34,25 @@
             </div>
           </div>
         </div>
-
-       <!--  <div class="column is-narrow">
-         <label class="label" style="margin-left:-14px">Subcategory</label>
-       </div> -->
-       <!--  <div class="column is-narrow">
-         <div class="control">
-           <div class="select">
-             <select ref="sub_category_id" style="margin-left:-10px">
-               <option each={filteredSubcategories} value={sub_category_id}>{sub_category}
-               </option>
-             </select>
-           </div>
-         </div>
-       </div> -->
-        <!-- <div class="column is-narrow">
-          <label class="label" style="margin-left:-14px">Item</label>
-        </div> -->
-        <!-- <div class="column is-narrow">
-          <div class="control">
-            <input class=" input"
-              ref="item_name" type="text" style="margin-left:-10px">
-          </div>
-        </div> -->
-			<!--   <div class="column">
-        <button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
-        onclick={getInventoryStock} >GO
+        <div class="column">
+         <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
         </button>
-      </div> -->
+        <button class="button is-warning is-rounded  is-pulled-right" onclick={readInventoryIssue} style="margin-left:3px; margin-right:3px">
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
+          <button class="button is-warning is-rounded  is-pulled-right" onclick={show_inventory_issue}>
+          <span class="icon">
+            <span class="fas fa-plus"></span>
+          </span>
+        </button>
+        </div>
 			</div>
 		</div>
-     <div class="level-right">
-      <button class="button is-warning is-rounded" onclick={show_inventory_issue}>
-      <span class="icon">
-        <span class="fas fa-plus"></span>
-      </span>
-      <span>Add</span>
-      </button>
-    </div>
 		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
@@ -103,7 +81,7 @@
          <!--  <td>{ ev.issue_to}</td>
          <td>{ ev.rack_name}</td>
          <td>{ ev.purpose}</td> -->
-		      <td class="has-text-right">
+		      <td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -287,6 +265,7 @@
          dateFormat: "Y-m-d",
        })
       self.showIssueType()
+      self.loading=false
       self.update()
     //  self.readInventoryDepartment()
       self.readInventoryCategory()
@@ -325,7 +304,21 @@
        self.refs.return_type.value='Non-Retunable'
     }
     self.close_inventory_issue_form=()=>{
-       self.inventory_issue_view='show_inventory_issue_table'
+        self.inventory_issue_view='show_inventory_issue_table'
+        self.title='Add'
+        self.refs.issue_date.value=''
+        self.refs.category_id.value=''
+        self.refs.sub_category_id.value=''
+        self.refs.item_id.value=''
+        self.refs.return_type.value=''
+        self.refs.issue_type.value=''
+        self.refs.issue_to.value=''
+        self.refs.staff_id.value=''
+         self.refs.available_quantity.value=''
+         self.refs.issue_quantity.value=''
+        self.refs.unit.value=''
+        self.refs.purpose.value=''
+        self.rack_id=''
     }
     
    self.filterSubcategory = () => {
@@ -334,9 +327,10 @@
         console.log("inside")
       return s.category_id == self.refs.category_id.value    
     })
-      self.update()
+      
       console.log(self.filteredSubcategories)
       self.filterItem()
+      self.update()
    }
 
     self.filterItem = () => {
@@ -350,6 +344,7 @@
    }
     
     self.readInventoryIssue = () => {
+      self.loading=true
        inventoryIssueStore.trigger('read_inventory_issue', self.refs.r_category_id.value,self.refs.r_issue_type.value,)
     }
     
@@ -561,7 +556,7 @@ inventoryIssueStore.on('read_inventory_available_quantity_changed',ReadInventory
       self.inventorySubcategories = inventorySubcategories
       self.refs.sub_category_id.value = ''
       /*self.refs.department.value = ''*/
-      self.refs.item_id.value = ''
+     // self.refs.item_id.value = ''
       self.refs.category_id.value = ''
       self.update()
       console.log(self.inventorySubcategories)

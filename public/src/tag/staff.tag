@@ -6,7 +6,7 @@
 				<h2 class="title" style="color: #ff3860;">Staff</h2>
 			</div>
 			<div class="level-right">
-				<div>
+			<div>
 				<button class="button is-primary is-rounded" onclick={add_new_staff}>
 				<span class="icon">
 					<span class="fas fa-plus"></span>
@@ -22,6 +22,12 @@
 			<div>
 				<button class="button is-warning is-rounded ml10" onclick={allowBlockStaff}>
 				Allow/Block
+				</button>
+			</div>
+
+			<div>
+				<button class="button is-warning is-rounded ml10" onclick={showFastEditModal}>
+				Fast Edit
 				</button>
 			</div>
 			<div>
@@ -1376,9 +1382,8 @@
 	    
 </section>
 <!-- End Of Professional Course-->
-<!-- Start Extra Activity Information -->
 
- <!-- Start professional Master Course-->
+<!-- Start Extra Activity Information -->
 <section class=" is-fluid" show={staff_view =='add_extra_activity_information'}>
 	<div class="label">
 		<div class="level-left">
@@ -1430,6 +1435,62 @@
 	      	</div>
 		</div>
 
+
+
+		<!-- Work Experience-->
+       <div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Experience</h3>
+		    </div>
+		</div>
+		<div each={st, i in workExperienceArray} style="margin-bottom:20px;margin-top:20px">
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="work_instituition">Instituition </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="work_instituition" id="work_instituition{i}" value={st.institution} type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">DOJ</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input date is-small" ref="work_doj" id="work_doj{i}" type="text"  value={st.date_of_joining}>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">DOL</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input date is-small"  ref="work_dol" id="work_dol{i}" type="text" value={st.date_of_leaving}>
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Position</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small"  ref="work_position" id="work_position{i}" type="text" value={st.position}>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Subjects</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small"  ref="work_subject" id="work_subject{i}" type="text" value={st.subjects_taught}>
+	      	</div>
+	
+			 <div class="column is-2">
+			 <button class="button is-primary is-rounded ml5 is-small" onclick={add_more_work_exp}>
+					<span class="icon"><span class="fas fa-plus"></span></span>
+			 </button>
+			   <button class="button is-info is-rounded ml5 is-small" onclick={remove.bind(this, i)}>
+					<span class="icon"><span class="fas fa-minus"></span></span>
+			 </button>
+			</div>
+			 </div>
+	    </div>
+	 </div>
+
 		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeExtraActivityInformation}>
@@ -1443,10 +1504,7 @@
 			   </button>     
 		    </div>
 		</div>
-
 	</div>
-	<!-- <div each={w, i in workArray}><input type="text" name="" class="input" ref='w.name'>
-	<button class="button" onclick={addMoreArary.bind(this, w)}>Add</button></div> -->
 </section>
 
 <!-- Start professional Master Course-->
@@ -2081,6 +2139,119 @@
 			</tr>
 		</table>
 	</section>
+
+<!-- Fast Edit Modal-->
+       	<section class=" is-fluid" show={staff_view =='show_staff_fast_edit'}>
+       		<div class="level">
+				<div class="level-left">
+					<h2 class="title" style="color: #ff3860;">Fast Edit</h2>
+				</div>
+				<div class="level-right">
+				<div>
+				<button class="button is-warning is-rounded" onclick={backToStaff}>
+			        <span class="icon">
+			          <span class="fas fa-arrow-left"></span>
+			        </span>
+		        </button>
+				</div>
+		        </div>
+		    </div>
+		<div class="box">
+			<div class="columns">
+				<div class="column is-narrow">
+					<div class="control">
+						<div class="select">
+							<select ref="fast_edit_value" onchange={showFastEdit}>
+								<option>Select Field</option>
+								<option value='short_name'>Short Name</option>
+								<option value='gender'>Gender</option>
+								<option value='father_name'>Father Name</option>
+								<option value='blood_group'>Blood Group</option>
+								<option value='mobile'>Mobile</option>
+								<option value='phone_r'>Phone Residence </option>
+								<option value='phone_o'>Phone Office</option>
+								<option value='city'>City</option>
+								<option value='employee_id'>Employee ID</option>
+								
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+			 
+		</div>
+		<div class="level-right"><button class="button is-danger" onclick="{fastUpdateStaff}">Update</button></div>
+		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
+			<thead>
+				<tr>
+					<th>#</th>
+				    <th>EmpId</th>
+				    <th>Ttitle</th>
+				    <th>Name</th>
+				    <th show={view_field=='show_f_short_name'}>short_name</th>
+				    <th show={view_field=='show_f_gender'}>Gender</th>
+				    <th show={view_field=='show_f_father_name'}>Father Name</th>
+				    <th show={view_field=='show_f_blood_group'}>Blood Group</th>
+				    <th show={view_field=='show_f_mobile'}>Mobile</th>  
+				    <th show={view_field=='show_f_phone_r'}>Phone Residence</th>
+				    <th show={view_field=='show_f_phone_o'}>Phone Office </th>
+				    <th show={view_field=='show_f_picture'}>Picture</th>
+				    <th show={view_field=='show_f_city'}>City</th>
+				    <th show={view_field=='show_f_employee_id'}>Employee Id</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr each={st, i in staffs}>
+				    <td>{i+1}</td>
+				    <td>{st.employee_id}</td>
+				    <td>{st.title}</td>
+				    <td>{st.first_name} {st.middle_name} {st.last_name}</td>
+				    <td show={view_field=='show_f_short_name'}>
+				    <input type="text" class='input is-small' id="{'short_name' + st.emp_id}" value={st.short_name}></td>
+				    <td show={view_field=='show_f_gender'}>
+				    	    <select id="{'gender' + st.emp_id}" value={st.gender}>
+								<option value="M">Male</option>
+								<option value="F">Female</option>
+							</select>
+							
+				    	<!-- <input type="text" id='gender' value={st.gender} class="input is-small"> -->
+				    </td>
+				    <td show={view_field=='show_f_father_name'}>
+				    <input type="text" class='input is-small' id="{'father_name' + st.emp_id}" value={st.father_name}></td>
+				    <td show={view_field=='show_f_blood_group'}>
+				    	   <select id="{'blood_group' + st.emp_id}" value={st.blood_group}>
+								<option value="A+">A+</option>
+								<option value="A-">A-</option>
+								<option value="AB+">AB+</option>
+								<option value="AB-">AB-</option>
+								<option value="B+">B+</option>
+								<option value="B-">B-</option>
+								<option value="O+">O+</option>
+								<option value="O-">O-</option>
+							</select>
+					</td>  
+				    <td show={view_field=='show_f_mobile'}>
+				    <input type="text" class='input is-small' id="{'mobile' + st.emp_id}" value={st.mobile}>
+				     </td>
+				    <td show={view_field=='show_f_phone_r'}>
+				    	<input type="text" class='input is-small' id="{'phone_r' + st.emp_id}" value={st.residence_phone}></td>
+				    <td show={view_field=='show_f_phone_o'}>
+				    <input type="text" class='input is-small' id="{'phone_o' + st.emp_id}" value={st.office_phone}></td>
+				   <!--  <td show={view_field=='show_f_phone_r'}>
+				   	<input type="text" class='input is-small' id="phone_r" value={st.residence_phone}></td> -->
+				    <td show={view_field=='show_f_city'}>
+				    	<input type="text" class='input is-small' id="{'city' + st.emp_id}" value={st.city}></td>
+				    <td show={view_field=='show_f_employee_id'}>
+				    <input type="text" class='input is-small' id="{'employee_id' + st.emp_id}" value={st.employee_id}>
+				</td>
+				</tr>
+			</tbody>
+		</table>
+		<div class="level-right">
+			<button class="button is-danger" onclick="{fastUpdateStaff}">Update</button>
+			<button class="button" onclick="{backToStaff}">Cancel</button>
+		</div>
+	</section>
 <script>
 	
 	var self = this
@@ -2101,12 +2272,20 @@
     	self.readSubject()
     	self.readEmploymentStatus()
     	self.staff_name = true	
+
+  	    self.workExperienceArray =[]
+         let obj = {}
+             obj.work_institution=''
+
+        self.workExperienceArray.push(obj)
+       
         self.update()
       //  console.log(self.workArray);
         flatpickr(".date", {
 	    	allowInput: true,
         	dateFormat: "d/m/Y",
   		})
+	
     })
 
     self.on("unmount", function(){
@@ -2127,7 +2306,25 @@
       staffStore.off('delete_staff_changed',DeleteStaffChanged)
       staffStore.off('allow_block_staff_changed',AllowBlockStaffChanged)
       staffStore.off('reset_staff_password_changed',ResetStaffPasswordChanged)
+      staffStore.off('update_staff_fast_edit_changed',readStaffFastEditChanged)
     })
+
+    self.add_more_work_exp=()=>{
+	    let obj = {}
+        obj.work_institution=''
+        self.workExperienceArray.push(obj)
+        self.update()
+      //  console.log(self.workArray);
+       /* flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})*/
+    }
+
+    self.remove = (index,e) => {
+      console.log(index)
+       self.workExperienceArray.splice(index,1);
+    }  
 
      self.addEnter = (e) => {
       if(e.which == 13){
@@ -2140,8 +2337,109 @@
         self.edit(e)
       }  
     }
+
+    self.showFastEditModal = () =>{
+       self.staff_view ='show_staff_fast_edit'     
+    }
+     self.backToStaff = () =>{
+       self.staff_view ='show_staff'     
+    }
+    
+
+     self.showFastEdit= () =>{
+        if(self.refs.fast_edit_value.value=='gender'){
+       	 self.view_field='show_f_gender'
+        }
+        if(self.refs.fast_edit_value.value=='short_name'){
+       	 self.view_field='show_f_short_name'
+        }
+        if(self.refs.fast_edit_value.value=='father_name'){
+       	 self.view_field='show_f_father_name'
+        }
+        if(self.refs.fast_edit_value.value=='blood_group'){
+       	 self.view_field='show_f_blood_group'
+        }      
+        if(self.refs.fast_edit_value.value=='city'){
+       	 self.view_field='show_f_city'
+        }
+        if(self.refs.fast_edit_value.value=='employee_id'){
+       	 self.view_field='show_f_employee_id'
+        }
+         if(self.refs.fast_edit_value.value=='mobile'){
+       	 self.view_field='show_f_mobile'
+        }
+         if(self.refs.fast_edit_value.value=='phone_o'){
+       	 self.view_field='show_f_phone_o'
+        }
+         if(self.refs.fast_edit_value.value=='phone_r'){
+       	 self.view_field='show_f_phone_r'
+        }
+    }
+
+    self.fastUpdateStaff=()=>{
+    	var editValues = []
+	    console.log(self.staffs)
+	   	self.staffs.map( q => {
+	   	var obj={}
+	     	obj['emp_id'] = q.emp_id
+		    if(self.refs.fast_edit_value.value=='gender'){
+	       	  obj['value'] = $('#gender'+q.emp_id).val();
+	   	      editValues.push(obj);
+	        }
+	        if(self.refs.fast_edit_value.value=='short_name'){
+	       	 obj['value'] = $('#short_name'+q.emp_id).val();
+	   	      editValues.push(obj);
+	        }
+	        if(self.refs.fast_edit_value.value=='father_name'){
+	       	 obj['value'] = $('#father_name'+q.emp_id).val();
+	   	      editValues.push(obj);
+	        }
+	        if(self.refs.fast_edit_value.value=='blood_group'){
+	       	 obj['value'] = $('#blood_group'+q.emp_id).val();
+	   	      editValues.push(obj);
+	        }      
+	        if(self.refs.fast_edit_value.value=='city'){
+	       	 obj['value'] = $('#city'+q.emp_id).val();
+	   	      editValues.push(obj);
+	        }
+	        if(self.refs.fast_edit_value.value=='employee_id'){
+	       	 obj['value'] = $('#employee_id'+q.emp_id).val();
+	   	      editValues.push(obj);
+	        }
+	         if(self.refs.fast_edit_value.value=='mobile'){
+	       	 obj['value'] = $('#mobile'+q.emp_id).val();
+	   	      editValues.push(obj);
+	        }
+	         if(self.refs.fast_edit_value.value=='phone_o'){
+	       	 obj['value'] = $('#phone_o'+q.emp_id).val();
+	   	      editValues.push(obj);
+	        }
+	         if(self.refs.fast_edit_value.value=='phone_r'){
+	       	 obj['value'] = $('#phone_r'+q.emp_id).val();
+	   	      editValues.push(obj);
+	        }
+	   	
+	   	})
+	   	console.log(editValues)
+	     staffStore.trigger('fast_edit_staff',editValues,self.refs.fast_edit_value.value)
+    }
+
+    self.closeFastEditModal=()=>{
+    	 $("#columnSetting").removeClass("is-active");
+    }
+
+     self.showFastEditTable = () =>{
+       $("#fastEditTable").addClass("is-active")
+           
+    }
+
+    self.closeFastEditTable=()=>{
+    	 $("#fastEditTable").removeClass("is-active");
+    }
+
     self.close_staff_profile=()=>{
     	self.staff_view='show_staff'
+    	self.title='Add';
     }
     self.updateEmployeeStatus=()=>{
     	self.leaving_date=convertDate(self.refs.leaving_date.value)
@@ -2455,8 +2753,28 @@
 
     	/*Student Information */
         var staff={};
-        
-        
+
+        // work experience
+
+
+        self.workExperienceArray.map((x, index) => {
+          let work_institution_id='#work_instituition'+index
+          let work_doj_id='#work_doj'+index
+          let work_dol_id='#work_dol'+index
+          let work_position_id='#work_position'+index
+          let work_subject_id='#work_subject'+index
+
+           x.institution = $(work_institution_id).val()
+           x.date_of_joining = $(work_doj_id).val()
+           x.date_of_leaving = $(work_dol_id).val()
+           x.position = $(work_position_id).val()
+           x.subjects_taught = $(work_subject_id).val()
+        });
+
+        var work_experience={}
+      //  work_experience['workExperienceArray']=  self.workExperienceArray
+        obj['workExperienceArray']=self.workExperienceArray
+
     	staff['title']=self.refs.title.value
     	staff['first_name']=self.refs.first_name.value
     	staff['middle_name']=self.refs.middle_name.value
@@ -2528,7 +2846,37 @@
         
         var family={};
 
-    	family['child1_first_name']=self.refs.child1_first_name.value
+
+        family['child1_first_name']=self.refs.child1_first_name.value
+    	family['child1_last_name']=self.refs.child1_last_name.value
+    	if(self.refs.child1_sex.value==''){
+    		family['child1_sex']=null
+    	}else{
+    	    family['child1_sex']=self.refs.child1_sex.value
+    	}
+    	family['child1_dob']=convertDate(self.refs.child1_dob.value)
+    	family['child1_school']=self.refs.child1_school.value
+    	family['child2_first_name']=self.refs.child2_first_name.value
+    	family['child2_last_name']=self.refs.child2_last_name.value
+    	if(self.refs.child2_sex.value==''){
+    		family['child2_sex']=null
+    	}else{
+    	    family['child2_sex']=self.refs.child2_sex.value
+    	}
+    	//family['child2_sex']=self.refs.child2_sex.value
+    	family['child2_dob']=convertDate(self.refs.child2_dob.value)
+    	family['child2_school']=self.refs.child2_school.value
+    	family['child3_first_name']=self.refs.child3_first_name.value
+    	family['child3_last_name']=self.refs.child3_last_name.value
+    	if(self.refs.child3_sex.value==''){
+    		family['child3_sex']=null
+    	}else{
+    	    family['child3_sex']=self.refs.child3_sex.value
+    	}
+    	//family['child3_sex']=self.refs.child3_sex.value
+    	family['child3_dob']=convertDate(self.refs.child3_dob.value)
+    	family['child3_school']=self.refs.child3_school.value
+    	/*family['child1_first_name']=self.refs.child1_first_name.value
     	family['child1_last_name']=self.refs.child1_last_name.value
     	family['child1_sex']=self.refs.child1_sex.value
     	family['child1_dob']=convertDate(self.refs.child1_dob.value)
@@ -2542,7 +2890,7 @@
     	family['child3_last_name']=self.refs.child3_last_name.value
     	family['child3_sex']=self.refs.child3_sex.value
     	family['child3_dob']=convertDate(self.refs.child3_dob.value)
-    	family['child3_school']=self.refs.child3_school.value
+    	family['child3_school']=self.refs.child3_school.value*/
         
         obj['family']=family
     	
@@ -2661,15 +3009,11 @@
     	previous_job['bond_details_of_previous_job']=self.refs.bond_details_of_previous_job.value
 		obj['previous_job']=previous_job
 		
-
-		var work_experience={}
-    	
-    	//obj['parent']=parent
-
     	if(self.title=='Add'){
           staffStore.trigger('add_staff', obj)
         }else if(self.title=='Update'){
-          staffStore.trigger('edit_staff', obj,self.emp_id)
+        	self.editType='normalEdit'
+          staffStore.trigger('edit_staff', obj,self.emp_id,self.editType)
         }
     }
 
@@ -2690,7 +3034,7 @@
       console.log(c)
       self.emp_id = c
       staffStore.trigger('read_for_edit_staff',self.emp_id)
-      document.getElementById('pp_box1').src = '/images/empImages/'+c+'.jpg';
+      document.getElementById('pp_box1').src= '/images/empImages/'+c+'.jpg';
       self.title='printProfile' 
       self.add_new_staff()
     }
@@ -2742,6 +3086,7 @@
     	self.refs.office_phone.value=''
     	self.refs.mobile.value=''
     	self.refs.email.value=''
+    	self.workExperienceArray=[{}]
     //	self.refs.photo.value=''
        
 
@@ -2931,8 +3276,23 @@
       self.update()
     }
 
+    staffStore.on('update_staff_fast_edit_changed',readStaffFastEditChanged)
+    function readStaffFastEditChanged(){
+      //self.getStaffData();
+      self.update()
+    }
+
     staffStore.on('read_for_edit_staff_changed',ReadForEditStaffChanged)
-    function ReadForEditStaffChanged(staff_details){
+    function ReadForEditStaffChanged(staff_details, workExperienceArray){
+
+  	    self.workExperienceArray =[]
+         let obj = {}
+             obj.work_institution=''
+
+        self.workExperienceArray.push(obj)
+     	self.workExperienceArray=workExperienceArray
+       
+       //  self.update()
      	self.staff_details=staff_details
      	if(self.title=='Update'){
          self.refs.title.value=staff_details[0].title
@@ -3099,6 +3459,11 @@
     	self.refs.details_publication.value=staff_details[0].details_publication
     	self.refs.details_curricular_activities.value=staff_details[0].details_curricular_activities
     	self.refs.details_sport.value=staff_details[0].details_sport
+    	self.update()
+    	 flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
      }else{
      	console.log("inside else")
      	console.log(staff_details[0].first_name)
@@ -3123,16 +3488,13 @@
     	self.emp_type_id=staff_details[0].emp_type_id
     	self.department_id=staff_details[0].department_id
     	self.level_id=staff_details[0].level_id
+    	//console.log(staff_details[0].employment_status_id);
     	self.employment_status_id=staff_details[0].employment_status_id
     	self.subject_id=staff_details[0].subject_id
     	self.designation_id=staff_details[0].designation_id
     	self.qualification=staff_details[0].qualification
-    	
-
-    	//self.doj=staff_details[0].doj
     	self.category_id=staff_details[0].category_id
 
-    	console.log(self.category_id.value)
     	self.place_of_birth=staff_details[0].place_of_birth
     	self.dob=staff_details[0].dob
     	self.blood_group=staff_details[0].blood_group
@@ -3270,6 +3632,10 @@
     	self.details_curricular_activities=staff_details[0].details_curricular_activities
     	self.details_sport=staff_details[0].details_sport
     	self.update()
+    	 flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
      }
 
     }

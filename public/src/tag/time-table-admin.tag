@@ -10,11 +10,21 @@
 		      <span>Rom</span>
 		    </a>
 	  	</p>
-	  	<!-- <p class="control">
+	  	<p class="control">
 		    <a class="button {is-active: selected_time_table_admin == 'time-table-teacher-report' }" href="#/time-table-admin/time-table-teacher-report">
 		      <span>Teacher</span>
 		    </a>
-	  	</p> -->
+	  	</p>
+	  	<p class="control">
+		    <a class="button {is-active: selected_time_table_admin == 'time-table-assign-teacher' }" href="#/time-table-admin/time-table-assign-teacher">
+		      <span>Assign Teacher</span>
+		    </a>
+	  	</p>
+	  	<p class="control">
+		    <a class="button {is-active: selected_time_table_admin == 'time-table-settings' }" href="#/time-table-admin/time-table-settings">
+		      <span>Settings</span>
+		    </a>
+	  	</p>
 	</div>
 <div id="time-table-admin-view"></div>
  <script>
@@ -22,7 +32,7 @@
     console.log('opts.selected_time_table_admin')
     console.log(opts.selected_time_table_admin)
     if(!opts.selected_time_table_admin){
-      self.selected_time_table_admin = 'item'
+      self.selected_time_table_admin = 'time-table-class-report'
     }else{
       self.selected_time_table_admin = opts.selected_time_table_admin
     }

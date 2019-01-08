@@ -1,43 +1,55 @@
 <activity-detail>
+	<print-header></print-header>
 	<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid" show={activity_view =='show_activity'}>
-		<div class="level">
+		<h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Activity Detail</h2>
+		<div class="level box no-print">
 			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Activity Detail</h2>
-			</div>
-			<div class="level-right">
-				<button class="button is-warning is-rounded" onclick={add_new_activity}>
-				<span class="icon">
-					<span class="fas fa-plus"></span>
-				</span>
-				<span>Add Activity</span>
-				</button>
-			</div>
-		</div>
-		<div class="box">
-			<div class="columns">
-				<div class="column is-narrow">
-					<label class="label">Category</label>
-				</div>
-				<div class="column is-narrow">
-					<div class="control">
-						<div class="select">
-							<select ref="category_id" onchange={getActivityData}>
-								<option value="-1">ALL</option>
-								<option each={categories} value={category_id}>{category_name}
-	                            </option>
-							</select>
+				<div class="columns">
+					<div class="column is-narrow"><label class="label">Category</label></div> 
+					<div class="column is-narrow">
+						<div class="control">
+							<div class="select">
+								<select ref="category_id" id="CategoryName" onchange={getActivityData}>
+									<option value="-1">ALL</option>
+									<option each={categories} value={category_id}>{category_name}
+		                            </option>
+								</select>
+							</div>
 						</div>
 					</div>
 				</div>
-				<!-- <div class="column">
-					<button class="button is-danger has-text-weight-bold"
-					onclick={getActivityData} >GO
-					</button>
-				</div> -->
+			</div>
+			<div class="level-right">
+
+				<button class="button is-warning has-text-weight-bold  is-small" onclick={add_new_activity}>
+				<span class="icon">
+					<span class="fas fa-plus"></span>
+				</span>
+				
+				</button>
+	        	<button class="button is-link has-text-weight-bold is-small ml5" onclick={getActivityData}>
+			        <span class="icon">
+			          <span class="fas fa-sync-alt"></span>
+			        </span>
+	        	</button>
+
+	        	<button class="button is-success has-text-weight-bold is-small ml5" onclick={downloadCSV}>
+        			<span class="icon">
+          				<i class="far fa-file-excel"></i>
+        			</span>
+        		</button>
+
+        		<a class="button is-primary has-text-weight-bold is-small ml5" onclick="window.print()">
+        			<span class="icon">
+          				<i class="fas fa-print"></i>
+        			</span>
+        		</a>
+        		
 			</div>
 		</div>
-		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
+		<table class="table is-fullwidth is-bordered is-hoverable is-narrow">
+			<p><center><strong>Category:{categoryName}</strong></center></p>
 			<thead>
 				<tr>
           			<th>SL No</th>
@@ -49,7 +61,7 @@
 					<th>Teacher Incharge</th>
 					<th>Item Taken</th>
 					<th>Result</th>
-					<th style="width: 260px;"></th>
+					<th style="width: 260px;" class="no-print"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -63,9 +75,10 @@
 					<td>{ac.name}</td>
 					<td>{ac.item_taken}</td>
 					<td>{ac.result}</td>
-					<td class="has-text-right">
+					<td class="has-text-right no-print">
 			            <div class="inline-flex rounded border border-grey overflow-hidden" hide={ac.confirmDelete}>
 			              <span><a class="button is-small is-rounded " onclick={assign_student.bind(this, ac)}>Assign Student</a></span>
+			              <span><a class="button is-small is-rounded " onclick={printEventDetail.bind(this,ac.activity_id)}>Print</a></span>
 			              <span><a class="button is-small is-rounded" onclick={edit.bind(this, ac.activity_id)}>Edit</a></span>
 			              <span if={role=='ADMIN'} > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
 			            </div>
@@ -82,117 +95,207 @@
 		<div class="level">
 		  <div class="level-left">
 		    <div class="level-item">
-		    	<h2 class="title" style="color: #ff3860;">{title} Activity</h2>
+		    	<h2 class="title is-size-5" style="color: #ff3860;">{title} Activity</h2>
 		    </div>
 		  </div>
 		  <div class="level-right">
-		    <button class="button is-warning is-rounded" onclick={close_new_activity}>
+		    <button class="button is-warning has-text-weight-bold is-small" onclick={close_new_activity}>
           		<span class="icon">
             		<span class="fas fa-arrow-left"></span>
           		</span>
         	</button>
 		  </div>
 		</div>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10"></div>
-			<div class="bg-grey h-px flex-auto"></div>
-		</div>	
 		<div class="box">
-			<div class="columns is-variable is-1 is-multiline">
-			    <div class="column is-one-third">
-					<label class="label" for="activityTypeInput">Activity Type</label>
-					<div class="control ">
-						<div class="select is-fullwidth">
-							<select ref="activityTypeInput">
-								<option value="intra_school">Intra-School</option>
-								<option value="inter_school">Inter-school</option>
-							</select>
-						</div>
+			<div class="columns">
+				<div class="column is-2">
+					<label class="label is-small" for="activityTypeInput">Activity Type</label>
+				</div>
+				<div class="column is-2">
+					<div class="select is-fullwidth is-small">
+						<select ref="activityTypeInput" id="activityTypeInput">
+							<option value="Intra-School">Intra-School</option>
+							<option value="Inter-School">Inter-school</option>
+						</select>
 					</div>
-			    </div>
-			    <div class="column is-one-third">
-					<label class="label" for="activityDateInput">Activity Date</label>
-					<input class="input date" type="text" ref="activityDateInput" readonly >
-			    </div>
-
-	    		<div class="column is-one-third">
-				  <label class="label" for="activityCategoryidInput">Category</label>
-	  				<div class="control ">
-	  					<div class="select is-fullwidth">
-	  						<select ref="activityCategoryidInput" onchange={readActivityEvent}>
-	  							<option each={categories} value={category_id}>{category_name}</option>
-	  						</select>
-	  					</div>
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="activityDateInput">Activity Date</label>
+		      	</div>
+		      	<div class="column is-2 ">
+					<input class="input date is-small" type="text" ref="activityDateInput" readonly >
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="activityCategoryidInput">Category</label>
+		      	</div>
+		      	<div class="column is-2">
+	        		<div class="select is-fullwidth is-small">
+  						<select ref="activityCategoryidInput" onchange={readActivityEvent}>
+  							<option each={categories} value={category_id}>{category_name}</option>
+  						</select>
 	  				</div>
-	    		</div>
-			    <div class="column is-one-third">
-				    <label class="label" for="activityEventIdInput">Event</label>      
-	           		<div class="control">
-			        	<div class="select is-fullwidth">
-							<select ref="activityEventIdInput">
-								<option each={readfilteredEvents} value={event_id}>{event_name}</option>
-							</select>
-						</div>
+		      	</div>
+			</div>
+
+			<div class="columns mt30">
+				<div class="column is-2">
+					<label class="label is-small" for="activityEventIdInput">Event</label>
+				</div>
+				<div class="column is-2">
+					<div class="select is-fullwidth is-small">
+						<select ref="activityEventIdInput">
+							<option each={readfilteredEvents} value={event_id}>{event_name}</option>
+						</select>
 					</div>
-			    </div>
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="organisedByInput">Organised By</label>
+		      	</div>
+		      	<div class="column is-2 ">
+					<input class="input is-small" ref="organisedByInput" type="text">
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="venueInput">Venue</label>  
+		      	</div>
+		      	<div class="column is-2">
+	        		<input class="input is-small" ref="venueInput" type="text">
+		      	</div>
+			</div>
 
-			    <div class="column is-one-third">
-					<label class="label" for="organisedByInput">Organised By</label>  
-				    <input class="input" ref="organisedByInput" type="text">
-			    </div>
-			    <div class="column is-one-third">
-					<label class="label" for="venueInput">Venue</label>  
-				    <input class="input" ref="venueInput" type="text">
-			    </div>
-			    <div class="column is-one-third">
-					<label class="label" for="staffTakenInput">Employee</label>  
-				    <input class="input" ref="staffTakenInput" type="text"
+			<div class="columns mt30">
+				<div class="column is-2">
+					<label class="label is-small" for="staffTakenInput">Employee</label>
+				</div>
+				<div class="column is-2">
+					<input class="input is-small" ref="staffTakenInput" type="text"
 				    	id="staffModal" onclick={ViewStaffList}>
-			    </div>
-			    <div class="column is-one-third">
-					<label class="label" for="itemTakenInput">Item Taken</label>  
-				    <input class="input" ref="itemTakenInput" type="text"
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="itemTakenInput">Item Taken</label>
+		      	</div>
+		      	<div class="column is-2 ">
+					<input class="input is-small" ref="itemTakenInput" type="text"
 				    	id="itemModal" onclick={ViewItemList}>
-			    </div>
-			    <div class="column is-one-third">
-					<label class="label" for="outTimeInput">Out Time</label>  
-				    <input class="input" ref="outTimeInput" type="time">
-			    </div>
-			    <div class="column is-one-third">
-					<label class="label" for="inTimeInput">In Time</label>  
-				    <input class="input" ref="inTimeInput" type="time">
-			    </div>
-			    <div class="column is-half">
-					<label class="label" for="resultInput">Result</label>
-					<input class="input" ref="resultInput" type="text">
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="inTimeInput">In Time</label> 
 				</div>
-				<div class="column is-half">
-					<label class="label" for="activityRemarksInput">Remarks/Suggestion</label>
-					<textarea class="textarea" ref="activityRemarksInput" rows="2"></textarea>
-				</div>
+				<div class="column is-2">
+					<input class="input is-small" ref="inTimeInput" type="time">
+		      	</div>
+			</div>
 
-			    <div class="column is-full">
-				    <button class="button is-danger has-text-weight-bold adjusted-top"
-				     onclick={add}>Submit</button>    
-			   </div>
-	  		</div>
+			<div class="columns mt30">
+				<div class="column is-2">
+					<label class="label is-small" for="outTimeInput">Out Time</label>   
+		      	</div>
+		      	<div class="column is-2">
+	        		<input class="input is-small" ref="outTimeInput" type="time">
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="resultInput">Result</label>
+		      	</div>
+		      	<div class="column is-2 ">
+					<input class="input is-small" ref="resultInput" type="text">
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="activityRemarksInput">Remarks/Suggestion</label>
+		      	</div>
+		      	<div class="column is-2">
+	        		<textarea class="textarea is-small" ref="activityRemarksInput" rows="3"></textarea>
+		      	</div>
+			</div>
+			<div class="columns mt60">
+				<div class="column is-full">
+				    <button class="button is-success has-text-weight-bold adjusted-top" 
+				    	onclick={add}>Submit
+				    </button>
+				    <button class="button is-danger has-text-weight-bold adjusted-top" 
+				    	onclick={close_new_activity}>Cancel
+				    </button>    
+			    </div>
+			</div>
 		</div>
 	</section>
+	<!-- Participant List  View Start -->
+	
+	<section class=" is-fluid" show={activity_view =='participant_list_view'}>
+		<div class="level no-print">
+		  	<div class="level-left">
+			    <div class="level-item">
+			    </div>
+		  	</div>
+		  	<div class="level-right">
+			    <button class="button is-success has-text-weight-bold is-small" onclick="window.print()">
+	          		<span class="icon">
+	            		<span class="fas fa-print"></span>
+	          		</span>
+	        	</button>
+	        	<button class="button is-warning has-text-weight-bold ml5 is-small" onclick={close_participant_list_view}>
+	          		<span class="icon">
+	            		<span class="fas fa-arrow-left"></span>
+	          		</span>
+	        	</button>
+		  	</div>
+		</div>
+
+		<center>
+    		<table class="table is-fullwidth is-bordered" style="width:860px;" each={p, i in st}>
+    			<caption class="caption-participantlist">Details of Event</caption>
+				<tr><td width='120'><h>Activity Date</td><td >{p.activity_date}</td></tr>
+    			<tr><td width='120'><h>Event Name</td><td >{p.event_name}</td></tr>
+    			<tr><td width='120'><h>Organised By</td><td >{p.organised_by}</td></tr>
+    			<tr><td width='120'><h>Venue</td><td >{p.venue}</td></tr>
+    			<tr><td width='120'><h>Incharge</td><td >{teacher}</td></tr>
+    		</table>	  
+	      	
+	    	<table class="table is-fullwidth is-bordered" style="width:860px;"><caption class="caption-participantlist">NAME OF PARTICIPANTS</caption>
+	    		
+	    		<tr bgcolor=#efefef>
+	    			<td width='20'><h>Sl</td>
+	    			<td><h>Name</td><td width='120'><h>Class</td>
+	    			<td width='50'><h>Enroll No</td>
+	    			<td width='130'><h>Mobile</td>
+	    		</tr>
+	    		<tr each={p, i in print_event_detail }>
+          			<td>{i + 1}</td>
+					<td>{p.participant_name}</td>
+					<td>{p.standard}</td>
+					<td>{p.enroll_number}</td>
+					<td>{p.mobile}</td>
+				</tr>
+    		</table>
+
+    		<table style="height: 30; border:none">
+     			<tr style= "border:none";><td style= "border:none";></td></tr>
+     			</table>
+     			<table class="table is-fullwidth is-bordered" style="width:860px;" each={p, i in st}>
+      				<tr height=70><td width='120'><h>Item Taken</td><td >{p.item_taken}</td></tr>
+      				<tr><td width='120'><h>Out Time</td><td >{p.time_out}</td></tr>
+      				<tr><td width='120'><h>In Time</td><td >{p.time_in}</td></tr>
+      				<tr height=70><td width='120'><h>Remarks/Suggestion</td><td >{p.remarks}</td></tr>
+      				<tr><td width='120'><h>Result</td><td >{p.result}</td></tr>
+     			</table>
+    		
+    	</center>
+	</section>
+
+	<!-- Participant List  View End -->
 	<!-- Assign Student View Start -->
 	<section class=" is-fluid" show={activity_view =='assign_student_view'}>
 		<div class="level">
 		  	<div class="level-left">
 			    <div class="level-item">
-			    	<h2 class="title" style="color: #ff3860;">Assign Participants to Event</h2>
+			    	<h2 class="title is-size-5" style="color: #ff3860;">Assign Participants to Event</h2>
 			    </div>
 		  	</div>
 		  	<div class="level-right">
-			    <button class="button is-warning is-rounded" onclick={close_assign_student_view}>
+			    <button class="button is-warning has-text-weight-bold is-small" onclick={close_assign_student_view}>
 	          		<span class="icon">
 	            		<span class="fas fa-arrow-left"></span>
 	          		</span>
 	        	</button>
-	        	<button class="button is-warning is-rounded ml5" onclick={refreshStudents}>
+	        	<button class="button is-link has-text-weight-bold ml5 is-small" onclick={refreshStudents}>
 			        <span class="icon">
 			          <span class="fas fa-sync-alt"></span>
 			        </span>
@@ -255,14 +358,14 @@
 	        	<table>
 		            <tr>
 		            	<td>
-		                	<button class="button" onclick={assignStudents} style="margin-top:20px;">Assign students  
+		                	<button class="button is-small" onclick={assignStudents} style="margin-top:20px;">Assign students  
 		                  		<span style="margin-left:10px" class="fas fa-angle-double-right"></span>
 		                	</button>
 		              	</td>
 		            </tr>
 	            	<tr>
 	              		<td>
-	                		<button class="button" onclick={freeUpStandard} style="margin-top:20px;"><span style="margin-right:10px;" class="fas fa-angle-double-left"></span> Free up students</button>
+	                		<button class="button is-small" onclick={freeUpStandard} style="margin-top:20px;"><span style="margin-right:10px;" class="fas fa-angle-double-left"></span> Free up students</button>
 	              		</td>
 	            	</tr>
 	          	</table>
@@ -320,7 +423,7 @@
 		</table>
 	    </section>
 	    <footer class="modal-card-foot">
-	      <button class="button is-danger" id="item-modal-close">Cancel</button>
+	      <button class="button is-danger" id="item-modal-close" onclick={close_item_modal}>Cancel</button>
 	    </footer>
 	  </div>
 	</div>
@@ -352,7 +455,7 @@
 		</table>
 	    </section>
 	    <footer class="modal-card-foot">
-	      <button class="button is-danger" id="staff-modal-close">Cancel</button>
+	      <button class="button is-danger" id="staff-modal-close" onclick={close_employee_modal}>Cancel</button>
 	    </footer>
 	  </div>
 	</div>
@@ -382,11 +485,14 @@
       activityStore.off('read_activity_event_changed',ActivityEventChanged)
       activityStore.off('read_items_changed',ItemsChanged)
       activityStore.off('read_staff_changed',StaffChanged)
-      activityStore.off('add_activity_changed',ActivityChanged)
+      activityStore.off('add_activity_changed',AddActivityChanged)
+      activityStore.off('edit_activity_changed',EditActivityChanged)
+      activityStore.off('delete_activity_changed',DeleteActivityChanged)
       activityStore.off('read_activity_by_category_changed',ActivitiesChanged)
       activityStore.off('read_data_for_update_changed',UpdateActivityDataChanged)
       activityStore.off('read_students_changed',ReadStudentsChanged)
       activityStore.off('assign_students_changed',AssignStandardChanged)
+      activityStore.off('read_print_event_detail_changed',PrintEventDetailChanged)
     })
 
     self.readClass = () => {
@@ -406,13 +512,41 @@
         self.tempSections = self.sections.filter(s=>{
           return s.standard_id==self.refs.standardSelect.value
         })
+        self.update()
        }
+    }
+
+    //Participant List
+    self.printEventDetail = (ac,e) =>{
+    	self.activity_id = ac
+    	self.activity_view='participant_list_view'
+    	var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0!
+
+		var yyyy = today.getFullYear();
+		if(dd<10){
+    		dd='0'+dd;
+		} 
+		if(mm<10){
+    		mm='0'+mm;
+		} 
+		var today = dd+'/'+mm+'/'+yyyy;
+		self.print_date = today;
+
+    	activityStore.trigger('read_print_event_detail',self.activity_id)
+    }
+
+    self.close_participant_list_view = () =>{
+    	self.activity_view='show_activity'
     }
 
     //Student Assign
     self.assign_student = (ac) =>{
     	self.activity_id = ac.activity_id
     	self.activity_view='assign_student_view'
+    	self.freeStudents = []
+    	self.assignedStudents = []
     }
 
     self.close_assign_student_view = ()=>{
@@ -500,17 +634,16 @@
        activityStore.trigger('read_activity_categories')
     }
 
+    self.readEvent = () => {
+       activityStore.trigger('read_activity_event')
+    }
+
     self.readActivityEvent = () => {
-    	self.events = []
     	self.readfilteredEvents = []
     	self.readfilteredEvents = self.activity_events.filter(c => {
           return c.category_id == self.refs.activityCategoryidInput.value
         }) 
         self.update()
-    }
-
-    self.readEvent = () => {
-       activityStore.trigger('read_activity_event')
     }
 
     self.close_new_activity = () => {
@@ -520,6 +653,7 @@
 
     self.add_new_activity = () =>{
     	self.activity_view='add_activity'
+    	self.clearForm()
     	self.title='Add'
     	self.update()
     }
@@ -533,15 +667,13 @@
     }
 
     self.ViewItemList = () =>{
-    	$("#itemModal").click(function() {
-  			$("#showItemModal").addClass("is-active");
-		});
+    	$("#showItemModal").addClass("is-active");
+		
+    }
 
-		$("#item-modal-close").click(function() {
-		   $("#showItemModal").removeClass("is-active");
-		   self.itemList()
-
-		});
+    self.close_item_modal = () =>{
+    	$("#showItemModal").removeClass("is-active");
+    	self.itemList()
     }
     self.itemList = () => {
     	let item_name='';
@@ -550,7 +682,7 @@
 	          if(item_name==''){
 	            item_name=q.item_name
 	          }else{
-	            item_name=item_name+', '+q.item_name
+	            item_name=item_name+','+q.item_name
 	          }
 	        }
 		self.refs.itemTakenInput.value = item_name
@@ -572,15 +704,13 @@
     }
 
     self.ViewStaffList = () =>{
-    	$("#staffModal").click(function() {
-  			$("#showStaffModal").addClass("is-active");  
-		});
+		$("#showStaffModal").addClass("is-active");  
+		
+    }
 
-		$("#staff-modal-close").click(function() {
-		   $("#showStaffModal").removeClass("is-active");
-		   self.staffList()
-
-		});
+    self.close_employee_modal = () =>{
+		$("#showStaffModal").removeClass("is-active");
+		self.staffList()
     }
 
     self.staffList = () => {
@@ -598,7 +728,6 @@
 		self.refs.staffTakenInput.value = name
 
     	})
-		console.log(self.teachers)
     }
     self.selectStaff = (name,e) => {
         self.staff.map(i=>{
@@ -608,7 +737,7 @@
               if(i.selected==true){
                 console.log(i.name);
               }else if(i.selected==false){
-              console.log(i.name);
+              	console.log(i.name);
               }
             }
         })
@@ -616,8 +745,11 @@
 
     self.edit = (ac,e) => {
       console.log(ac)
+      self.activity_id = ac
       self.activity_view='add_activity'
       self.title='Update'
+      self.readStaff()
+      self.readItems()
       activityStore.trigger('read_data_for_update', ac)
     }
 
@@ -650,7 +782,7 @@
 	           activityStore.trigger('add_activity', obj)
 	           self.activity_view = 'show_activity'
 	        }else if(self.title=='Update'){
-	           activityStore.trigger('edit_activity', obj)  
+	           activityStore.trigger('edit_activity', obj,self.activity_id)  
 	           self.activity_view = 'show_activity'         
 	        }
 	    }
@@ -668,26 +800,57 @@
       }  
     }
 
-   self.cancelOperation = (e) => {
-      self.events.map(ev => {
-          ev.confirmDelete = false
-          ev.confirmEdit = false
+    self.cancelOperation = (ac) => {
+      self.activities.map(c => {
+          c.confirmDelete = false
+          c.confirmEdit = false
       })
     }
-
-    self.confirmDelete = (e) => {
-      self.events.map(ev => {
-        if(ev.id != e.item.ev.id){
-          ev.confirmDelete = false
+    self.confirmDelete = (ac) => {
+      self.activities.map(c => {
+        if(c.activity_id != ac.item.ac.activity_id){
+          c.confirmDelete = false
         }else{
-          ev.confirmDelete = true
+          c.confirmDelete = true
         }
       })
     }
 
     self.delete = (e) => {
       self.loading = true
-      eventStore.trigger('delete_event', e.item.ev.id)
+      activityStore.trigger('delete_activity', e.item.ac.activity_id)
+    }
+    self.clearForm = () =>{
+    	self.refs.activityTypeInput.value = 'Intra-School'
+	    self.refs.activityDateInput.value = ''
+	    self.refs.organisedByInput.value = ''
+	    self.refs.venueInput.value = ''
+	    self.refs.itemTakenInput.value = ''
+	    self.refs.staffTakenInput.value = ''
+	    self.refs.inTimeInput.value = ''
+	    self.refs.outTimeInput.value = ''
+	    self.refs.activityRemarksInput.value = ''
+	    self.refs.resultInput.value = ''
+	    self.readActivityEvent()
+	    self.readCategories()
+    }
+
+    self.downloadCSV = () =>{
+    	var obj={}
+          obj['category_id']=self.refs.category_id.value
+          activityStore.trigger('csv_export_activity', obj)
+          console.log(obj)
+    }
+
+    activityStore.on('read_print_event_detail_changed',PrintEventDetailChanged)
+    function PrintEventDetailChanged(print_event_detail,teacher){
+      console.log(print_event_detail) 
+      console.log(teacher)
+      self.print_event_detail = print_event_detail 
+      self.st = []
+      self.st.push(print_event_detail[0])
+      self.teacher = teacher
+      self.update()
     }
 
     activityStore.on('read_activity_categories_changed',ActivityCategoriesChanged)
@@ -695,7 +858,8 @@
       console.log(categories) 
       self.categories = categories
       self.update()
-      console.log(self.categories)
+
+      self.readEvent()
     }
 
     activityStore.on('read_activity_event_changed',ActivityEventChanged)
@@ -727,9 +891,23 @@
       })
     }
 
-    activityStore.on('add_activity_changed',ActivityChanged)
-    function ActivityChanged(){
+    activityStore.on('add_activity_changed',AddActivityChanged)
+    function AddActivityChanged(){
       self.update()
+      self.getActivityData()
+    }
+
+    activityStore.on('edit_activity_changed',EditActivityChanged)
+    function EditActivityChanged(){
+      self.update()
+      self.getActivityData()
+    }
+
+    activityStore.on('delete_activity_changed',DeleteActivityChanged)
+    function DeleteActivityChanged(){
+    	self.loading=false;
+     	self.update()
+     	self.getActivityData()
     }
 
     activityStore.on('read_activity_by_category_changed',ActivitiesChanged)
@@ -737,43 +915,86 @@
       console.log(activities) 
       self.loading = false
       self.activities = activities
+      if(self.activities.length==0){
+      	toastr.info("No Data Found")
+      }
+      self.categoryName = $("#CategoryName option:selected").text();
       self.name = name
       self.update()
     }
 
     activityStore.on('read_data_for_update_changed',UpdateActivityDataChanged)
-    function UpdateActivityDataChanged(update_activity, update_employee_activity){
-      console.log(update_activity)
-      console.log(update_employee_activity)
+    function UpdateActivityDataChanged(update_activity, employees,techer_in_charge){
       self.update_activity = update_activity
-      self.update_employee_activity = update_employee_activity
+      self.employees = employees
+      self.techer_in_charge = techer_in_charge
       self.update_activity.map(i=>{
-        self.activityTypeInput= i.activity_type
-        self.activityCategoryidInput= i.category_id
-        self.organisedByInput= i.organised_by
-        self.inTimeInput= i.time_in
-        self.activityDateInput= i.activity_date
-        self.activityEventIdInput= i.event_id
-        self.venueInput= i.venue
-        self.outTimeInput= i.time_out
-        self.remarksInput= i.remarks
-        self.resultInput= i.result
-        /*self.itemTakenInput= i.item_taken*/
+	    self.refs.activityTypeInput.value= i.activity_type
+	    self.refs.activityCategoryidInput.value= i.category_id
+        self.readfilteredEvents = []
+    	self.readfilteredEvents = self.activity_events.filter(c => {
+          return c.category_id == i.category_id
+        }) 
+	    self.refs.organisedByInput.value= i.organised_by
+        self.refs.inTimeInput.value= i.time_in
+        self.refs.activityDateInput.value= i.activity_date
+        self.refs.venueInput.value= i.venue
+        self.refs.outTimeInput.value= i.time_out
+        self.refs.activityRemarksInput.value= i.remarks
+        self.refs.resultInput.value= i.result
         
+
       })
-      
-      self.refs.activityTypeInput.value= self.activityTypeInput
-	  self.refs.activityCategoryidInput.value = self.activityCategoryidInput
-	  self.refs.organisedByInput.value = self.organisedByInput
-	  self.refs.inTimeInput.value = self.inTimeInput
-	  self.refs.activityDateInput.value = self.activityDateInput
-	  self.refs.activityEventIdInput.value = self.activityEventIdInput
-	  self.refs.venueInput.value = self.venueInput
-	  /*self.refs.itemTakenInput.value = self.itemTakenInput*/
-	  self.refs.outTimeInput.value = self.outTimeInput
-	  self.refs.remarksInput.value = self.remarksInput
-	  self.refs.resultInput.value = self.resultInput
+      var str='';
+      str = self.techer_in_charge.toString();
+      var techer_in_charge = str.split(",");
+	  
+      console.log(techer_in_charge);
+      var name = "";
+      self.teachers = [];
+      techer_in_charge.map(i=>{
+      	self.staff.map(e=>{
+      		if(i==e.emp_id){
+        		e.selected = true; 
+        		$('#AddStaffName' + e.emp_id ).prop('checked', true);
+        		if(e.selected){
+	          		self.teachers.push(e.emp_id)
+	        		if(name==''){
+			            name=e.name + "(" + e.employee_id + ")"
+			          }else{
+			            name=name+','+e.name + "(" + e.employee_id + ")"
+			        }
+			    }
+      		}
+      	})
+      })
+      self.refs.staffTakenInput.value = name
+
+      var Items = self.update_activity[0].item_taken
+      console.log(Items)
+      var ItemTaken = Items.split(",");
+      console.log(ItemTaken)
+
+      let item_name='';
+      ItemTaken.map(i=>{
+      	console.log(i)
+      	self.items.map(e=>{
+      		if(i==e.item_name){
+        		e.selected = true; 
+        		$('#AddItemName' + e.item_id ).prop('checked', true);
+
+        		if(item_name==''){
+		            item_name=e.item_name
+		          }else{
+		            item_name=item_name+','+e.item_name 
+		        }
+      		}
+      	})
+      })
+
+      self.refs.itemTakenInput.value = item_name
       self.update()
+      self.refs.activityEventIdInput.value= self.update_activity[0].event_id
 
     }
     activityStore.on('read_classes_changed',ClassesChanged)
@@ -782,7 +1003,6 @@
       self.classes = []
       self.classes = classes
       self.update()
-      console.log(self.classes)
     }
 
     activityStore.on('read_section_changed',SectionChanged)
@@ -791,6 +1011,7 @@
       self.sections = []
       self.sections = sections
       self.update()
+      self.changeSection()
     }
     activityStore.on('read_students_changed',ReadStudentsChanged)
     function ReadStudentsChanged(freeStudents,assignedStudents){

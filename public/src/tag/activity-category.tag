@@ -1,33 +1,39 @@
 <activity-category>
+  <print-header></print-header>
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-		<h2 class="title has-text-centered" style="color: #ff3860;">Activity Category Management</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
-			<div class="columns">
-				<div class="column is-half">
-					<div class="field">
-						<label class="label" for="role">Category</label>
-						<div class="control">
-							<input class="input" type="text" ref="addCategoryInput" id="addCategoryInput" 
-							onkeyup={addEnter}>
-						</div>
-					</div>
-				</div>
-				<div class="column is-narrow">
-					<div class="field">
-						<div class="control">
-							<button class="button is-danger has-text-weight-bold adjusted-top"
-					         onclick={add} >{title}</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<table class="table is-fullwidth is-striped is-hoverable">
+  <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Activity Category Management</h2>
+		<div class="box no-print">
+      <div class="columns">
+        <div class="column is-narrow">
+          <label class="label" for="role">Category</label>
+        </div>
+        <div class="column">
+          <input class="input" type="text" ref="addCategoryInput" id="addCategoryInput" onkeyup={addEnter}>
+        </div>
+        <div class="column">
+          <button class="button is-danger has-text-weight-bold " onclick={add} > {title} </button>
+        </div>
+        <div class="column">
+          <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={csvExport}>
+            <span class="icon">
+              <i class="far fa-file-excel"></i>
+            </span>
+          </button>
+          <button class="button is-primary has-text-weight-bold ml5 is-pulled-right" onclick="window.print()">
+            <span class="icon">
+              <i class="fas fa-print"></i>
+            </span>
+          </button>
+          <button class="button is-link has-text-weight-bold ml5 is-pulled-right" onclick={getData}>
+            <span class="icon">
+              <i class="fas fa-sync-alt"></i>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+		<table class="table is-fullwidth is-bordered is-hoverable">
 			<thead>
 				<tr>
 					<th>SL</th>
@@ -39,16 +45,16 @@
 				<tr each={c, i in categoryDataItems}>
 					<td>{ i+1 }</td>
 					<td>{ c.category_name}</td>
-		          	<td class="has-text-right">
-            			<div class="inline-flex rounded border border-grey overflow-hidden" hide={c.confirmDelete}>
-              				<span><a class="button is-small is-rounded" onclick={edit.bind(this, c)}>Edit</a></span>
-              				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
-            			</div>
-            			<div class="table-buttons" if={c.confirmDelete}>
-              				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
-              				<span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
-            			</div>
-          			</td>
+        	<td class="has-text-right">
+      			<div class="inline-flex rounded border border-grey overflow-hidden no-print" hide={c.confirmDelete}>
+        				<span><a class="button is-small is-rounded" onclick={edit.bind(this, c)}>Edit</a></span>
+        				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+      			</div>
+      			<div class="table-buttons" if={c.confirmDelete}>
+        				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
+        				<span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
+      			</div>
+    			</td>
 				</tr>
 			</tbody>
 		</table>
@@ -57,6 +63,7 @@
 	var self = this
     self.on("mount", function(){
       self.title='Create'
+      self.loading = false;
       self.role = getCookie('role')
       self.update()
       self.readCategories()
@@ -65,21 +72,28 @@
       activitycategoryStore.off('categories_changed', CategoriesChanged)
     })
 
-    //read courses
     self.readCategories = () => {
        activitycategoryStore.trigger('read_categories')
     }
 
-     self.add = () => {
+    self.getData = () =>{
+      self.loading = true
+      activitycategoryStore.trigger('read_categories')
+    }
+
+    self.csvExport = () => {
+      activitycategoryStore.trigger('csv_export_activity_category')
+    }
+
+    self.add = () => {
       if(!self.refs.addCategoryInput.value){
         toastr.info("Please enter Category and try again")
       }else{
         self.loading = true
         if(self.title=='Create'){
-          console.log('create')
           activitycategoryStore.trigger('add_category', self.refs.addCategoryInput.value)
         }else if(self.title=='Update'){
-          console.log('update')
+          self.loading = true
           activitycategoryStore.trigger('edit_category', self.refs.addCategoryInput.value,
             self.edit_id)
         }
