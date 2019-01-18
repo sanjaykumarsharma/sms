@@ -151,10 +151,10 @@ router.post('/print-feed-back-form', function(req, res, next) {
                 join standard_master g on f.standard_id = g.standard_id
                 left join student_master h on (b.reference_enrol = h.enroll_number  and b.current_session_id= ${req.cookies.session_id})
                 where a.student_id in (${input.student_id})
-                and d.session_id=${req.cookies.session_id}
-                group by a.student_id`;
+                and d.session_id=${req.cookies.session_id} `;
       
       console.log(sql);
+      /*group by a.student_id*/
 
       connection.query(sql, function(err, result)
       {
@@ -178,9 +178,9 @@ router.post('/print-feed-back-form', function(req, res, next) {
 });
 
 
-/*Print Certificate*/
+/*Print Feedback */
 
-router.get('/print_certificate/:student_id', function(req, res, next) {
+router.get('/print_feed_back_form/:student_id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
   var student_id = req.params.student_id;
@@ -193,27 +193,23 @@ router.get('/print_certificate/:student_id', function(req, res, next) {
 
       var data = {}
       
-      var sql = `select concat(b.first_name,' ',b.middle_name,' ',b.last_name) as name,
-                f_name,r_no, date_format(b.dob,'%d/%m/%Y') as dob, 
-                date_format(leaving_date, '%d/%m/%Y') as dol,
-                date_format(h.doa, '%d/%m/%Y') as doa,
-                g.standard,section,
-                h.admission_for_class, type,examination_appeared, b.enroll_number,punctuality,
-                conduct, attendance, faculty_relationship, peer_group_relationship,
-                class_responsibility, house_responsibility, attitude,remarks,house_name 
-                from school_leaving a 
-                join student_master b on (a.student_id=b.student_id and b.current_session_id=${req.cookies.session_id})
-                join student_current_standing d on (a.student_id = d.student_id and d.session_id = ${req.cookies.session_id})
-                left join house_master e on d.house_id = e.house_id 
-                join parent_master c on (a.student_id = c.student_id  and c.current_session_id=${req.cookies.session_id})
-                join section_master f on d.section_id = f.section_id
-                join standard_master g on f.standard_id = g.standard_id
-                left join student_master h on (b.reference_enrol = h.enroll_number  and b.current_session_id= ${req.cookies.session_id})
+      var sql =`select distinct a.student_id, concat(a.first_name,' ',a.middle_name,' ',a.last_name) as name,
+                f_name, standard, section,a.roll_number,
+                date_format(a.dob,'%d/%m/%Y') as dob,
+                date_format(doa, '%d/%m/%Y') as doa,
+                admission_for_class,a.enroll_number,house_name 
+                from student_master a 
+                join student_current_standing b on (a.student_id=b.student_id and a.current_session_id =${req.cookies.session_id})
+                join section_master e on b.section_id = e.section_id
+                join standard_master f on e.standard_id = f.standard_id
+                left join house_master c on b.house_id = c.house_id 
+                join parent_master d on (a.student_id = d.student_id and d.current_session_id =${req.cookies.session_id})
                 where a.student_id in (${student_id})
-                and d.session_id=${req.cookies.session_id}
-                group by a.student_id`;
+                and b.session_id=${req.cookies.session_id}
+                order by a.roll_number `;
       
       console.log(sql);
+      /*group by a.student_id*/
 
       connection.query(sql, function(err, result)
       {
@@ -232,6 +228,90 @@ router.get('/print_certificate/:student_id', function(req, res, next) {
       });
 
 
+   });
+
+});
+
+/*Print Certificate */
+
+router.get('/print_certificate/:student_id', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  var student_id = req.params.student_id;
+  console.log(student_id)
+
+  req.getConnection(function(err,connection){
+
+      var today = new Date();
+      var dt =today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+      var data = {}
+      
+      var sql =`select distinct concat(b.first_name,' ',b.middle_name,' ',b.last_name) as name,
+                f_name,r_no, date_format(b.dob,'%d/%m/%Y') as dob, 
+                date_format(leaving_date, '%d/%m/%Y') as dol,
+                date_format(h.doa, '%d/%m/%Y') as doa,
+                g.standard,section,
+                h.admission_for_class, type,examination_appeared, b.enroll_number,punctuality,
+                conduct, attendance, faculty_relationship, peer_group_relationship,
+                class_responsibility, house_responsibility, attitude,remarks,house_name 
+                from school_leaving a 
+                join student_master b on (a.student_id=b.student_id and b.current_session_id=${req.cookies.session_id})
+                join student_current_standing d on (a.student_id = d.student_id and d.session_id = ${req.cookies.session_id})
+                left join house_master e on d.house_id = e.house_id 
+                join parent_master c on (a.student_id = c.student_id  and c.current_session_id=${req.cookies.session_id})
+                join section_master f on d.section_id = f.section_id
+                join standard_master g on f.standard_id = g.standard_id
+                left join student_master h on (b.reference_enrol = h.enroll_number  and b.current_session_id= ${req.cookies.session_id})
+                where a.student_id in (${student_id})
+                and d.session_id=${req.cookies.session_id} `;
+      
+      console.log(sql);
+      /*group by a.student_id*/
+
+      connection.query(sql, function(err, result)
+      {
+
+        if(err){
+          console.log("Error in updating status : %s ",err );
+          data.status = 'e';
+          data.error = err
+          data.messaage = err.sqlMessage
+        }else{
+          data.status = 's';
+          data.students = result;
+          res.send(data)
+        }
+        
+      });
+
+
+   });
+
+});
+
+/* Delete Student Certificte. */
+router.get('/delete_student_certificte/:student_id', function(req, res, next) {
+
+  var student_id = req.params.student_id;
+
+  req.getConnection(function(err,connection){
+        var data = {}
+
+        var query = connection.query("DELETE from school_leaving WHERE student_id = ?",[student_id], function(err, rows)
+        {
+  
+          if(err){
+           console.log("Error deleting student certificte : %s ",err );
+           data.status = 'e';
+
+         }else{
+              data.status = 's';
+              res.send(JSON.stringify(data))
+          }
+         
+          
+        });
    });
 
 });

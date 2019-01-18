@@ -51,7 +51,7 @@ function InventorySubCategoryStore() {
       })
   })
 
-  self.on('edit_inventory_subcategory', function(department,category_id,sub_category,id) {
+  self.on('edit_inventory_subcategory', function(department,category_id,sub_category,id,category_name) {
     let req = {}
     req.department=department
     req.category_id=category_id
@@ -72,6 +72,7 @@ function InventorySubCategoryStore() {
                 cat.category_id=category_id
                 cat.department=department
                 cat.sub_category=sub_category
+                cat.category_name=category_name
               }
               // cat.confirmEdit = false
               return cat
@@ -88,7 +89,7 @@ function InventorySubCategoryStore() {
       })
   })
  
-  self.on('add_inventory_subcategory', function(department,category_id, sub_category) {
+  self.on('add_inventory_subcategory', function(department,category_id, sub_category,category_name) {
     let req = {}
     req.department=department
     req.category_id=category_id
@@ -109,6 +110,7 @@ function InventorySubCategoryStore() {
             obj.sub_category = sub_category
             obj.department = department
             obj.category_id = category_id
+            obj.category_name = category_name
            // obj.category_id = category_id
             self.inventorySubcategories = [obj, ...self.inventorySubcategories]
             toastr.success("Subcategeory Inserserted Successfully ")

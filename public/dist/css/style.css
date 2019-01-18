@@ -3,8 +3,6 @@ body{
   font-size:14px;
 }
 
-
-
 html, body, *, .textarea, .input, .select, .button {
         font-family: 'Quicksand', sans-serif;
       }
@@ -499,4 +497,255 @@ font-size: 1.5em;-webkit-print-color-adjust: exact;
 /*==========Qadir*/
 .printOnly{
   display: none;
+}
+
+.topHeader{
+   font-family:Sans-serif;
+   font-weight:bold;
+   text-align:center;
+   font-size:1.3em;
+ }
+.socialTitle{
+ width:260px;
+}
+.profileDetail{
+ padding:5px;
+ border: solid #000000 2px;
+ font-size:18px;
+ border-radius:10px;
+ text-align:left;
+}
+.principalText{
+ font-size:18px;
+ font-weight:bold;
+ padding-left:35px;
+}
+.principal-school-leaving {
+   text-align: left;
+   border-style: none;
+}
+.profile-school-leaving {
+   text-align: center;
+   font-size: 1em;
+   border-style: none;
+}
+.caption-school-leaving{
+ background-color: #EEE;
+   font-family: Sans-serif;
+   font-weight: bold;
+   text-align: center;
+   font-size: 1.2em;
+   padding: 5px;
+   border: solid #c0c0c0 1px;
+   color: rgb(10, 10, 153);
+   -webkit-print-color-adjust: exact;
+}
+.career-profile-caption{
+ background-color: #DED;
+ -webkit-print-color-adjust: exact;
+ font-family: Sans-serif;
+ font-weight: bold;
+ text-align: center;
+ text-transform: uppercase;
+ font-size: 1.2em;
+ padding-top: 3px;
+ padding-bottom: 3px;
+ color: black;
+}
+
+.career-profile-h3{
+ background-color: #ddd;
+ -webkit-print-color-adjust: exact;
+ max-width: 860px;
+ margin-top: -24px;
+ color: #091378;
+ text-align: left;
+ padding-left: 5px;
+}
+
+.career-profile-table{
+ width: 860px;
+ border-collapse: collapse;
+ border: solid #dddddd 1px;
+}
+.profile-td{
+  padding:3px 5px;
+  border:solid #dddddd 1px;
+  color:#000000; 
+  height:25px;
+}
+.profile-th{
+    font-family : Arial;
+    font-size : 0.8em;
+    text-align : left;
+    padding : 3px 5px;
+    border :solid #dddddd 1px;
+}
+.principal{
+ text-align:right;
+ font-size:10px;
+ font-weight:bold;
+ line-height:4px;
+ }
+.header-student-id-card{
+ font-size: 10px;
+ font-weight: bold;
+ font-family: times;
+ padding: 2px;
+ width: 190px;
+ background-color: #9E1F1F;
+ color: #fff;
+ -webkit-print-color-adjust: exact;
+}
+.header-student-escort-card{
+ font-size: 10px;
+ font-weight: bold;
+ font-family: times;
+ padding: 2px;
+ width: 190px;
+ background-color: #9E1F1F;
+ color: #fff;
+ -webkit-print-color-adjust: exact;
+}
+
+.header-student-escort-card-duplicate{
+ font-size: 10px;
+ font-weight: bold;
+ font-family: times;
+ padding: 2px;
+ width: 190px;
+ background-color: #1006F8;
+ color: #fff;
+ -webkit-print-color-adjust: exact;
+}
+.schoolbg-escort{
+background-image: url(/../images/escort_bg.jpg);
+}
+
+.schoolbg-escort-duplicate{
+background-image: url(/../images/duplicateEscort_bg.jpg);
+}
+.card-student-id{
+ width: 200px;
+ height: 253px;
+ position: relative;
+}
+.card-student-escort{
+ width: 200px;
+ height: 253px;
+ position: relative;
+}
+.title-student-id-card{
+ color: #9E1F1F;
+ font-size: 10px;
+ font-family: Arial Black;
+ font-weight: bold;
+}
+.detail-student-id-card{
+ font-size: 10px;
+ font-family: Arial;
+ font-weight: bold;
+ padding: 0 4px 0 4px;
+ line-height: 10px;
+}
+.lower-student-id-card{
+ font-size: 10px;
+ font-family: Arial;
+ font-weight: bold;
+ text-align: left;
+}
+
+.printOnly_t{
+  display: none;
+}
+
+/*by tarique*/ 
+
+.table_t {
+ page-break-inside:auto 
+}
+.tr_t    
+{ page-break-inside:avoid;
+ page-break-after:auto 
+}
+ * {
+    margin:0;
+    padding:0;
+  }
+  .table_t{
+    
+    border-collapse:collapse;
+    border:solid #000000 1px;
+    font-size: .6em;
+  }
+ .td_t{
+    padding:3px 5px;
+    border:solid #000000 1px;
+    color:#000000; 
+    height:25px;  
+  }
+  .th_t{
+     font-family : Arial;
+     font-size : 0.8em;
+     text-align : left;
+     padding : 3px 5px;
+     border :solid #000000 1px;
+   }
+  caption{
+    background-color:#DED;
+    -webkit-print-color-adjust: exact;
+    font-family:Sans-serif;
+    font-weight:bold;
+    text-align:center;
+    text-transform:uppercase;
+    font-size:1.2em;
+    padding-top:3px;
+    padding-bottom:3px;
+    color:black;  
+  }
+ h1{
+    
+    font-family:serif;
+    font-weight:bold;
+    font-size:1em;
+    text-align:left;
+    color : black;
+  }
+  
+h3{   
+background-color: #ddd;
+-webkit-print-color-adjust: exact;
+width: 855;
+color: #091378;
+text-align: left;
+padding-left:5px;
+}
+
+@media all{
+  .page-break  { display:none; }
+}
+@media print{
+   .page-break  { display:block; page-break-after:always; }
+   body, table{
+      background-color:#fff;
+   }
+   .printOnly_t{
+     display: block !important;
+   }
+}  
+hr{
+  border:none;
+  border-top:solid #dd0000 2px;
+  margin:10px 0;
+  width:860px;
+}
+
+@media print{
+   #mydiv {
+          overflow: hidden;
+          width: 100%
+          height:auto;
+          display: block;
+          font-size: 8px;
+        }
 }

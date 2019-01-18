@@ -53,11 +53,11 @@
                   <span class="fas fa-sync-alt"></span>
                 </span>
                 </button>
-             <button class="button is-warning is-rounded is-pulled-right" onclick={add_student_infirmary}>
+            <!--  <button class="button is-warning is-rounded is-pulled-right" onclick={add_student_infirmary}>
                 <span class="icon">
                   <span class="fas fa-plus"></span>
                 </span>
-            </button>
+            </button> -->
         </div>
       </div>
     </div>

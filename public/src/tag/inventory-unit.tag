@@ -10,7 +10,7 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-            <input class=" input" ref="unit" type="text" onkeyup={addEnter}>
+            <input class=" input" ref="unit" id="unit" type="text" onkeyup={addEnter}>
           </div>
         </div>
         <div class="column">
@@ -127,6 +127,7 @@
     self.edit = (c,e) => {
       console.log(c)
       self.title='Update'
+      document.getElementById("unit").focus()
       self.refs.unit.value = c.unit
       self.edit_id = c.unit_id
     }

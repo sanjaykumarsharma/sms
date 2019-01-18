@@ -1,13 +1,16 @@
 <staff>
 	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" show={staff_view =='show_staff'}>
-		<div class="level">
+		<h2 class="title has-text-centered printOnly_t" style="color: #ff3860; font-size:14px">Employee Details <br>
+			Type: <span style="color:#000">{type}</span> Designation: <span style="color:#000">{designation}</span> Level: <span style="color:#000">{level}</span>  Department: <span style="color:#000">{department}</span>
+		</h2>
+		<div class="level no-print">
 			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Staff</h2>
+				<h2 class="title no-print" style="color: #ff3860;">Employee Details</h2>
 			</div>
 			<div class="level-right">
 			<div>
-				<button class="button is-primary is-rounded" onclick={add_new_staff}>
+				<button class="button is-small is-primary is-rounded" onclick={add_new_staff}>
 				<span class="icon">
 					<span class="fas fa-plus"></span>
 				</span>
@@ -15,34 +18,34 @@
 				</button>
 			</div>
 				<div>
-				<button class="button is-rounded ml10" onclick={update_staff_status}>
+				<button class="button is-small is-rounded ml10" onclick={update_staff_status}>
 				 Leaving Status
 				</button>
 			</div>
 			<div>
-				<button class="button is-warning is-rounded ml10" onclick={allowBlockStaff}>
+				<button class="button is-small is-warning is-rounded ml10" onclick={allowBlockStaff}>
 				Allow/Block
 				</button>
 			</div>
 
 			<div>
-				<button class="button is-warning is-rounded ml10" onclick={showFastEditModal}>
+				<button class="button is-small is-info is-rounded ml10" onclick={showFastEditModal}>
 				Fast Edit
 				</button>
 			</div>
 			<div>
-				<button class="button is-danger  is-rounded ml10" onclick={resetStaffPassword}>
+				<button class="button is-small is-danger  is-rounded ml10" onclick={resetStaffPassword}>
 				Reset Password
 				</button>
 			</div>
 			</div>
 		</div>
-		<div class="box">
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="r_emp_type_id">
+							<select ref="r_emp_type_id" id="r_emp_type_id">
 								<option value={-2}>Type</option>
 								<option value={-1}>All</option>
 								<option each={employeeTypes} value={emp_type_id}>{emp_type}
@@ -54,7 +57,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 			        	<div class="select is-fullwidth">
-							<select ref="r_designation_id">
+							<select ref="r_designation_id" id="r_designation_id">
 								<option value={-2}>Designation</option>
 								<option value={-1}>All</option>
 								<option each={designations} value={designation_id}>{designation}
@@ -66,7 +69,7 @@
 			    <div class="column is-narrow">
 					<div class="control">
 			        	<div class="select is-fullwidth">
-							<select ref="r_level_id">
+							<select ref="r_level_id" id="r_level_id">
 								<option value={-2}>Level</option>
 								<option value={-1}>All</option>
 								<option each={levels} value={level_id}>{level}
@@ -78,7 +81,7 @@
 			    <div class="column is-narrow">
 					<div class="control">
 			        	<div class="select is-fullwidth">
-							<select ref="r_department_id">
+							<select ref="r_department_id" id="r_department_id">
 								<option value={-2}>Department</option>
 								<option value={-1}>All</option>
 								<option each={departments} value={department_id}>{department_name}
@@ -91,16 +94,27 @@
 	        						<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
 	        	    			</div> -->
 				<div class="column">
-					<button class="button is-danger has-text-weight-bold"
+					<button class="button is-small is-danger has-text-weight-bold"
 					onclick={getStaffData}>GO
 					</button>
+					 <button class="button is-primary has-text-weight-bold is-pulled-right is-small" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+		          </button>
+		          <button class="button is-warning is-rounded is-pulled-right is-small" onclick={getStaffData} style="margin-left:5px;margin-right:5px">
+		          <span class="icon">
+		            <span class="fas fa-sync-alt"></span>
+		          </span>
+		          </button>
 				</div>
+
 			</div>
 		</div>
 		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
 			<thead>
 				<tr>
-					<th>#</th>
+					<th class="no-print">#</th>
 					<th>Emp ID</th>
 					<th>Name</th>
 					<th>Department</th>
@@ -114,7 +128,7 @@
 			</thead>
 			<tbody>
 				<tr each={st, i in staffs}>
-					<td><input type="checkbox" class="id_check_box"  id="{ 'EmpId' + st.emp_id }" onclick={ selectStaff.bind(this,st) } > </td>
+					<td class="no-print"><input type="checkbox" class="id_check_box"  id="{ 'EmpId' + st.emp_id }" onclick={ selectStaff.bind(this,st) } > </td>
 					<td>{st.employee_id}</td>
 					<td>{st.first_name} {st.middle_name} {st.last_name}</td>
 					<td>{st.department_name}</td>
@@ -123,15 +137,15 @@
 					<td>{st.employment_status}</td>
 					<td>{st.email}</td>
 					<td>{st.is_active}</td>
-					<td class="has-text-right">
+					<td class="has-text-right no-print">
 		            <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
-		             <span><a class="button is-small is-rounded has-text-success" onclick={printProfile.bind(this, st.emp_id)}>Profile</a></span>	
+		             <span><a class="button is-small  is-rounded has-text-success" onclick={printProfile.bind(this, st.emp_id)}>Profile</a></span>	
 		              <span><a class="button is-small is-rounded has-text-success" onclick={edit.bind(this, st.emp_id)}>Edit</a></span>
-		              <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+		              <span> <a class="button is-small  has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
 		            </div>
 		            <div class="table-buttons" if={st.confirmDelete}>
-		              <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
-		              <span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
+		              <span disabled={loading} class="button is-small is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
+		              <span disabled={loading} class="button  is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
 		            </div>
                   </td>
 				</tr>
@@ -428,10 +442,10 @@
 
   		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addFamilyInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addFamilyInformation}>
 			    	Next >>
 				</button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>    
 		    </div>
@@ -646,13 +660,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeFamilyInformation}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closeFamilyInformation}>
 			    	Previous
 			    </button>
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addQualificationInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addQualificationInformation}>
 			    	Next >>
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>   
 		    </div>
@@ -882,13 +896,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeQualificationInformation}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closeQualificationInformation}>
 			    	Previous
 			    </button>
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addProfessionalCourseInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addProfessionalCourseInformation}>
 			    	Next >>
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>    
 		    </div>
@@ -1101,13 +1115,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeProfessionalCourseInformation}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closeProfessionalCourseInformation}>
 			    	Previous
 			    </button>
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addProfessionalMasterCourseInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addProfessionalMasterCourseInformation}>
 			    	Next >>
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>    
 		    </div>
@@ -1367,13 +1381,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeProfessionalMasterCourseInformation}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closeProfessionalMasterCourseInformation}>
 			    	Previous
 			    </button>
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addExtraActivityInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addExtraActivityInformation}>
 			    	Next >>
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>     
 		    </div>
@@ -1455,13 +1469,13 @@
 				<label class="label is-small" for="">DOJ</label>
 	      	</div>
 	      	<div class="column is-2 ">
-				<input class="input date is-small" ref="work_doj" id="work_doj{i}" type="text"  value={st.date_of_joining}>
+				<input class="input date is-small" id="work_doj{i}" type="text"  value={st.date_of_joining}>
 	      	</div>
 	      	<div class="column is-2">
 				<label class="label is-small" for="">DOL</label>
 	      	</div>
 	      	<div class="column is-2">
-        		<input class="input date is-small"  ref="work_dol" id="work_dol{i}" type="text" value={st.date_of_leaving}>
+        		<input class="input date is-small" id="work_dol{i}" type="text" value={st.date_of_leaving}>
 	      	</div>
 		</div>
 
@@ -1480,10 +1494,10 @@
 	      	</div>
 	
 			 <div class="column is-2">
-			 <button class="button is-primary is-rounded ml5 is-small" onclick={add_more_work_exp}>
+			 <button class="button is-small is-primary is-rounded ml5 " onclick={add_more_work_exp}>
 					<span class="icon"><span class="fas fa-plus"></span></span>
 			 </button>
-			   <button class="button is-info is-rounded ml5 is-small" onclick={remove.bind(this, i)}>
+			   <button class="button  is-info is-rounded ml5 is-small" onclick={remove.bind(this, i)}>
 					<span class="icon"><span class="fas fa-minus"></span></span>
 			 </button>
 			</div>
@@ -1493,13 +1507,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeExtraActivityInformation}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closeExtraActivityInformation}>
 			    	Previous
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={addPrevoiusJob}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={addPrevoiusJob}>
 			     Next
 			    </button>    
-			   <button class="button is-info has-text-weight-bold adjusted-top" onclick={close}>
+			   <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={close}>
 			   Cancel
 			   </button>     
 		    </div>
@@ -1717,13 +1731,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closePreviousJob}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closePreviousJob}>
 			    	<< Previous
 			    </button>
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addInformation}>
 			    	Submit
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>      
 		    </div>
@@ -1759,8 +1773,8 @@
           </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-danger" onclick={updateEmployeeStatus} >{title}</button>
-        <button class="button" id="item-modal-close" onclick={closeStatusUpdateModal}>Cancel</button>
+        <button class="button is-small is-danger" onclick={updateEmployeeStatus} >{title}</button>
+        <button class="button is-small" id="item-modal-close" onclick={closeStatusUpdateModal}>Cancel</button>
       </footer>
     </div>
   </div>
@@ -1771,7 +1785,7 @@
 				<h2 class="title">Profile of {first_name} {middle_name} {last_name}</h2>
 			</div>
 			<div class="level-right">
-				<a class="button no-print" onclick={close_staff_profile}>Back</a>
+				<a class="button is-small no-print" onclick={close_staff_profile}>Back</a>
 			</div>
 		</div>
 		
@@ -2148,7 +2162,7 @@
 				</div>
 				<div class="level-right">
 				<div>
-				<button class="button is-warning is-rounded" onclick={backToStaff}>
+				<button class="button is-small is-warning is-rounded" onclick={backToStaff}>
 			        <span class="icon">
 			          <span class="fas fa-arrow-left"></span>
 			        </span>
@@ -2180,7 +2194,7 @@
 			</div>
 			 
 		</div>
-		<div class="level-right"><button class="button is-danger" onclick="{fastUpdateStaff}">Update</button></div>
+		<div class="level-right"><button class="button is-small is-danger" onclick="{fastUpdateStaff}">Update</button></div>
 		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
 			<thead>
 				<tr>
@@ -2248,8 +2262,8 @@
 			</tbody>
 		</table>
 		<div class="level-right">
-			<button class="button is-danger" onclick="{fastUpdateStaff}">Update</button>
-			<button class="button" onclick="{backToStaff}">Cancel</button>
+			<button class="button is-small is-danger" onclick="{fastUpdateStaff}">Update</button>
+			<button class="button is-small" onclick="{backToStaff}">Cancel</button>
 		</div>
 	</section>
 <script>
@@ -2285,6 +2299,7 @@
 	    	allowInput: true,
         	dateFormat: "d/m/Y",
   		})
+  		 self.update()
 	
     })
 
@@ -2308,17 +2323,34 @@
       staffStore.off('reset_staff_password_changed',ResetStaffPasswordChanged)
       staffStore.off('update_staff_fast_edit_changed',readStaffFastEditChanged)
     })
-
     self.add_more_work_exp=()=>{
 	    let obj = {}
         obj.work_institution=''
         self.workExperienceArray.push(obj)
-        self.update()
+     	//self.update()	
+          let work_doj_id='#work_doj'+ (self.workExperienceArray.length-1).toString()
+          let work_dol_id='#work_dol'+ (self.workExperienceArray.length-1).toString()
+	        
+	        
+			  console.log(work_dol_id)
+		  	setTimeout(function(){
+			  
+                // self.update()
+
+		        flatpickr(work_doj_id, {
+			    	allowInput: true,
+		        	dateFormat: "d/m/Y",
+		  		})
+		       
+		        flatpickr(work_dol_id, {
+			    	allowInput: true,
+		        	dateFormat: "d/m/Y",
+			  	})
+
+			  	// self.update()
+
+			}, 1000);
       //  console.log(self.workArray);
-       /* flatpickr(".date", {
-	    	allowInput: true,
-        	dateFormat: "d/m/Y",
-  		})*/
     }
 
     self.remove = (index,e) => {
@@ -2477,7 +2509,10 @@
 
 
     self.getStaffData = () =>{
-    	//if(self.refs.read_enroll_number.value==""){
+    	    self.type = $("#r_emp_type_id option:selected").text();
+    	    self.department = $("#r_department_id option:selected").text();
+    	    self.designation = $("#r_designation_id option:selected").text();
+    	    self.level = $("#r_level_id option:selected").text();
     		self.loading=true
     		staffStore.trigger('read_staff', self.refs.r_emp_type_id.value,self.refs.r_department_id.value,self.refs.r_designation_id.value,self.refs.r_level_id.value)
     	//}
@@ -2764,9 +2799,9 @@
           let work_position_id='#work_position'+index
           let work_subject_id='#work_subject'+index
 
-           x.institution = $(work_institution_id).val()
-           x.date_of_joining = $(work_doj_id).val()
-           x.date_of_leaving = $(work_dol_id).val()
+           x.institution =  $(work_institution_id).val()
+           x.date_of_joining = convertDate($(work_doj_id).val())
+           x.date_of_leaving = convertDate($(work_dol_id).val())
            x.position = $(work_position_id).val()
            x.subjects_taught = $(work_subject_id).val()
         });
@@ -3020,6 +3055,7 @@
     self.edit = (c,st) => {
       console.log(c)
       self.emp_id = c
+      self.workExperienceArray=[{}]
       flatpickr(".date", {
 	    allowInput: true,
         dateFormat: "d/m/Y",
@@ -3285,14 +3321,12 @@
     staffStore.on('read_for_edit_staff_changed',ReadForEditStaffChanged)
     function ReadForEditStaffChanged(staff_details, workExperienceArray){
 
-  	    self.workExperienceArray =[]
-         let obj = {}
-             obj.work_institution=''
-
-        self.workExperienceArray.push(obj)
-     	self.workExperienceArray=workExperienceArray
-       
-       //  self.update()
+     	 flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
+  	    self.workExperienceArray =[{}]
+        self.workExperienceArray=workExperienceArray
      	self.staff_details=staff_details
      	if(self.title=='Update'){
          self.refs.title.value=staff_details[0].title
@@ -3459,11 +3493,8 @@
     	self.refs.details_publication.value=staff_details[0].details_publication
     	self.refs.details_curricular_activities.value=staff_details[0].details_curricular_activities
     	self.refs.details_sport.value=staff_details[0].details_sport
+    	
     	self.update()
-    	 flatpickr(".date", {
-	    	allowInput: true,
-        	dateFormat: "d/m/Y",
-  		})
      }else{
      	console.log("inside else")
      	console.log(staff_details[0].first_name)
@@ -3631,11 +3662,8 @@
     	self.details_publication=staff_details[0].details_publication
     	self.details_curricular_activities=staff_details[0].details_curricular_activities
     	self.details_sport=staff_details[0].details_sport
+    	 
     	self.update()
-    	 flatpickr(".date", {
-	    	allowInput: true,
-        	dateFormat: "d/m/Y",
-  		})
      }
 
     }

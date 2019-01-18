@@ -71,28 +71,28 @@
     })
 
     self.on("unmount", function(){
-      studentSearchStore.off('read_occupation_changed',OccupationChanged)
-      studentSearchStore.off('read_occupation_report_change',ReadOccupationReportChanged)
+      adminReportStore.off('read_occupation_changed',OccupationChanged)
+      adminReportStore.off('read_occupation_report_change',ReadOccupationReportChanged)
     })
 
     
 	self.readOccupation = () => {
-       studentSearchStore.trigger('read_occupation')
+       adminReportStore.trigger('read_occupation')
     }
 
     self.getOccupationReportData = () => {
-       studentSearchStore.trigger('read_occupation_report',self.refs.occupation.value)
+       adminReportStore.trigger('read_occupation_report',self.refs.occupation.value)
     }
 
     
-   studentSearchStore.on('read_occupation_changed',OccupationChanged)
+   adminReportStore.on('read_occupation_changed',OccupationChanged)
     function OccupationChanged(parentOccupations){
       console.log(parentOccupations) 
       self.parentOccupations = parentOccupations
       self.update()
     }
 
-    studentSearchStore.on('read_occupation_report_change',ReadOccupationReportChanged)
+    adminReportStore.on('read_occupation_report_change',ReadOccupationReportChanged)
     function ReadOccupationReportChanged(occupationReports){
       console.log(occupationReports) 
       self.occupationReports = occupationReports

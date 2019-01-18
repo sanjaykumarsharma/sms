@@ -182,7 +182,7 @@ function StudentStore() {
             if(data.students == []){
                toastr.info("No Data Found!")
             }
-            self.trigger('read_student_changed', data.students,getCookie('session_id'),getCookie('session_name'))
+            self.trigger('read_student_changed', data.students,getCookie('session_id'),getCookie('session_name'),getCookie('role'))
           }else if(data.status == 'e'){
             showToast("Student Read Error. Please try again.", data)
           }
@@ -386,7 +386,7 @@ function StudentStore() {
           console.log(data)
           if(data.status == 's'){
             toastr.success("Successfully Regenerate Roll No")
-            self.trigger('regenerate_roll_no_changed', self.students)
+            self.trigger('regenerate_roll_no_changed')
           }else if(data.status == 'e'){
             showToast("Error Updating Student. Please try again.", data)
           }

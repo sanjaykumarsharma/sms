@@ -1,11 +1,14 @@
 <staff-gender-report>
 	<section class=" is-fluid">
-		<div class="level">
+		<h2 class="title has-text-centered" style="color: #ff3860;">Staff BY Gender<br>
+					Grand Total <span style="color:#000">: {grand_total}</span></h2>
+		<!-- <div class="level">
 			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Student Gender Report</h2>
+				<h2 class="title" style="color: #ff3860;">S <br>
+				</h2>
 			</div>
-		</div>
-		<div class="box">
+		</div> -->
+		<div class="box no-print">
 			<div class="columns">
 				<!-- <div class="column is-narrow">
 					<div class="control">
@@ -19,24 +22,35 @@
 						</div>
 					</div>
 				</div> -->
-				<!-- <div class="column is-narrow">
+				<div class="column is-narrow">
 					<div class="control">
-							        	<div class="select is-fullwidth">
-							<select ref="section_id">
-								<option>Choose Section</option>
+					<div class="select is-fullwidth">
+							<select ref="emp_type_id" onchange={readEmployeeGenderReport}>
+								<option>Choose Type</option>
 								<option value='-1'>All</option>
-								<option each={readfilteredSections} value={section_id}>{section}
-					                            </option>
+								<option each={employeeTypes} value={emp_type_id}>{emp_type}
+	                            </option>
 							</select>
 						</div>
 							      	</div>
-							    </div> -->
+							    </div>
 				<div class="column">
 					<!-- <button class="button is-danger has-text-weight-bold"
 					onclick={readStudentHouseReport} >GO
 					</button> -->
 					<input type="checkbox" id="checkTable" checked={e.done}
 				    onclick={viewTable}  style="margin-top: 12px;"> Table
+
+				    <button class="button is-primary has-text-weight-bold is-pulled-right is-small" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+		          </button>
+		          <button class="button is-warning is-rounded is-pulled-right is-small" onclick={readEmployeeGenderReport} style="margin-left:5px;margin-right:5px">
+		          <span class="icon">
+		            <span class="fas fa-sync-alt"></span>
+		          </span>
+		          </button>
 				</div>
 			</div>
 		</div>
@@ -65,6 +79,7 @@
     self.on("mount", function(){
     	self.title='Add'
     	self.report_view ='show_graph'
+    	self.readEmployeeTypes()
     	self.readEmployeeGenderReport()
     	self.role = getCookie('role') 
         self.update()
@@ -75,6 +90,7 @@
     })
 
     self.on("unmount", function(){
+    	employeeTypeStore.off('employeeTypes_changed', EmployeeTypesChanged)
       staffStore.off('read_employee_gender_report_change',ReadEmployeeGenderReportChanged)
     })
 
@@ -86,8 +102,21 @@
     	}
     }
 
+    self.readEmployeeTypes = () => {
+       self.loading = true;
+       employeeTypeStore.trigger('read_employeeTypes')
+    }
+
+     employeeTypeStore.on('employeeTypes_changed',EmployeeTypesChanged)
+    function EmployeeTypesChanged(employeeTypes){
+      console.log(employeeTypes) 
+      self.employeeTypes = employeeTypes
+      self.update()
+      console.log(self.employeeTypes)
+    }
+
     self.readEmployeeGenderReport = () => {
-       staffStore.trigger('read_employee_gender_report')
+       staffStore.trigger('read_employee_gender_report',self.refs.emp_type_id.value)
     }
     
   

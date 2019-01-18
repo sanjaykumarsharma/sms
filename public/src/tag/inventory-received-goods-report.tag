@@ -82,11 +82,10 @@
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
-      flatpickr(".date", {
-         allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
-       })
+        flatpickr(".date", {
+        allowInput: true,
+          dateFormat: "d/m/Y",
+      })
       self.update()
       self.getReceivedFrom()
      /* self.readInventoryCategory()
@@ -108,8 +107,10 @@
     }
     self.getReceivedGoodsReport = () => {
       self.received_from=self.refs.received_from.value
+      self.start_date=convertDate(self.refs.start_date.value)
+      self.end_date=convertDate(self.refs.end_date.value)
       self.loading=true
-       inventoryReportStore.trigger('read_inventory_received_goods_report',self.refs.received_from.value,self.refs.start_date.value,self.refs.end_date.value)
+       inventoryReportStore.trigger('read_inventory_received_goods_report',self.refs.received_from.value,self.start_date,self.end_date)
     }
     
 

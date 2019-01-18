@@ -128,7 +128,7 @@ router.get('/read_inventory_issue_to/:issue_type', function(req, res, next) {
      var data = {}
      var issue_type=req.params.issue_type
            if(issue_type=='Staff'){
-              var qury=`select distinct (staff_id) as issue_to  , concat(first_name,' ',middle_name,' ',last_name) as name 
+              var qury=`select distinct (staff_id) as issue_to  , first_name, concat(first_name,' ',middle_name,' ',last_name) as name 
               from issue_goods a
               left join  employee b on a.staff_id = b.emp_id 
               where issue_type='${issue_type}'

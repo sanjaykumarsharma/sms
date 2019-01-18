@@ -2,7 +2,8 @@
   <header></header>
   <loading-bar if={loading}></loading-bar>
 <section class="is-fluid">
-  <div class="box">
+  <h2 class="title printOnly_t has-text-centered" style="color: #ff3860;">Staff Weight and B.P Records</h2>
+  <div class="box no-print">
       <div class="columns">
         <div class="column is-narrow">
           <label class="label">Employee</label>
@@ -10,7 +11,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="staff_id">
+              <select ref="staff_id" onkeyup={addEnter}>
                 <option each={employees} value={emp_id}>{name}
                 </option>
               </select>
@@ -22,7 +23,7 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text">
+             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text" onkeyup={addEnter} style="width:120px">
           </div>
         </div>
           <div class="column is-narrow">
@@ -30,7 +31,7 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text">
+              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text" onkeyup={addEnter} style="width:120px">
           </div>
         </div>
         <div class="column">
@@ -45,9 +46,9 @@
         </div>
       </div>
     </div>
-  <div class="level">
+  <div class="level no-print">
     <div class="level-left">
-      <h4 class="title" style="color: #ff3860;">Staff Wise Report</h4>
+      <h4 class="title" style="color: #ff3860;">Staff Weight and B.P Records</h4>
     </div>
 
     <!-- <div class="level-right">
@@ -67,7 +68,7 @@
           <th>Checkip Date</th>
           <th>Weight</th>
           <th>B.P</th>
-          <th>B.M.I/th>
+          <th>B.M.I</th>
         </tr>
       </thead>
       <tbody>
@@ -75,7 +76,7 @@
           <td>{i+1}</td>
           <td>{st.checkup_date}</td>
           <td>{st.weight}</td>
-          <td>{st.blood_presure}</td>
+          <td>{st.blood_pressure}</td>
           <td>{st.bmi}</td>
           
         </tr>
@@ -93,10 +94,9 @@
        // self.readInfirmaryCase()
        // self.readStudentInfirmary()
         console.log("inside BP")
-        flatpickr(".date", {
-         allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+       flatpickr(".date", {
+          allowInput: true,
+          dateFormat: "d/m/Y",
        })
         self.update()
      })
@@ -107,7 +107,9 @@
 
      //read courses
      self.readStaffWiseReport = () => {
-           staffbpweightStore.trigger('read_staff_wise_report', self.refs.staff_id.value,self.refs.start_date.value,self.refs.end_date.value,)
+             self.start_date=convertDate(self.refs.start_date.value)
+             self.end_date=convertDate(self.refs.end_date.value)
+           staffbpweightStore.trigger('read_staff_wise_report', self.refs.staff_id.value, self.start_date, self.end_date)
            //studentStore.trigger('read_students', obj)
      }
       self.readEmployee = () => {

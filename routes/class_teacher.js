@@ -77,7 +77,10 @@ router.get('/read_class_teacher', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
- var session_id=req.cookies.session_id
+    var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
+  var session_id=req.cookies.session_id
   req.getConnection(function(err,connection){
         var data = {}
 
@@ -86,7 +89,10 @@ router.post('/add', function(req, res, next) {
            room : input.room_no,
            class_teacher : input.class_teacher,
            assistant_teacher : input.asst_class_teacher,
-           session_id : session_id
+           session_id : session_id,
+           creation_date    : formatted,
+           modification_date    : formatted,
+           modified_by    : req.cookies.user,
         };
         
         var query = connection.query("INSERT INTO class_teacher_section set ? ",values, function(err, rows)
@@ -113,7 +119,10 @@ router.post('/add', function(req, res, next) {
 router.post('/edit/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
-  var id = input.id;
+    var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
+   var id = input.id;
 
   req.getConnection(function(err,connection){
         var data = {}
@@ -124,6 +133,8 @@ router.post('/edit/:id', function(req, res, next) {
            room : input.room_no,
            class_teacher : input.class_teacher,
            assistant_teacher : input.asst_class_teacher,
+           modification_date    : formatted,
+           modified_by    : req.cookies.user,
         };
         
         var query = connection.query("UPDATE class_teacher_section set ? WHERE ts_id = ?",[values,id], function(err, rows)

@@ -33,10 +33,10 @@
 				<tr each={st, i in studentCategorySummaryReports}>
 					<td>{i+1}</td>
 					<td>{st.standard}</td>
-					<td>{st.s0}</td>
-					<td>{st.s1}</td>
-					<td>{st.s2}</td>
-					<td>{st.s3}</td>
+					<td>{st.General}</td>
+					<td>{st.ST}</td>
+					<td>{st.SC}</td>
+					<td>{st.OBC}</td>
 					
 				</tr>
 			</tbody>

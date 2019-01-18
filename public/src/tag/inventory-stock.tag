@@ -11,7 +11,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select" >
-              <select ref="r_category_id" onchange={readInventoryStock}>
+              <select ref="r_category_id"  onchange={readInventoryStock}>
                 <option each={inventoryCategories} value={category_id} >{category_name}
                 </option>
               </select>
@@ -29,7 +29,7 @@
           <span class="fas fa-sync-alt"></span>
         </span>
         </button>
-           <button class="button is-warning is-rounded is-pulled-right" onclick={show_inventory_stock}>
+           <button class="button is-info is-rounded is-pulled-right" onclick={show_inventory_stock}>
           <span class="icon">
             <span class="fas fa-plus"></span>
           </span>
@@ -92,78 +92,32 @@
   </div>
   <div class="box">
     <div class="columns is-variable is-1 is-multiline">
-     <!--  <div class="column is-one-third">
-       <label class="label">Employee</label>
-       <div class="control">
-           <div class="select is-fullwidth">
-           <select ref="staff_id">
-             <option each={employees} value={emp_id}>{name}
-             </option>
-           </select>
-         </div>
-         </div>
-       </div> -->
-  <!--     <div class="column is-one-third">
-  <label class="label" for="class">Category</label>
-     <div class="control">
-        <div class="select is-fullwidth">
-        <select ref="category_id">
-          <option each={infirmaryCategories} value={category_id}>{category_name}
-          </option>
-        </select>
-      </div>
-      </div>
-    </div> -->
-      <!--   <div class="column is-one-third">
-      <label class="label" for="class">Case</label>
-      <div class="control">
-          <div class="select is-fullwidth">
-          <select ref="case_id">
-            <option each={infirmaryCases} value={case_id}>{case_name}
-            </option>
-          </select>
-        </div>
-          </div>
-      </div> -->
-        
+     
         <div class="column is-one-third">
          <label class="label">Received Date</label>
-        <input class="input date flatpickr-input form-control input"  ref="received_date" placeholder="" tabindex="0" 
-        type="text">
-        </div>
+        <input class="input date flatpickr-input form-control input"  ref="received_date" placeholder="" tabindex="0" type="text"></div>
          <div class="column is-one-third">
               <label class="label" for="class">Category</label>
               <div class="control">
                   <div class="select is-fullwidth">
-                  <select ref="category_id" onchange={filterSubcategory}>
-            <option each={inventoryCategories} value={category_id}>{category_name}
-            </option>
+                  <select ref="category_id" id="category_id"  onchange={filterSubcategory}>
+              
+                  <option each={inventoryCategories} value={category_id}>{category_name}
+                  </option>
           </select>
         </div>
           </div>
       </div>
-      <!--   <div class="column is-one-third">
-       <label class="label">Category</label>
-        <select ref="category_id" style="margin-left:-10px" onchange={filterSubcategory}>
-              <option each={inventoryCategories} value={category_id} >{category_name}
-              </option>
-       </select>
-      </div> -->
-        <!--  <div class="column is-one-third">
-        <label class="label">Subcategory</label>
-         <select ref="category_id" style="margin-left:-10px" onchange={filterItem}>
-               <option each={filteredSubcategories} value={sub_category_id} >{sub_category}
-               </option>
-        </select>
-                </div> -->
+     
         <div class="column is-one-third">
               <label class="label" for="class">Subcategory</label>
               <div class="control">
                   <div class="select is-fullwidth">
-                  <select ref="sub_category_id" onchange={filterItem}>
-            <option each={filteredSubcategories} value={sub_category_id}>{sub_category}
-            </option>
-          </select>
+               <select ref="sub_category_id" id="sub_category_id" onchange={filterItem}>
+            
+                 <option each={filteredSubcategories} value={sub_category_id}>{sub_category}
+                 </option>
+              </select>
         </div>
         </div>
       </div>
@@ -171,22 +125,23 @@
               <label class="label" for="class">Item</label>
               <div class="control">
                   <div class="select is-fullwidth">
-                  <select ref="item_id" >
-            <option each={filteredItems} value={item_id}>{item_name}
-            </option>
-          </select>
+                  <select ref="item_id" id="item_id" onkeyup={addEnter}>
+                
+                  <option each={filteredItems} value={item_id}>{item_name}
+                  </option>
+                 </select>
         </div>
           </div>
       </div>
       <div class="column is-one-third">
          <label class="label">Quantity</label>
-        <input type="text" ref="quantity" type="text" class="input">
+        <input type="text" ref="quantity" type="text" class="input" onkeyup={addEnter}>
         </div>
       <div class="column is-one-third">
               <label class="label" for="class">Unit</label>
               <div class="control">
                   <div class="select is-fullwidth">
-                  <select ref="unit_id" >
+                  <select ref="unit_id" onkeyup={addEnter}>
             <option each={inventoryUnits} value={unit_id}>{unit}
             </option>
           </select>
@@ -195,17 +150,17 @@
       </div>
         <div class="column is-one-third">
          <label class="label">Rate</label>
-        <input type="text" ref="rate" type="text" class="input">
+        <input type="text" ref="rate" type="text" class="input" onkeyup={addEnter}>
         </div>
         <div class="column is-one-third">
          <label class="label">Received Form</label>
-        <input type="text" ref="received_from" type="text" class="input">
+        <input type="text" ref="received_from" type="text" class="input" onkeyup={addEnter}>
         </div>
         <div class="column is-one-third">
           <label class="label" for="class">Rack</label>
             <div class="control">
               <div class="select is-fullwidth">
-               <select ref="rack_id" >
+               <select ref="rack_id" onkeyup={addEnter}>
                 <option each={inventoryRacks} value={rack_id}>{rack_name}
                 </option>
               </select>
@@ -214,7 +169,7 @@
        </div>  
         <div class="column is-one-third">
            <label class="label">Remark</label>
-           <input type="text" ref="remark" type="text" class="input">
+           <input type="text" ref="remark" type="text" class="input" onkeyup={addEnter}>
         </div>
     <div class="column is-full">
     <button class="button is-danger has-text-weight-bold adjusted-top" onclick={add} >{title}</button>    
@@ -231,8 +186,7 @@
       self.inventory_stock_view='show_inventory_stock_table'
       flatpickr(".date", {
          allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+          dateFormat: "d/m/Y",
        })
       self.update()
     //  self.readInventoryDepartment()
@@ -266,21 +220,20 @@
     }
     
    self.filterSubcategory = () => {
-      self.filteredSubcategories = []
+      self.filteredSubcategories = [{}]
       self.filteredSubcategories = self.inventorySubcategories.filter(s => {
         console.log("inside")
-       return s.category_id == self.refs.category_id.value    
-    })
-      console.log(self.filteredSubcategories)
-      self.filterItem()
-      self.update()
+       return s.category_id == self.refs.category_id.value  
+       // self.update()  
+      })
+       self.update()  
+       self.filterItem()
    }
 
     self.filterItem = () => {
-      self.filteredItems = []
+      self.filteredItems = [{}]
       self.filteredItems = self.inventoryItems.filter(s => {
-        console.log(s)
-      return s.subcategory_id == self.refs.sub_category_id.value    
+         return s.subcategory_id == self.refs.sub_category_id.value    
     })
       self.update()
    }
@@ -309,16 +262,21 @@
     }
 
     self.add = () => {
+      self.received_date=convertDate(self.refs.received_date.value)
+        self.category_name = $("#category_id option:selected").text();
+        self.subcategory_name = $("#sub_category_id option:selected").text();  
+        self.item_name = $("#item_id option:selected").text();  
+      console.log(self.received_date);
       if(!self.refs.category_id.value){
         toastr.info("Please enter category name and try again")
       }else{
         self.loading = true
         if(self.title=='Create'){
           console.log('create')
-        inventoryStockStore.trigger('add_inventory_stock', self.refs.received_date.value, self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_id.value,self.refs.rate.value,self.refs.quantity.value,self.refs.unit_id.value,self.refs.received_from.value,self.refs.rack_id.value,self.refs.remark.value)
+        inventoryStockStore.trigger('add_inventory_stock', self.received_date, self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_id.value,self.refs.rate.value,self.refs.quantity.value,self.refs.unit_id.value,self.refs.received_from.value,self.refs.rack_id.value,self.refs.remark.value,self.category_name, self.subcategory_name,self.item_name)
         }else if(self.title=='Update'){
           console.log('update')
-        inventoryStockStore.trigger('edit_inventory_stock', self.refs.received_date.value, self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_id.value,self.refs.rate.value,self.refs.quantity.value,self.refs.unit_id.value,self.refs.received_from.value,self.refs.rack_id.value,self.refs.remark.value, self.edit_id)
+        inventoryStockStore.trigger('edit_inventory_stock', self.received_date, self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_id.value,self.refs.rate.value,self.refs.quantity.value,self.refs.unit_id.value,self.refs.received_from.value,self.refs.rack_id.value,self.refs.remark.value, self.edit_id,self.category_name, self.subcategory_name,self.item_name)
         }
       }
     }
@@ -360,22 +318,21 @@
     self.edit = (ev,e) => {
       console.log(ev)
       self.title='Update'
-       flatpickr(".date", {
+         flatpickr(".date", {
          allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+         dateFormat: "d/m/Y",
        })
        self.refs.category_id.value=ev.category_id
        self.filterSubcategory()
-       self.update()
+       //self.update()
        self.refs.sub_category_id.value=ev.sub_category_id
        self.filterItem()
-       self.update()
+    //   self.update()
        self.refs.item_id.value=ev.item_id
-       self.refs.received_date.value=ev.r_date
+       self.refs.received_date.value=ev.received_date
        self.refs.item_id.value=ev.item_id
        self.refs.unit_id.value=ev.unit_id
-       self.refs.quantity.value=ev.quantity
+       self.refs.quantity.value=ev.qty
        self.refs.rate.value=ev.rate
        self.refs.received_from.value=ev.received_from
        self.refs.item_id.value=ev.item_id
@@ -383,14 +340,18 @@
        self.refs.remark.value=ev.remark
        self.edit_id = ev.received_id
        self.inventory_stock_view='show_inventory_stock_form'
+       self.update()
     }
     
     inventoryStockStore.on('add_inventory_stock_changed',AddInventoryStockChanged)
-    function AddInventoryStockChanged(inventoryStocks){
-      console.log(inventoryStocks) 
+    function AddInventoryStockChanged(inventoryStocks,category_id){
+      self.inventoryStocks=inventoryStocks
+      self.refs.r_category_id.value=category_id
       self.title='Create'
       self.refs.received_date.value=''
       self.refs.item_id.value=''
+      self.refs.category_id.value=''
+      self.refs.sub_category_id.value=''
       self.refs.unit_id.value=''
       self.refs.rate.value=''
       self.refs.received_from.value=''
@@ -407,6 +368,8 @@
     function EditInventoryStockChanged(inventoryStocks){
       console.log(inventoryStocks) 
       self.title='Create'
+      self.refs.category_id.value=''
+      self.refs.sub_category_id.value=''
       self.refs.received_date.value=''
       self.refs.item_id.value=''
       self.refs.unit_id.value=''

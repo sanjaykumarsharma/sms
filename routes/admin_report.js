@@ -343,12 +343,12 @@ router.post('/read_student_category_summary_report', function(req, res, next) {
   var session_name = req.cookies.session_name
     req.getConnection(function(err,connection){
     var data = []
-
+//,category_name,standard,b.section_id,section,
       connection.beginTransaction(function(err) {
         if (err) { throw err; }
 
-        var qry =`SELECT d.first_name,d.enroll_number,a.standard_id, standard, b.section_id, section,e.category_id,
-                category_name,count(d.student_id)as strength 
+        var qry =`SELECT a.standard_id, standard, e.category_id,
+                category_name,count(d.student_id) as strength 
                 FROM section_master b
                 JOIN standard_master a ON a.standard_id = b.standard_id
                 JOIN student_current_standing c ON (b.section_id = c.section_id  and c.session_id =${req.cookies.session_id}) 
@@ -487,10 +487,10 @@ router.post('/read_student_religion_listing_report', function(req, res, next) {
     req.getConnection(function(err,connection){
     var data = []
 
-      connection.beginTransaction(function(err) {studentHouseReports
+      connection.beginTransaction(function(err) {
         if (err) { throw err; }
 
-        var qry =`SELECT a.standard_id, standard, religion,count(d.student_id)as strength 
+        var qry =`SELECT a.standard_id, e.religion_id,standard, religion,count(d.student_id) as strength 
                 FROM section_master b
                 JOIN standard_master a ON a.standard_id = b.standard_id
                 LEFT JOIN student_current_standing c ON ( b.section_id = c.section_id  AND c.session_id = ${session_id} ) 
@@ -634,7 +634,7 @@ router.post('/read_student_blood_group_listing_report', function(req, res, next)
         if (err) { throw err; }
 
         var qry =`SELECT a.standard_id, standard,
-                blood_group, count(d.student_id)as strength 
+                blood_group, count(d.student_id) as strength 
                 FROM section_master b
                 JOIN standard_master a ON a.standard_id = b.standard_id
                 LEFT JOIN student_current_standing c ON ( b.section_id = c.section_id  AND c.session_id = ${session_id} ) 
@@ -694,6 +694,9 @@ router.post('/read_student_blood_group_listing_report', function(req, res, next)
                  if(prev_standard_id == ""){
                     var student = {};
                     student["standard"] = result[i].standard;
+
+                    console.log("blood_group")
+                    console.log(student[result[i].blood_group])
                     student[result[i].blood_group] = result[i].strength;            
                     prev_standard_id=result[i].standard_id;
 
@@ -722,6 +725,8 @@ router.post('/read_student_blood_group_listing_report', function(req, res, next)
 
                  }
 
+
+
               }else{  
 
                   student[result[i].blood_group] = result[i].strength;  
@@ -747,18 +752,20 @@ router.post('/read_student_blood_group_listing_report', function(req, res, next)
 
              var student = {};
 
-             student["standard"] = "Total";
-             total.map(c=>{
+              student["standard"] = "Total";
+              total.map(c=>{
               $student[c.blood_group] = c;
              })
 
-             stdData.push(student);
+               stdData.push(student);
+
+               
 
                 var r = {}
                 r.session_name = session_name;
                 r.status = 's';
                 r.studentBloodGroupListingReports = stdData 
-                console.log(stdData);
+               // console.log(stdData);
                 res.send(r)
 
               });
@@ -792,8 +799,15 @@ router.get('/read_new_student_list_report', function(req, res, next) {
   req.getConnection(function(err,connection){
        
     var data = {}
-      var qry =`SELECT enroll_number, concat(standard, ' ', section) as standard,reg_number, 
-                concat(first_name, ' ', middle_name, ' ', last_name)as student_name,withdraw,
+    
+     var qry_one=`SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))` ;
+      connection.query(qry_one,function(err,result){
+      if(err){
+        console.log("Error reading Student : %s ",err );
+        data.status = 'e';
+      }else{
+              var qry =`SELECT enroll_number, concat(standard, ' ', section) as standard,reg_number, 
+                concat(first_name, ' ', middle_name, ' ', last_name) as student_name,withdraw,
                 category_name, date_format(dob,'%d/%m/%Y') as dob, blood_group, religion 
                 FROM student_master a
                 join student_current_standing b on (a.student_id = b.student_id and b.session_id = ${session_id} )
@@ -881,7 +895,12 @@ router.get('/read_new_student_list_report', function(req, res, next) {
 
       }
      
-     });
+       });
+      }
+
+    })
+
+
        
   });
 
@@ -1098,6 +1117,87 @@ router.get('/read_student_category_strength_report/:category_id', function(req, 
 });
 
 
+//read Session From Session AMster
+
+router.get('/read_session', function(req, res, next) {
+ var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+      var qry =`SELECT session_id, session_name from session_master`;
+          connection.query(qry,function(err,result)     {
+         console.log(qry)   
+      if(err){
+        console.log("Error reading session_name : %s ",err );
+        data.status = 'e';
+
+      }else{
+            data.status='s'
+            data.sessions = result
+             res.send(JSON.stringify(data))
+      }
+     
+     });
+       
+  });
+
+});
+
+//read UDISE  From Session AMster
+
+router.get('/read_udise_report/:standard_id/:section_id/:session_id', function(req, res, next) {
+ var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+        
+      var standard_id=req.params.standard_id
+      var section_id=req.params.section_id
+      var prev_session_id=req.params.session_id
+      var session_id=req.cookies.session_id
+
+    var data = {}
+      var qry =`select aadhar_no, concat(first_name, ' ', middle_name, ' ', last_name) as student_name,
+      f_name, m_name, date_format(dob,'%d/%m/%Y') as dob, gender,
+    category_name, religion, mother_tongue, date_format(doa,'%d/%m/%Y') as doa,
+    reg_number, concat(standard,' ',section)as standard, mobile, email, 
+    percentage, attendance, previous_class
+    from student_master a
+    LEFT JOIN student_current_standing i on (a.student_id = i.student_id and a.current_session_id =  ${session_id})
+    LEFT JOIN section_master g on i.section_id = g.section_id
+    LEFT JOIN standard_master b on g.standard_id = b.standard_id 
+    LEFT JOIN category_master e on a.category_id = e.category_id
+    JOIN parent_master f on (a.student_id = f.student_id and f.current_session_id =  ${session_id})
+    JOIN student_final_percentage z on (a.student_id = z.student_id and z.session_id =  ${session_id})
+    LEFT JOIN religion_master h on a.religion_id = h.religion_id
+    
+    left join (select student_id, standard as previous_class 
+               from student_current_standing x 
+               join section_master y on (x.section_id = y.section_id and x.session_id = ${prev_session_id})
+               join standard_master z on y.standard_id = z.standard_id) u
+               on a.student_id = u.student_id
+
+    where  i.session_id=${session_id}
+    and (a.withdraw='N' || a.withdraw_session > ${session_id} ) 
+    and i.section_id = ${section_id}
+    order by a.first_name,a.middle_name,a.last_name`;
+          connection.query(qry,function(err,result)     {
+         console.log(qry)   
+      if(err){
+        console.log("Error reading udise  : %s ",err );
+        data.status = 'e';
+
+      }else{
+            data.status='s'
+            data.udiseReports = result
+             res.send(JSON.stringify(data))
+      }
+     
+     });
+       
+  });
+
+});
+
+
 /* Student Group report */
 
 router.get('/read_student_group_report/:standard_id/:section_id', function(req, res, next) {
@@ -1269,7 +1369,7 @@ router.get('/read_student_strength_report', function(req, res, next) {
 
       and (b.withdraw='N' || b.withdraw_session > ${session_id})
 
-      group by standard_id, standard`;
+      group by d.standard_id, standard`;
     connection.query(qry,function(err,result)     {
          console.log(qry)   
       if(err){
@@ -1282,6 +1382,52 @@ router.get('/read_student_strength_report', function(req, res, next) {
             data.studentStrengthReports = result;
        res.send(JSON.stringify(data))
       }
+     
+     });
+       
+  });
+
+});
+
+// read occupation 
+
+router.get('/read_occupation', function(req, res, next) {
+ var input = JSON.parse(JSON.stringify(req.body));
+  var session_id = req.cookies.session_id
+  
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+      var qry =`select distinct occupation from
+
+               (SELECT f_occupation as occupation FROM parent_master where current_session_id =${session_id}
+
+               UNION
+
+               SELECT  m_occupation as occupation FROM parent_master where current_session_id =${session_id}
+
+                  group by m_occupation
+
+               UNION
+
+               SELECT g_occupation as occupation FROM parent_master where current_session_id =${session_id}) z
+
+               order by z.occupation`;
+    connection.query(qry,function(err,result)     {
+         console.log(qry)   
+      if(err){
+        console.log("Error reading Student : %s ",err );
+        data.status = 'e';
+
+      }else{
+        // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+        data.status = 's';
+       // data.session_name = session_name;
+        data.parentOccupations = result;
+        //connection.end()
+
+        res.send(JSON.stringify(data))
+        }
      
      });
        

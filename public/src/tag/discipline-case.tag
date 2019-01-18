@@ -1,42 +1,53 @@
 <discipline-case>
+  <print-header></print-header>
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-		<h2 class="title has-text-centered" style="color: #ff3860;">Discipline Case Management Console</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
-			<div class="columns">
-				<div class="column is-narrow">
-					<label class="label">Category</label>
-				</div>
-				<div class="column is-narrow">
-					<div class="control">
-						<div class="select">
-							<select ref="category_id">
-								<option each={categories} value={category_id}>{category_name}
-	              				</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="column is-narrow">
-					<label class="label">Case</label>
-				</div>
-				<div class="column is-half">
-					<div class="control">
-						<input class=" input"
-						  ref="addDisciplineCaseInput" type="text">
-					</div>
-				</div>
-				<div class="column">
-					<button class="button is-danger has-text-weight-bold"
-					onclick={add} >{title}
-					</button>
-				</div>
-			</div>
-		</div>
+		<h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Discipline Case Management Console</h2>
+		<div class="box no-print">
+      <div class="columns">
+        <div class="column is-narrow">
+          <label class="label">Category</label>
+        </div>
+        <div class="column is-narrow">
+          <div class="control">
+            <div class="select">
+              <select ref="category_id">
+                <option each={categories} value={category_id}>{category_name}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="column is-narrow">
+          <label class="label">Case</label>
+        </div>
+        <div class="column is-narrow">
+          <div class="control">
+            <input class=" input" id="addDisciplineCaseInput" 
+              ref="addDisciplineCaseInput" type="text">
+          </div>
+        </div>
+        <div class="column">
+          <button class="button is-danger has-text-weight-bold" onclick={add} >{title}</button>
+        </div>
+        <div class="column">
+          <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={csvExport}>
+            <span class="icon">
+              <i class="far fa-file-excel"></i>
+            </span>
+          </button>
+          <button class="button is-primary has-text-weight-bold ml5 is-pulled-right" onclick="window.print()">
+            <span class="icon">
+              <i class="fas fa-print"></i>
+            </span>
+          </button>
+          <button class="button is-link has-text-weight-bold ml5 is-pulled-right" onclick={getData}>
+            <span class="icon">
+              <i class="fas fa-sync-alt"></i>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
 		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
@@ -51,16 +62,16 @@
 					<td>{ i+1 }</td>
 					<td>{ ca.category_name}</td>
 					<td>{ ca.case_name}</td>
-		          	<td class="has-text-right">
-            			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ca.confirmDelete}>
-              				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ca)}>Edit</a></span>
-              				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
-            			</div>
-            			<div class="table-buttons" if={ca.confirmDelete}>
-              				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
-              				<span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
-            			</div>
-          			</td>
+        	<td class="has-text-right">
+      			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ca.confirmDelete}>
+        			<span><a class="button is-small is-rounded" onclick={edit.bind(this, ca)}>Edit</a></span>
+        			<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+      			</div>
+      			<div class="table-buttons" if={ca.confirmDelete}>
+        		  <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
+        			<span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
+      			</div>
+    			</td>
 				</tr>
 			</tbody>
 		</table>
@@ -70,6 +81,7 @@
     self.on("mount", function(){
       self.title='Create'
       self.role = getCookie('role')
+      self.loading = false;
       self.update()
       self.readCategories()
       self.readCase()
@@ -90,6 +102,14 @@
     //read case
     self.readCase = () => {
        disciplinecaseStore.trigger('read_discipline_case')
+    }
+    self.getData = () =>{
+      self.loading = true
+      disciplinecaseStore.trigger('read_discipline_case')
+    }
+
+    self.csvExport = () => {
+      disciplinecaseStore.trigger('csv_export_discipline_case')
     }
 
      self.add = () => {
@@ -158,6 +178,7 @@
       self.title='Create'
       self.refs.addDisciplineCaseInput.value = ''
       self.discipline_case = discipline_case
+      self.loading = false
       self.update()
       self.readCase()
       console.log(self.discipline_case)
@@ -169,6 +190,7 @@
       self.title='Create'
       self.refs.addDisciplineCaseInput.value = ''
       self.discipline_case = discipline_case
+      self.loading = false
       self.update()
       self.readCase()
       console.log(self.discipline_case)
@@ -199,6 +221,7 @@
     function CategoriesChanged(categories){
       console.log(categories) 
       self.categories = categories
+      self.loading = false
       self.update()
       console.log(self.categories)
     }

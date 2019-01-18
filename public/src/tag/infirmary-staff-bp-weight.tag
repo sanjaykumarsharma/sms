@@ -2,52 +2,38 @@
   <header></header>
   <loading-bar if={loading}></loading-bar>
 <section class="is-fluid" show={infirmary_staff_view == 'show_staff_bp_weight_table'}>
-  <!-- <div class="box">
+  <h2 class="title printOnly_t has-text-centered" style="color: #ff3860;">Staff Weight and B.P Records</h2>
+   <h2 class="title no-print has-text-centered" style="color: #ff3860;">Staff Health Detail</h2>
+  <div class="box no-print">
       <div class="columns">
-        <div class="column is-narrow">
-          <label class="label">Category</label>
-        </div>
-        <div class="column is-narrow">
-          <div class="control">
-            <div class="select">
-              <select ref="read_category_id">
-                <option each={infirmaryCategories} value={category_id}>{category_name}
-                              </option>
-              </select>
-            </div>
-          </div>
-        </div>
         <div class="column">
-          <button class="button is-danger has-text-weight-bold"
-          onclick={readStaffInfirmary} >Go
-          </button>
-        </div>
-      </div>
-    </div> -->
-  <div class="level">
-    <div class="level-left">
-      <h2 class="title" style="color: #ff3860;">Staff Health Detail</h2>
-    </div>
-
-    <div class="level-right no-print">
-      <button class="button is-warning is-rounded" onclick={add_staff_infirmary}>
-      <span class="icon">
-        <span class="fas fa-plus"></span>
-      </span>
-      </button>
-       <button class="button is-warning is-rounded is-pulled-right" onclick={readStaffBPWeight} style="margin-left:5px;margin-right:5px">
-          <span class="icon">
-            <span class="fas fa-sync-alt"></span>
-          </span>
-          </button>
-
            <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
-        </button>
+           </button>
+           <button class="button is-warning is-rounded is-pulled-right" onclick={readStaffBPWeight} style="margin-left:5px;margin-right:5px">
+              <span class="icon">
+                <span class="fas fa-sync-alt"></span>
+              </span>
+              </button>
+            <button class="button is-info is-rounded is-pulled-right" onclick={add_staff_infirmary}>
+          <span class="icon">
+            <span class="fas fa-plus"></span>
+          </span>
+          </button>
+        </div>
+      </div>
     </div>
-  </div>
+ <!--  <div class="level">
+    <div class="level-middle">
+     
+    </div>
+
+    <div class="level-right no-print">
+      
+    </div>
+  </div> -->
 
   <table class="table is-fullwidth is-striped is-hoverable is-bordered">
       <thead>
@@ -62,7 +48,7 @@
           <th>Height</th>
           <th>Weight</th>
           <th>B.M.I</th>
-          <th>Action</th>
+          <th class="no-print">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -106,7 +92,7 @@
         <label class="label">Employee</label>
        	<div class="control">
             <div class="select is-fullwidth">
-            <select ref="staff_id">
+            <select ref="staff_id" onkeyup={addEnter}>
               <option each={employees} value={emp_id}>{name}
               </option>
             </select>
@@ -115,28 +101,27 @@
         </div>
         <div class="column is-one-third">
          <label class="label">Date</label>
-        <input class="input date flatpickr-input form-control input"  ref="checkup_date" placeholder="" tabindex="0" 
-        type="text">
+        <input class="input date flatpickr-input form-control input"  ref="checkup_date" placeholder="" tabindex="0" type="text" onkeyup={addEnter}>
         </div>
         <div class="column is-one-third">
          <label class="label">Time In</label>
-          <input type="text" ref="time_in" type="text" class="input">
+          <input type="text" ref="time_in" type="text" class="input" onkeyup={addEnter}>
         </div>
          <div class="column is-one-third">
          <label class="label">Time Out</label>
-          <input type="text" ref="time_out" type="text" class="input">
+          <input type="text" ref="time_out" type="text" class="input" onkeyup={addEnter}>
         </div>
         <div class="column is-one-third">
          <label class="label">Upper B.P</label>
-        <input type="text" ref="upper_bp" type="text" class="input">
+        <input type="text" ref="upper_bp" type="text" class="input" onkeyup={addEnter}>
         </div>
          <div class="column is-one-third">
          <label class="label">Lower B.P</label>
-        <input type="text" ref="lower_bp" type="text" class="input">
+        <input type="text" ref="lower_bp" type="text" class="input" onkeyup={addEnter}>
         </div>
         <div class="column is-one-third">
          <label class="label">Height (Cm)</label>
-        <input type="number" ref="height" type="text" class="input">
+        <input type="number" ref="height" type="text" class="input" onkeyup={addEnter}>
         </div>
         <div class="column is-one-third">
          <label class="label">Weight (Kg)</label>
@@ -144,7 +129,7 @@
         </div>
         <div class="column is-one-third">
          <label class="label">BMI</label>
-        <input type="text" ref="bmi" type="text" class="input">
+        <input type="text" ref="bmi" type="text" class="input" onkeyup={addEnter}>
         </div>
     <div class="column is-full">
     <button class="button is-danger has-text-weight-bold adjusted-top" onclick={add} >{title}</button>    
@@ -164,9 +149,8 @@
         self.readEmployee()
         console.log("inside staff BP weight")
         flatpickr(".date", {
-         allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+          allowInput: true,
+          dateFormat: "d/m/Y",
        })
         self.update()
      })
@@ -219,6 +203,12 @@
        self.refs.bmi.value=''
     }
 
+    self.addEnter = (e) => {
+       if(e.which == 13){
+         self.add()
+       }
+    }
+
 
       self.add = () => {
        if(!self.refs.staff_id.value){
@@ -227,20 +217,18 @@
          self.loading = true
          if(self.title=='Create'){
             console.log('create')
-           staffbpweightStore.trigger('add_staff_bp_weight', self.refs.staff_id.value,self.refs.checkup_date.value,self.refs.time_in.value,self.refs.time_out.value, self.refs.upper_bp.value,self.refs.lower_bp.value,self.refs.height.value,self.refs.weight.value,self.refs.bmi.value)
+               self.checkup_date=convertDate(self.refs.checkup_date.value)
+           staffbpweightStore.trigger('add_staff_bp_weight', self.refs.staff_id.value,   self.checkup_date,self.refs.time_in.value,self.refs.time_out.value, self.refs.upper_bp.value,self.refs.lower_bp.value,self.refs.height.value,self.refs.weight.value,self.refs.bmi.value)
          }else if(self.title=='Update'){
            console.log('update')
            console.log(self.edit_id)
-           staffbpweightStore.trigger('edit_staff_bp_weight', self.refs.staff_id.value,self.refs.checkup_date.value,self.refs.time_in.value,self.refs.time_out.value, self.refs.upper_bp.value,self.refs.lower_bp.value,self.refs.height.value,self.refs.weight.value,self.refs.bmi.value,self.edit_id)
+             self.checkup_date=convertDate(self.refs.checkup_date.value)
+           staffbpweightStore.trigger('edit_staff_bp_weight', self.refs.staff_id.value,   self.checkup_date,self.refs.time_in.value,self.refs.time_out.value, self.refs.upper_bp.value,self.refs.lower_bp.value,self.refs.height.value,self.refs.weight.value,self.refs.bmi.value,self.edit_id)
          }
        }
      }
 
-     self.addEnter = (e) => {
-       if(e.which == 13){
-         self.add()
-       }
-     }
+    
 
       self.editEnter = (e) => {
        if(e.which == 13){
@@ -278,8 +266,8 @@
        self.title='Update'
         flatpickr(".date", {
          allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+       //  altFormat: "d/m/Y",
+         dateFormat: "d/m/Y",
        })
 
        self.infirmary_staff_view='show_staff_bp_weight_form'
@@ -312,7 +300,7 @@
        self.loading = false
        self.staffBpWeights = staffBpWeights
        self.update()
-       self.readStaffInfirmary()
+       //self.readStaffInfirmary()
        console.log(self.staffBpWeights)
      }
 
@@ -332,7 +320,7 @@
        self.loading = false
        self.staffBpWeights = staffBpWeights
        self.update()
-       self.readStaffInfirmary()
+      // self.readStaffInfirmary()
       // console.log(self.empsectionsloye_roles)
      }
 

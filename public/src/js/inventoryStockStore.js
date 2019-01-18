@@ -56,9 +56,9 @@ function InventoryStockStore() {
       })
   })
 
-  self.on('edit_inventory_stock', function(received_date, category_id,sub_category_id,item_id,rate,quantity,unit_id,received_from,rack_id,remark,id) {
+  self.on('edit_inventory_stock', function(received_date, category_id,sub_category_id,item_id,rate,quantity,unit_id,received_from,rack_id,remark,id,category_name, subcategory_name,item_name) {
     let req = {}
-    req.received_date=received_date
+   // req.received_date=received_date
     req.category_id=category_id
     req.sub_category_id=sub_category_id
     req.item_id=item_id
@@ -81,7 +81,6 @@ function InventoryStockStore() {
           if(data.status == 's'){
             self.inventoryStocks = self.inventoryStocks.map(cat => {
               if(cat.received_id == id){
-                  cat.received_date=received_date
                   cat.category_id=category_id
                   cat.sub_category_id=sub_category_id
                   cat.item_id=item_id
@@ -93,6 +92,9 @@ function InventoryStockStore() {
                   cat.rack_id=rack_id
                   cat.remark=remark
                   cat.received_id=id
+                  cat.category_name=category_name
+                  cat.subcategory_name=subcategory_name
+                  cat.item_name=item_name
               }
               // cat.confirmEdit = false
               return cat
@@ -109,9 +111,8 @@ function InventoryStockStore() {
       })
   })
  
-  self.on('add_inventory_stock', function(received_date, category_id,sub_category_id,item_id,rate,quantity,unit_id,received_from,rack_id,remark) {
+  self.on('add_inventory_stock', function(received_date, category_id,sub_category_id,item_id,rate,quantity,unit_id,received_from,rack_id,remark,category_name, subcategory_name,item_name) {
     let req = {}
-    req.received_date=received_date
     req.category_id=category_id
     req.sub_category_id=sub_category_id
     req.item_id=item_id
@@ -133,9 +134,9 @@ function InventoryStockStore() {
           console.log(data)
           if(data.status == 's'){
             console.log('add Stock after')
+            self.category_id=category_id
             let obj = {}
             obj.received_from = data.received_from
-            obj.received_date=received_date
             obj.category_id=category_id
             obj.sub_category_id=sub_category_id
             obj.item_id=item_id
@@ -146,8 +147,11 @@ function InventoryStockStore() {
             obj.quantity=quantity
             obj.remark=remark
             obj.rack_id=rack_id
+            obj.category_name=category_name
+            obj.subcategory_name=subcategory_name
+            obj.item_name=item_name
            // obj.category_id = category_id
-            self.inventoryStocks = [obj, ...self.inventoryStocks]
+            self.inventoryStocks = [obj, ...self.inventoryStocks,self.category_id]
             toastr.success("Stock Item Inserserted Successfully ")
             self.trigger('add_inventory_stock_changed', self.inventoryStocks)
           }else if(data.status == 'e'){

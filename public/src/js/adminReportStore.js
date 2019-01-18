@@ -34,6 +34,54 @@ function AdminReportStore() {
   })
 */
 
+ //read Student Family Occupation
+ self.on('read_occupation', function() {
+    let req = {}
+    $.ajax({
+      url:'/admin_report/read_occupation/',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.parentOccupations = data.parentOccupations
+            self.trigger('read_occupation_changed', data.parentOccupations)
+          }else if(data.status == 'e'){
+            showToast("Occuaption Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+
+ //Read Occupation Report
+
+ self.on('read_occupation_report', function(occupation) {
+    let req = {}
+    $.ajax({
+      url:'/admin_report/read_occupation_report/'+occupation,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.occupationReports = data.occupationReports
+            self.trigger('read_occupation_report_change', data.occupationReports)
+          }else if(data.status == 'e'){
+            showToast("Occuaption Report Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
   
 
   //read Student Family Occupation
@@ -195,6 +243,54 @@ function AdminReportStore() {
             console.log("inside report")
             self.session_name = data.session_name
             self.studentBloodGroupListingReports = data.studentBloodGroupListingReports
+
+               /*  var map = {
+                    'A+'  : "A_plus",
+                    'A-'  : "A_min",
+                    'AB+' : "AB_plus",
+                    'AB-' : "AB_min",
+                    'B+'  : "B_plus",
+                    'B-'  : "B_min",
+                    'O+'  : "O_plus",
+                    'O-'  : "O_min"
+                  } 
+                  
+
+                   var tab = {
+                        abc:1,
+                        def:40,
+                        xyz: 50
+                      }
+
+                      var map = {
+                          abc : "newabc",
+                          def : "newdef",
+                          xyz : "newxyz"
+                      }
+
+
+                   for (var [key, value] of tab) {
+                          key = map[key] || key;
+                          tab[key] = value;
+                          console.log(tab)   
+                      };*/
+
+
+              /*    for (var [key, value] of  self.studentBloodGroupListingReports) {
+                      console.log(key + ' = ' + value);
+                        key = map[key] || key;
+                       self.studentBloodGroupListingReports[key] = value;
+                    }*/
+             /* self.studentBloodGroupListingReports.map( => {
+                  key = map[key] || key;
+                  self.studentBloodGroupListingReports[key] = value;
+              })
+*/
+              /* self.studentBloodGroupListingReports.map(value, key) {
+                    key.replace(/\+/g,' ')
+                    self.studentBloodGroupListingReports[key] = value;
+                };*/
+
             console.log(self.studentBloodGroupListingReports)
             self.trigger('read_student_blood_group_listing_report_changed', self.studentBloodGroupListingReports,self.session_name)
           }else if(data.status == 'e'){
@@ -230,6 +326,58 @@ function AdminReportStore() {
             self.trigger('read_student_group_report_change', self.studentGroupReports,grandTotal)
           }else if(data.status == 'e'){
             showToast("Student Group Report Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+ // read Udise Report
+
+ self.on('read_udise_report', function(standard_id,section_id,sesion_id) {
+    let req = {}
+    $.ajax({
+      url:'/admin_report/read_udise_report/'+standard_id+'/'+section_id+'/'+sesion_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            //self.studentSummaryReports=[]
+            console.log("inside udise report")
+            self.udiseReports = data.udiseReports
+            self.trigger('read_udise_report_change', self.udiseReports)
+          }else if(data.status == 'e'){
+            showToast("UdiseReport Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+ // read Udise Report
+
+ self.on('read_session', function() {
+    let req = {}
+    $.ajax({
+      url:'/admin_report/read_session',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            //self.studentSummaryReports=[]
+            console.log("inside session")
+            self.sessions = data.sessions
+            self.trigger('read_session_change', self.sessions)
+          }else if(data.status == 'e'){
+            showToast("session name Read Error. Please try again.", data)
           }
         },
         error: function(data){

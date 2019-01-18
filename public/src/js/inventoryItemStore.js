@@ -55,7 +55,7 @@ function InventoryItemStore() {
       })
   })
 
-  self.on('edit_inventory_item', function(department,category_id,sub_category_id,item_name,id) {
+  self.on('edit_inventory_item', function(department,category_id,sub_category_id,item_name,id,category_name,subcategory_name) {
     let req = {}
     req.department=department
     req.category_id=category_id
@@ -78,6 +78,8 @@ function InventoryItemStore() {
                 cat.department=department
                 cat.sub_category_id=sub_category_id
                 cat.item_name=item_name
+                cat.category_name=category_name
+                cat.sub_category=subcategory_name
               }
               // cat.confirmEdit = false
               return cat
@@ -94,7 +96,7 @@ function InventoryItemStore() {
       })
   })
  
-  self.on('add_inventory_item', function(department,category_id, sub_category_id, item_name) {
+  self.on('add_inventory_item', function(department,category_id, sub_category_id, item_name,category_name,subcategory_name) {
     let req = {}
     req.department=department
     req.category_id=category_id
@@ -117,7 +119,8 @@ function InventoryItemStore() {
             obj.department = department
             obj.category_id = category_id
             obj.item_name = item_name
-           // obj.category_id = category_id
+            obj.category_name=category_name
+            obj.sub_category=subcategory_name
             self.inventoryItems = [obj, ...self.inventoryItems]
             toastr.success("Item Inserserted Successfully ")
             self.trigger('add_inventory_item_changed', self.inventoryItems)

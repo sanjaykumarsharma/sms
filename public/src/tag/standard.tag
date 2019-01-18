@@ -2,7 +2,7 @@
   <header></header>
  <loading-bar if={loading}></loading-bar>  
 	<section class="is-fluid">
-    <h2 class="title" style="color: #ff3860;">New Class</h2>
+    <h2 class="title has-text-centered" style="color: #ff3860;">Standard Details</h2>
       <div class="box no-print">
       <div class="columns">
         <div class="column is-narrow">
@@ -18,17 +18,17 @@
           <button disabled={loading} class="button is-danger has-text-weight-bold"
           onclick={add} >{title}
           </button>
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readStandard} style="margin-left:5px">
-          <span class="icon">
-            <span class="fas fa-sync-alt"></span>
-          </span>
-          </button>
-
            <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
+          <button class="button is-warning is-rounded is-pulled-right" onclick={readStandard} style="margin-left:5px;margin-right:5px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+
         </div>
       </div>
     </div>

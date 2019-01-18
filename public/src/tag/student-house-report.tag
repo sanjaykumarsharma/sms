@@ -48,8 +48,27 @@
 				</div>
 			</div>
 		</div>
-		<canvas id="canvas_pie" show={report_view =='show_graph'}></canvas>
-		<table class="table is-fullwidth is-striped is-hoverable is-narrow" show={report_view =='show_table'}>
+		<!-- <canvas id="canvas_pie" show={report_view =='show_graph'}></canvas> -->
+			<center>
+		<div id="piechart" style="width: 900px; height: 450px;" show={report_view =='show_graph'}></div>
+	    </center>
+	    <table class="table is-fullwidth is-striped is-hoverable is-narrow printOnly_t" show={report_view =='show_table'} style="margin-left:400px">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Student House</th>
+					<th>Strength</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr each={st, i in studentHouseReports}>
+					<td>{i+1}</td>
+					<td>{st.house_name}</td>
+					<td>{st.total}</td>
+				</tr>
+			</tbody>
+		</table>
+		<table class="table is-fullwidth is-striped is-hoverable is-narrow no-print" show={report_view =='show_table'}>
 			<thead>
 				<tr>
 					<th>#</th>
@@ -144,7 +163,31 @@
       self.session_name = session_name
       self.grand_total = grandTotal
 
-      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
+       var chart_percentage = []
+       chart_percentage.push(['Task', 'Hours per Day'])
+       for (var i = self.studentHouseReports.length - 1; i >= 0; i--) {
+		   chart_percentage.push([self.studentHouseReports[i].house_name,self.studentHouseReports[i].total])
+		}
+
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable(chart_percentage);
+
+        var options = {
+          is3D: true,
+          legend:{position: 'labeled',
+                  textStyle: {bold: true} },
+          pieSliceText: 'value'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+      }
+
+    /*  var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
 
 		var labels = []
 		var chart_percentage = []
@@ -184,7 +227,7 @@
 		  var ctx = document.getElementById('canvas_pie').getContext('2d');
 		  window.myPie = new Chart(ctx, config);
 	      self.update()
-	      console.log(self.studentHouseReports)
+	      console.log(self.studentHouseReports)*/
       self.update()
       //console.log(self.employeeTypes)
     }

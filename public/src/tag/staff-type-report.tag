@@ -1,13 +1,10 @@
 <staff-type-report>
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Student House Report</h2>
-			</div>
-		</div>
-		<div class="box">
+		<h2 class="title has-text-centered" style="color: #ff3860;">Staff By Type <br>
+					Grand Total <span style="color:#000">: {grand_total}</span></h2>
+		<div class="box no-print">
 			<div class="columns">
-				<div class="column is-narrow">
+				<!-- <div class="column is-narrow">
 					<div class="control">
 						<div class="select">
 							<select ref="emp_type_id" onchange={getEmployeeTypeReport}>
@@ -18,7 +15,7 @@
 							</select>
 						</div>
 					</div>
-				</div>
+				</div> -->
 				<!-- <div class="column is-narrow">
 					<div class="control">
 							        	<div class="select is-fullwidth">
@@ -32,11 +29,21 @@
 							      	</div>
 							    </div> -->
 				<div class="column">
-					<!-- <button class="button is-danger has-text-weight-bold"
-					onclick={readStudentHouseReport} >GO
-					</button> -->
 					<input type="checkbox" id="checkTable" checked={e.done}
 				    onclick={viewTable}  style="margin-top: 12px;"> Table
+
+				    <button class="button is-primary has-text-weight-bold is-pulled-right is-small" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+		          </button>
+		          <button class="button is-warning is-rounded is-pulled-right is-small" onclick={getEmployeeTypeReport} style="margin-left:5px;margin-right:5px">
+		          <span class="icon">
+		            <span class="fas fa-sync-alt"></span>
+		          </span>
+		          </button>
+
+
 				</div>
 			</div>
 		</div>
@@ -65,8 +72,8 @@
     self.on("mount", function(){
     	self.title='Add'
     	self.report_view ='show_graph'
-    	self.readEmployeeTypes()
-    	//self.getEmployeeTypeReport()
+    	
+    	self.getEmployeeTypeReport()
     	self.role = getCookie('role') 
         self.update()
         flatpickr(".date", {
@@ -94,7 +101,7 @@
     }
 
     self.getEmployeeTypeReport = () => {
-       staffStore.trigger('read_employee_type_report',self.refs.emp_type_id.value)
+       staffStore.trigger('read_employee_type_report')
     }
     
    

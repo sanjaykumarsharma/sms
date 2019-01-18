@@ -1,5 +1,5 @@
 <discipline-report>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	    <p class="control">
 		    <a class="button {is-active: selected_master == 'discipline-case-wise-report'}" href="#/discipline-report/discipline-case-wise-report">
 		      <span>Case Wise Report</span>

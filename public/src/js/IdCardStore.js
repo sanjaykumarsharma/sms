@@ -87,7 +87,7 @@ function IdCardStore() {
           console.log(data)
           if(data.status == 's'){
             self.students = data.students
-            self.trigger('read_id_card_changed', data.students_id_card_details)
+            self.trigger('read_id_card_changed', data.students_id_card_details,getCookie('session_id'))
           }else if(data.status == 'e'){
             showToast("Student Read Error. Please try again.", data)
           }
@@ -111,7 +111,7 @@ function IdCardStore() {
           console.log(data)
           if(data.status == 's'){
             self.students = data.students
-            self.trigger('read_escort_card_changed', data.students_escort_card_details)
+            self.trigger('read_escort_card_changed', data.students_escort_card_details,getCookie('session_id'))
           }else if(data.status == 'e'){
             showToast("Student Read Error. Please try again.", data)
           }

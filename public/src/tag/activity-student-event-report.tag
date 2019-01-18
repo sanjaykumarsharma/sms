@@ -1,5 +1,5 @@
 <activity-student-event-report>
-  <header></header>
+  <print-header></print-header>
 	<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
   <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Student Event Report</h2>
@@ -78,9 +78,9 @@
       var startDate = document.getElementById("start_date").value;
       var endDate = document.getElementById("end_date").value;
     	if(!self.refs.start_date.value){
-        toastr.info("Please enter Start Date and try again")
+        toastr.info("Please enter From Date and try again")
       	}else if(!self.refs.end_date.value){
-      	toastr.info("Please enter End Date and try again")
+      	toastr.info("Please enter To Date and try again")
       	}else if((Date.parse(startDate) >= Date.parse(endDate))){
           toastr.info("Please enter To Date Grater Than From Date")
         }else{

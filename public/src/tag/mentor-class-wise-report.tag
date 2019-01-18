@@ -1,9 +1,9 @@
 <mentor-class-wise-report>
-	<header></header>
+	<print-header></print-header>
 	<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-    <h2 class="title has-text-centered is-size-5" style="color: #ff3860;margin-bottom: 6px;">Class Wise Mentor Report</h2>
-    <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Grand Total: {grand_total}</h2>
+    <h2 class="title has-text-centered is-size-6" style="color: #ff3860;margin-bottom: 40px;">Class Wise Mentor Report 
+    	<br>(Grand Total: {grand_total})<br>{Standard} {Section}</h2>
 	
 	<div class="box no-print">
 		<div class="columns">
@@ -13,7 +13,7 @@
 			<div class="column is-narrow">
 				<div class="control">
 					<div class="select">
-						<select ref="standard_id" onchange={getSection}>
+						<select ref="standard_id" id="standard" onchange={getSection}>
 							<option each={standards} value={standard_id}>{standard}
                             </option>
 							<option value="-1">ALL</option>
@@ -27,7 +27,7 @@
 			<div class="column is-narrow">
 				<div class="control">
 					<div class="select">
-						<select ref="section_id">
+						<select ref="section_id" id="section">
 							<option each={filteredSections} value={section_id}>{section}
                             </option>
 							<option value="-1">ALL</option>
@@ -53,7 +53,8 @@
 				onclick={getData} > GO
 				</button>
 				<input type="checkbox" id="checkTable" checked={e.done}
-				onclick={viewTable}  style="margin-top: 12px;"> Table
+				onclick={viewTable}  style="margin-top: 12px;"> <b>Table</b>
+				
 			</div>
 			<div class="column">
 				<button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={csvExport}>
@@ -70,47 +71,58 @@
 		</div>
 	</div>
 
-	<canvas id="canvas_pie" show={report_view =='show_graph'}></canvas>
+	<!-- <canvas id="canvas_bar" width="50" height="50" show={report_view =='show_graph'}></canvas> -->
+	<center>
+		<div  id="chart_div" show={report_view =='show_graph'} style="width: 900px; height: 500px;"></div>
+	</center>
+
+	<!-- <center>
+		<div class="printOnly" id="chart_div_one" style="width: 900px; height: 500px; margin-top:100px;"></div>
+	</center> -->
 
 	<div class="printOnly">
-		<table class="table is-striped is-hoverable is-bordered is-fullwidth" style="margin-top:50px;">
-		<thead>
-			<tr>
-			    <th>Case</th>
-			    <th class="has-text-right">Total</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr each={cd, i in class_wise_case_report}>
-				<td>{cd.category_name}</td>
-				<td class="has-text-right">{cd.total}</td>
-			</tr>
-			<tr>
-				<td class="has-text-right">Total</td>
-				<td class="has-text-right">{grand_total}</td>
-			</tr>
-		</tbody>
-	</table>
+		<div class="columns is-centered">
+			<table class="table is-striped is-hoverable is-bordered" style="margin-top:50px;width:50%;">
+				<thead>
+					<tr>
+					    <th>Case</th>
+					    <th class="has-text-right">Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr each={cd, i in class_wise_case_report}>
+						<td>{cd.category_name}</td>
+						<td class="has-text-right">{cd.total}</td>
+					</tr>
+					<tr>
+						<td class="has-text-right">Total</td>
+						<td class="has-text-right">{grand_total}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 
-	<table class="table is-striped is-hoverable is-bordered is-fullwidth no-print" show={report_view =='show_table'}>
-		<thead>
-			<tr>
-			    <th>Case</th>
-			    <th class="has-text-right">Total</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr each={cd, i in class_wise_case_report}>
-				<td>{cd.category_name}</td>
-				<td class="has-text-right">{cd.total}</td>
-			</tr>
-			<tr>
-				<td class="has-text-right">Total</td>
-				<td class="has-text-right">{grand_total}</td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="columns is-centered no-print">
+		<table class="table is-striped is-hoverable is-bordered" style="width:50%;" show={report_view =='show_table'}>
+			<thead>
+				<tr>
+				    <th>Case</th>
+				    <th class="has-text-right">Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr each={cd, i in class_wise_case_report}>
+					<td>{cd.category_name}</td>
+					<td class="has-text-right">{cd.total}</td>
+				</tr>
+				<tr>
+					<td class="has-text-right">Total</td>
+					<td class="has-text-right">{grand_total}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </section>
 
 <script>
@@ -156,6 +168,8 @@
 	        self.report_view = 'show_graph'
     	}
     }
+
+    
     self.getData = () => {
         self.loading = true
         mentorReportStore.trigger('read_class_wise_report', self.refs.standard_id.value,
@@ -194,48 +208,49 @@
       self.loading = false;
       self.class_wise_case_report = class_wise_case_report
       self.grand_total = grand_total
+ 
+      self.Standard = $("#standard option:selected").text();
+      self.Section = $("#section option:selected").text();
 
-      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
+      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC'];
 
-		var labels = []
-		var chart_percentage = []
-        var backgroundColor = []
-
-
-		 for (var i = self.class_wise_case_report.length - 1; i >= 0; i--) {
-		 	var total_percentage = ((self.class_wise_case_report[i].total*100)/self.grand_total).toFixed(2);
-		    var percentage = self.class_wise_case_report[i].category_name + ' ( ' + self.class_wise_case_report[i].total + ' , ' + total_percentage + '% )';
-
-		    labels.push(percentage)
-		    chart_percentage.push(self.class_wise_case_report[i].total)
-		    if(typeof chartColors[i] != "undefined"){
-		    	backgroundColor.push(chartColors[i])
-		    }
-
-		 }
-
-		  console.log(labels);
-		  console.log(chart_percentage);
-
-		  var config = {
-		    type: 'pie',
-		    data: {
-		      datasets: [{
-		        data: chart_percentage,
-		        backgroundColor: backgroundColor,
-		        label: 'labels'
-		      }],
-		      labels: labels
-		    },
-		    options: {
-		      responsive: true
-		    }
-		  };
-
-		  var ctx = document.getElementById('canvas_pie').getContext('2d');
-		  window.myPie = new Chart(ctx, config);
-      self.update()
-      console.log(self.class_wise_case_report)
+	    var chart_percentage = []
+      	chart_percentage.push(['Head', 'Value', { role: 'style' }])
+       	for (var i = self.class_wise_case_report.length - 1; i >= 0; i--) {
+       		var p = 0
+       		p = Number(((self.class_wise_case_report[i].total*100)/self.grand_total).toFixed(2))
+       		
+       		console.log(p);
+		   chart_percentage.push([self.class_wise_case_report[i].category_name,p,chartColors[i]])
+		}
+      	google.charts.load("current", {packages:['corechart']});
+    	google.charts.setOnLoadCallback(drawChart);
+    		function drawChart() {
+      			var data = google.visualization.arrayToDataTable(chart_percentage);
+      			var view = new google.visualization.DataView(data);
+      			view.setColumns([0, 1,
+                       	{ calc: "stringify",
+                          sourceColumn: 1,
+                          type: "string",
+                          role: "annotation" },2
+                ]);
+      			var options = {
+        				width: 600,
+        				height: 400,
+        				/*bar: {groupWidth: "95%"},*/
+        				legend: { position: "none" },
+        				vAxis: {
+			             minValue: 0,
+			             maxValue: 100,
+			             format: '#\'%\''
+			            }
+      			};
+      			var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+      			//var chart_print = new google.visualization.ColumnChart(document.getElementById("chart_div_one"));
+      			chart.draw(view, options);
+      			//chart_print.draw(view, options);
+  			}
+      	self.update()
     }
 </script>
 </mentor-class-wise-report>

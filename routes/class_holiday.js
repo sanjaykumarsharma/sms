@@ -64,6 +64,9 @@ router.get('/read_class_holiday', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+    var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
 
   req.getConnection(function(err,connection){
         var data = {}
@@ -75,7 +78,10 @@ router.post('/add', function(req, res, next) {
             end_date : input.end_date,
             description : input.description,
             holiday : input.holiday,
-            // /session_id : $_SESSION['session_id']
+            session_id : req.cookies.session_id,
+            creation_date    : formatted,
+            modification_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("INSERT INTO class_holiday set ? ",values, function(err, rows)
@@ -102,6 +108,9 @@ router.post('/add', function(req, res, next) {
 router.post('/edit/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+    var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
   var id = input.id;
 
   req.getConnection(function(err,connection){
@@ -114,6 +123,8 @@ router.post('/edit/:id', function(req, res, next) {
             end_date : input.end_date,
             description : input.description,
             holiday : input.holiday,
+            modification_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("UPDATE class_holiday set ? WHERE event_id = ?",[values,id], function(err, rows)

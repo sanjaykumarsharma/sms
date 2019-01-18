@@ -585,6 +585,7 @@ router.post('/add', function(req, res, next) {
           activity_date : input.activity_date,
           category_id : input.category_id,
           event_id : input.event_id,
+          event_name : input.event_name,
           organised_by : input.organised_by,
           venue : input.venue,
           item_taken : input.item_taken,

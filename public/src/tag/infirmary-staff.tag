@@ -64,7 +64,7 @@
           <td>{st.name}</td>
           <td>{st.employee_id}</td>
           <td>{st.case_name}</td>
-          <td>{st.t_date}</td>
+          <td>{st.treatment_date}</td>
           <td>{st.time_in}</td>
           <td>{st.time_out}</td>
           <td>{st.treatment}</td>
@@ -97,7 +97,7 @@
         <label class="label">Employee</label>
        	<div class="control">
             <div class="select is-fullwidth">
-            <select ref="staff_id">
+            <select ref="staff_id" onkeyup={addEnter}>
               <option each={employees} value={emp_id}>{name}
               </option>
             </select>
@@ -108,7 +108,7 @@
       <label class="label" for="class">Category</label>
          <div class="control">
             <div class="select is-fullwidth">
-            <select ref="category_id">
+            <select ref="category_id" onkeyup={addEnter}>
               <option each={infirmaryCategories} value={category_id}>{category_name}
               </option>
             </select>
@@ -119,7 +119,7 @@
         <label class="label" for="class">Case</label>
         <div class="control">
             <div class="select is-fullwidth">
-            <select ref="case_id">
+            <select ref="case_id" onkeyup={addEnter}>
               <option each={infirmaryCases} value={case_id}>{case_name}
               </option>
             </select>
@@ -130,19 +130,19 @@
         <div class="column is-one-third">
          <label class="label">Date</label>
         <input class="input date flatpickr-input form-control input"  ref="treatment_date" placeholder="" tabindex="0" 
-        type="text">
+        type="text" onkeyup={addEnter}>
         </div>
         <div class="column is-one-third">
          <label class="label">Time In</label>
-          <input type="text" ref="time_in" type="text" class="input">
+          <input type="text" ref="time_in" type="text" class="input" onkeyup={addEnter}>
         </div>
          <div class="column is-one-third">
          <label class="label">Time Out</label>
-          <input type="text" ref="time_out" type="text" class="input">
+          <input type="text" ref="time_out" type="text" class="input" onkeyup={addEnter}>
         </div>
         <div class="column is-one-third">
          <label class="label">Treatment</label>
-        <input type="text" ref="treatment" type="text" class="input">
+        <input type="text" ref="treatment" type="text" class="input" onkeyup={addEnter}>
         </div>
     <div class="column is-full">
     <button class="button is-danger has-text-weight-bold adjusted-top" onclick={add} >{title}</button>    
@@ -164,8 +164,7 @@
         console.log("inside staff infirmary")
         flatpickr(".date", {
          allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+          dateFormat: "d/m/Y",
        })
         self.update()
      })
@@ -207,6 +206,12 @@
     }
 
 
+    self.addEnter = (e) => {
+       if(e.which == 13){
+         self.add()
+       }
+     }
+
       self.add = () => {
          self.infirmaryCases.map(ev => {
               if(ev.case_id==self.refs.case_id.value){
@@ -219,20 +224,17 @@
          self.loading = true
          if(self.title=='Create'){
             console.log('create')
-           staffinfirmaryStore.trigger('add_staff_infirmary', self.refs.staff_id.value,self.refs.category_id.value,self.refs.case_id.value,self.refs.treatment_date.value,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value, self.case_name)
+             self.treatment_date=convertDate(self.refs.treatment_date.value)
+           staffinfirmaryStore.trigger('add_staff_infirmary', self.refs.staff_id.value,self.refs.category_id.value,self.refs.case_id.value,self.treatment_date,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value, self.case_name)
          }else if(self.title=='Update'){
            console.log('update')
            console.log(self.edit_id)
-           staffinfirmaryStore.trigger('edit_staff_infirmary',  self.refs.staff_id.value,self.refs.category_id.value,self.refs.case_id.value,self.refs.treatment_date.value,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value,self.edit_id,self.case_name)
+            self.treatment_date=convertDate(self.refs.treatment_date.value)
+           staffinfirmaryStore.trigger('edit_staff_infirmary',  self.refs.staff_id.value,self.refs.category_id.value,self.refs.case_id.value,self.treatment_date,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value,self.edit_id,self.case_name)
          }
        }
      }
 
-     self.addEnter = (e) => {
-       if(e.which == 13){
-         self.add()
-       }
-     }
 
       self.editEnter = (e) => {
        if(e.which == 13){
@@ -269,9 +271,8 @@
        console.log(ev)
        self.title='Update'
         flatpickr(".date", {
-         allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+          allowInput: true,
+          dateFormat: "d/m/Y",
        })
 
        self.infirmary_staff_view='show_infirmary_staff_form'

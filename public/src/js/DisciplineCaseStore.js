@@ -4,6 +4,27 @@ function DisciplineCaseStore() {
 
   self.discipline_case = []
 
+  self.on('csv_export_discipline_case', function() {
+    console.log('i am in csv_export_department api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/discipline_case/csv_export_discipline_case',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+            // self.trigger('departments_changed', data.departments)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('read_discipline_category', function() {
     console.log('i am in read_categories api call from ajax')
     let req = {}

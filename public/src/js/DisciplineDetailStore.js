@@ -48,6 +48,29 @@ function DisciplineDetailStore() {
       })
   })
 
+  self.on('csv_export_discipline', function(read_category_id) {
+    console.log(read_category_id)
+    let req = {}
+    req.read_category_id=read_category_id
+    $.ajax({
+      url:'/discipline_detail/csv_export_discipline/'+read_category_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
   self.on('read_discipline', function(read_category_id) {
     console.log(read_category_id)
     let req = {}
@@ -109,18 +132,6 @@ function DisciplineDetailStore() {
           console.log(data)
           if(data.status == 's'){
             console.log('add activity after')
-            let cat = {}
-            cat.id = id
-            cat.referred_by=obj.referred_by
-            cat.enroll_number=obj.enroll_number
-            cat.category_id=obj.category_id
-            cat.case_id=obj.case_id
-            cat.consult_date=obj.consult_date
-            cat.time_in=obj.time_in
-            cat.time_out=obj.time_out
-            cat.diagnosis=obj.diagnosis
-            cat.suggestion=obj.suggestion
-            self.disciplines = [cat, ...self.disciplines]
             toastr.success("Successfully Inserted")
             self.trigger('add_discipline_detail_changed', self.disciplines)
           }else if(data.status == 'e'){
@@ -172,26 +183,6 @@ function DisciplineDetailStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.disciplines = self.disciplines.map(cat => {
-              if(cat.id == id){
-                  cat.id = id
-                  cat.referred_by=obj.referred_by
-                  cat.enroll_number=obj.enroll_number
-                  cat.category_id=obj.category_id
-                  /*self.mentors.map(i=>{
-                  if(item.case_id==i.case_id){
-                      var case_name = e.item
-                    }
-                  })*/
-                  cat.case_id=obj.case_id
-                  cat.consult_date=obj.consult_date
-                  cat.time_in=obj.time_in
-                  cat.time_out=obj.time_out
-                  cat.diagnosis=obj.diagnosis
-                  cat.suggestion=obj.suggestion
-              }
-              return cat
-            })
             toastr.success("Successfully Update")
             self.trigger('edit_discipline_detail_changed', self.disciplines)
           }else if(data.status == 'e'){

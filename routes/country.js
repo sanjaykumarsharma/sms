@@ -32,6 +32,9 @@ router.get('/', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+    var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
 
   req.getConnection(function(err,connection){
         var data = {}
@@ -65,7 +68,10 @@ router.post('/add', function(req, res, next) {
 router.post('/edit/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
-  var id = input.id;
+    var now = new Date();
+    var jsonDate = now.toJSON();
+    var formatted = new Date(jsonDate);
+    var id = input.id;
 
   req.getConnection(function(err,connection){
         var data = {}

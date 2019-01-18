@@ -216,6 +216,9 @@ RiotControl.addStore(idSignatureStore);
 var idCardStore = new IdCardStore();
 RiotControl.addStore(idCardStore);
 
+var careerStore = new CareerStore();
+RiotControl.addStore(careerStore);
+
 //tarique
 var roleStore = new RoleStore();
 RiotControl.addStore(roleStore);
@@ -398,6 +401,26 @@ var activityRoute = function activityRoute(path1, path2, path3) {
   }
 };
 
+//========== Admission Route ===========   
+var admissionRoute = function admissionRoute(path1, path2, path3) {
+  riot.mount('main-nav', { selected_nav_item: path1 });
+  if (currentPage) {
+    currentPage.unmount(true);
+  }
+  switch (path1) {
+    /*case 'login':
+      currentPage = riot.mount('div#view', 'login')[0];
+    break;*/
+    case 'student-browser':
+      riot.mount("div#view", 'student-browser');
+      break;
+    case 'student':
+      currentPage = riot.mount('div#view', 'student')[0];
+      break;
+
+  }
+};
+
 //========== Mentor Route ===========   
 var mentorRoute = function mentorRoute(path1, path2, path3) {
   riot.mount('main-nav', { selected_nav_item: path1 });
@@ -446,6 +469,56 @@ var mentorRoute = function mentorRoute(path1, path2, path3) {
       break;
   }
 };
+
+//========== Discipline Route ===========   
+var disciplineRoute = function disciplineRoute(path1, path2, path3) {
+  riot.mount('main-nav', { selected_nav_item: path1 });
+  if (currentPage) {
+    currentPage.unmount(true);
+  }
+  switch (path1) {
+    /*case 'login':
+      currentPage = riot.mount('div#view', 'login')[0];
+    break;*/
+    case 'student-browser':
+      riot.mount("div#view", 'student-browser');
+      break;
+
+    case 'discipline-detail':
+      currentPage = riot.mount('div#view', 'discipline-detail')[0];
+      break;
+    case 'discipline-setting':
+      currentPage = riot.mount('div#view', 'discipline-setting', { selected_master: path2 })[0];
+      switch (path2) {
+        case 'discipline-category':
+          riot.mount("div#discipline-setting-view", 'discipline-category');
+          break;
+        case 'discipline-case':
+          riot.mount("div#discipline-setting-view", 'discipline-case');
+          break;
+        default:
+          riot.mount("div#discipline-setting-view", 'discipline-category');
+      }
+      break;
+    case 'discipline-report':
+      currentPage = riot.mount('div#view', 'discipline-report', { selected_master: path2 })[0];
+      switch (path2) {
+        case 'discipline-case-wise-report':
+          riot.mount("div#discipline-report-view", 'discipline-case-wise-report');
+          break;
+        case 'discipline-class-wise-report':
+          riot.mount("div#discipline-report-view", 'discipline-class-wise-report');
+          break;
+        case 'discipline-date-wise-case-report':
+          riot.mount("div#discipline-report-view", 'discipline-date-wise-case-report');
+          break;
+        default:
+          riot.mount("div#discipline-report-view", 'discipline-case-wise-report');
+      }
+      break;
+  }
+};
+
 //========== Class Teacher Route ===========   
 var classTeacherRoute = function classTeacherRoute(path1, path2, path3) {
   riot.mount('main-nav', { selected_nav_item: path1 });
@@ -1071,6 +1144,25 @@ var adminRoute = function adminRoute(path1, path2, path3) {
     case 'staff':
       riot.mount("div#view", 'staff');
       break;
+    case 'career-setting':
+      currentPage = riot.mount('div#view', 'career-setting', { selected_master: path2 })[0];
+      switch (path2) {
+        case 'applicant-detail':
+          riot.mount("div#career-setting-view", 'applicant-detail');
+          break;
+        case 'career-interview':
+          riot.mount("div#career-setting-view", 'career-interview');
+          break;
+        case 'interviewed-candidate':
+          riot.mount("div#career-setting-view", 'interviewed-candidate');
+          break;
+        case 'career-report':
+          riot.mount("div#career-setting-view", 'career-report');
+          break;
+        default:
+          riot.mount("div#career-setting-view", 'applicant-detail');
+      }
+      break;
     case 'ex-staff':
       riot.mount("div#view", 'ex-staff');
       break;
@@ -1079,6 +1171,12 @@ var adminRoute = function adminRoute(path1, path2, path3) {
       break;
     case 'browse-staff':
       riot.mount("div#view", 'browse-staff');
+      break;
+    case 'staff-type-report':
+      riot.mount("div#view", 'staff-type-report');
+      break;
+    case 'staff-gender-report':
+      riot.mount("div#view", 'staff-gender-report');
       break;
     case 'student-search':
       riot.mount("div#view", 'student-search');
@@ -1348,6 +1446,9 @@ var adminRoute = function adminRoute(path1, path2, path3) {
         case 'infirmary-staff':
           riot.mount("div#infirmary-view", 'infirmary-staff');
           break;
+        case 'infirmary-lab-test':
+          riot.mount("div#infirmary-view", 'infirmary-lab-test');
+          break;
         case 'infirmary-staff-bp-weight':
           riot.mount("div#infirmary-view", 'infirmary-staff-bp-weight');
           break;
@@ -1439,6 +1540,12 @@ if (getCookie('role') == 'ADMIN') {
 } else if (getCookie('role') == 'Mentor') {
   console.log("Mentor route");
   route(mentorRoute);
+} else if (getCookie('role') == 'Admission') {
+  console.log("admission route");
+  route(admissionRoute);
+} else if (getCookie('role') == 'Discipline') {
+  console.log("Discipline route");
+  route(disciplineRoute);
 } else {
   console.log("unable to access");
   route(loginRoute);
@@ -2574,6 +2681,53 @@ function AdminReportStore() {
   */
 
   //read Student Family Occupation
+  self.on('read_occupation', function () {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_occupation/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.parentOccupations = data.parentOccupations;
+          self.trigger('read_occupation_changed', data.parentOccupations);
+        } else if (data.status == 'e') {
+          showToast("Occuaption Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //Read Occupation Report
+
+  self.on('read_occupation_report', function (occupation) {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_occupation_report/' + occupation,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.occupationReports = data.occupationReports;
+          self.trigger('read_occupation_report_change', data.occupationReports);
+        } else if (data.status == 'e') {
+          showToast("Occuaption Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //read Student Family Occupation
   self.on('read_student_summary_report', function () {
     var req = {};
     $.ajax({
@@ -2731,6 +2885,49 @@ function AdminReportStore() {
           console.log("inside report");
           self.session_name = data.session_name;
           self.studentBloodGroupListingReports = data.studentBloodGroupListingReports;
+
+          /*  var map = {
+               'A+'  : "A_plus",
+               'A-'  : "A_min",
+               'AB+' : "AB_plus",
+               'AB-' : "AB_min",
+               'B+'  : "B_plus",
+               'B-'  : "B_min",
+               'O+'  : "O_plus",
+               'O-'  : "O_min"
+             } 
+             
+                var tab = {
+                   abc:1,
+                   def:40,
+                   xyz: 50
+                 }
+                   var map = {
+                     abc : "newabc",
+                     def : "newdef",
+                     xyz : "newxyz"
+                 }
+                  for (var [key, value] of tab) {
+                     key = map[key] || key;
+                     tab[key] = value;
+                     console.log(tab)   
+                 };*/
+
+          /*    for (var [key, value] of  self.studentBloodGroupListingReports) {
+                  console.log(key + ' = ' + value);
+                    key = map[key] || key;
+                   self.studentBloodGroupListingReports[key] = value;
+                }*/
+          /* self.studentBloodGroupListingReports.map( => {
+               key = map[key] || key;
+               self.studentBloodGroupListingReports[key] = value;
+           })
+          */
+          /* self.studentBloodGroupListingReports.map(value, key) {
+                key.replace(/\+/g,' ')
+                self.studentBloodGroupListingReports[key] = value;
+            };*/
+
           console.log(self.studentBloodGroupListingReports);
           self.trigger('read_student_blood_group_listing_report_changed', self.studentBloodGroupListingReports, self.session_name);
         } else if (data.status == 'e') {
@@ -2765,6 +2962,58 @@ function AdminReportStore() {
           self.trigger('read_student_group_report_change', self.studentGroupReports, grandTotal);
         } else if (data.status == 'e') {
           showToast("Student Group Report Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // read Udise Report
+
+  self.on('read_udise_report', function (standard_id, section_id, sesion_id) {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_udise_report/' + standard_id + '/' + section_id + '/' + sesion_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          //self.studentSummaryReports=[]
+          console.log("inside udise report");
+          self.udiseReports = data.udiseReports;
+          self.trigger('read_udise_report_change', self.udiseReports);
+        } else if (data.status == 'e') {
+          showToast("UdiseReport Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  // read Udise Report
+
+  self.on('read_session', function () {
+    var req = {};
+    $.ajax({
+      url: '/admin_report/read_session',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          //self.studentSummaryReports=[]
+          console.log("inside session");
+          self.sessions = data.sessions;
+          self.trigger('read_session_change', self.sessions);
+        } else if (data.status == 'e') {
+          showToast("session name Read Error. Please try again.", data);
         }
       },
       error: function error(data) {
@@ -3240,7 +3489,10 @@ function AttendanceStore() {
         console.log(data);
         if (data.status == 's') {
           self.attendanceData = data.attendanceData;
-          toastr.success("Successfully");
+          if (self.attendanceData == 'No Data Found') {
+            toastr.info("No Data Found");
+          }
+          // toastr.success("Successfully")
           self.trigger('read_attendance_data_changed', self.attendanceData);
         } else if (data.status == 'e') {
           showToast("Error . Please try again.", data);
@@ -3270,7 +3522,7 @@ function AttendanceStore() {
         console.log(data);
         if (data.status == 's') {
           // self.attendanceData=data.attendanceData
-          toastr.success("Successfully");
+          toastr.success("Attendance Taken Successfully");
           self.trigger('add_attendance_data_changed');
         } else if (data.status == 'e') {
           showToast("Error . Please try again.", data);
@@ -3302,6 +3554,62 @@ function AttendanceStore() {
           self.dailyAttendanceData = data.dailyAttendanceData;
           toastr.success("Successfully");
           self.trigger('read_daily_attendance_data_changed', self.dailyAttendanceData);
+        } else if (data.status == 'e') {
+          showToast("Error . Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data.err);
+      }
+    });
+  });
+
+  // read Holiday list
+
+  self.on('read_holiday_list', function () {
+    var req = {};
+    $.ajax({
+      url: '/attendance/read_holiday_list',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          console.log("inside holiday list");
+          self.holidayLists = data.holidayLists;
+          self.trigger('read_holiday_list_changed', self.holidayLists);
+        } else if (data.status == 'e') {
+          showToast("holiday list Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  //delete_attendance
+
+
+  self.on('delete_attendance', function (studentData, start_date) {
+    var req = {};
+    req.start_date = start_date;
+    req.studentData = studentData;
+    console.log("inside delete attendance_data store");
+    console.log(req);
+    $.ajax({
+      url: '/attendance/delete_attendance',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Successfully Deleted");
+          self.trigger('delete_attendance_data_changed');
         } else if (data.status == 'e') {
           showToast("Error . Please try again.", data);
         }
@@ -3526,6 +3834,338 @@ function BirthDayStore() {
          }
        })
    })*/
+}
+'use strict';
+
+function CareerStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.on('read_career_interview', function (obj) {
+    console.log('i am in read_categories api call from ajax');
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    $.ajax({
+      url: '/career/read_career_interview/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.career_interview = data.career_interview;
+          self.trigger('read_career_interview_changed', self.career_interview);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_career_interview', function (obj) {
+    console.log('i am in read_categories api call from ajax');
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    $.ajax({
+      url: '/career/csv_export_career_interview/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {} else if (data.status == 'e') {}
+      },
+      error: function error(data) {}
+    });
+  });
+
+  self.on('update_interview', function (obj, interview_id) {
+
+    $.ajax({
+      url: '/career/update_interview/' + interview_id,
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Successfully Updated");
+          self.trigger('update_interview_changed');
+        } else if (data.status == 'e') {
+          showToast("Error Updating Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('delete_candidate', function (interview_id) {
+    $.ajax({
+      url: '/career/delete_candidate/' + interview_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          /*let tempItems = self.items.filter(c => {
+            return c.interview_id != interview_id
+          })
+          self.items = tempItems*/
+          toastr.info("Candidate Deleted Successfully");
+          self.trigger('delete_candidate_changed');
+        } else if (data.status == 'e') {
+          showToast("Error Deleting Candidate. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_applicant_profile', function (career_id) {
+
+    $.ajax({
+      url: '/career/read_applicant_profile/' + career_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_applicant_profile_changed', data.applicant_profile_data);
+        } else if (data.status == 'e') {
+          showToast("Error Updating Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_interviewed_candidate', function (obj) {
+    console.log('i am in read_interviewed_candidate api call from ajax');
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    req.result = obj.result;
+    $.ajax({
+      url: '/career/read_interviewed_candidate/' + obj.start_date + '/' + obj.end_date + '/' + obj.result,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.interviewed_candidate = data.interviewed_candidate;
+          self.trigger('read_interviewed_candidate_changed', self.interviewed_candidate);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_interviewed_candidate', function (obj) {
+    console.log('i am in read_interviewed_candidate api call from ajax');
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    req.result = obj.result;
+    $.ajax({
+      url: '/career/csv_export_interviewed_candidate/' + obj.start_date + '/' + obj.end_date + '/' + obj.result,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {} else if (data.status == 'e') {}
+      },
+      error: function error(data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('update_interviewed_candidate', function (interview_id) {
+    $.ajax({
+      url: '/career/update_interviewed_candidate/' + interview_id,
+      type: "POST",
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          /*let tempItems = self.items.filter(c => {
+            return c.interview_id != interview_id
+          })
+          self.items = tempItems*/
+          toastr.info("Candidate Updated Successfully");
+          self.trigger('update_interviewed_candidate_changed');
+        } else if (data.status == 'e') {
+          showToast("Error Updating Candidate. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_career_feedback_report', function (obj) {
+    console.log('i am in read_interviewed_candidate api call from ajax');
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    $.ajax({
+      url: '/career/read_career_feedback_report/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.career_feedback_report_data = data.career_feedback_report_data;
+          self.trigger('read_career_feedback_report_changed', self.career_feedback_report_data);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_career_feedback_report', function (obj) {
+    console.log('i am in read_interviewed_candidate api call from ajax');
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    $.ajax({
+      url: '/career/csv_export_career_feedback_report/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {} else if (data.status == 'e') {}
+      },
+      error: function error(data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('read_applicant_detail', function (obj) {
+    console.log('i am in read_applicant_detail api call from ajax');
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    $.ajax({
+      url: '/career/read_applicant_detail/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.applicant_details = data.applicant_details;
+          self.trigger('read_applicant_detail_changed', self.applicant_details);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  /*self.on('csv_export_applicant_detail', function(obj) {
+    console.log('i am in csv_export_applicant_detail api call from ajax')
+    let req = {}
+    req.start_date=obj.start_date
+    req.end_date=obj.end_date
+    $.ajax({
+      url:'/career/csv_export_applicant_detail/'+obj.start_date+'/'+obj.end_date,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })*/
+
+  self.on('create_interview_call', function (obj, career_id) {
+
+    $.ajax({
+      url: '/career/create_interview_call/' + career_id,
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          toastr.success("Successfully Updated");
+          self.trigger('create_interview_call_changed');
+        } else if (data.status == 'e') {
+          showToast("Error Updating Student. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('delete_applicant_detail', function (career_id) {
+    $.ajax({
+      url: '/career/delete_applicant_detail/' + career_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          /*let tempItems = self.items.filter(c => {
+            return c.interview_id != interview_id
+          })
+          self.items = tempItems*/
+          toastr.info("Candidate Deleted Successfully");
+          self.trigger('delete_applicant_detail_changed');
+        } else if (data.status == 'e') {
+          showToast("Error Deleting Candidate. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
 }
 'use strict';
 
@@ -4879,6 +5519,27 @@ function DisciplineCaseStore() {
 
   self.discipline_case = [];
 
+  self.on('csv_export_discipline_case', function () {
+    console.log('i am in csv_export_department api call from ajax');
+    var req = {};
+    $.ajax({
+      url: '/discipline_case/csv_export_discipline_case',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+
+          // self.trigger('departments_changed', data.departments)
+        } else if (data.status == 'e') {}
+      },
+      error: function error(data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_discipline_category', function () {
     console.log('i am in read_categories api call from ajax');
     var req = {};
@@ -5022,6 +5683,23 @@ function DisciplineCategoryStore() {
   var self = this;
 
   self.discipline_categories = [];
+
+  self.on('csv_export_discipline_category', function () {
+    var req = {};
+    $.ajax({
+      url: '/discipline_category/csv_export_discipline_category',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {} else if (data.status == 'e') {}
+      },
+      error: function error(data) {
+        //showToast("", data)
+      }
+    });
+  });
 
   self.on('read_discipline_category', function () {
     console.log('i am in read_courses api call from ajax');
@@ -5185,6 +5863,23 @@ function DisciplineDetailStore() {
     });
   });
 
+  self.on('csv_export_discipline', function (read_category_id) {
+    console.log(read_category_id);
+    var req = {};
+    req.read_category_id = read_category_id;
+    $.ajax({
+      url: '/discipline_detail/csv_export_discipline/' + read_category_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {} else if (data.status == 'e') {}
+      },
+      error: function error(data) {}
+    });
+  });
+
   self.on('read_discipline', function (read_category_id) {
     console.log(read_category_id);
     var req = {};
@@ -5246,18 +5941,6 @@ function DisciplineDetailStore() {
         console.log(data);
         if (data.status == 's') {
           console.log('add activity after');
-          var cat = {};
-          cat.id = id;
-          cat.referred_by = obj.referred_by;
-          cat.enroll_number = obj.enroll_number;
-          cat.category_id = obj.category_id;
-          cat.case_id = obj.case_id;
-          cat.consult_date = obj.consult_date;
-          cat.time_in = obj.time_in;
-          cat.time_out = obj.time_out;
-          cat.diagnosis = obj.diagnosis;
-          cat.suggestion = obj.suggestion;
-          self.disciplines = [cat].concat(self.disciplines);
           toastr.success("Successfully Inserted");
           self.trigger('add_discipline_detail_changed', self.disciplines);
         } else if (data.status == 'e') {
@@ -5308,26 +5991,6 @@ function DisciplineDetailStore() {
       success: function success(data) {
         console.log(data);
         if (data.status == 's') {
-          self.disciplines = self.disciplines.map(function (cat) {
-            if (cat.id == id) {
-              cat.id = id;
-              cat.referred_by = obj.referred_by;
-              cat.enroll_number = obj.enroll_number;
-              cat.category_id = obj.category_id;
-              /*self.mentors.map(i=>{
-              if(item.case_id==i.case_id){
-                  var case_name = e.item
-                }
-              })*/
-              cat.case_id = obj.case_id;
-              cat.consult_date = obj.consult_date;
-              cat.time_in = obj.time_in;
-              cat.time_out = obj.time_out;
-              cat.diagnosis = obj.diagnosis;
-              cat.suggestion = obj.suggestion;
-            }
-            return cat;
-          });
           toastr.success("Successfully Update");
           self.trigger('edit_discipline_detail_changed', self.disciplines);
         } else if (data.status == 'e') {
@@ -5370,7 +6033,24 @@ function DisciplineReportStore() {
   riot.observable(this); // Riot provides our event emitter.
   var self = this;
 
-  /*self.case_wise_reports = []*/
+  self.on('csv_export_read_case_wise_report', function (obj) {
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    $.ajax({
+      url: '/discipline_report/csv_export_read_case_wise_report/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {} else if (data.status == 'e') {}
+      },
+      error: function error(data) {
+        //showToast("", data)
+      }
+    });
+  });
 
   self.on('read_case_wise_report', function (obj) {
     console.log('i am in read_categories api call from ajax');
@@ -5397,6 +6077,27 @@ function DisciplineReportStore() {
     });
   });
 
+  self.on('csv_export_read_date_wise_case_report', function (obj, category_id) {
+    console.log('i am in read_categories api call from ajax');
+    var req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    req.category_id = category_id;
+    $.ajax({
+      url: '/discipline_report/csv_export_read_date_wise_case_report/' + obj.start_date + '/' + obj.end_date + '/' + category_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {} else if (data.status == 'e') {}
+      },
+      error: function error(data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_date_wise_case_report', function (obj, category_id) {
     console.log('i am in read_categories api call from ajax');
     var req = {};
@@ -5412,7 +6113,7 @@ function DisciplineReportStore() {
         console.log(data);
         if (data.status == 's') {
           self.date_wise_case_report = data.date_wise_case_report;
-          self.trigger('read_date_wise_case_report_changed', data.date_wise_case_report);
+          self.trigger('read_date_wise_case_report_changed', data.date_wise_case_report, getCookie('session_name'));
         } else if (data.status == 'e') {
           showToast("Categories Read Error. Please try again.", data);
         }
@@ -5488,6 +6189,26 @@ function DisciplineReportStore() {
       },
       error: function error(data) {
         showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_read_class_wise_report', function (standard_id, section_id, session_id) {
+    var req = {};
+    req.standard_id = standard_id;
+    req.section_id = section_id;
+    req.session_id = session_id;
+    $.ajax({
+      url: '/discipline_report/csv_export_read_class_wise_report/' + standard_id + '/' + section_id + '/' + session_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {} else if (data.status == 'e') {}
+      },
+      error: function error(data) {
+        //showToast("", data)
       }
     });
   });
@@ -8574,7 +9295,7 @@ function IdCardStore() {
         console.log(data);
         if (data.status == 's') {
           self.students = data.students;
-          self.trigger('read_id_card_changed', data.students_id_card_details);
+          self.trigger('read_id_card_changed', data.students_id_card_details, getCookie('session_id'));
         } else if (data.status == 'e') {
           showToast("Student Read Error. Please try again.", data);
         }
@@ -8598,7 +9319,7 @@ function IdCardStore() {
         console.log(data);
         if (data.status == 's') {
           self.students = data.students;
-          self.trigger('read_escort_card_changed', data.students_escort_card_details);
+          self.trigger('read_escort_card_changed', data.students_escort_card_details, getCookie('session_id'));
         } else if (data.status == 'e') {
           showToast("Student Read Error. Please try again.", data);
         }
@@ -9366,7 +10087,8 @@ function InventoryIssueStore() {
         console.log(data);
         if (data.status == 's') {
           self.availableItems = data.availableItems;
-          self.trigger('read_inventory_available_quantity_changed', data.availableItems);
+          self.rack_ids = data.rack_ids;
+          self.trigger('read_inventory_available_quantity_changed', data.availableItems, self.rack_ids);
         } else if (data.status == 'e') {
           showToast("Item Read Error. Please try again.", data);
         }
@@ -9403,7 +10125,7 @@ function InventoryIssueStore() {
     });
   });
 
-  self.on('edit_inventory_issue', function (issue_date, category_id, sub_category_id, item_id, return_type, issue_type, issue_to, staff_id, available_quantity, issue_quantity, unit_id, purpose, rack_id, id) {
+  self.on('edit_inventory_issue', function (issue_date, category_id, sub_category_id, item_id, return_type, issue_type, issue_to, staff_id, available_quantity, issue_quantity, unit_id, purpose, rack_id, id, category_name, subcategory_name, item_name) {
     var req = {};
     req.issue_date = issue_date, req.category_id = category_id, req.sub_category_id = sub_category_id, req.item_id = item_id, req.return_type = return_type, req.issue_type = issue_type, req.issue_to = issue_to, req.staff_id = staff_id, req.available_quantity = available_quantity, req.issue_quantity = issue_quantity, req.unit_id = unit_id, req.purpose = purpose, req.rack_id = rack_id, req.id = id;
     $.ajax({
@@ -9429,6 +10151,9 @@ function InventoryIssueStore() {
               cat.rack_id = rack_id;
               cat.remark = remark;
               cat.received_id = id;
+              cat.category_name = category_name;
+              cat.subcategory_name = subcategory_name;
+              cat.item_name = item_name;
             }
             // cat.confirmEdit = false
             return cat;
@@ -9445,7 +10170,7 @@ function InventoryIssueStore() {
     });
   });
 
-  self.on('add_inventory_issue', function (issue_date, category_id, sub_category_id, item_id, return_type, issue_type, issue_to, staff_id, available_quantity, issue_quantity, unit_id, purpose, rack_id) {
+  self.on('add_inventory_issue', function (issue_date, category_id, sub_category_id, item_id, return_type, issue_type, issue_to, staff_id, available_quantity, issue_quantity, unit_id, purpose, rack_id, category_name, subcategory_name, item_name) {
     var req = {};
     req.issue_date = issue_date, req.category_id = category_id, req.sub_category_id = sub_category_id, req.item_id = item_id, req.return_type = return_type, req.issue_type = issue_type, req.issue_to = issue_to, req.staff_id = staff_id, req.available_quantity = available_quantity, req.issue_quantity = issue_quantity, req.unit_id = unit_id, req.purpose = purpose, req.rack_id = rack_id, $.ajax({
       url: '/inventory_issue/add',
@@ -9460,7 +10185,9 @@ function InventoryIssueStore() {
           console.log('add Issue after');
           var obj = {};
           obj.issue_id = data.issue_id;
-          obj.issue_date = issue_date, obj.category_id = category_id, obj.sub_category_id = sub_category_id, obj.item_id = item_id, obj.return_type = return_type, obj.issue_type = issue_type, obj.issue_to = issue_to, obj.staff_id = staff_id, obj.available_quantity = available_quantity, obj.issue_quantity = issue_quantity, obj.unit_id = unit_id, obj.purpose = purpose, obj.rack_id = rack_id,
+          obj.issue_date = issue_date, obj.category_id = category_id, obj.sub_category_id = sub_category_id, obj.item_id = item_id, obj.return_type = return_type, obj.issue_type = issue_type, obj.issue_to = issue_to, obj.staff_id = staff_id, obj.available_quantity = available_quantity, obj.issue_quantity = issue_quantity, obj.unit_id = unit_id, obj.purpose = purpose, obj.rack_id = rack_id, obj.category_name = category_name;
+          obj.subcategory_name = subcategory_name;
+          obj.item_name = item_name;
           // obj.category_id = category_id
           self.inventoryIssues = [obj].concat(self.inventoryIssues);
           toastr.success("Issue Item Inserserted Successfully ");
@@ -9586,7 +10313,7 @@ function InventoryItemStore() {
     });
   });
 
-  self.on('edit_inventory_item', function (department, category_id, sub_category_id, item_name, id) {
+  self.on('edit_inventory_item', function (department, category_id, sub_category_id, item_name, id, category_name, subcategory_name) {
     var req = {};
     req.department = department;
     req.category_id = category_id;
@@ -9609,6 +10336,8 @@ function InventoryItemStore() {
               cat.department = department;
               cat.sub_category_id = sub_category_id;
               cat.item_name = item_name;
+              cat.category_name = category_name;
+              cat.sub_category = subcategory_name;
             }
             // cat.confirmEdit = false
             return cat;
@@ -9625,7 +10354,7 @@ function InventoryItemStore() {
     });
   });
 
-  self.on('add_inventory_item', function (department, category_id, sub_category_id, item_name) {
+  self.on('add_inventory_item', function (department, category_id, sub_category_id, item_name, category_name, subcategory_name) {
     var req = {};
     req.department = department;
     req.category_id = category_id;
@@ -9648,7 +10377,8 @@ function InventoryItemStore() {
           obj.department = department;
           obj.category_id = category_id;
           obj.item_name = item_name;
-          // obj.category_id = category_id
+          obj.category_name = category_name;
+          obj.sub_category = subcategory_name;
           self.inventoryItems = [obj].concat(self.inventoryItems);
           toastr.success("Item Inserserted Successfully ");
           self.trigger('add_inventory_item_changed', self.inventoryItems);
@@ -10117,7 +10847,7 @@ function InventorySaleStore() {
             return c.sale_id != id;
           });
           self.inventorySales = tempInventoryIssues;
-          toastr.info("Issue Deleted Successfully");
+          toastr.info("Sale Item Deleted Successfully");
           self.trigger('delete_inventory_sale_changed', self.inventorySales);
         } else if (data.status == 'e') {
           showToast("Error Deleting Issue Item. Please try again.", data);
@@ -10129,7 +10859,7 @@ function InventorySaleStore() {
     });
   });
 
-  self.on('edit_inventory_sale', function (sale_date, category_id, sub_category_id, item_id, sale_to, available_quantity, sale_quantity, unit_id, rate, id) {
+  self.on('edit_inventory_sale', function (sale_date, category_id, sub_category_id, item_id, sale_to, available_quantity, sale_quantity, unit_id, rate, id, category_name, subcategory_name, item_name) {
     var req = {};
     req.sale_date = sale_date, req.category_id = category_id, req.sub_category_id = sub_category_id, req.item_id = item_id, req.sale_to = sale_to, req.available_quantity = available_quantity, req.sale_quantity = sale_quantity, req.unit_id = unit_id, req.rate = rate, req.id = id;
     $.ajax({
@@ -10144,6 +10874,7 @@ function InventorySaleStore() {
           self.inventorySales = self.inventorySales.map(function (cat) {
             if (cat.received_id == id) {
               cat.sale_date = sale_date, cat.category_id = category_id, cat.sub_category_id = sub_category_id, cat.item_id = item_id, cat.sale_to = sale_to, cat.available_quantity = available_quantity, cat.sale_quantity = sale_quantity, cat.unit_id = unit_id, cat.rate = rate, cat.sale_id = id;
+              cat.category_name = category_name, cat.subcategory_name = subcategory_name, cat.item_name = item_name;
             }
             // cat.confirmEdit = false
             return cat;
@@ -10159,7 +10890,7 @@ function InventorySaleStore() {
       }
     });
   });
-  self.on('add_inventory_sale', function (sale_date, category_id, sub_category_id, item_id, sale_to, available_quantity, sale_quantity, unit_id, rate) {
+  self.on('add_inventory_sale', function (sale_date, category_id, sub_category_id, item_id, sale_to, available_quantity, sale_quantity, unit_id, rate, category_name, subcategory_name, item_name) {
     var req = {};
     req.sale_date = sale_date, req.category_id = category_id, req.sub_category_id = sub_category_id, req.item_id = item_id, req.sale_to = sale_to, req.available_quantity = available_quantity, req.sale_quantity = sale_quantity, req.unit_id = unit_id, req.rate = rate, $.ajax({
       url: '/inventory_sale/add',
@@ -10174,7 +10905,7 @@ function InventorySaleStore() {
           console.log('add Issue after');
           var obj = {};
           obj.sale_id = data.sale_id;
-          req.sale_date = sale_date, req.category_id = category_id, req.sub_category_id = sub_category_id, req.item_id = item_id, req.sale_to = sale_to, req.available_quantity = available_quantity, req.sale_quantity = sale_quantity, req.unit_id = unit_id, req.rate = rate,
+          req.sale_date = sale_date, req.category_id = category_id, req.sub_category_id = sub_category_id, req.item_id = item_id, req.sale_to = sale_to, req.available_quantity = available_quantity, req.sale_quantity = sale_quantity, req.unit_id = unit_id, req.rate = rate, req.category_name = category_name, req.subcategory_name = subcategory_name, req.item_name = item_name;
           // obj.category_id = category_id
           self.inventorySales = [obj].concat(self.inventorySales);
           toastr.success("Sale Item Inserserted Successfully ");
@@ -10247,9 +10978,9 @@ function InventoryStockStore() {
     });
   });
 
-  self.on('edit_inventory_stock', function (received_date, category_id, sub_category_id, item_id, rate, quantity, unit_id, received_from, rack_id, remark, id) {
+  self.on('edit_inventory_stock', function (received_date, category_id, sub_category_id, item_id, rate, quantity, unit_id, received_from, rack_id, remark, id, category_name, subcategory_name, item_name) {
     var req = {};
-    req.received_date = received_date;
+    // req.received_date=received_date
     req.category_id = category_id;
     req.sub_category_id = sub_category_id;
     req.item_id = item_id;
@@ -10272,7 +11003,6 @@ function InventoryStockStore() {
         if (data.status == 's') {
           self.inventoryStocks = self.inventoryStocks.map(function (cat) {
             if (cat.received_id == id) {
-              cat.received_date = received_date;
               cat.category_id = category_id;
               cat.sub_category_id = sub_category_id;
               cat.item_id = item_id;
@@ -10284,6 +11014,9 @@ function InventoryStockStore() {
               cat.rack_id = rack_id;
               cat.remark = remark;
               cat.received_id = id;
+              cat.category_name = category_name;
+              cat.subcategory_name = subcategory_name;
+              cat.item_name = item_name;
             }
             // cat.confirmEdit = false
             return cat;
@@ -10300,9 +11033,8 @@ function InventoryStockStore() {
     });
   });
 
-  self.on('add_inventory_stock', function (received_date, category_id, sub_category_id, item_id, rate, quantity, unit_id, received_from, rack_id, remark) {
+  self.on('add_inventory_stock', function (received_date, category_id, sub_category_id, item_id, rate, quantity, unit_id, received_from, rack_id, remark, category_name, subcategory_name, item_name) {
     var req = {};
-    req.received_date = received_date;
     req.category_id = category_id;
     req.sub_category_id = sub_category_id;
     req.item_id = item_id;
@@ -10324,9 +11056,9 @@ function InventoryStockStore() {
         console.log(data);
         if (data.status == 's') {
           console.log('add Stock after');
+          self.category_id = category_id;
           var obj = {};
           obj.received_from = data.received_from;
-          obj.received_date = received_date;
           obj.category_id = category_id;
           obj.sub_category_id = sub_category_id;
           obj.item_id = item_id;
@@ -10337,8 +11069,11 @@ function InventoryStockStore() {
           obj.quantity = quantity;
           obj.remark = remark;
           obj.rack_id = rack_id;
+          obj.category_name = category_name;
+          obj.subcategory_name = subcategory_name;
+          obj.item_name = item_name;
           // obj.category_id = category_id
-          self.inventoryStocks = [obj].concat(self.inventoryStocks);
+          self.inventoryStocks = [obj].concat(self.inventoryStocks, [self.category_id]);
           toastr.success("Stock Item Inserserted Successfully ");
           self.trigger('add_inventory_stock_changed', self.inventoryStocks);
         } else if (data.status == 'e') {
@@ -10406,7 +11141,7 @@ function InventorySubCategoryStore() {
     });
   });
 
-  self.on('edit_inventory_subcategory', function (department, category_id, sub_category, id) {
+  self.on('edit_inventory_subcategory', function (department, category_id, sub_category, id, category_name) {
     var req = {};
     req.department = department;
     req.category_id = category_id;
@@ -10427,6 +11162,7 @@ function InventorySubCategoryStore() {
               cat.category_id = category_id;
               cat.department = department;
               cat.sub_category = sub_category;
+              cat.category_name = category_name;
             }
             // cat.confirmEdit = false
             return cat;
@@ -10443,7 +11179,7 @@ function InventorySubCategoryStore() {
     });
   });
 
-  self.on('add_inventory_subcategory', function (department, category_id, sub_category) {
+  self.on('add_inventory_subcategory', function (department, category_id, sub_category, category_name) {
     var req = {};
     req.department = department;
     req.category_id = category_id;
@@ -10464,6 +11200,7 @@ function InventorySubCategoryStore() {
           obj.sub_category = sub_category;
           obj.department = department;
           obj.category_id = category_id;
+          obj.category_name = category_name;
           // obj.category_id = category_id
           self.inventorySubcategories = [obj].concat(self.inventorySubcategories);
           toastr.success("Subcategeory Inserserted Successfully ");
@@ -11390,6 +12127,26 @@ function MarksReportStore() {
           self.trigger('read_consolidate_tabulation_sheet_changed', data.reports);
         } else if (data.status == 'e') {
           showToast("Marks Entries Read Error. Please try again.", data.message);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_merit_list', function (exam_type_id, section_id) {
+    $.ajax({
+      url: '/marks-report/merit-list/' + exam_type_id + '/' + section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_merit_list_changed', data.reports);
+        } else if (data.status == 'e') {
+          showToast("Merit List Read Error. Please try again.", data.message);
         }
       },
       error: function error(data) {
@@ -12556,7 +13313,7 @@ function NewEventStore() {
             // cat.confirmEdit = false
             return cat;
           });
-          toastr.success("SeEvent Updated Successfully ");
+          toastr.success("Event Updated Successfully ");
           self.trigger('edit_new_event_changed', self.newEvents);
         } else if (data.status == 'e') {
           showToast("Error updating events. Please try again.", data);
@@ -14784,10 +15541,10 @@ function StaffStore() {
 
   //Staff TYpe Report
 
-  self.on('read_employee_type_report', function (emp_type_id) {
+  self.on('read_employee_type_report', function () {
     var req = {};
     $.ajax({
-      url: '/staff/read_employee_type_report/' + emp_type_id,
+      url: '/staff/read_employee_type_report',
       contentType: "application/json",
       dataType: "json",
       headers: { "Authorization": getCookie('token') },
@@ -14812,10 +15569,10 @@ function StaffStore() {
     });
   });
 
-  self.on('read_employee_gender_report', function () {
+  self.on('read_employee_gender_report', function (id) {
     var req = {};
     $.ajax({
-      url: '/staff/read_employee_gender_report',
+      url: '/staff/read_employee_gender_report/' + id,
       contentType: "application/json",
       dataType: "json",
       headers: { "Authorization": getCookie('token') },
@@ -14880,7 +15637,8 @@ function StaffStore() {
         console.log(data);
         if (data.status == 's') {
           self.staff_details = data.staff_details;
-          self.trigger('read_for_edit_staff_changed', data.staff_details);
+          self.workExperienceArray = data.workExperienceArray;
+          self.trigger('read_for_edit_staff_changed', data.staff_details, self.workExperienceArray);
         } else if (data.status == 'e') {
           showToast("Student Read Error. Please try again.", data);
         }
@@ -16760,10 +17518,10 @@ function StudentInfirmaryStore() {
         if (data.status == 's') {
           console.log('add case  after');
           var obj = {};
+          obj.infirmary_id = data.infirmary_id;
           obj.enroll_number = enroll_number;
           obj.category_id = category_id;
           obj.case_id = case_id;
-          obj.infirmary_id = infirmary_id;
           obj.treatment_date = treatment_date;
           obj.time_in = time_in;
           obj.time_out = time_out;
@@ -17406,12 +18164,10 @@ function StudentSchoolLeavingStore() {
   });
 
   self.on('print_feed_back_form', function (student_id) {
-    var obj = {};
-    obj['student_id'] = student_id;
+    var req = {};
+    req.student_id = student_id;
     $.ajax({
-      url: '/student-school-leaving/print-feed-back-form/',
-      type: "POST",
-      data: JSON.stringify(obj),
+      url: '/student-school-leaving/print_feed_back_form/' + student_id,
       contentType: "application/json",
       dataType: "json",
       headers: { "Authorization": getCookie('token') },
@@ -17446,6 +18202,34 @@ function StudentSchoolLeavingStore() {
           self.trigger('print_certificate_changed', data.students, getCookie('session_name'));
         } else if (data.status == 'e') {
           showToast("Error reading. Please try again.", data.messaage);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('delete_student_certificte', function (student_id) {
+
+    var req = {};
+    req.student_id = student_id;
+
+    $.ajax({
+      url: '/student-school-leaving/delete_student_certificte/' + student_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        if (data.status == 's') {
+          /*let tempstudents = self.students.filter(c => {
+            return c.student_id != student_id
+          })
+          self.students = tempstudents*/
+          toastr.info("Successfully Deleted");
+          self.trigger('delete_student_certificte_changed');
+        } else if (data.status == 'e') {
+          showToast("Error Deleting Student. Please try again.", data);
         }
       },
       error: function error(data) {
@@ -17753,7 +18537,7 @@ function StudentStore() {
           if (data.students == []) {
             toastr.info("No Data Found!");
           }
-          self.trigger('read_student_changed', data.students, getCookie('session_id'), getCookie('session_name'));
+          self.trigger('read_student_changed', data.students, getCookie('session_id'), getCookie('session_name'), getCookie('role'));
         } else if (data.status == 'e') {
           showToast("Student Read Error. Please try again.", data);
         }
@@ -17950,7 +18734,7 @@ function StudentStore() {
         console.log(data);
         if (data.status == 's') {
           toastr.success("Successfully Regenerate Roll No");
-          self.trigger('regenerate_roll_no_changed', self.students);
+          self.trigger('regenerate_roll_no_changed');
         } else if (data.status == 'e') {
           showToast("Error Updating Student. Please try again.", data);
         }

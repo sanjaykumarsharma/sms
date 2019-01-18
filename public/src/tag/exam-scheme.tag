@@ -171,18 +171,18 @@
             </div>
           </div>
           <div class="field">
-            <label class="label" for="role">Start Date</label>
+            <label class="label" for="role">End Date</label>
             <div class="control">
-              <input class="input date" type="text" ref="startDateInput" >
+              <input class="input date" type="text" ref="endDateInput" >
             </div>
           </div>
         </div>
 
         <div class="column">
           <div class="field">
-            <label class="label" for="role">End Date</label>
+            <label class="label" for="role">Start Date</label>
             <div class="control">
-              <input class="input date" type="text" ref="endDateInput" >
+              <input class="input date" type="text" ref="startDateInput" >
             </div>
           </div>
           <div class="field">

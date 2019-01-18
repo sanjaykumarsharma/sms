@@ -70,8 +70,8 @@ router.get('/:id', function(req, res, next) {
         if(req.cookies.role != 'ADMIN') user_condition =` and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select received_id,date_format(received_date,'%d/%m/%Y') as received_date, date_format(received_date,'%Y-%m-%d') as r_date,
-                item_name,category_name, concat('',a.quantity,' ',unit)as quantity, a.rate,(a.quantity*a.rate)as amount,
-                received_from, rack_name, remark,created_by ,a.rack_id,a.unit_id,a.category_id,a.sub_category_id,a.item_id
+                item_name,category_name, concat('',a.quantity,' ',unit) as quantity, a.rate,(a.quantity*a.rate)as amount,
+                received_from, rack_name, a.quantity as qty, remark,created_by ,a.rack_id,a.unit_id,a.category_id,a.sub_category_id,a.item_id
                 from received_goods a
                 join inventory_item_master b on a.item_id = b.item_id
                 join inventory_category_master c on a.category_id = c.category_id
@@ -133,8 +133,9 @@ router.post('/add', function(req, res, next) {
           rack_id : input.rack_id,
           remark : input.remark,
           creation_date : formatted,
-          created_by : req.cookies.role,
-          modified_by : req.cookies.role,
+          created_by : req.cookies.user,
+          modification_date : formatted,
+          modified_by : req.cookies.user,
         };
         
         var query = connection.query("INSERT INTO received_goods set ? ",values, function(err, rows)
@@ -179,7 +180,8 @@ router.post('/edit/:id', function(req, res, next) {
            received_from : input.received_from,
            rack_id : input.rack_id,
            remark : input.remark,
-           modified_by : req.cookies.role,
+           modification_date : formatted,
+           modified_by : req.cookies.user,
         };
         
         var query = connection.query("UPDATE received_goods set ? WHERE received_id = ?",[values,id], function(err, rows)

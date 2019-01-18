@@ -1,39 +1,76 @@
 <discipline-case-wise-report>
+	<print-header></print-header>
+	<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-	<h2 class="title has-text-centered" style="color: #ff3860;">Student Category wise Discipline Report</h2>
-	<div class="flex items-center mt-2 mb-6 no-print">
-		<div class="bg-green py-1 rounded w-10">
-			<div class="bg-grey h-px flex-auto"></div>
-		</div>
-	</div>
-	<div class="box">
+	<h2 class="title has-text-centered is-size-6" style="color: #ff3860;">Student Category wise Discipline Report
+		<br>Grand Total:{grand_total}</h2>
+	
+	<div class="box no-print">
 		<div class="columns">
 			<div class="column is-narrow">
 				<label class="label">From Date</label>
 			</div>
 			<div class="column is-narrow">
-				<input class="date input flatpickr-input form-control input" placeholder="" ref="start_date" tabindex="0" type="text" readonly="readonly">
+				<input class="input date " ref="start_date" id="start_date" type="text" readonly="readonly">
 			</div>
 			<div class="column is-narrow">
 				<label class="label">To Date</label>
 			</div>
 			<div class="column is-narrow">
-				<input class="date input flatpickr-input form-control input" placeholder="" ref="end_date" tabindex="0" type="text" readonly="readonly">
+				<input class="input date " ref="end_date" id="end_date" type="text" readonly="readonly">
 			</div>
 			<div class="column">
-				<button class="button is-danger has-text-weight-bold"
-				onclick={getData} > GO
+				<button class="button is-danger has-text-weight-bold" onclick={getData} > GO
 				</button>
 				<input type="checkbox" id="checkTable" checked={e.done} 
 				onclick={viewTable}  style="margin-top: 12px;"> Table
 			</div>
+			<div class="column">
+				<button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={csvExport}>
+          			<span class="icon">
+            			<i class="far fa-file-excel"></i>
+			        </span>
+			    </button>
+			    <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()">
+          			<span class="icon">
+            			<i class="fas fa-print"></i>
+			        </span>
+			    </button>
+			</div>
 		</div>
 	</div>
 
-	<canvas id="canvas_pie" show={report_view =='show_graph'}></canvas>
+	<center>
+		<div id="piechart" style="width: 900px; height: 500px;" show={report_view =='show_graph'}></div>
+	</center>
 
-	<div class="columns is-centered">
-		<table class="table is-striped is-hoverable is-bordered" show={report_view =='show_table'}>
+	<div class="printOnly" >
+		<div class="columns is-centered">
+			<table class="table is-striped is-hoverable is-bordered" style="margin-top:50px; width: 50%;">
+				
+				<thead>
+					<tr>
+					    <th>Category</th>
+					    <th class="has-text-right">Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr each={cd, i in case_wise_reports}>
+						<td>{cd.category_name}</td>
+						<td class="has-text-right">{cd.total}</td>
+					</tr>
+					<tr>
+						<td class="has-text-right">Total</td>
+						<td class="has-text-right">{grand_total}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="columns is-centered no-print" >
+		<table class="table is-striped is-hoverable is-bordered" style="width: 50%;" show={report_view =='show_table'}>
+			
 			<thead>
 				<tr>
 				    <th>Category</th>
@@ -57,11 +94,10 @@
 <script>
 	var self = this
     self.on("mount", function(){
+      self.loading = false;
       flatpickr(".date", {
-    	/*altInput: true,*/
-    	allowInput: true,
-    	altFormat: "d/m/Y",
-    	dateFormat: "Y-m-d",
+	    allowInput: true,
+        dateFormat: "d/m/Y",
   		})
       self.update();
     })
@@ -78,59 +114,79 @@
     	}
     }
     self.getData = () => {
+    	var startDate = document.getElementById("start_date").value;
+    	var endDate = document.getElementById("end_date").value;
+
+    	if(!self.refs.start_date.value){
+        	toastr.info("Please enter From Date and try again")
+      	}else if(!self.refs.end_date.value){
+      		toastr.info("Please enter To Date and try again")
+      	}else if((Date.parse(startDate) >= Date.parse(endDate))){
+       		toastr.info("Please enter To Date Grater Than From Date")
+      	}else{
     	var obj={}
-          obj['start_date']=self.refs.start_date.value
-          obj['end_date']=self.refs.end_date.value
+
+          obj['start_date']=convertDate(self.refs.start_date.value)
+          obj['end_date']=convertDate(self.refs.end_date.value)
           self.loading = true
           disciplineReportStore.trigger('read_case_wise_report', obj)
           self.report_view = 'show_graph'
           console.log(obj)
+        }
+    }
+
+    self.csvExport = () => {
+    	var startDate = document.getElementById("start_date").value;
+    	var endDate = document.getElementById("end_date").value;
+
+    	if(!self.refs.start_date.value){
+        	toastr.info("Please enter From Date and try again")
+      	}else if(!self.refs.end_date.value){
+      		toastr.info("Please enter To Date and try again")
+      	}else if((Date.parse(startDate) >= Date.parse(endDate))){
+       		toastr.info("Please enter To Date Grater Than From Date")
+      	}else{
+    	var obj={}
+
+          obj['start_date']=convertDate(self.refs.start_date.value)
+          obj['end_date']=convertDate(self.refs.end_date.value)
+          disciplineReportStore.trigger('csv_export_read_case_wise_report', obj)
+          console.log(obj)
+        }
     }
 
     disciplineReportStore.on('read_case_wise_report_changed',ReadCaseChanged)
     function ReadCaseChanged(case_wise_reports,grand_total){
       self.case_wise_reports = case_wise_reports
+      if(self.case_wise_reports.length==0){
+      	toastr.info("No Data Found")
+      }
       self.grand_total = grand_total
+      self.loading = false
 
-      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
+      var chart_percentage = []
+      chart_percentage.push(['Task', 'Hours per Day'])
+       for (var i = self.case_wise_reports.length - 1; i >= 0; i--) {
+		   chart_percentage.push([self.case_wise_reports[i].category_name,self.case_wise_reports[i].total])
+		}
 
-		var labels = []
-		var chart_percentage = []
-        var backgroundColor = []
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
 
+      function drawChart() {
 
-		 for (var i = self.case_wise_reports.length - 1; i >= 0; i--) {
-		 	var total_percentage = ((self.case_wise_reports[i].total*100)/self.grand_total).toFixed(2);
-		    var percentage = self.case_wise_reports[i].category_name + ' ( ' + self.case_wise_reports[i].total + ' , ' + total_percentage + '% )';
+        var data = google.visualization.arrayToDataTable(chart_percentage);
 
-		    labels.push(percentage)
-		    chart_percentage.push(self.case_wise_reports[i].total)
-		    if(typeof chartColors[i] != "undefined"){
-		    	backgroundColor.push(chartColors[i])
-		    }
+        var options = {
+          is3D: true,
+          legend:{position: 'labeled',
+                  textStyle: {bold: true} },
+          pieSliceText: 'value'
+        };
 
-		 }
-
-		  console.log(labels);
-		  console.log(chart_percentage);
-
-		  var config = {
-		    type: 'pie',
-		    data: {
-		      datasets: [{
-		        data: chart_percentage,
-		        backgroundColor: backgroundColor,
-		        label: 'labels'
-		      }],
-		      labels: labels
-		    },
-		    options: {
-		      responsive: true
-		    }
-		  };
-
-		  var ctx = document.getElementById('canvas_pie').getContext('2d');
-		  window.myPie = new Chart(ctx, config);
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+      }
       self.update()
       console.log(self.case_wise_reports)
     }

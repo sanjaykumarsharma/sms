@@ -290,6 +290,9 @@ router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
 
+   var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
   req.getConnection(function(err,connection){
         var data = {}
 
@@ -303,6 +306,10 @@ router.post('/add', function(req, res, next) {
             time_in : input.time_in,
             time_out : input.time_out,
             bmi : input.bmi,
+            creation_date    : formatted,
+            created_by    : req.cookies.user,
+            modification_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("INSERT INTO staff_health set ? ",values, function(err, rows)
@@ -329,6 +336,9 @@ router.post('/add', function(req, res, next) {
 router.post('/edit/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+   var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
   var id = input.id;
 
   req.getConnection(function(err,connection){
@@ -344,6 +354,8 @@ router.post('/edit/:id', function(req, res, next) {
             time_in : input.time_in,
             time_out : input.time_out,
             bmi : input.bmi,
+            modification_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("UPDATE staff_health set ? WHERE health_id = ?",[values,id], function(err, rows)

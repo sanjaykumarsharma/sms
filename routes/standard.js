@@ -5,9 +5,21 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
 
   req.getConnection(function(err,connection){
-       
-     var data = {}
-     connection.query('SELECT * FROM standard_master',function(err,result)     {
+      var user=req.cookies.user 
+      var data = {}
+     console.log("+++++")
+     console.log(req.cookies.role)
+
+      var condition="";
+      if(req.cookies.role== "TEACHER" || req.cookies.role=="Class Teacher"){
+           condition =`where standard_id=(select standard_id from section_master 
+              where teacher_id=(select emp_id from employee where employee_id='${user}')) `;
+      }
+      var qry = `select standard_id,standard 
+                from standard_master 
+                ${condition} `
+
+     connection.query(qry,function(err,result)     {
             
         if(err){
            console.log("Error reading standards : %s ",err );

@@ -177,6 +177,9 @@ router.get('/marks-entries/:exam_type_id/:section_id/:subject_id/:marking_type',
               and c.session_id= ${req.cookies.session_id}
               and (d.withdraw='N' || d.withdraw_session > ${req.cookies.session_id} )
               order by first_name,middle_name,last_name,enroll_number limit 1`;
+
+    console.log(qry);
+
     connection.query(qry,function(err,students)     {
             
         if(err){
@@ -216,13 +219,16 @@ router.post('/add', function(req, res, next) {
         values['marks_group'] = input.marks_group
         values['creation_date']= today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         values['modified_by']= req.cookies.user;
-
+        
         var qry = `insert into marks_entry_master set ?`;
 
         if(input.marking_type =='N'){
           values['marks'] = input.marks
+          values['grade_id']= 0;
         }else if(input.marking_type =='G'){
           values['marks_grade'] = input.marks_grade
+          values['marks'] = 0
+          values['grade_id']= 0;
         }else if(input.marking_type =='NG') {
           values['marks'] = input.marks
           if(input.marks ==-1){   

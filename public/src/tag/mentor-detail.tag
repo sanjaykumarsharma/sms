@@ -428,6 +428,7 @@
 
     self.add_case_detail = () => {
     	self.mentor_view='add_case_detail'
+    	self.title='Add'
     	self.clearaddCaseForm()
     }
 

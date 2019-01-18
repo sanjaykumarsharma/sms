@@ -1,5 +1,5 @@
 <mentor-setting>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	    <p class="control">
 		    <a class="button {is-active: selected_master == 'mentor-category'}" href="#/mentor-setting/mentor-category">
 		      <span>Category</span>

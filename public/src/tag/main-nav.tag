@@ -116,7 +116,7 @@
            <div class="navbar-dropdown">
              <a class="navbar-item " href="#/discipline-detail">Discipline Detail</a>
              <a class="navbar-item" href="#/discipline-report">Report</a>
-             <a class="navbar-item" href="#/student">Student</a>
+             <!-- <a class="navbar-item" href="#/student">Student</a> -->
              <a class="navbar-item {active: selected_nav_item == 'discipline-setting'}" href="#/discipline-setting/discipline-category">Setting</a>
            </div>
          </div>
@@ -143,6 +143,9 @@
               <a class="navbar-item " href="#/ex-staff">EX-Staff</a>
               <a class="navbar-item " href="#/browse-staff">Browse</a>
               <a class="navbar-item " href="#/approve-staff-profile">Approve Profile</a>
+              <a class="navbar-item" href="#/staff-gender-report">Staff By Gender Report</a>
+              <a class="navbar-item" href="#/staff-type-report">Staff By Type Report</a>
+              <a class="navbar-item {active: selected_nav_item == 'career-setting'}" href="#/career-setting/applicant-detail">Career</a>
             </div>
           </div>
 
@@ -410,6 +413,61 @@
      </div>
    </div>
  </nav>
+
+ <nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if={showDisciplineItems}>
+   <div class="container is-fluid" >
+     <div class="navbar-brand">
+       
+         <div class="navbar-item is-size-3 has-text-weight-bold has-text-wight">
+           Sarathi
+         </div>
+  
+       <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+         <span aria-hidden="true"></span>
+         <span aria-hidden="true"></span>
+         <span aria-hidden="true"></span>
+       </div>
+     </div>
+     <div id="navbarExampleTransparentExample" class="navbar-menu has-text-weight-bold">
+       <div class="navbar-end">
+         <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-item" >Discipline</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item " href="#/discipline-detail">Discipline Detail</a>
+            <a class="navbar-item" href="#/discipline-report">Report</a>
+            <a class="navbar-item {active: selected_nav_item == 'discipline-setting'}" href="#/discipline-setting/discipline-category">Setting</a>
+          </div>
+         </div>
+         <div class="navbar-item has-dropdown is-hoverable">
+           <a class="navbar-item" >Staff Profile</a>
+         </div>
+         <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+       </div>
+     </div>
+   </div>
+ </nav>
+
+ <nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if={showAdmissionItems}>
+   <div class="container is-fluid" >
+     <div class="navbar-brand">
+       
+         <div class="navbar-item is-size-3 has-text-weight-bold has-text-wight">
+           Sarathi
+         </div>
+  
+       <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+         <span aria-hidden="true"></span>
+         <span aria-hidden="true"></span>
+         <span aria-hidden="true"></span>
+       </div>
+     </div>
+     <div id="navbarExampleTransparentExample" class="navbar-menu has-text-weight-bold">
+       <div class="navbar-end">
+         <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-item" href="#/student">Student</a>
+         <div class="navbar-item has-dropdown is-hoverable">
+           <a class="navbar-item" >Staff Profile</a>
+         </div>
  
  <div class="modal" id="passwordChangeModal">
   <div class="modal-background"></div>
@@ -480,6 +538,8 @@
       self.showClassTeacherNavItems=false
       self.showActivityItems = false
       self.showMentorItems = false
+      self.showDisciplineItems = false
+      self.showAdmissionItems = false
     }else{
       self.selected_nav_item = opts.selected_nav_item
       if(self.selected_nav_item == 'login'){
@@ -488,6 +548,8 @@
         self.showClassTeacherNavItems=false
         self.showActivityItems=false
         self.showMentorItems = false
+        self.showDisciplineItems = false
+        self.showAdmissionItems = false
       }else{
         var role = self.getCookie('role')
         console.log('role')
@@ -575,6 +637,10 @@
           self.showInventoryNavItems=true
         }else if(role=='Infirmary'){
           self.showInfirmaryNavItems=true
+        }else if(role=='Discipline'){
+         self.showDisciplineItems=true
+        }else if(role=='Admission'){
+         self.showAdmissionItems=true
         }else {
           
         }

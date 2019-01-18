@@ -1,13 +1,14 @@
 <browse-staff>
 	<section class=" is-fluid">
+        <h2 class="title has-text-centered printOnly_t" style="color: #ff3860;">Employee Details</h2>
 		<div class="level">
-			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Staff</h2>
+			<div class="level-left no-print">
+				<h2 class="title  has-text-centered" style="color: #ff3860;">Employee Browser</h2>
 			</div>
 		</div>
-		<div class="box">
+		<div class="box no-print">
 			<div class="columns">
-				<div class="column is-narrow">
+				<div class="column ">
 					<div class="control">
 						<div class="select">
 							<select ref="emp_type_id" onchange={ReadBrowseStaff}>
@@ -18,8 +19,19 @@
 						</div>
 					</div>
 				</div>
-			   <div class="column">
-					<button class="button is-primary has-text-weight-bold"
+              
+			    <div class="column">
+                      <button class="button is-primary has-text-weight-bold is-pulled-right is-small" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+                  </button>
+                  <button class="button is-warning is-rounded is-pulled-right is-small" onclick={ReadBrowseStaff} style="margin-left:5px;margin-right:5px">
+                  <span class="icon">
+                    <span class="fas fa-sync-alt"></span>
+                  </span>
+                  </button>
+					<button class="button is-small  has-text-weight-bold is-pulled-right"
 					onclick={showStaffField}>Setting
 					</button>
 			    </div> 
@@ -436,6 +448,44 @@
     	{field_name : 'details_curricular_activities' , array_name : "details_curricular_activities"},
     	{field_name : 'details_sport' , array_name : "details_sport"}
     ]
+
+      //  for default true value
+
+       self.fieldList.map( q => {
+           
+            if(q.array_name== "first_name"){
+                    self.view_first_name="show_irst_name"    
+                     q.done=true 
+                }
+            if(q.array_name== "middle_name"){
+                    self.view_middle_name= "show_middle_name"
+                     q.done=true 
+                }
+            if(q.array_name== "last_name"){
+                    self.view_last_name= "show_last_name"
+                    q.done=true 
+                }
+            if(q.array_name== "employee_id"){
+                self.view_employee_id ="show_employee_id"
+                q.done=true 
+            }
+
+             if(q.array_name== "office_phone"){
+                self.view_office_phone ="show_office_phone"
+                q.done=true 
+            }
+             if(q.array_name== "mobile"){
+                self.view_mobile ="show_mobile"
+                q.done=true 
+            }
+             if(q.array_name== "email"){
+                self.view_email ="show_email"
+                q.done=true 
+            }
+             
+       })
+
+
     	self.role = getCookie('role') 
     	self.readEmployeeTypes()	
         self.update()

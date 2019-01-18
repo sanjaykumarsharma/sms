@@ -24,9 +24,9 @@
           </span>
           </button>
 
-          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+        <!--   <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
             <span class="icon"><i class="fas fa-print"></i></span>
-          </button>
+          </button> -->
         </div>
       </div>
     </div>

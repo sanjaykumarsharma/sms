@@ -117,6 +117,7 @@ router.get('/read_staff_monthly_case_report/:month_id', function(req, res, next)
         if(err){
            console.log("Error reading staff infirmary : %s ",err );
            data.status = 'e';
+           console.log("inside else")
 
         }else{
           // res.render('customers',{page_title:"Customers - Node.js",data:rows});
@@ -129,6 +130,8 @@ router.get('/read_staff_monthly_case_report/:month_id', function(req, res, next)
             var total = 0;
          for (var i = 0; i < result.length; i++) {
           console.log(result[i])
+          console.log("treatment_date")
+          console.log(result[i].treatment_date)
           if(result[i].staff_id !=prev_staff_id){//check for different activity_id
           //if($staff_id !=$prev_staff_id ){// distinct staff_id
              if(prev_staff_id==""){    // loop runs first time
@@ -174,14 +177,12 @@ router.get('/read_staff_monthly_case_report/:month_id', function(req, res, next)
  
 
         }
-          //if($error ==0){
-           // var obj={}
-             //console.log(std);
-             obj['treatment_date'] = prev_treatment_date;
-             obj['total'] =total; 
-            std.push(obj);
-          //}
-           //connection.end()
+             if(result.length>0){
+                obj['treatment_date'] = prev_treatment_date;
+                obj['total'] =total; 
+                std.push(obj);
+               }
+        
             data.staffMonthlyReport = std;
             res.send(JSON.stringify(data))
         }
@@ -428,7 +429,9 @@ router.get('/read_staff_infirmary/:id', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
-
+   var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
   req.getConnection(function(err,connection){
         var data = {}
 
@@ -441,6 +444,10 @@ router.post('/add', function(req, res, next) {
             time_out : input.time_out,
             treatment : input.treatment,
             case_name : input.case_name,
+            creation_date    : formatted,
+            created_by    : req.cookies.user,
+            modification_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("INSERT INTO staff_infirmary set ? ",values, function(err, rows)
@@ -569,7 +576,9 @@ router.post('/edit_staff_lab_test_infirmary/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
   var id = input.id;
-
+   var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
   req.getConnection(function(err,connection){
         var data = {}
           var now = new Date();
@@ -618,7 +627,9 @@ router.post('/edit/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
   var id = input.id;
-
+   var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
   req.getConnection(function(err,connection){
         var data = {}
 
@@ -631,6 +642,8 @@ router.post('/edit/:id', function(req, res, next) {
             time_out : input.time_out,
             treatment : input.treatment,
             case_name : input.case_name,
+            modification_date : formatted,
+            modified_by : req.cookies.user,
         };
         
         var query = connection.query("UPDATE staff_infirmary set ? WHERE staff_infirmary_id = ?",[values,id], function(err, rows)

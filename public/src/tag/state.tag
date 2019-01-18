@@ -2,7 +2,7 @@
   <head></head>
   <loading-bar if={loading}></loading-bar>  
 	<section class="is-fluid">
-    <h2 class="title" style="color: #ff3860;">States</h2>
+   <h2 class="title has-text-centered" style="color: #ff3860;">State Details</h2>
       <div class="box no-print">
       <div class="columns">
         <div class="column is-narrow">
@@ -11,22 +11,22 @@
         <div class="column is-narrow">
           <div class="control">
             <input class=" input"
-              ref="addStateInput" type="text">
+              ref="addStateInput" type="text"  onkeyup={addEnter}>
           </div>
         </div>
         <div class="column">
           <button class="button is-danger has-text-weight-bold"
           onclick={add} >{title}
           </button>
-           <button class="button is-warning is-rounded is-pulled-right" onclick={readState} style="margin-right:2px">
-        <span class="icon">
-          <span class="fas fa-sync-alt"></span>
-        </span>
-        </button>
            <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
+        </button>
+           <button class="button is-warning is-rounded is-pulled-right" onclick={readState} style="margin-right:5px">
+        <span class="icon">
+          <span class="fas fa-sync-alt"></span>
+        </span>
         </button>
         </div>
       </div>

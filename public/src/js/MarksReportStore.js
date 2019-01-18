@@ -86,4 +86,24 @@ function MarksReportStore() {
       })
   })
 
+  self.on('read_merit_list', function(exam_type_id,section_id) {
+    $.ajax({
+      url:'/marks-report/merit-list/'+exam_type_id+'/'+section_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_merit_list_changed', data.reports)
+          }else if(data.status == 'e'){
+            showToast("Merit List Read Error. Please try again.", data.message)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
 }

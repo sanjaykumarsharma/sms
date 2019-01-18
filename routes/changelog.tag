@@ -5,4 +5,10 @@
 //git fetch origin
 //git reset --hard origin/master
 
+//grade_master (grade) increase the length
+
+//group_subject_map grade_id default 0
+
+//marks_entry_master grade_id default 0
+//add id as primary_key
 

@@ -1,32 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-/* Read Course listing. */
-/*router.get('/readEmployee', function(req, res, next) {
-
-  req.getConnection(function(err,connection){
-       
-     var data = {}
-     connection.query('SELECT * FROM employees',function(err,result)     {
-            
-        if(err){
-           console.log("Error reading category : %s ",err );
-           data.status = 'e';
-
-        }else{
-          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
-            data.status = 's';
-            data.employees = result;
-           //connection.end()
-
-            res.send(JSON.stringify(data))
-        }
-     
-     });
-       
-  });
-
-});*/
 
 //read AVialble Quantity
 
@@ -63,15 +37,22 @@ router.get('/read_qunatity/:id', function(req, res, next) {
       console.log("data") 
       console.log(end_date) 
 
-       
-      //  var user=req.cookies.session_id['user']
-        /*var condition = "";
-        if(category_id !=-1){
-          condition = `where a.category_id = ${category_id}`;
-         }
-        var user_condition = "";*/
-        //if(session_id['role'] != 'ADMINISTRATOR') user_condition =`and a.created_by = ${user}`;
-       // and received_date between :dtf and :dto
+        var qry1=`select rack_id from received_goods
+                  where item_id=${item_id}
+                  and received_date between '${start_date}' and '${end_date}'
+                  group by rack_id`
+        connection.query(qry1,function(err,result1){
+            
+          if(err){
+             return connection.rollback(function() {
+                throw err;
+            });
+
+          }
+
+           data.rack_ids = result1;
+      })
+
         var qry = `select a.item_id, total_received, total_issued, total_sale, unit, a.unit_id
               from
               (select item_id, c.unit_id, sum(quantity) as total_received, unit             
@@ -164,7 +145,7 @@ router.get('/:id/:type', function(req, res, next) {
           condition = `and a.issue_category_id = ${category_id}`;
          }
         var user_condition = "";
-        if(req.cookies.role != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
+        if(req.cookies.user != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select issue_id,  c.category_id, a.issue_sub_category_id as sub_category_id, return_type,
                 a.issue_item_id as item_id, date_format(issue_date,'%d/%m/%Y') as issue_date, date_format(issue_date,'%Y-%m-%d') as iss_date,
@@ -251,7 +232,7 @@ router.get('/read_returnable/:id/:type', function(req, res, next) {
           condition = `and a.issue_category_id = ${category_id}`;
          }
         var user_condition = "";
-        if(req.cookies.role != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
+        if(req.cookies.user != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select issue_id, date_format(issue_date,'%d/%m/%Y') as issued_date, issue_date as r_date,
                 item_name,category_name, concat(first_name,' ',middle_name,' ',last_name ) as staff_name,
@@ -326,8 +307,8 @@ router.post('/add_inventory_return_goods', function(req, res, next) {
           return_quantity : input.return_quantity,
           return_remarks : input.remark,
           creation_date : formatted,
-          created_by : req.cookies.role,
-          modified_by : req.cookies.role,
+          created_by : req.cookies.user,
+          modified_by : req.cookies.user,
           modification_date : formatted,
         };
           
@@ -343,8 +324,9 @@ router.post('/add_inventory_return_goods', function(req, res, next) {
           rack_id : input.obj.rack_id,
           remark : input.remark,
           creation_date : formatted,
-          created_by : req.cookies.role,
-          modified_by : req.cookies.role,
+          created_by : req.cookies.user,
+          modified_by : req.cookies.user,
+          modification_date : formatted,
         };
          var qury=`select available_quantity from issue_goods where issue_id=${issue_id}`;
           connection.query(qury,function(err,result){
@@ -435,8 +417,8 @@ router.post('/add', function(req, res, next) {
           purpose : input.purpose,
           issue_rack_id : input.rack_id,
           creation_date : formatted,
-          created_by : req.cookies.role,
-          modified_by : req.cookies.role,
+          created_by : req.cookies.user,
+          modified_by : req.cookies.user,
           modification_date : formatted,
         };
         
@@ -486,7 +468,7 @@ router.post('/edit/:id', function(req, res, next) {
           issue_unit : input.unit_id,
           purpose : input.purpose,
           issue_rack_id : input.rack_id,
-          modified_by : req.cookies.role,
+          modified_by : req.cookies.user,
           modification_date : formatted,
         };
         

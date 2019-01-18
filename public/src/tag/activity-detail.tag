@@ -505,16 +505,12 @@
        activityStore.trigger('read_section')
     }
     self.changeSection = () => {
-       if(self.refs.standardSelect.value==''){
-        toastr.info("Please select standard and try again")
-       }else{
         self.tempSections = []
         self.tempSections = self.sections.filter(s=>{
           return s.standard_id==self.refs.standardSelect.value
         })
         self.update()
        }
-    }
 
     //Participant List
     self.printEventDetail = (ac,e) =>{
@@ -769,6 +765,7 @@
 	     	obj['activity_date']=convertDate(self.refs.activityDateInput.value)
 	     	obj['category_id']=self.refs.activityCategoryidInput.value
 	     	obj['event_id']=self.refs.activityEventIdInput.value
+	     	obj['event_name']=null
 	     	obj['organised_by']=self.refs.organisedByInput.value
 	     	obj['venue']=self.refs.venueInput.value
 	     	obj['emp_id']=self.teachers

@@ -99,7 +99,7 @@
               <div class="column is-narrow">  
                 <div class="control">
                   <div class="select is-fullwidth">
-                    <select ref="sectionSelectSecond" id="section">
+                    <select ref="sectionSelectSecond" id="section" onchange={refreshStudents}>
                       <option value="">Select Section</option>
                       <option each={tempSections} value={section_id}>{section}</option>
                     </select>

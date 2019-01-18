@@ -106,7 +106,7 @@ function NewEventStore() {
               // cat.confirmEdit = false
               return cat
             })
-            toastr.success("SeEvent Updated Successfully ")
+            toastr.success("Event Updated Successfully ")
             self.trigger('edit_new_event_changed', self.newEvents)
           }else if(data.status == 'e'){
             showToast("Error updating events. Please try again.", data)

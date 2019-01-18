@@ -2,7 +2,8 @@
    <header></header>
   <loading-bar if={loading}></loading-bar>
    <section class="is-fluid" show={infirmary_student_view == 'show_student_table'}>
-      <h2 class="title has-text-centered" style="color: #ff3860;">Student Infirmary Details</h2>
+      <h2 class="title has-text-centered" style="color: #ff3860;">Student Infirmary Details<br>
+      Category : {category_name}</h2>
     <div class="box no-print">
       <div class="columns">
         <div class="column is-narrow">
@@ -11,7 +12,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="read_category_id">
+              <select ref="read_category_id" id="read_category_id">
                 <option each={infirmaryCategories} value={category_id}>{category_name}
                               </option>
               </select>
@@ -67,7 +68,7 @@
           <td>{st.enroll_number}</td>
           <td>{st.standard}</td>
           <td>{st.case_name}</td>
-          <td>{st.t_date}</td>
+          <td>{st.treatment_date}</td>
           <td>{st.time_in}</td>
           <td>{st.time_out}</td>
           <td>{st.treatment}</td>
@@ -98,13 +99,13 @@
     <div class="columns is-variable is-1 is-multiline">
     	<div class="column is-one-third">
         <label class="label">Enroll No</label>
-       		<input type="text" ref="enroll_number" type="text" class="input">
+       		<input type="text" ref="enroll_number" type="text" class="input" onkeyup={addEnter}>
         </div>
       <div class="column is-one-third">
       <label class="label" for="class">Category</label>
         <div class="control">
             <div class="select is-fullwidth">
-            <select ref="category_id">
+            <select ref="category_id" onkeyup={addEnter}>
               <option each={infirmaryCategories} value={category_id}>{category_name}
               </option>
             </select>
@@ -115,7 +116,7 @@
         <label class="label" for="class">Case</label>
         <div class="control">
             <div class="select is-fullwidth">
-            <select ref="case_id">
+            <select ref="case_id" onkeyup={addEnter}>
               <option each={infirmaryCases} value={case_id}>{case_name}
                             </option>
             </select>
@@ -130,19 +131,19 @@
         </div>
         <div class="column is-one-third">
          <label class="label">Time In</label>
-          <input type="text" ref="time_in" type="text" class="input">
+          <input type="text" ref="time_in" type="text" class="input" onkeyup={addEnter}>
         </div>
          <div class="column is-one-third">
          <label class="label">Time Out</label>
-          <input type="text" ref="time_out" type="text" class="input">
+          <input type="text" ref="time_out" type="text" class="input" onkeyup={addEnter}>
         </div>
         <div class="column is-one-third">
          <label class="label">Treatment</label>
-        <input type="text" ref="treatment" type="text" class="input">
+        <input type="text" ref="treatment" type="text" class="input" onkeyup={addEnter}>
         </div>
          <div class="column is-one-third">
          <label class="label">Sent Home</label>
-               <input type="checkbox" id="sent_home_check_box">
+               <input type="checkbox" id="sent_home_check_box" onkeyup={addEnter}>
           </div>
     <div class="column is-full">
     <button class="button is-danger has-text-weight-bold adjusted-top" onclick={add} >{title}</button>    
@@ -163,9 +164,8 @@
        // self.readStudentInfirmary()
         console.log("inside student infirmary")
         flatpickr(".date", {
-         allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+          allowInput: true,
+          dateFormat: "d/m/Y",
        })
         self.update()
      })
@@ -182,6 +182,7 @@
      //read courses
      self.readStudentInfirmary = () => {
         self.loading=true
+         self.category_name = $("#read_category_id option:selected").text();
          self.infirmary_student_view='show_student_table'
            studentinfirmaryStore.trigger('read_student_infirmary', self.refs.read_category_id.value)
            //studentStore.trigger('read_students', obj)
@@ -202,6 +203,12 @@
        // self.readStudentInfirmary()
     }
 
+    self.addEnter = (e) => {
+       if(e.which == 13){
+         self.add()
+       }
+     }
+
 
       self.add = () => {
       	if($('#sent_home_check_box').is(":checked")){
@@ -220,19 +227,18 @@
          self.loading = true
          if(self.title=='Create'){
             console.log('create')
-           studentinfirmaryStore.trigger('add_student_infirmary', self.refs.enroll_number.value,self.refs.category_id.value,self.refs.case_id.value,self.refs.treatment_date.value,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value, self.sent_home,self.case_name)
+
+            self.treatment_date=convertDate(self.refs.treatment_date.value)
+           studentinfirmaryStore.trigger('add_student_infirmary', self.refs.enroll_number.value,self.refs.category_id.value,self.refs.case_id.value, self.treatment_date,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value, self.sent_home,self.case_name)
          }else if(self.title=='Update'){
            console.log('update')
-           studentinfirmaryStore.trigger('edit_student_infirmary',  self.refs.enroll_number.value,self.refs.category_id.value,self.refs.case_id.value,self.refs.treatment_date.value,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value, self.sent_home,self.edit_id,self.case_name)
+           self.treatment_date=convertDate(self.refs.treatment_date.value)
+           studentinfirmaryStore.trigger('edit_student_infirmary',  self.refs.enroll_number.value,self.refs.category_id.value,self.refs.case_id.value, self.treatment_date,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value, self.sent_home,self.edit_id,self.case_name)
          }
        }
      }
 
-     self.addEnter = (e) => {
-       if(e.which == 13){
-         self.add()
-       }
-     }
+    
 
       self.editEnter = (e) => {
        if(e.which == 13){
@@ -268,17 +274,16 @@
      self.edit = (ev,e) => {
        console.log(ev)
        self.title='Update'
-        flatpickr(".date", {
-         allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+          flatpickr(".date", {
+          allowInput: true,
+          dateFormat: "d/m/Y",
        })
 
        self.infirmary_student_view='show_infirmary_student_form'
        self.refs.enroll_number.value=ev.enroll_number
        self.refs.category_id.value=ev.category_id
        self.refs.case_id.value=ev.case_id
-       self.refs.treatment_date.value=ev.treatment_date
+       self.refs.treatment_date.value= ev.treatment_date
        self.refs.time_in.value=ev.time_in
        self.refs.time_out.value=ev.time_out
        self.refs.treatment.value=ev.treatment

@@ -156,7 +156,7 @@ router.post('/add', function(req, res, next){
         var studentValues = [];
 
         for(i=0;i<students.length;i++){
-          studentValues.push([fee_plan_id,students[i],session_id,formatted,req.cookies.role])
+         studentValues.push([fee_plan_id,students[i],session_id,formatted,req.cookies.role])
         };
           console.log("=============");
           console.log(studentValues);
@@ -170,7 +170,7 @@ router.post('/add', function(req, res, next){
            console.log("Error in inserting values : %s ",err );
            data.status = 'e';
 
-         }else{
+          }else{
               data.status = 's';
               res.send(JSON.stringify(data))
           }
@@ -203,7 +203,7 @@ router.post('/remove', function(req, res, next){
                     where fee_plan_id =?
                     and student_id=?
                     session_id=${session_id}
-                   and fee_plan_id not in(select fee_plan_id from fee_received 
+                    and fee_plan_id not in(select fee_plan_id from fee_received 
                       where student_id =?
                       and session_id== ${session_id})`;
         console.log(sql)

@@ -1,8 +1,9 @@
 <infirmary-student-case-wise-report>
-		<header></header>
+  <header></header>
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-	<h2 class="title has-text-centered" style="color: #ff3860;">Student Category wise Infirmary Report</h2>
+	<h2 class="title has-text-centered" style="color: #ff3860;">Student Category wise Infirmary Graph<br>Grand Total : <span style="color:#000">{grand_total}</span>
+	</h2>
 	
 	<div class="box no-print">
 		<div class="columns">
@@ -31,11 +32,35 @@
 			</div>
 		</div>
 	</div>
+<!-- 
+	<canvas id="canvas_pie" show={report_view =='show_graph'} style="margin-top:-30px" class="is-centered"></canvas> -->
+	<center>
+		<div id="piechart" style="width: 900px; height: 450px;" show={report_view =='show_graph'}></div>
+	</center>
 
-	<canvas id="canvas_pie" show={report_view =='show_graph'}></canvas>
+		<div class=" printOnly_t is-centered" >
+		<table class="table is-striped is-hoverable is-bordered is-fullwidth" style="margin-top:35px">
+			<thead>
+				<tr>
+				    <th>Category</th>
+				    <th class="has-text-right">Total</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr each={cd, i in case_wise_reports}>
+					<td>{cd.category_name}</td>
+					<td class="has-text-right">{cd.total}</td>
+				</tr>
+				<tr>
+					<td class="has-text-right">Total</td>
+					<td class="has-text-right">{grand_total}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 
 	<div class="columns is-centered">
-		<table class="table is-striped is-hoverable is-bordered" show={report_view =='show_table'}>
+		<table class="table is-striped is-hoverable is-bordered no-print" show={report_view =='show_table'}>
 			<thead>
 				<tr>
 				    <th>Category</th>
@@ -95,7 +120,31 @@
       self.grand_total = grand_total
       self.loading=false
 
-      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fdd', '#e6642f','#F6993F','#F2D038','#1F9D99','#2789BF','#9591E5','#B8C2DC','#fgg'];
+      var chart_percentage = []
+       chart_percentage.push(['Task', 'Hours per Day'])
+       for (var i = self.case_wise_reports.length - 1; i >= 0; i--) {
+		   chart_percentage.push([self.case_wise_reports[i].category_name,self.case_wise_reports[i].total])
+		}
+
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable(chart_percentage);
+
+        var options = {
+          is3D: true,
+          legend:{position: 'labeled',
+                  textStyle: {bold: true} },
+          pieSliceText: 'value'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+      }
+
+     /* var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fdd', '#e6642f','#F6993F','#F2D038','#1F9D99','#1F9D55','#873600','#641E16','#0E6251'];
 
 		var labels = []
 		var chart_percentage = []
@@ -133,7 +182,7 @@
 		  };
 
 		  var ctx = document.getElementById('canvas_pie').getContext('2d');
-		  window.myPie = new Chart(ctx, config);
+		  window.myPie = new Chart(ctx, config);*/
       self.update()
       console.log(self.case_wise_reports)
     }

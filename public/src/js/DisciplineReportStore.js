@@ -2,7 +2,28 @@ function DisciplineReportStore() {
   riot.observable(this) // Riot provides our event emitter.
   var self = this
 
-  /*self.case_wise_reports = []*/
+   self.on('csv_export_read_case_wise_report', function(obj) {
+    let req = {}
+    req.start_date=obj.start_date
+    req.end_date=obj.end_date
+    $.ajax({
+      url:'/discipline_report/csv_export_read_case_wise_report/'+obj.start_date+'/'+obj.end_date,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
 
   self.on('read_case_wise_report', function(obj) {
     console.log('i am in read_categories api call from ajax')
@@ -29,6 +50,31 @@ function DisciplineReportStore() {
       })
   })
 
+  self.on('csv_export_read_date_wise_case_report', function(obj,category_id) {
+    console.log('i am in read_categories api call from ajax')
+    let req = {}
+    req.start_date=obj.start_date
+    req.end_date=obj.end_date
+    req.category_id=category_id
+    $.ajax({
+      url:'/discipline_report/csv_export_read_date_wise_case_report/'+obj.start_date+'/'+obj.end_date+'/'+category_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
+
   self.on('read_date_wise_case_report', function(obj,category_id) {
     console.log('i am in read_categories api call from ajax')
     let req = {}
@@ -44,7 +90,7 @@ function DisciplineReportStore() {
           console.log(data)
           if(data.status == 's'){
             self.date_wise_case_report = data.date_wise_case_report
-            self.trigger('read_date_wise_case_report_changed', data.date_wise_case_report)
+            self.trigger('read_date_wise_case_report_changed', data.date_wise_case_report,getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Categories Read Error. Please try again.", data)
           }
@@ -124,6 +170,30 @@ function DisciplineReportStore() {
       })
   })
 
+
+  self.on('csv_export_read_class_wise_report', function(standard_id,section_id,session_id) {
+    let req = {}
+    req.standard_id=standard_id
+    req.section_id=section_id
+    req.session_id=session_id
+    $.ajax({
+      url:'/discipline_report/csv_export_read_class_wise_report/'+standard_id+'/'+section_id+'/'+session_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
 
 
   self.on('read_class_wise_report', function(standard_id,section_id,session_id) {

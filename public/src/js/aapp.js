@@ -220,6 +220,9 @@ RiotControl.addStore(idSignatureStore)
 var idCardStore = new IdCardStore()
 RiotControl.addStore(idCardStore)
 
+var careerStore = new CareerStore()
+RiotControl.addStore(careerStore)
+
 //tarique
 var roleStore = new RoleStore() 
 RiotControl.addStore(roleStore) 
@@ -403,6 +406,26 @@ let activityRoute = (path1, path2, path3) => {
   }
 }
 
+//========== Admission Route ===========   
+let admissionRoute = (path1, path2, path3) => {
+ riot.mount('main-nav', {selected_nav_item: path1});
+ if (currentPage) {
+   currentPage.unmount(true);
+ }
+ switch(path1) {
+   /*case 'login':
+     currentPage = riot.mount('div#view', 'login')[0];
+   break;*/
+   case 'student-browser':
+         riot.mount("div#view", 'student-browser')
+   break;
+   case 'student':
+     currentPage = riot.mount('div#view', 'student')[0];
+   break;
+   
+ }
+}
+
 //========== Mentor Route ===========   
 let mentorRoute = (path1, path2, path3) => {
  riot.mount('main-nav', {selected_nav_item: path1});
@@ -451,6 +474,57 @@ let mentorRoute = (path1, path2, path3) => {
    break;
  }
 }
+
+//========== Discipline Route ===========   
+let disciplineRoute = (path1, path2, path3) => {
+ riot.mount('main-nav', {selected_nav_item: path1});
+ if (currentPage) {
+   currentPage.unmount(true);
+ }
+ switch(path1) {
+   /*case 'login':
+     currentPage = riot.mount('div#view', 'login')[0];
+   break;*/
+   case 'student-browser':
+         riot.mount("div#view", 'student-browser')
+   break;
+   
+   case 'discipline-detail':
+     currentPage = riot.mount('div#view', 'discipline-detail')[0];
+   break;
+   case 'discipline-setting':
+     currentPage = riot.mount('div#view', 'discipline-setting', {selected_master: path2})[0];
+     switch(path2){
+       case 'discipline-category':
+         riot.mount("div#discipline-setting-view", 'discipline-category')
+       break;
+       case 'discipline-case':
+         riot.mount("div#discipline-setting-view", 'discipline-case')
+       break;
+       default:
+         riot.mount("div#discipline-setting-view", 'discipline-category')
+     }
+   break;
+   case 'discipline-report':
+     currentPage = riot.mount('div#view', 'discipline-report', {selected_master: path2})[0];
+     switch(path2){
+       case 'discipline-case-wise-report':
+         riot.mount("div#discipline-report-view", 'discipline-case-wise-report')
+       break;
+       case 'discipline-class-wise-report':
+         riot.mount("div#discipline-report-view", 'discipline-class-wise-report')
+       break;
+       case 'discipline-date-wise-case-report':
+         riot.mount("div#discipline-report-view", 'discipline-date-wise-case-report')
+       break;
+       default:
+         riot.mount("div#discipline-report-view", 'discipline-case-wise-report')
+     }
+   break;
+ }
+}
+
+
 //========== Class Teacher Route ===========   
 let classTeacherRoute = (path1, path2, path3) => {
   riot.mount('main-nav', {selected_nav_item: path1});
@@ -636,7 +710,7 @@ let infirmaryRoute = (path1, path2, path3) => {
             default:
               riot.mount("div#infirmary-student-report-view", 'infirmary-date-wise-case-report')
           }
-        break 
+        break; 
        
        case 'infirmary-staff-report':
           currentPage = riot.mount('div#infirmary-view', 'infirmary-staff-report', {selected_infirmary_staff_report: path3})[0];
@@ -1082,6 +1156,25 @@ case 'receive-fees':
     case 'staff':
           riot.mount("div#view", 'staff')
     break;
+    case 'career-setting':
+     currentPage = riot.mount('div#view', 'career-setting', {selected_master: path2})[0];
+     switch(path2){
+       case 'applicant-detail':
+         riot.mount("div#career-setting-view", 'applicant-detail')
+       break;
+       case 'career-interview':
+         riot.mount("div#career-setting-view", 'career-interview')
+       break;
+       case 'interviewed-candidate':
+         riot.mount("div#career-setting-view", 'interviewed-candidate')
+       break;
+       case 'career-report':
+         riot.mount("div#career-setting-view", 'career-report')
+       break;
+       default:
+         riot.mount("div#career-setting-view", 'applicant-detail')
+     }
+     break;
     case 'ex-staff':
           riot.mount("div#view", 'ex-staff')
     break;
@@ -1090,6 +1183,12 @@ case 'receive-fees':
     break;
     case 'browse-staff':
           riot.mount("div#view", 'browse-staff')
+    break;
+    case 'staff-type-report':
+          riot.mount("div#view", 'staff-type-report')
+    break;
+     case 'staff-gender-report':
+          riot.mount("div#view", 'staff-gender-report')
     break;
     case 'student-search':
           riot.mount("div#view", 'student-search')
@@ -1359,6 +1458,9 @@ case 'receive-fees':
         case 'infirmary-staff':
           riot.mount("div#infirmary-view", 'infirmary-staff')
         break;
+        case 'infirmary-lab-test':
+          riot.mount("div#infirmary-view", 'infirmary-lab-test')
+        break;
          case 'infirmary-staff-bp-weight':
           riot.mount("div#infirmary-view", 'infirmary-staff-bp-weight')
          break; 
@@ -1452,6 +1554,12 @@ if(getCookie('role')=='ADMIN'){
 }else if(getCookie('role')=='Mentor'){
  console.log("Mentor route")
  route(mentorRoute);  
+}else if(getCookie('role')=='Admission'){
+ console.log("admission route")
+ route(admissionRoute);  
+}else if(getCookie('role')=='Discipline'){
+ console.log("Discipline route")
+ route(disciplineRoute);  
 }else {
   console.log("unable to access")
   route(loginRoute);

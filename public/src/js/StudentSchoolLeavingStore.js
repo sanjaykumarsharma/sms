@@ -103,12 +103,10 @@ function StudentSchoolLeavingStore() {
   })
 
   self.on('print_feed_back_form', function(student_id) {
-    var obj = {}
-    obj['student_id'] = student_id
+    let req = {}
+    req.student_id=student_id
     $.ajax({
-      url:'/student-school-leaving/print-feed-back-form/',
-        type:"POST",
-        data: JSON.stringify(obj),
+      url:'/student-school-leaving/print_feed_back_form/'+student_id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -143,6 +141,34 @@ function StudentSchoolLeavingStore() {
             self.trigger('print_certificate_changed',data.students,getCookie('session_name')) 
           }else if(data.status == 'e'){
             showToast("Error reading. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('delete_student_certificte', function(student_id) {
+   
+    let req = {}
+    req.student_id=student_id
+  
+    $.ajax({
+      url:'/student-school-leaving/delete_student_certificte/'+student_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          if(data.status == 's'){
+            /*let tempstudents = self.students.filter(c => {
+              return c.student_id != student_id
+            })
+            self.students = tempstudents*/
+            toastr.info("Successfully Deleted")
+            self.trigger('delete_student_certificte_changed', )
+          }else if(data.status == 'e'){
+            showToast("Error Deleting Student. Please try again.", data)
           }
         },
         error: function(data){

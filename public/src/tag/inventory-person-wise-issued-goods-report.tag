@@ -96,8 +96,7 @@
       self.role = getCookie('role')
       flatpickr(".date", {
          allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+         dateFormat: "d/m/Y",
        })
        self.getIssueTo()
       self.update()
@@ -112,13 +111,17 @@
       self.loading=true
       self.issue_type=self.refs.issue_type.value,
       self.issue_to = $("#isue_to option:selected").text();
-      //self.issue_type=self.refs.issue_type.value,
       self.start_date=self.refs.start_date.value,
-      self.end_date=self.refs.end_date.value
-       inventoryReportStore.trigger('read_inventory_person_wise_issued_goods_report',self.refs.issue_type.value,self.refs.issue_to.value,self.refs.start_date.value,self.refs.end_date.value)
+      self.end_date=self.refs.end_date.value,
+
+      self.s_date=convertDate(self.refs.start_date.value)
+      self.e_date=convertDate(self.refs.end_date.value)
+
+      inventoryReportStore.trigger('read_inventory_person_wise_issued_goods_report',self.refs.issue_type.value,self.refs.issue_to.value,self.s_date,self.e_date)
     }
     self.getIssueTo = () => {
        inventoryReportStore.trigger('read_inventory_issue_to',self.refs.issue_type.value)
+       self.update()
     }
     
 

@@ -51,7 +51,8 @@
       </div>
       <div class="level-right">
         <!-- <a class="button is-small is-rounded" style="margin-bottom:12px;" rel="nofollow" onclick={}></a> -->
-        <button class="button is-success has-text-weight-bold" onclick={printCertificate} >Print Feedback Form</button>
+        <button class="button is-success has-text-weight-bold" onclick={printFeedback} >Print Feedback Form</button>
+        <button class="button is-primary has-text-weight-bold ml5" onclick={printCertificate} >Print Certificate</button>
         <button class="button is-link has-text-weight-bold ml5"  
           onclick={refreshStudents}>
           <span class="icon">
@@ -71,7 +72,7 @@
           <th>Date of Withdraw</th>
           <th>Reason</th>
           <th>Certificate Issue</th>
-          <th>
+          <th class="has-text-centered">
             <input type="checkbox" id="checkStudent" onclick={selectAll}>
           </th>
           <th></th>
@@ -93,19 +94,25 @@
             </span>
           </td>
           <td class="has-text-right">
-            <span><a class="button is-small is-rounded" onclick={create_certificate.bind(this, c)}>Create Certificate</a></span>
-            <!-- <span><a class="button is-small is-rounded" rel="nofollow" onclick={printFeedBackForm.bind(this, c)}>Print</a></span> -->
+            <div class="inline-flex rounded border border-grey overflow-hidden" hide={c.confirmDelete}>
+              <span><a class="button is-small is-rounded" onclick={create_certificate.bind(this, c)}>Create Certificate</a></span>
+              <span > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+            </div>
+            <div class="table-buttons" if={c.confirmDelete}>
+              <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
+              <span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
+            </div>  
           </td>
         </tr>
       </tbody>
     </table>  
   </section>
 
-  <!-- <section class=" is-fluid" show={view=='feed-back-form'}>
+  <section class=" is-fluid" show={view=='school-leaving-certificate'}>
   
     <div class="level">
       <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">School Leaving Certificate</h2>
+        
       </div>
       <div class="level-right">
         <button class="button is-warning is-rounded" onclick={backToHome}>
@@ -116,13 +123,14 @@
       </div>
     </div>
   
-    <div each={c, i in printDetails}>
+    <div each={c, i in printCertificateDetails}>
+      <center>
       <div class="topHeader">CERTIFICATE OF CONDUCT & CHARACTER</div> 
   
-      <caption>STUDENT PARTICULARS</caption>
-      <table style="margin-top:5px;" class="table">
+      <table class="table is-fullwidth is-bordered" style="width:860px;">
+      <caption class="caption-school-leaving">STUDENT PARTICULARS</caption>
         <tr>
-         <t>Name in Full</th>
+         <th>Name in Full</th>
          <td ColSpan="5">{c.name}</td>
         </tr>
         <tr>
@@ -164,8 +172,8 @@
         </tr>
       </table>
   
-      <table class="table">
-        <caption style="text-align:left !important;font-size:.8em; !important">Social & Life Skills:</caption>
+      <table class="table is-fullwidth is-bordered" style="width:860px;margin-top: -25px;">
+        <caption style="text-align:left !important;font-size:.8em; !important " class="caption-school-leaving">Social & Life Skills:</caption>
         <tr>
           <th class="socialTitle">a) Relations with the Faculty</th><td>{c.faculty_relationship}</td>
         </tr>
@@ -188,7 +196,7 @@
         </tr>
       </table>
   
-      <table class="table">   
+      <table class="table is-fullwidth is-bordered" style="width:860px;margin-top:-25px;">   
         <tr>
           <th>Remarks if any </th>
           <td>{c.remarks}</td>
@@ -196,15 +204,15 @@
       </table>
       <br><br><br>
    
-      <table style="border-style:none;margin-top:60px" class="table">
+      <table class="table is-fullwidth" style="width:860px;">
         <tr>
-           <td class="principal" style=" width:230px;">___________________<br><span class="principalText">Principal</sapn></td>              
+           <td class="principal-school-leaving" style=" width:230px;">___________________<br><span class="principalText">Principal</sapn></td>              
         </tr>
        </table>   
-      <table style="border-style:none;margin-top:5px" class="table">
+      <table class="table is-fullwidth" style="width:860px;">
         <tr>
            <td class="principal title"></td>
-           <td class="profile">(for school profile, see reverse)</td>
+           <td class="profile-school-leaving">(for school profile, see reverse)</td>
            <td class="currentDate title">{c.issue_date}</td>               
         </tr>
        </table>   
@@ -213,7 +221,7 @@
     
       <div>
         <center>
-          <div class='header'>School Profile</div>
+          <div class='header' style="padding: 5px;border: solid #000000 2px;width: 120px;font-size: 1em;font-weight: bold;border-radius: 10px;">School Profile</div>
         </center>
         <br>
   
@@ -239,7 +247,7 @@
           </p>
         </div>
         <div style='width:800px;'>
-            <table style='margin-top:10px;border:none' class="table">
+            <table class="table is-fullwidth " style="width:860px;">
               <tr><td  style='border: #fff;'><b><u>Explanation of Grades</u></b></td></tr> 
               <tr><td style='border: #fff;'>A = Excellent</td></tr>
               <tr><td style='border: #fff;'>B = Very Good</td></tr>
@@ -251,8 +259,9 @@
       </div>
   
     </div>  
+  </center>
   
-  </section> -->
+  </section>
 
   <section class=" is-fluid" show={view=='create-certificate-form'}>
     <div class="level">
@@ -449,7 +458,7 @@
   </section>
 
 
-  <section class=" is-fluid" show={view=='school-leaving-certificate'}>
+  <section class=" is-fluid" show={view=='school-leaving-certificate-form'}>
     <div class="level no-print">
       <div class="level-left">
         
@@ -468,13 +477,13 @@
       </div>
     </div>
 
-    <!-- Certificate Print Start -->
-    <div each={c, i in printCertificateDetails}>
+    <!--  Print Feedback Form Start -->
+    <div each={c, i in printFeedbackDetails}>
     <center>
         <div class="topHeader">Feedback Format for the Certificate of Conduct & Character for the Year: {session_name}</div>
         <table class="table is-fullwidth is-bordered" style="width:860px;">
-          <caption class="caption-certificate">STUDENT PARTICULARS  </caption>    
           <div style="text-align:left;width:860px;">
+          <caption class="caption-school-leaving">STUDENT PARTICULARS  </caption>    
               <tr>
                 <th>Name in Full</th><td ColSpan="5">{c.name}</td>
               </tr>
@@ -509,7 +518,7 @@
               </tr>
             </table>
             <table class="table is-fullwidth is-bordered" style="width:860px;margin-top:-25px;">
-              <caption class="caption-certificate" style="text-align:left !important;font-size: 0.8em;">Social & Life Skills:  (Please write A to E in the box)</caption>
+              <caption class="caption-school-leaving" style="text-align:left !important;font-size: 0.8em;">Social & Life Skills:  (Please write A to E in the box)</caption>
               <tr>
                 <th class="socialTitle">a) Relations with the Faculty</th><td></td>
               </tr>
@@ -625,6 +634,29 @@
       self.view='home'
     }
 
+    self.printFeedback = () =>{
+
+      let student_id='';
+       self.students.map( q => {
+          if(q.done){
+            if(student_id==''){
+              student_id=q.student_id
+            }else{
+              student_id=student_id+','+q.student_id
+            }
+          }
+        })
+       console.log(student_id);
+      if(student_id==''){
+        toastr.info('Please select at least one student and try again')
+      }else{
+        
+        studentSchoolLeavingStore.trigger('print_feed_back_form', student_id)
+      }
+
+      
+    }
+
     self.printCertificate = () =>{
 
       let student_id='';
@@ -715,6 +747,27 @@
         console.log(self.student_id)
     }
 
+    self.cancelOperation = (c) => {
+      self.students.map(p => {
+          p.confirmDelete = false
+          p.confirmEdit = false
+      })
+    }
+    self.confirmDelete = (c) => {
+      self.students.map(p => {
+        if(p.student_id != c.item.c.student_id){
+          p.confirmDelete = false
+        }else{
+          p.confirmDelete = true
+        }
+      })
+    }
+
+    self.delete = (c) => {
+      self.loading = true
+      studentSchoolLeavingStore.trigger('delete_student_certificte', c.item.c.student_id)
+    }
+
     // ****************************************** all change metods *************************************
     studentSchoolLeavingStore.on('read_classes_changed',ClassesChanged)
     function ClassesChanged(classes){
@@ -752,8 +805,8 @@
     function CreateCertificateChanged(){
       self.loading = false
       self.view='home'
-      self.refs.examination_appeared.value = ""
       self.refs.leaving_date.value = ""
+      /*self.refs.examination_appeared.value = ""
       self.refs.conduct.value = ""
       self.refs.attendance.value = ""
       self.refs.faculty_relationship.value = ""
@@ -763,7 +816,7 @@
       self.refs.attitude.value = ""
       self.refs.punctuality.value = ""
       self.refs.remarks.value = ""
-      self.refs.isc_stream.value = ""
+      self.refs.isc_stream.value = ""*/
       self.update()
       self.refreshStudents()
     }
@@ -771,8 +824,8 @@
     studentSchoolLeavingStore.on('print_feed_back_form_changed',PrintFeedBackFormChanged)
     function PrintFeedBackFormChanged(students,session_name){
       self.loading = false
-      self.view='feed-back-form'
-      self.printDetails = [{}]
+      self.view='school-leaving-certificate-form'
+      self.printFeedbackDetails = students
       self.session_name = session_name
       // self.printDetails = students
       self.update()
@@ -783,12 +836,21 @@
     function PrintCertificateChanged(students,session_name){ 
       self.loading = false
       self.view='school-leaving-certificate'
+      //self.view='school-leaving-certificate-form'
       self.printCertificateDetails = students
       self.session_name = session_name
       // self.printDetails = students
       self.update()
       
-    } 
+    }
+
+    studentSchoolLeavingStore.on('delete_student_certificte_changed',DeleteStudentCertificteChanged)
+    function DeleteStudentCertificteChanged(){ 
+      self.loading = false
+      self.update()
+      self.refreshStudents()
+      
+    }
 
 </script>
 </student-school-leaving>

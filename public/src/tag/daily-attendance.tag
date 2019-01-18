@@ -1,11 +1,9 @@
 <daily-attendance>
+	<header></header>
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Daily Attendance</h2>
-			</div>
-		</div>
-		<div class="box">
+			<h2 class="title has-text-centered" style="color: #ff3860;">Daily Attendance Summary</h2>
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
                 <label class="label">Date</label>
@@ -15,9 +13,12 @@
 		             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text">
 		          </div>
 		        </div>
-		        <div class="column is-narrow">
+		        <div class="column">
 					<div class="control">
 						<button class="button is-danger has-text-weight-bold" onclick={readDailyAttendanceData}>Go</button>
+						<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+		                  <span class="icon">  <i class="fas fa-print"></i></span>
+		                 </button>
 					</div>
 				</div>
 			</div>
@@ -72,6 +73,7 @@
    
 
     self.readDailyAttendanceData = () => {
+    	 self.loading = true
        attendanceStore.trigger('read_daily_attendance_data',self.refs.start_date.value)  
     }
 

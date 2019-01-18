@@ -7,22 +7,21 @@ var multer = require('multer')
 
 //staff Type Report
 
-router.get('/read_employee_type_report/:emp_type_id', function(req, res, next) {
+router.get('/read_employee_type_report', function(req, res, next) {
  var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
-  var emp_type_id=req.params.emp_type_id
+  //var emp_type_id=req.params.emp_type_id
   req.getConnection(function(err,connection){
        
     var data = {}
-    var condition = "";
-     if(emp_type_id != -1) condition = ` and a.emp_type_id =${emp_type_id}`;
+   /* var condition = "";
+     if(emp_type_id != -1) condition = ` and a.emp_type_id =${emp_type_id}`;*/
      
       var qry =`select a.emp_type_id,emp_type,count(*) as total 
                 from employee a
                 JOIN emp_type_master b on a.emp_type_id = b.emp_type_id
                 where a.is_active='Y'
-                ${condition}
-                group by emp_type`;
+                group by a.emp_type_id`;
           connection.query(qry,function(err,result)     {
          console.log(qry)   
       if(err){
@@ -44,18 +43,20 @@ router.get('/read_employee_type_report/:emp_type_id', function(req, res, next) {
 
 //staff Gender Report
 
-router.get('/read_employee_gender_report', function(req, res, next) {
+router.get('/read_employee_gender_report/:id', function(req, res, next) {
  var input = JSON.parse(JSON.stringify(req.body));
   var session_id = req.cookies.session_id
   req.getConnection(function(err,connection){
        
     var data = {}
-    /*var condition = "";
-     if(emp_type_id != -1) condition = ` and a.emp_type_id =${emp_type_id}`;*/
+      var emp_type_id=req.params.id
+      var condition = "";
+     if(emp_type_id != -1) condition = ` and emp_type_id =${emp_type_id}`;
      
       var qry =`select gender, count(*) as total 
             from employee  
             where is_active='Y'
+            ${condition}
             group by gender`;
           connection.query(qry,function(err,result)     {
          console.log(qry)   
@@ -512,24 +513,32 @@ router.get('/read_for_edit_temp_staff/:emp_id', function(req, res, next) {
         LEFT JOIN employee_temp_children h on a.emp_id=h.emp_id              
         and a.emp_id=${emp_id}
         order by 3`;
+
+
+      var query_one = `select institution,date_format(date_of_joining, '%d/%m/%Y') as  date_of_joining,
+            date_format(date_of_leaving, '%d/%m/%Y') as  date_of_leaving, position, subjects_taught
+            from work_experience
+            where emp_id=${emp_id}`;  
+
+        connection.query(query_one, function (error, result1){
+          if (error) {
+             data.status = 'e';
+          }   
     
-    connection.query(qry,function(err,result)     {
+       connection.query(qry,function(err,result)     {
             
-      if(err){
-        console.log("Error reading Student Details : %s ",err );
-        data.status = 'e';
-
-      }else{
-        data.status = 's';
-        data.staff_details = result;
-
-        res.send(JSON.stringify(data))
+        if(err){
+          console.log("Error reading work experience details : %s ",err );
+          data.status = 'e';
         }
-     
-     });
-       
-  });
 
+      data.status = 's';
+      data.staff_details = result;
+      data.workExperienceArray = result1;
+      res.send(JSON.stringify(data))
+     });
+    })     
+  });
 });
 
 /* Add staff. */
@@ -605,31 +614,30 @@ router.post('/add_staff', function(req, res, next) {
 
         // work Experience 
           var workExperienceValues =[];
-         // console.log(input.workExperienceArray)
           var workExperienceArray = input.workExperienceArray
-          workExperienceArray.emp_id=log;
-          workExperienceArray.creation_date=formatted;
-          workExperienceArray.modification_date=formatted;
-          workExperienceArray.modified_by=req.cookies.user;
           for(var i=0; i<workExperienceArray.length; i++){
-            var emp_id=log
-            var institution=workExperienceArray[i].institution
-            var date_of_joining=workExperienceArray[i].date_of_joining
-            var date_of_leaving=workExperienceArray[i].date_of_leaving
-            var position=workExperienceArray[i].position
-            var subjects_taught=workExperienceArray[i].subjects_taught
-
-             workExperienceValues.push([emp_id,institution,date_of_joining,date_of_leaving,position,subjects_taught,formatted,formatted,user])      
+             var obj= []
+              obj.push(log)
+              obj.push(workExperienceArray[i].institution)
+              obj.push(workExperienceArray[i].date_of_joining)
+              obj.push(workExperienceArray[i].date_of_leaving)
+              obj.push(workExperienceArray[i].position)
+              obj.push(workExperienceArray[i].subjects_taught)
+              obj.push(formatted)
+              obj.push(formatted)
+              obj.push(req.cookies.user)
+              workExperienceValues.push(obj)
           }
 
         console.log("VALUES")
         console.log(workExperienceValues)
 
 
-        var sql = "insert into work_experience(emp_id,institution,date_of_joining, date_of_leaving, position,subjects_taught,creation_date,modification_date,modified_by) VALUES ?";
+        var sql =`insert into work_experience(emp_id,institution,date_of_joining, date_of_leaving, 
+        position,subjects_taught,creation_date,modification_date,modified_by) VALUES ?`;
+         console.log(sql)
         connection.query(sql,[workExperienceValues], function(err, result) 
         {
-           console.log(sql)
           if(err){
            return connection.rollback(function() {
                 throw error;
@@ -681,12 +689,15 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
   var jsonDate = now.toJSON();
   var formatted = new Date(jsonDate);
   var emp_id = req.params.emp_id;
+
+  console.log("emp_id")
+  console.log(emp_id)
   var editType=req.params.editType
   var data = {} 
 
       var values_staffs = input.staff
       values_staffs.creation_date=formatted;
-      values_staffs.modified_by=req.cookies.role;
+      values_staffs.modified_by=req.cookies.user;
 
       if(editType=='tempEditProfile'){
             req.getConnection(function(err,connection){
@@ -709,53 +720,13 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
           }
           var log = rows.insertId;
 
-       /* var qry =`update employee set password=md5(12345)
-          where emp_id=${log}`;
-          connection.query(qry,function(err,result){
-            if (error) {
-              return connection.rollback(function() {
-                throw error;
-              });
-            }*/
-        
-        //**********insert into Student Current Standing  ***************************
-       /* var values_student_current_standing = input.student_current_standing;
-        values_student_current_standing.student_id=log;
-        values_student_current_standing.creation_date=formatted;
-        values_student_current_standing.session_id=req.cookies.session_id;
-        values_student_current_standing.modified_by=req.cookies.role;
-
-        connection.query("INSERT INTO student_current_standing set ? ", values_student_current_standing, function(error, rows)
-          {
-            if (error) {
-              return connection.rollback(function() {
-                throw error;
-              });
-            }
-          
-          });*/
-
-        //**********insert into Student Login  ***************************
-       /* var values_staff_login = input.staff_login;
-        values_staff_login.creation_date=formatted;
-        values_staff_login.modification_date=formatted;
-        values_staff_login.modified_by=req.cookies.role;
-
-        connection.query("INSERT INTO student_login set ? ", values_staff_login, function(error, rows)
-          {
-            if (error) {
-              return connection.rollback(function() {
-                throw error;
-              });
-            }
-          
-          });*/
+      
 
         var values_family = input.family;
         values_family.creation_date=formatted;
-        values_family.emp_id=emp_id;
+        values_family.emp_id=log;
         values_family.modification_date=formatted;
-        values_family.modified_by=req.cookies.role;
+        values_family.modified_by=req.cookies.user;
 
         connection.query("INSERT INTO employee_temp_children set ? ", values_family, function(error, rows)
           {
@@ -769,9 +740,9 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
 
         var values_previous_job = input.previous_job;
         values_previous_job.creation_date=formatted;
-        values_previous_job.emp_id=emp_id;
+        values_previous_job.emp_id=log;
         values_previous_job.modification_date=formatted;
-        values_previous_job.modified_by=req.cookies.role;
+        values_previous_job.modified_by=req.cookies.user;
 
         connection.query("INSERT INTO employee_temp_previous_job set ? ", values_previous_job, function(error, rows)
           {
@@ -783,12 +754,50 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
           
           });
 
+
+        console.log("inser into work experience")
+
+        // work Experience 
+        
+          var workExperienceValues =[];
+          var workExperienceArray = input.workExperienceArray
+          for(var i=0; i<workExperienceArray.length; i++){
+             var obj= []
+              obj.push(log)
+              obj.push(workExperienceArray[i].institution)
+              obj.push(workExperienceArray[i].date_of_joining)
+              obj.push(workExperienceArray[i].date_of_leaving)
+              obj.push(workExperienceArray[i].position)
+              obj.push(workExperienceArray[i].subjects_taught)
+              obj.push(formatted)
+              obj.push(formatted)
+              obj.push(req.cookies.user)
+              workExperienceValues.push(obj)
+          }
+
+        console.log("VALUES")
+        console.log(workExperienceValues)
+
+
+        var sql = "insert into employee_temp_work_experience(emp_id,institution,date_of_joining, date_of_leaving, position,subjects_taught,creation_date,modification_date,modified_by) VALUES ?";
+        connection.query(sql,[workExperienceValues], function(err, result) 
+        {
+           console.log(sql)
+          if(err){
+           return connection.rollback(function() {
+                throw error;
+              });
+
+          }
+        });
+
+
          //**********insert into Parent Data  ***************************
           var values_qualification = input.qualification;
-          values_qualification.emp_id=emp_id;
+          values_qualification.emp_id=log;
           values_qualification.creation_date=formatted;
           //values_qualification.current_session_id=req.cookies.session_id;
-          values_qualification.modified_by=req.cookies.role;
+          values_qualification.modified_by=req.cookies.user;
 
           connection.query("INSERT INTO employee_temp_qualification set ? ", values_qualification, function(error, rows)
           {
@@ -836,7 +845,7 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
         values_family.creation_date=formatted;
         //values_family.emp_id=log;
         values_family.modification_date=formatted;
-        values_family.modified_by=req.cookies.role;
+        values_family.modified_by=req.cookies.user;
 
         connection.query("update employee_children set ? WHERE emp_id = ?", [values_family, emp_id],  function(error, rows)
           {
@@ -848,12 +857,86 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
           
           });
 
+
+           var values_previous_job = input.previous_job;
+              values_previous_job.creation_date=formatted;
+              values_previous_job.emp_id=emp_id;
+              values_previous_job.modification_date=formatted;
+              values_previous_job.modified_by=req.cookies.user;
+
+        connection.query("update previous_job set ? WHERE emp_id = ?", [values_previous_job, emp_id], function(error, rows)
+          {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+          
+          });
+
+
+           var qr=`delete from work_experience WHERE emp_id=${emp_id}`;
+            connection.query(qr, function (error, rows) {
+              console.log(qr)
+              if (error) {
+                return connection.rollback(function() {
+                  throw error;
+                });
+              }
+              console.log("delete queery")
+
+              //after delet, insert into work_experience
+
+              // work Experience 
+          var workExperienceValues =[];
+         // console.log(input.workExperienceArray)
+          var workExperienceArray = input.workExperienceArray
+          workExperienceArray.emp_id=emp_id;
+          console.log("heregjg")
+          console.log(emp_id)
+          for(var i=0; i<workExperienceArray.length; i++){
+            var empID=emp_id
+            console.log(empID)
+            var institution=workExperienceArray[i].institution
+            var date_of_joining=workExperienceArray[i].date_of_joining
+            var date_of_leaving=workExperienceArray[i].date_of_leaving
+            var position=workExperienceArray[i].position
+            var subjects_taught=workExperienceArray[i].subjects_taught
+            var creation_date=formatted;
+            var modification_date=formatted;
+            var modified_by=req.cookies.user;
+
+             workExperienceValues.push([empID,institution,date_of_joining,date_of_leaving,position,subjects_taught,formatted,formatted,req.cookies.user])      
+          }
+
+            console.log("VALUES")
+            console.log(workExperienceValues)
+
+
+            var sql = "insert into work_experience(emp_id,institution,date_of_joining, date_of_leaving, position,subjects_taught,creation_date,modification_date,modified_by) VALUES ?";
+            connection.query(sql,[workExperienceValues], function(err, result) 
+            {
+               console.log(sql)
+              if(err){
+               return connection.rollback(function() {
+                    throw error;
+                  });
+
+              }
+            });
+        }) 
+
+
+        
+
+
+
          //**********insert into Parent Data  ***************************
           var values_qualification = input.qualification;
          // values_qualification.emp_id=log;
           values_qualification.creation_date=formatted;
           //values_qualification.current_session_id=req.cookies.session_id;
-          values_qualification.modified_by=req.cookies.role;
+          values_qualification.modified_by=req.cookies.user;
 
           connection.query("update employee_qualification set ? WHERE emp_id = ?", [values_qualification, emp_id], function(error, rows)
           {
@@ -903,7 +986,7 @@ router.post('/edit_temp_staff/:emp_id', function(req, res, next) {
   var data = {} 
   var values_staffs = input.staff
   values_staffs.creation_date=formatted;
-  values_staffs.modified_by=req.cookies.role;
+  values_staffs.modified_by=req.cookies.user;
 
     req.getConnection(function(err,connection){
       connection.beginTransaction(function(err) {
@@ -923,7 +1006,7 @@ router.post('/edit_temp_staff/:emp_id', function(req, res, next) {
         values_family.creation_date=formatted;
         //values_family.emp_id=log;
         values_family.modification_date=formatted;
-        values_family.modified_by=req.cookies.role;
+        values_family.modified_by=req.cookies.user;
 
         connection.query("update employee_children set ? WHERE emp_id = ?", [values_family, emp_id],  function(error, rows)
           {
@@ -941,7 +1024,7 @@ router.post('/edit_temp_staff/:emp_id', function(req, res, next) {
        // values_previous_job.creation_date=formatted;
        // values_previous_job.emp_id=emp_id;
         values_previous_job.modification_date=formatted;
-        values_previous_job.modified_by=req.cookies.role;
+        values_previous_job.modified_by=req.cookies.user;
 
         connection.query("update previous_job set ? WHERE emp_id = ?", [values_previous_job, emp_id], function(error, rows)
           {
@@ -954,12 +1037,57 @@ router.post('/edit_temp_staff/:emp_id', function(req, res, next) {
           });
           console.log("3") 
 
+         //  if (err) { throw err; }
+            connection.query('delete from work_experience WHERE emp_id = ?', [emp_id], function (error, rows) {
+              if (error) {
+                return connection.rollback(function() {
+                  throw error;
+                });
+              }
+             }) 
+
+
+         console.log("inser into work experience")
+
+        // work Experience 
+          var workExperienceValues =[];
+          var workExperienceArray = input.workExperienceArray
+          for(var i=0; i<workExperienceArray.length; i++){
+             var obj= []
+              obj.push(emp_id)
+              obj.push(workExperienceArray[i].institution)
+              obj.push(workExperienceArray[i].date_of_joining)
+              obj.push(workExperienceArray[i].date_of_leaving)
+              obj.push(workExperienceArray[i].position)
+              obj.push(workExperienceArray[i].subjects_taught)
+              obj.push(formatted)
+              obj.push(formatted)
+              obj.push(req.cookies.user)
+              workExperienceValues.push(obj)
+          }
+            console.log("VALUES")
+            console.log(workExperienceValues)
+
+
+        var sql = `insert into work_experience(emp_id,institution,date_of_joining,date_of_leaving, 
+        position,subjects_taught,creation_date,modification_date,modified_by) VALUES ?`;
+        connection.query(sql,[workExperienceValues], function(err, result) 
+        {
+           console.log(sql)
+          if(err){
+           return connection.rollback(function() {
+                throw error;
+              });
+
+          }
+        });
+
          //**********insert into Parent Data  ***************************
           var values_qualification = input.qualification;
          // values_qualification.emp_id=log;
           values_qualification.creation_date=formatted;
           //values_qualification.current_session_id=req.cookies.session_id;
-          values_qualification.modified_by=req.cookies.role;
+          values_qualification.modified_by=req.cookies.user;
 
           connection.query("update employee_qualification set ? WHERE emp_id = ?", [values_qualification, emp_id], function(error, rows)
           {

@@ -24,7 +24,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="category_id" onkeyup={addEnter}>
+              <select ref="category_id" id="category_id" onkeyup={addEnter}>
                 <option each={inventoryCategories} value={category_id}>{category_name}
                 </option>
               </select>
@@ -143,13 +143,13 @@ inventorySubcategoryStore.off('read_inventory_subcategory_changed',ReadInventory
       }else{
         self.loading = true
         if(self.title=='Create'){
-          console.log('create')
+         self.category_name = $("#category_id option:selected").text();
         inventorySubcategoryStore.trigger('add_inventory_subcategory', self.refs.department.value,
-           self.refs.category_id.value,self.refs.sub_category.value)
+           self.refs.category_id.value,self.refs.sub_category.value, self.category_name)
         }else if(self.title=='Update'){
-          console.log('update')
+       self.category_name = $("#category_id option:selected").text();
         inventorySubcategoryStore.trigger('edit_inventory_subcategory', self.refs.department.value,
-           self.refs.category_id.value, self.refs.sub_category.value, self.edit_id)
+           self.refs.category_id.value, self.refs.sub_category.value, self.edit_id, self.category_name)
         }
       }
     }
@@ -191,6 +191,7 @@ inventorySubcategoryStore.off('read_inventory_subcategory_changed',ReadInventory
     self.edit = (ev,e) => {
       console.log(ev)
       self.title='Update'
+      document.getElementById("category_id").focus()
       self.refs.category_id.value = ev.category_id
       self.refs.department.value = ev.department
       self.refs.sub_category.value = ev.sub_category

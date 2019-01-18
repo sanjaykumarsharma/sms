@@ -76,7 +76,7 @@
 					<th>Enroll No</th>
 					<th>Roll no</th>
 					<th>Student Name</th>
-					<th class="has-text-right">
+					<th class="has-text-centered">
 	        			<input type="checkbox" id="checkStudent" onclick={selectAll}>
 	      			</th>
 				</tr>
@@ -87,44 +87,45 @@
 					<td>{st.enroll_number}</td>
 					<td>{st.roll_number}</td>
 					<td>{st.name}</td>
-					<td class="has-text-right">
+					<td class="has-text-centered">
 	        			<input type="checkbox" class="id_check_box" checked={st.done} id="{ 'StudentId' + st.student_id }" onclick={selectStudent.bind(this,st)} >
 	      			</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
-	<section class="container is-fluid " show={student_view =='show_student_print_view'}>
-	<div class="level no-print">
-		<div class="level-left"></div>
-		<div class="level-right" style="margin-bottom: 5px;">
-			<button class="button is-warning has-text-weight-bold" onclick={close_print_view} style="margin-right: 5px;">
-				<span class="icon">
-					<span class="fas fa-arrow-left"></span>
-				</span>
-			</button>
-			<button class="button is-primary has-text-weight-bold" onclick="window.print()">
-				<span class="icon">
-					<span class="fas fa-print"></span>
-				</span>
-			</button>
-		</div>
-	</div>
-	<div each={st, i in students_id_card_details} style="font-size: 0.9rem; font-family: 'Open Sans', sans-serif;">
-		<center>
+
+<section class="container is-fluid " show={student_view =='show_student_print_view'}>
+  <div class="level no-print">
+    <div class="level-left"></div>
+    <div class="level-right" style="margin-bottom: 5px;">
+      <button class="button is-warning has-text-weight-bold" onclick={close_print_view} style="margin-right: 5px;">
+        <span class="icon">
+          <span class="fas fa-arrow-left"></span>
+        </span>
+      </button>
+      <button class="button is-primary has-text-weight-bold" onclick="window.print()">
+        <span class="icon">
+          <span class="fas fa-print"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div each={st, i in students_id_card_details} style="font-size: 0.9rem; font-family: 'Open Sans', sans-serif;">
+    <center>
         <div class="card-student-id schoolbg">
             <div class="header-student-id-card">Student Identity Card {st.session_name}</div>
 
-              <div style="padding:2px;"><img style="border:solid Black 1px;height:75px;" src="images/7/studentImages/{st.student_id}.jpg"></div>
+              <div style="padding:2px;"><img style="border:solid Black 1px;height:75px;" src="images/{session_id}/studentImages/{st.student_id}.jpg"></div>
 
               <div class="title-student-id-card is-uppercase">{st.student_name}</div>
 
               <div class="title-student-id-card">{st.standard} - {st.section}</div>
 
               
-              <div padding:"2px;"><span class="barcode">{st.enroll_number}</span></div>
+              <div padding:"2px;"><span class="barcode">*{st.enroll_number}*</span></div>
                  
-                  <table class="detail-student-id-card">
+                  <table class="detail-student-id-card" style="width: 100%;">
                      <tr>
                         <td colSpan="2">Enrolment No.: {st.enroll_number}</td>
                      </tr>
@@ -151,11 +152,133 @@
               </div>
         </center>
         <div class="" style="margin-top:65px;"></div>
-  		<div class="page-break w-full flex-auto" id="id_card_pb_back_16"></div>
-	</div>
+      <div class="page-break w-full flex-auto" id="id_card_pb_back_16"></div>
+  </div>
+</section>
+
+<section class="container is-fluid " show={student_view =='show_student_print_view_duplicate'}>
+  <div class="level no-print">
+    <div class="level-left"></div>
+    <div class="level-right" style="margin-bottom: 5px;">
+      <button class="button is-warning has-text-weight-bold" onclick={close_duplicate_print_view} style="margin-right: 5px;">
+        <span class="icon">
+          <span class="fas fa-arrow-left"></span>
+        </span>
+      </button>
+      <button class="button is-primary has-text-weight-bold" onclick="window.print()">
+        <span class="icon">
+          <span class="fas fa-print"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div each={st, i in students_id_card_details} style="font-size: 0.9rem; font-family: 'Open Sans', sans-serif;">
+    <center>
+        <div class="card-student-id schoolbg">
+            <div class="header-student-id-card">Duplicate Student Identity Card {st.session_name}</div>
+
+              <div style="padding:2px;"><img style="border:solid Black 1px;height:75px;" src="images/{session_id}/studentImages/{st.student_id}.jpg"></div>
+
+              <div class="title-student-id-card is-uppercase">{st.student_name}</div>
+
+              <div class="title-student-id-card">{st.standard} - {st.section}</div>
+
+              
+              <div padding:"2px;"><span class="barcode">*{st.enroll_number}*</span></div>
+                 
+                  <table class="detail-student-id-card" style="width: 100%;">
+                     <tr>
+                        <td colSpan="2">Enrolment No.: {st.enroll_number}</td>
+                     </tr>
+                     <tr>
+                        <td colSpan="2" class="is-uppercase" >Fathers'Name: {st.f_name}</td>
+                     </tr>
+                     <tr>
+                      <td align="baseline">Address:</td>
+                      <td>{st.c_add_l1} {st.c_add_l2} {st.c_city} {st.c_zip}</td>
+                     </tr>
+                     <tr>
+                        <td colSpan="2">Mob. No.: {st.mobile}</td>
+                     </tr>
+                     <tr>
+                        <td colSpan="2">Mode of Transport: {st.transport_mode}</td>
+                     </tr>
+                  </table>
+
+                      <div style="width:50%;float:left" class="lower-student-id-card">Blood Group:<span style="color:#ff0000">{st.blood_group}</span></div>
+                      <div style="width:45%;right: 10px; position:absolute; bottom:10px" class="principal">
+                              <p><img src="images/signatureImages/Principal.jpg" style="height: 24px"></p>
+                              <p>Principal</p>
+                      </div>
+              </div>
+        </center>
+        <div class="" style="margin-top:65px;"></div>
+      <div class="page-break w-full flex-auto" id="id_card_pb_back_16"></div>
+  </div>
 </section>
 
 <section class="container is-fluid " show={student_view =='show_student_escort_card_print_view'}>
+  <div class="level no-print">
+    <div class="level-left"></div>
+    <div class="level-right" style="margin-bottom: 5px;">
+      <button class="button is-warning has-text-weight-bold" onclick={close_print_view} style="margin-right: 5px;">
+        <span class="icon">
+          <span class="fas fa-arrow-left"></span>
+        </span>
+      </button>
+      <button class="button is-primary has-text-weight-bold" onclick="window.print()">
+        <span class="icon">
+          <span class="fas fa-print"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div each={st, i in students_escort_card_details} style="font-size: 0.9rem; font-family: 'Open Sans', sans-serif;">
+    <center>
+        <div class="card-student-escort schoolbg-escort">
+            <div class="header-student-escort-card">Student Escort Card {st.session_name}</div>
+
+              <div style="padding:2px;"><img style="border:solid Black 1px;height:75px;" src="images/{session_id}/studentImages/{st.student_id}.jpg"></div>
+
+              <div class="title-student-id-card is-uppercase">{st.student_name}</div>
+
+              <div class="title-student-id-card">{st.standard} - {st.section}</div>
+
+              
+              <div padding:"2px;"><span class="barcode">*{st.enroll_number}*</span></div>
+                 
+                  <table class="detail-student-id-card" style="">
+                     <tr>
+                        <td colSpan="2">Enrolment No.: {st.enroll_number}</td>
+                     </tr>
+                     <tr>
+                        <td colSpan="2" class="is-uppercase" >Fathers'Name: {st.f_name}</td>
+                     </tr>
+                     <tr>
+                      <td align="baseline">Address:</td>
+                      <td>{st.c_add_l1} {st.c_add_l2} {st.c_city} {st.c_zip}</td>
+                     </tr>
+                     <tr>
+                        <td colSpan="2">Mob. No.: {st.mobile}</td>
+                     </tr>
+                     <tr>
+                        <td colSpan="2">Mode of Transport: {st.transport_mode}</td>
+                     </tr>
+                  </table>
+
+                      <div style="width:50%;margin-right: 63px;" class="lower-student-id-card">Blood Group:<span style="color:#ff0000">{st.blood_group}</span></div>
+                      <div style="width:45%;right: 10px; position:absolute; bottom:10px" class="principal">
+                              <p><img src="images/signatureImages/Principal.jpg" style="height: 24px"></p>
+                              <p>Principal</p>
+                      </div>
+              </div>
+        </center>
+        <div class="" style="margin-top:65px;"></div>
+      <div class="page-break w-full flex-auto" id="id_card_pb_back_16"></div>
+  </div>
+</section>
+
+<section class="container is-fluid" show={student_view =='show_student_escort_card_print_view_duplicate'}>
 	<div class="level no-print">
 		<div class="level-left"></div>
 		<div class="level-right" style="margin-bottom: 5px;">
@@ -173,19 +296,19 @@
 	</div>
 	<div each={st, i in students_escort_card_details} style="font-size: 0.9rem; font-family: 'Open Sans', sans-serif;">
 		<center>
-        <div class="card-student-escort schoolbg-escort">
-            <div class="header-student-escort-card">Student Identity Card {st.session_name}</div>
+        <div class="card-student-escort schoolbg-escort-duplicate">
+            <div class="header-student-escort-card-duplicate">Duplicate Student Escort Card {st.session_name}</div>
 
-              <div style="padding:2px;"><img style="border:solid Black 1px;height:75px;" src="images/7/studentImages/{st.student_id}.jpg"></div>
+              <div style="padding:2px;"><img style="border:solid Black 1px;height:75px;" src="images/{session_id}/studentImages/{st.student_id}.jpg"></div>
 
-              <div class="title-student-escort-card is-uppercase">{st.student_name}</div>
+              <div class="title-student-id-card is-uppercase">{st.student_name}</div>
 
-              <div class="title-student-escort-card">{st.standard} - {st.section}</div>
+              <div class="title-student-id-card">{st.standard} - {st.section}</div>
 
               
-              <div padding:"2px;"><span class="barcode">{st.enroll_number}</span></div>
+              <div padding:"2px;"><span class="barcode">*{st.enroll_number}*</span></div>
                  
-                  <table class="detail-student-escort-card">
+                  <table class="detail-student-id-card" >
                      <tr>
                         <td colSpan="2">Enrolment No.: {st.enroll_number}</td>
                      </tr>
@@ -204,7 +327,7 @@
                      </tr>
                   </table>
 
-                      <div style="width:50%;float:left" class="lower-student-id-card">Blood Group:<span style="color:#ff0000">{st.blood_group}</span></div>
+                      <div style="width:50%; margin-right: 63px;" class="lower-student-id-card">Blood Group:<span style="color:#ff0000">{st.blood_group}</span></div>
                       <div style="width:45%;right: 10px; position:absolute; bottom:10px" class="principal">
                               <p><img src="images/signatureImages/Principal.jpg" style="height: 24px"></p>
                               <p>Principal</p>
@@ -215,6 +338,7 @@
   		<div class="page-break w-full flex-auto" id="id_card_pb_back_16"></div>
 	</div>
 </section>
+
 <script>
 	
 	var self = this
@@ -241,17 +365,13 @@
     	idCardStore.trigger('read_student', self.refs.standard_id.value,self.refs.section_id.value,)
     }
     self.getStudentData = () =>{
-     /* if(self.refs.section_id.value ==""){
-        toastr.error("Please Select Section and try again")
-        return;
-      }*/
+
     	if(self.refs.read_enroll_number.value==""){
     		idCardStore.trigger('read_student', self.refs.standard_id.value,self.refs.section_id.value,0)
     	}else{
     		idCardStore.trigger('read_student',self.refs.standard_id.value,self.refs.section_id.value,
       	    self.refs.read_enroll_number.value)
-    	}
-      
+    	} 
     }
 
     self.readStandard = () => {
@@ -267,7 +387,8 @@
     	self.filteredSections = self.sections.filter(s => {
     		return s.standard_id == self.refs.standard_id.value
     	})
-    	self.update()
+      self.update()
+      self.getStudentData()
     }
 
     self.id_card_print_preview = () => {
@@ -306,11 +427,15 @@
       if(student_id==''){
         toastr.info('Please select at least one student and try again')
       }else{
-      	self.student_view	= 'show_student_print_view'
+      	self.student_view	= 'show_student_print_view_duplicate'
         idCardStore.trigger('read_id_card',student_id)
       }
     }
     self.close_print_view = () => {
+      self.student_view = 'show_student_list_view'
+    }
+
+    self.close_duplicate_print_view = () => {
     	self.student_view	= 'show_student_list_view'
     }
 
@@ -351,7 +476,7 @@
       if(student_id==''){
         toastr.info('Please select at least one student and try again')
       }else{
-      	self.student_view	= 'show_student_escort_card_print_view'
+      	self.student_view	= 'show_student_escort_card_print_view_duplicate'
         idCardStore.trigger('read_escort_card',student_id)
       }
     }
@@ -383,16 +508,18 @@
 
 
     idCardStore.on('read_id_card_changed',ReadIdCardChanged)
-    function ReadIdCardChanged(students_id_card_details){
+    function ReadIdCardChanged(students_id_card_details, session_id){
       console.log(students_id_card_details)
+      self.session_id = session_id
       self.students_id_card_details = []
       self.students_id_card_details = students_id_card_details
       self.update()
     }
 
     idCardStore.on('read_escort_card_changed',ReadEscortCardChanged)
-    function ReadEscortCardChanged(students_escort_card_details){
+    function ReadEscortCardChanged(students_escort_card_details,session_id){
       console.log(students_escort_card_details)
+      self.session_id = session_id
       self.students_escort_card_details = []
       self.students_escort_card_details = students_escort_card_details
       self.update()

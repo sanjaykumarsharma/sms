@@ -77,10 +77,10 @@ function StaffStore() {
 
  //Staff TYpe Report
 
- self.on('read_employee_type_report', function(emp_type_id) {
+ self.on('read_employee_type_report', function() {
     let req = {}
     $.ajax({
-      url:'/staff/read_employee_type_report/'+emp_type_id,
+      url:'/staff/read_employee_type_report',
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -105,10 +105,10 @@ function StaffStore() {
       })
   })
 
- self.on('read_employee_gender_report', function() {
+ self.on('read_employee_gender_report', function(id) {
     let req = {}
     $.ajax({
-      url:'/staff/read_employee_gender_report',
+      url:'/staff/read_employee_gender_report/' + id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -173,7 +173,8 @@ function StaffStore() {
           console.log(data)
           if(data.status == 's'){
             self.staff_details = data.staff_details
-            self.trigger('read_for_edit_staff_changed', data.staff_details)
+            self.workExperienceArray = data.workExperienceArray
+            self.trigger('read_for_edit_staff_changed', data.staff_details,self.workExperienceArray)
           }else if(data.status == 'e'){
             showToast("Student Read Error. Please try again.", data)
           }

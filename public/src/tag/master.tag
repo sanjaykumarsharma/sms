@@ -104,7 +104,7 @@
 		    </a>
 	  	</p>
 	  	<p class="control">
-		    <a class="button {is-active: selected_master == 'event-master'}" href="#/master/inventory-department">Inventory Department</a>
+		    <a class="button {is-active: selected_master == 'inventory-department'}" href="#/master/inventory-department">Inventory Department</a>
 		    </a>
 	  	</p>
 </div>

@@ -462,12 +462,12 @@
 
     marksManagerStore.on('add_marks_settings_changed',AddMarksSettingsChanged)//update changes calls the same method
     function AddMarksSettingsChanged(marksSettings){
+      self.loading = false
       self.refs.maxMarksInput.value=''
       self.refs.minMarksInput.value=''
       self.refs.examDateInput.value=''
       self.refs.detailsInput.value=''
       self.closeMarksSettingsForm()
-      self.loading = false
       self.readMarksSettings()
     }
 

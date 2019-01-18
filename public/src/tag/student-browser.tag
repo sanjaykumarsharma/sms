@@ -2,18 +2,16 @@
 	<header></header>
 	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<!-- <div class="level">
-			<div class="level-left"> -->
-				<h4 class="title has-text-centered" style="color: #ff3860;">Students Details <br> Session: {session_name}</h4>
-		<!-- 	</div>
-				</div> -->
+				<h4 class="title has-text-centered" style="color: #ff3860;">Students Details <span class="printOnly_t"><br> Session: <span style="color:#000">{session_name}</span></span></h4>
 		<div class="box no-print">
 			<div class="columns">
+				<div class="column is-narrow">
+					<label class="label">Standard</label>
+				</div>
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
 							<select ref="standard_id" onchange={getReadSection} onkeyup={addEnter}>
-								<option>Choose Standard</option>
 								<option each={standards} value={standard_id}>{standard}
 	                            </option>
 							</select>
@@ -21,10 +19,12 @@
 					</div>
 				</div>
 				<div class="column is-narrow">
+					<label class="label">Section</label>
+				</div>
+				<div class="column is-narrow">
 					<div class="control">
 			        	<div class="select is-fullwidth">
 							<select ref="section_id" onkeyup={addEnter}>
-								<option>Choose Section</option>
 								<option each={readfilteredSections} value={section_id}>{section}
 	                            </option>
 							</select>
@@ -459,6 +459,7 @@
     	self.readfilteredSections = self.sections.filter(s => {
     		return s.standard_id == self.refs.standard_id.value
     	})
+    	self.update()
     }
      self.addEnter = (e) => {
     	console.log("inside enter")

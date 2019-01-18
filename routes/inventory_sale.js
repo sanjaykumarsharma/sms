@@ -161,7 +161,7 @@ router.get('/:id', function(req, res, next) {
           condition = ` a.sale_category_id = ${category_id}`;
          }
         var user_condition = "";
-       if(req.cookies.role != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
+       if(req.cookies.user != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select sale_id, sale_item_id as item_id, sale_category_id as category_id, sale_sub_category_id as sub_category_id,
                 date_format(sale_date,'%d/%m/%Y') as sa_date, date_format(sale_date,'%Y-%m-%d') as sale_date, sale_date as s_date,
@@ -223,8 +223,8 @@ router.post('/add', function(req, res, next) {
           sale_unit : input.unit_id,
           sale_rate : input.rate,
           creation_date : formatted,
-          created_by : req.cookies.role,
-          modified_by : req.cookies.role,
+          created_by : req.cookies.user,
+          modified_by : req.cookies.user,
           modification_date : formatted,
         };
         
@@ -269,7 +269,7 @@ router.post('/edit/:id', function(req, res, next) {
           sale_quantity : input.sale_quantity,
           sale_unit : input.unit_id,
           sale_rate : input.rate,
-          modified_by : req.cookies.role,
+          modified_by : req.cookies.user,
           modification_date : formatted,
         };
         

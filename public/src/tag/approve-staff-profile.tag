@@ -1,11 +1,11 @@
 <approve-staff-profile>
 	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" show={staff_view =='show_staff'}>
-		<div class="level">
+				<h2 class="title has-text-centered" style="color: #ff3860;">Approve Staff</h2>
+		<!-- <div class="level">
 			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Staff</h2>
 			</div>
-		</div>
+		</div> -->
 		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
@@ -62,7 +62,7 @@
 	        						<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
 	        	    			</div> -->
 				<div class="column">
-					<button class="button is-danger has-text-weight-bold"
+					<button class="button  is-danger has-text-weight-bold"
 					onclick={getStaffData}>GO
 					</button>
 				</div>
@@ -90,7 +90,7 @@
 					<td>{st.mobile}</td>
 					<td>{st.email}</td>
 					<td>{st.phone_o}</td>
-					<td class="has-text-right">
+					<td class="has-text-right no-print">
 		            <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>	
 		              <span><a class="button is-small is-rounded has-text-success" onclick={edit.bind(this, st.emp_id)}>Approve Profile</a></span>
 		              <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -394,10 +394,10 @@
 
   		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addFamilyInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addFamilyInformation}>
 			    	Next >>
 				</button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>    
 		    </div>
@@ -612,13 +612,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeFamilyInformation}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closeFamilyInformation}>
 			    	Previous
 			    </button>
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addQualificationInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addQualificationInformation}>
 			    	Next >>
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>   
 		    </div>
@@ -848,13 +848,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeQualificationInformation}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closeQualificationInformation}>
 			    	Previous
 			    </button>
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addProfessionalCourseInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addProfessionalCourseInformation}>
 			    	Next >>
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>    
 		    </div>
@@ -1067,13 +1067,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeProfessionalCourseInformation}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closeProfessionalCourseInformation}>
 			    	Previous
 			    </button>
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addProfessionalMasterCourseInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addProfessionalMasterCourseInformation}>
 			    	Next >>
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>    
 		    </div>
@@ -1333,13 +1333,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeProfessionalMasterCourseInformation}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closeProfessionalMasterCourseInformation}>
 			    	Previous
 			    </button>
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addExtraActivityInformation}>
+			    <button class="button  is-small is-info has-text-weight-bold adjusted-top" onclick={addExtraActivityInformation}>
 			    	Next >>
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>     
 		    </div>
@@ -1402,15 +1402,68 @@
 	      	</div>
 		</div>
 
+	    <!-- Work Experience-->
+       <div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Experience</h3>
+		    </div>
+		</div>
+		<div each={st, i in workExperienceArray} style="margin-bottom:20px;margin-top:20px">
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="work_instituition">Instituition </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="work_instituition" id="work_instituition{i}" value={st.institution} type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">DOJ</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input date is-small" ref="work_doj" id="work_doj{i}" type="text"  value={st.date_of_joining}>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">DOL</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input date is-small"  ref="work_dol" id="work_dol{i}" type="text" value={st.date_of_leaving}>
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Position</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small"  ref="work_position" id="work_position{i}" type="text" value={st.position}>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Subjects</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small"  ref="work_subject" id="work_subject{i}" type="text" value={st.subjects_taught}>
+	      	</div>
+	
+			 <div class="column is-2">
+			 <button class="button is-primary is-rounded ml5 is-small" onclick={add_more_work_exp}>
+					<span class="icon"><span class="fas fa-plus"></span></span>
+			 </button>
+			   <button class="button is-info is-rounded ml5 is-small" onclick={remove.bind(this, i)}>
+					<span class="icon"><span class="fas fa-minus"></span></span>
+			 </button>
+			</div>
+			 </div>
+	    </div>
+
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeExtraActivityInformation}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closeExtraActivityInformation}>
 			    	Previous
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={addPrevoiusJob}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={addPrevoiusJob}>
 			     Next
 			    </button>    
-			   <button class="button is-info has-text-weight-bold adjusted-top" onclick={close}>
+			   <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={close}>
 			   Cancel
 			   </button>     
 		    </div>
@@ -1631,13 +1684,13 @@
 
 		<div class="columns mt30">
 		    <div class="column is-full">
-			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closePreviousJob}>
+			    <button class="button is-small is-primary has-text-weight-bold adjusted-top" onclick={closePreviousJob}>
 			    	<< Previous
 			    </button>
-			    <button class="button is-info has-text-weight-bold adjusted-top" onclick={addInformation}>
+			    <button class="button is-small is-info has-text-weight-bold adjusted-top" onclick={addInformation}>
 			    	Submit
 			    </button>
-			    <button class="button is-danger has-text-weight-bold adjusted-top" onclick={close}>
+			    <button class="button is-small is-danger has-text-weight-bold adjusted-top" onclick={close}>
 			    	Cancel
 			    </button>      
 		    </div>
@@ -1673,8 +1726,8 @@
           </div>
       </section>
       <footer class="modal-card-foot">
-        <button class="button is-danger" onclick={updateEmployeeStatus} >{title}</button>
-        <button class="button" id="item-modal-close" onclick={closeStatusUpdateModal}>Cancel</button>
+        <button class="button is-danger is-small" onclick={updateEmployeeStatus} >{title}</button>
+        <button class="button is-small" id="item-modal-close" onclick={closeStatusUpdateModal}>Cancel</button>
       </footer>
     </div>
   </div>
@@ -2162,8 +2215,8 @@
 			</tbody>
 		</table>
 		<div class="level-right">
-			<button class="button is-danger" onclick="{fastUpdateStaff}">Update</button>
-			<button class="button" onclick="{backToStaff}">Cancel</button>
+			<button class="button is-small is-danger" onclick="{fastUpdateStaff}">Update</button>
+			<button class="button is-small" onclick="{backToStaff}">Cancel</button>
 		</div>
 	</section>
 <script>
@@ -2186,6 +2239,12 @@
     	self.readSubject()
     	self.readEmploymentStatus()
     	self.staff_name = true	
+
+    	  self.workExperienceArray =[]
+         let obj = {}
+             obj.work_institution=''
+
+        self.workExperienceArray.push(obj)
         self.update()
       //  console.log(self.workArray);
         flatpickr(".date", {
@@ -2214,6 +2273,39 @@
       staffStore.off('reset_staff_password_changed',ResetStaffPasswordChanged)
       staffStore.off('update_staff_fast_edit_changed',readStaffFastEditChanged)
     })
+
+
+     self.add_more_work_exp=()=>{
+	    let obj = {}
+        obj.work_institution=''
+        self.workExperienceArray.push(obj)
+        self.update()
+          let work_doj_id='#work_doj'+ (self.workExperienceArray.length-1).toString()
+          let work_dol_id='#work_dol'+ (self.workExperienceArray.length-1).toString()
+	        
+		 console.log(work_dol_id)
+	  	 setTimeout(function(){
+		  
+            // self.update()
+
+	        flatpickr(work_doj_id, {
+		    	allowInput: true,
+	        	dateFormat: "d/m/Y",
+	  		})
+	       
+	        flatpickr(work_dol_id, {
+		    	allowInput: true,
+	        	dateFormat: "d/m/Y",
+		  	})
+
+		  	// self.update()
+		}, 1000);
+    }
+
+    self.remove = (index,e) => {
+      console.log(index)
+       self.workExperienceArray.splice(index,1);
+    }  
 
      self.addEnter = (e) => {
       if(e.which == 13){
@@ -2374,7 +2466,7 @@
     }
 
     self.add_new_staff = () =>{
-    	if(self.title=='Add' || self.title=='Update'){
+    	if(self.title=='Add' || self.title=='Approve'){
     		self.staff_view='add_staff'
     	}else{
     	  self.staff_view='staff_profile'
@@ -2642,6 +2734,25 @@
 
     	/*Student Information */
         var staff={};
+
+
+        self.workExperienceArray.map((x, index) => {
+          let work_institution_id='#work_instituition'+index
+          let work_doj_id='#work_doj'+index
+          let work_dol_id='#work_dol'+index
+          let work_position_id='#work_position'+index
+          let work_subject_id='#work_subject'+index
+
+           x.institution = $(work_institution_id).val()
+           x.date_of_joining = convertDate($(work_doj_id).val())
+           x.date_of_leaving = convertDate($(work_dol_id).val())
+           x.position = $(work_position_id).val()
+           x.subjects_taught = $(work_subject_id).val()
+        });
+
+        var work_experience={}
+      //  work_experience['workExperienceArray']=  self.workExperienceArray
+        obj['workExperienceArray']=self.workExperienceArray
         
         
     	staff['title']=self.refs.title.value
@@ -2702,7 +2813,7 @@
     	staff_login['password']=self.refs.dob.value
     	if(self.title=='Add'){
     		obj['staff_login'] = staff_login
-    	}else if(self.title=='Update'){
+    	}else if(self.title=='Approve'){
     		obj['staff_login']=""
     	}
 
@@ -2884,7 +2995,7 @@
 
     	if(self.title=='Add'){
           staffStore.trigger('add_staff', obj)
-        }else if(self.title=='Update'){
+        }else if(self.title=='Approve'){
         	self.editType='normalEdit'
           staffStore.trigger('edit_temp_staff', obj,self.emp_id)
         }
@@ -2899,7 +3010,7 @@
   		})
       staffStore.trigger('read_for_edit_temp_staff',self.emp_id)
       document.getElementById('pp_box').style.backgroundImage = 'url(/images/empImages/'+c+'.jpg)';
-      self.title='Update'
+      self.title='Approve'
       self.add_new_staff()
       
     }
@@ -2913,6 +3024,7 @@
     }
 
     self.clearForm = () => {
+        self.workExperienceArray=[{}]
     	self.refs.title.value=''
     	self.refs.first_name.value=''
     	self.refs.middle_name.value=''
@@ -3155,9 +3267,15 @@
     }
 
     staffStore.on('read_for_edit_staff_changed',ReadForEditStaffChanged)
-    function ReadForEditStaffChanged(staff_details){
+    function ReadForEditStaffChanged(staff_details,workExperienceArray){
      	self.staff_details=staff_details
-     	if(self.title=='Update'){
+     	self.workExperienceArray =[]
+         let obj = {}
+             obj.work_institution=''
+
+        self.workExperienceArray.push(obj)
+     	self.workExperienceArray=workExperienceArray
+     	if(self.title=='Approve'){
          self.refs.title.value=staff_details[0].title
     	self.refs.first_name.value=staff_details[0].first_name
     	self.refs.middle_name.value=staff_details[0].middle_name
@@ -3322,6 +3440,11 @@
     	self.refs.details_publication.value=staff_details[0].details_publication
     	self.refs.details_curricular_activities.value=staff_details[0].details_curricular_activities
     	self.refs.details_sport.value=staff_details[0].details_sport
+    	self.update()
+    	 flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
      }else{
      	console.log("inside else")
      	console.log(staff_details[0].first_name)
@@ -3490,6 +3613,11 @@
     	self.details_curricular_activities=staff_details[0].details_curricular_activities
     	self.details_sport=staff_details[0].details_sport
     	self.update()
+    		self.update()
+    	 flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
      }
 
     }

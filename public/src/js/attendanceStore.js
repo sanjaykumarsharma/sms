@@ -21,7 +21,10 @@ function AttendanceStore() {
           console.log(data)
           if(data.status == 's'){
              self.attendanceData=data.attendanceData
-            toastr.success("Successfully")
+             if(self.attendanceData=='No Data Found'){
+               toastr.info("No Data Found")
+             }
+              // toastr.success("Successfully")
             self.trigger('read_attendance_data_changed', self.attendanceData)
           }else if(data.status == 'e'){
             showToast("Error . Please try again.", data)
@@ -51,7 +54,7 @@ function AttendanceStore() {
           console.log(data)
           if(data.status == 's'){
             // self.attendanceData=data.attendanceData
-            toastr.success("Successfully")
+            toastr.success("Attendance Taken Successfully")
             self.trigger('add_attendance_data_changed')
           }else if(data.status == 'e'){
             showToast("Error . Please try again.", data)
@@ -93,6 +96,66 @@ function AttendanceStore() {
       })
   })
 
+
+  // read Holiday list
+
+ self.on('read_holiday_list', function() {
+    let req = {}
+    $.ajax({
+      url:'/attendance/read_holiday_list',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            console.log("inside holiday list")
+            self.holidayLists = data.holidayLists
+            self.trigger('read_holiday_list_changed', self.holidayLists)
+          }else if(data.status == 'e'){
+            showToast("holiday list Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+
+ //delete_attendance
+
+
+  self.on('delete_attendance', function(studentData,start_date){
+     let req = {}
+     req.start_date=start_date
+     req.studentData=studentData
+     console.log("inside delete attendance_data store")
+     console.log(req)
+     $.ajax({
+      url:'/attendance/delete_attendance',
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully Deleted")
+            self.trigger('delete_attendance_data_changed')
+          }else if(data.status == 'e'){
+            showToast("Error . Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data.err)
+        }
+      })
+  })
+
+
+  
 
   
 

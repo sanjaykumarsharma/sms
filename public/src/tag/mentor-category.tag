@@ -1,5 +1,5 @@
 <mentor-category>
-  <header></header>
+  <print-header></print-header>
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
   <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Mentor Category Management</h2>

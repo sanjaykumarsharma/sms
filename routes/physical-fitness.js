@@ -40,7 +40,7 @@ router.get('/students/:section_id/:exam_term', function(req, res, next) {
   req.getConnection(function(err,connection){
        
      var data = {}
-     var qry = `select a.student_id, concat(standard,'-',section) as standard, 
+     var qry = `select a.student_id, concat(standard,'-',section) as standard,b.standard_id,
                 concat(first_name,' ',middle_name, ' ' ,last_name)as student_name,
                 enroll_number,if((exam_term = 'First' || exam_term = 'Final'), 'Y', 'N') as exam_term
                 from student_master a
@@ -75,20 +75,26 @@ router.get('/students/:section_id/:exam_term', function(req, res, next) {
 
 // read details
 router.get('/details/:student_id/:exam_term', function(req, res, next) {
+  var student_id = req.params.student_id;
+  var exam_term = req.params.exam_term;
+  var session_id = req.cookies.session_id
 
   req.getConnection(function(err,connection){
        
      var data = {}
-     var qry = `select id, initiative_first, initiative_second, initiative_third, initiative_fourth,
-                interest_first, interest_second, interest_third, interest_fourth,
-                use_time_first, use_time_second, use_time_third, use_time_fourth,
-                work_habit_first, work_habit_second, work_habit_third, work_habit_fourth,
-                participation_first, participation_second, participation_third, participation_fourth,
-                responsibility_first, responsibility_second, responsibility_third, responsibility_fourth
-                from  student_maturity_development
-                where student_id =${req.params.student_id}
-                and exam_term ='${req.params.exam_term}'
-                and session_id=${req.cookies.session_id}`;
+     var qry = `select  first_name,middle_name, last_name,
+                concat(first_name,' ',middle_name, ' ' ,last_name)as student_name,
+                enroll_number,
+                first_skill, first_description, second_skill, second_description,
+                third_skill, third_description, fourth_skill, fourth_description,
+                fifth_skill, fifth_description
+                from student_fitness a
+                join student_master b on (a.student_id = b.student_id and b.
+                current_session_id = ${session_id})
+                where a.student_id in (${student_id})
+                and exam_term =  '${exam_term}' 
+                and session_id = ${session_id}
+                order by student_name`;
 
          console.log(qry)
      
@@ -120,18 +126,18 @@ router.post('/add', function(req, res, next) {
 
         var today = new Date();
         var data = {}
-        var values = input;
-        values['creation_date']= today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-        values['modified_by']= req.cookies.user;
-        values['session_id']= req.cookies.session_id;
+        var values_fitness = input;
+        values_fitness['creation_date']= today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        values_fitness['modified_by']= req.cookies.user;
+        values_fitness['session_id']= req.cookies.session_id;
 
-        var qry = `insert into student_maturity_development set ?`;
+        var qry = `insert into student_fitness set ?`;
         
-        connection.query(qry,values, function(err, rows)
+        connection.query(qry,values_fitness, function(err, rows)
         {
   
           if(err){
-           console.log("Error inserting student_maturity_development : ",err );
+           console.log("Error inserting student_fitness : ",err );
            data.status = 'e';
            data.error = err
            data.messaage = err.sqlMessage
@@ -185,7 +191,7 @@ router.get('/delete/:student_id/:exam_term', function(req, res, next) {
 
   req.getConnection(function(err,connection){
         var data = {}
-        var qry = `delete from student_maturity_development
+        var qry = `delete from student_fitness
                    where student_id =${req.params.student_id}
                    and exam_term ='${req.params.exam_term}'
                    and session_id =${req.cookies.session_id}`;
@@ -194,7 +200,7 @@ router.get('/delete/:student_id/:exam_term', function(req, res, next) {
         {
   
           if(err){
-           console.log("Error deleting maturity development : %s ",err );
+           console.log("Error deleting student_fitness : %s ",err );
            data.status = 'e';
            data.error = err
            data.messaage = err.sqlMessage

@@ -83,8 +83,7 @@
       self.role = getCookie('role')
       flatpickr(".date", {
          allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+         dateFormat: "d/m/Y",
        })
        self.readInventoryCategory()
      //  self.readInventoryItem()
@@ -99,7 +98,13 @@
 
     self.getItemWiseIssuedGoodsReport = () => {
       self.loading=true
-       inventoryReportStore.trigger('read_inventory_item_wise_issued_goods_report',self.refs.category_id.value,self.refs.item_id.value,self.refs.start_date.value,self.refs.end_date.value)
+
+     /*  self.s_date=convertDate(self.refs.start_date.value)
+       self.e_date=convertDate(self.refs.end_date.value)*/
+       self.start_date=convertDate(self.refs.start_date.value)
+       self.end_date=convertDate(self.refs.end_date.value)
+
+       inventoryReportStore.trigger('read_inventory_item_wise_issued_goods_report',self.refs.category_id.value,self.refs.item_id.value,self.start_date,self.end_date)
     }
     self.readInventoryCategory = () => {
        inventoryCategoryStore.trigger('read_inventory_category')

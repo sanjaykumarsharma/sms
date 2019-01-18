@@ -1,5 +1,5 @@
 <discipline-setting>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	    <p class="control">
 		    <a class="button {is-active: selected_master == 'discipline-category'}" href="#/discipline-setting/discipline-category">
 		      <span>Category</span>

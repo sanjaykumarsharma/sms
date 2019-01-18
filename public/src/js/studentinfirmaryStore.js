@@ -298,10 +298,10 @@ self.on('read_case_wise_report', function(obj) {
           if(data.status == 's'){
             console.log('add case  after')
             let obj = {}
+                 obj.infirmary_id=data.infirmary_id
                  obj.enroll_number=enroll_number
                  obj.category_id=category_id
                  obj.case_id=case_id
-                 obj.infirmary_id=infirmary_id
                  obj.treatment_date=treatment_date
                  obj.time_in=time_in
                  obj.time_out=time_out

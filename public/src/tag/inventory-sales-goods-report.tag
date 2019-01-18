@@ -68,8 +68,7 @@
       self.role = getCookie('role')
       flatpickr(".date", {
          allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+         dateFormat: "d/m/Y",
        })
       
        self.update()
@@ -82,8 +81,11 @@
     self.getSaleGoodsReport = () => {
       self.start_date=self.refs.start_date.value,
       self.end_date=self.refs.end_date.value
+
+      self.s_date=convertDate(self.refs.start_date.value)
+      self.e_date=convertDate(self.refs.end_date.value)
       self.loading=true
-       inventoryReportStore.trigger('read_inventory_sale_goods_report',self.refs.start_date.value,self.refs.end_date.value)
+       inventoryReportStore.trigger('read_inventory_sale_goods_report', self.s_date,self.e_date)
     }
     
     

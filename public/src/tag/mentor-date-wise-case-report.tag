@@ -1,8 +1,8 @@
 <mentor-date-wise-case-report>
-	<header></header>
+	<print-header></print-header>
 	<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-    <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Student Wise Mentor Case Report</h2>
+    <h2 class="title has-text-centered is-size-6" style="color: #ff3860;">Student Wise Mentor Case Report</h2>
 	
 	<div class="box no-print">
 		<div class="columns">

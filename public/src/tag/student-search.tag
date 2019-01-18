@@ -2,11 +2,7 @@
 	<header></header>
 	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-				<h2 class="title has-text-centered" style="color: #ff3860;">Searched Student's Details</h2>
-			</div>
-		</div>
+			<h2 class="title has-text-centered" style="color: #ff3860;">Searched Student's Details</h2>
 		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
@@ -23,7 +19,7 @@
 				<button class="button is-danger has-text-weight-bold"
 				onclick={searchByField}>Go
 				</button>
-				<button class="button is-danger has-text-weight-bold"
+				<button class="button is-info has-text-weight-bold"
 				onclick={showSearchBox}><b>>></b>
 				</button>
 
@@ -42,48 +38,34 @@
 		</div>
 		<div class="box no-print" show={search_view =='more_search_box'}>
 			<div class="columns">
-				<div class="column is-narrow">
-					<div class="control">
-			         <label class="label">Name</label>
-			       </div>
-			    </div> 
-				<div class="column is-narrow">
-					<div class="control">
-						<input type="text" name="" ref='student_name' class="input" onkeyup={addEnter}>
-					</div>
-				</div>
-				<div class="column is-narrow">
-					<div class="control">
-			         <label class="label">Reg.Number</label>
-			       </div>
-			    </div> 
-				<div class="column is-narrow">
-					<div class="control">
-						<input type="text" name="" ref='reg_number' class="input" onkeyup={addEnter}>
-					</div>
-				</div>
+			     <div class="column is-2">
+					<label class="label is-small" for="student_name"> Name</label>
+		      	</div>
+		      	<div class="column is-2">
+					<input class="input is-small" id="student_name" ref="student_name" type="text" onkeyup={addEnter}>
+		      	</div>
+		      	<div class="column is-2">
+					<label class="label is-small" for="middle_name">Reg.Number</label>
+		      	</div>
+		      	<div class="column is-2">
+                   <input type="text" name="" ref='reg_number' class="input is-small" onkeyup={addEnter}>
+		      	</div>
 			</div>
 			<div class="columns">
-				<div class="column is-narrow">
-					<div class="control">
-			         <label class="label">F Name</label>
-			       </div>
-			    </div> 
-				<div class="column is-narrow">
-					<div class="control">
-						<input type="text" name="" ref='f_name' class="input" onkeyup={addEnter}>
-					</div>
-				</div>
-				<div class="column is-narrow">
-					<div class="control">
-			         <label class="label">M Name</label>
-			       </div>
-			    </div> 
-				<div class="column is-narrow">
-					<div class="control">
-						<input type="text" name="" ref='m_name' class="input" onkeyup={addEnter}>
-					</div>
-				</div>
+				
+				 <div class="column is-2">
+						<label class="label is-small" for="f_name"> Fathes's Name</label>
+			      	</div>
+			      	<div class="column is-2">
+						<input type="text" name="" ref='f_name' class="input is-small" onkeyup={addEnter}>
+			      	</div>
+			      	<div class="column is-2">
+						<label class="label is-small" for="mother_name">Mother's Name</label>
+			      	</div>
+			      	<div class="column is-2">
+	                  	<input type="text" name="" ref='m_name' class="input is-small" onkeyup={addEnter}>
+			      	</div>
+
 				<div class="column">
 				<button class="button is-danger has-text-weight-bold"
 				onclick={searchByField}>Search
@@ -91,7 +73,7 @@
 			   </div>
 			</div>
 		</div>
-	<!-- 	<div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;"> -->
+		<div style="height:450px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;">
 		    <table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 			<thead>
 				<tr>
@@ -292,7 +274,7 @@
 				</tr>
 			</tbody>
 		   </table>
-	  <!--   </div> -->
+	   </div>
 	</section>
 	 <!-- Open Exam Scheme Modal Start -->
     <section>	
@@ -1138,10 +1120,15 @@
       if(self.search_by=='one'){
       	self.search_view='search_box'
       	self.search_by='more';
-      	//self.update()
+      	self.refs.student_name.value='';
+      	self.refs.m_name.value='';
+      	self.refs.reg_number.value='';
+      	self.refs.f_name.value='';
       }else{
+      	self.refs.roll_no.value='';
       	self.search_by='one';
       	self.search_view='more_search_box'
+      
        // self.update()
       }
     } 

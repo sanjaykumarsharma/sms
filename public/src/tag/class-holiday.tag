@@ -12,7 +12,7 @@
         <span class="fas fa-plus"></span>
       </span>
       </button>
-      <button class="button is-warning is-rounded is-pulled-right" onclick={readClassHoliday} style="margin-right:5px;margin-left:5px">
+      <button class="button is-info is-rounded is-pulled-right" onclick={readClassHoliday} style="margin-right:5px;margin-left:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
@@ -31,7 +31,7 @@
         <tr>
           <th>#</th>
           <th>Event</th>
-          <th>CLass</th>
+          <th>Class</th>
           <th>Date From</th>
           <th>Date To</th>
           <th>Holiday</th>

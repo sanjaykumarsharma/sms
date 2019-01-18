@@ -1,11 +1,8 @@
 <birthday>
 	<section class=" is-fluid">
-		<div class="level">
-			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Birth Day</h2>
-			</div>
-		</div>
-		<div class="box" style="font-size:13px ">
+		<h2 class="title has-text-centered" style="color: #ff3860;">Birthday Details</h2>
+	
+		<div class="box no-print" style="font-size:13px ">
 			<div class="columns">
 				<div class="column is-narrow">
 					<div class="control">
@@ -49,11 +46,14 @@
 		              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text">
 		          </div>
 		        </div>
-		        <div class="column is-narrow">
+		        <div class="column">
 					<div class="control">
 						<button class="button is-danger has-text-weight-bold" onclick={dateRangeBirthDay}>Go</button>
 						<input type="checkbox" id="checkTable" checked={e.done}
 				         onclick={viewTable}  style="margin-top: 12px;"> Table
+				         <button class="button is-small is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+			          <span class="icon"> <i class="fas fa-print"></i></span>
+			        </button>
 					</div>
 				</div>
 			</div>
@@ -86,7 +86,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<div class="columns is-multiline">
+		<div class="columns is-multiline no-print">
 			<div class="column is-narrow " each={st, i in birthDayData} show={report_view =='show_card'} style="width:150px;width:200px">
 			    <div class="control">
 					<div class="card">

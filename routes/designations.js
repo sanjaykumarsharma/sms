@@ -32,12 +32,17 @@ router.get('/', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
-
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
   req.getConnection(function(err,connection){
         var data = {}
 
         var values = {
             designation    : input.designation,
+            creation_date    : formatted,
+            modification_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("INSERT INTO designation_master set ? ",values, function(err, rows)
@@ -65,12 +70,16 @@ router.post('/edit/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
   var id = input.id;
-
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
   req.getConnection(function(err,connection){
         var data = {}
 
         var values = {
             designation    : input.designation,
+             modification_date    : formatted,
+             modified_by    : req.cookies.user,
         };
         
         var query = connection.query("UPDATE designation_master set ? WHERE designation_id = ?",[values,id], function(err, rows)

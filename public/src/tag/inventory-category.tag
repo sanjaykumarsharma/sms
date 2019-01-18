@@ -23,7 +23,7 @@
 				</div>
 				<div class="column is-narrow">
 					<div class="control">
-						<input class=" input" ref="category_name" type="text" onkeyup={addEnter}>
+						<input class=" input" ref="category_name" id="category_name" type="text" onkeyup={addEnter}>
 					</div>
 				</div>
 				<div class="column">
@@ -152,6 +152,7 @@
     self.edit = (ev,e) => {
       console.log(ev)
       self.title='Update'
+       document.getElementById("category_name").focus()
       self.refs.category_name.value = ev.category_name
       self.refs.department.value = ev.department
       self.edit_id = ev.category_id

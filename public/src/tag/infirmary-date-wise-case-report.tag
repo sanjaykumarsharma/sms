@@ -52,11 +52,11 @@
                 <span class="fas fa-sync-alt"></span>
               </span>
           </button>
-          <button class="button is-info is-rounded is-pulled-right" onclick={add_student_infirmary}>
+        <!--   <button class="button is-info is-rounded is-pulled-right" onclick={add_student_infirmary}>
               <span class="icon">
                 <span class="fas fa-plus"></span>
               </span>
-          </button>
+          </button> -->
 
          
         </div>
@@ -123,9 +123,8 @@
        // self.readStudentInfirmary()
         console.log("inside student infirmary")
         flatpickr(".date", {
-         allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+          allowInput: true,
+          dateFormat: "d/m/Y",
        })
         self.update()
      })
@@ -136,12 +135,15 @@
 
      //read courses
      self.readStudentInfirmaryDateWiseCaseReport = () => {
-          self.loading=true
-           self.infirmary_student_view='show_student_table'
-           self.category_name = $("#category_id option:selected").text();
+            self.loading=true
+            self.infirmary_student_view='show_student_table'
+            self.category_name = $("#category_id option:selected").text();
             self.start_date=self.refs.start_date.value,
             self.end_date=self.refs.end_date.value
-           studentinfirmaryStore.trigger('read_student_date_wise_case_report', self.refs.read_category_id.value,self.refs.start_date.value,self.refs.end_date.value,)
+            self.s_date=convertDate(self.refs.start_date.value)  
+            self.e_date=convertDate(self.refs.end_date.value)  
+
+           studentinfirmaryStore.trigger('read_student_date_wise_case_report', self.refs.read_category_id.value, self.s_date,self.e_date)
            //studentStore.trigger('read_students', obj)
      }
       self.readInfirmaryCategory = () => {

@@ -354,11 +354,30 @@ router.get('/read_student/:read_standard_id/:read_section_id/:read_enroll_number
   var section_id = req.params.read_section_id;
   var enroll_number = req.params.read_enroll_number;
   var session_id = req.cookies.session_id
+  var Role=req.cookies.role;
+  var admission_session_id = 8;
   console.log("hiiii");
 
   req.getConnection(function(err,connection){
        
     var data = {}
+    if(Role!="ADMIN"){
+      var qry=`select a.student_id, b.standard, c.standard_id, c.section_id, c.section, title, 
+               first_name,middle_name, last_name,
+               concat(first_name,' ',middle_name, ' ' ,last_name)as name,
+               enroll_number,roll_number, reg_number, mobile, f_title, f_name,house_name as house
+               from student_master a
+               JOIN student_current_standing d on (a.student_id = d.student_id  and a.current_session_id = ${admission_session_id})
+               JOIN section_master c  on d.section_id = c.section_id
+               JOIN standard_master b on c.standard_id = b.standard_id
+               JOIN parent_master f  on (a.student_id = f.student_id  and f.current_session_id = ${admission_session_id})
+               LEFT JOIN house_master g  on  d.house_id=g.house_id
+               where a.enroll_number in (${enroll_number})
+               and a.withdraw='N'
+               and d.session_id= ${admission_session_id}
+               order by first_name,middle_name,last_name `;
+    }else{
+
     if(enroll_number!="0"){
       var qry =` select a.student_id, b.standard, c.standard_id, c.section_id, c.section, title, first_name,middle_name, last_name,
                  concat(first_name,' ',middle_name, ' ' ,last_name)as name,
@@ -388,6 +407,7 @@ router.get('/read_student/:read_standard_id/:read_section_id/:read_enroll_number
                  and d.session_id= ${session_id}
                  order by first_name,middle_name,last_name,enroll_number `;
     }
+  }
     connection.query(qry,function(err,result)     {
             
       if(err){
@@ -574,7 +594,7 @@ router.post('/add_student', function(req, res, next) {
       var values_students = input.student
       values_students.creation_date=formatted;
       values_students.current_session_id=req.cookies.session_id;
-      values_students.modified_by=req.cookies.role;
+      values_students.modified_by=req.cookies.user;
 
 
     req.getConnection(function(err,connection){
@@ -604,7 +624,7 @@ router.post('/add_student', function(req, res, next) {
         values_student_current_standing.student_id=log;
         values_student_current_standing.creation_date=formatted;
         values_student_current_standing.session_id=req.cookies.session_id;
-        values_student_current_standing.modified_by=req.cookies.role;
+        values_student_current_standing.modified_by=req.cookies.user;
 
         connection.query("INSERT INTO student_current_standing set ? ", values_student_current_standing, function(error, rows)
           {
@@ -620,7 +640,7 @@ router.post('/add_student', function(req, res, next) {
         var values_student_login = input.student_login;
         values_student_login.creation_date=formatted;
         values_student_login.modification_date=formatted;
-        values_student_login.modified_by=req.cookies.role;
+        values_student_login.modified_by=req.cookies.user;
 
         connection.query("INSERT INTO student_login set ? ", values_student_login, function(error, rows)
           {
@@ -637,7 +657,7 @@ router.post('/add_student', function(req, res, next) {
           values_parent.student_id=log;
           values_parent.creation_date=formatted;
           values_parent.current_session_id=req.cookies.session_id;
-          values_parent.modified_by=req.cookies.role;
+          values_parent.modified_by=req.cookies.user;
 
           connection.query("INSERT INTO parent_master set ? ", values_parent, function(error, rows)
           {
@@ -687,7 +707,7 @@ router.post('/edit_student/:student_id', function(req, res, next) {
       var values_students = input.student
       //values_students.modification_date=formatted;
       values_students.current_session_id=req.cookies.session_id;
-      values_students.modified_by=req.cookies.role;
+      values_students.modified_by=req.cookies.user;
 
 
     req.getConnection(function(err,connection){
@@ -705,7 +725,7 @@ router.post('/edit_student/:student_id', function(req, res, next) {
         var values_student_current_standing = input.student_current_standing;
         //values_student_current_standing.modification_date=formatted;
         values_student_current_standing.session_id=req.cookies.session_id;
-        values_student_current_standing.modified_by=req.cookies.role;
+        values_student_current_standing.modified_by=req.cookies.user;
 
         connection.query("UPDATE student_current_standing set ? WHERE student_id = ? and session_id = ?", [values_student_current_standing, student_id,req.cookies.session_id], function(error, rows)
           {
@@ -721,7 +741,7 @@ router.post('/edit_student/:student_id', function(req, res, next) {
           var values_parent = input.parent;
           //values_parent.modification_date=formatted;
           values_parent.current_session_id=req.cookies.session_id;
-          values_parent.modified_by=req.cookies.role;
+          values_parent.modified_by=req.cookies.user;
 
           connection.query("UPDATE parent_master set ? WHERE student_id = ? and current_session_id = ?", [values_parent,student_id,req.cookies.session_id], function(error, rows)
           {
@@ -777,7 +797,7 @@ router.post('/create_student_withdraw/:student_id', function(req, res, next) {
 
   var student_id = req.params.student_id;
   var session_id = req.cookies.session_id;
-  var modified_by = req.cookies.role;
+  var modified_by = req.cookies.user;
   var input = JSON.parse(JSON.stringify(req.body));
   var now = new Date();
   var jsonDate = now.toJSON();

@@ -2,29 +2,36 @@
    <header></header>
   <loading-bar if={loading}></loading-bar>
 <section class="is-fluid" show={event_view =='show_event'}>
-  <div class="level no-print">
+    <div class="" style="margin-bottom:10px">
+      <div class="columns">
+        <div class="column">
+        <!-- <div class="column"> -->
+          <span class="title has-text-centered" style="color: #ff3860;"> Events</span>
+              <button class="button is-primary has-text-weight-bold is-pulled-right no-print" onclick="window.print()" title="Print">
+                        <span class="icon">
+                           <i class="fas fa-print"></i>
+                       </span>
+            </button>
+            <button class="button is-warning is-rounded is-pulled-right no-print" onclick={readNewEvent} style="margin-right:5px;margin-left:5px;margin-right:5px">
+                <span class="icon">
+                  <span class="fas fa-sync-alt"></span>
+                </span>
+                </button>
+            <button class="button is-info is-rounded is-pulled-right no-print" onclick={add_new_event}>
+            <span class="icon">
+              <span class="fas fa-plus"></span>
+            </span>
+            </button>
+        </div>
+      </div>
+    </div>
+      
+  <!-- <div class="level no-print">
     <div class="level-left">
-      <h2 class="title" style="color: #ff3860;">New Event</h2>
     </div>
     <div class="level-right">
-      <button class="button is-warning is-rounded" onclick={add_new_event}>
-      <span class="icon">
-        <span class="fas fa-plus"></span>
-      </span>
-      </button>
-      <button class="button is-warning is-rounded is-pulled-right" onclick={readNewEvent} style="margin-right:5px;margin-left:5px">
-          <span class="icon">
-            <span class="fas fa-sync-alt"></span>
-          </span>
-          </button>
-
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-                  <span class="icon">
-                     <i class="fas fa-print"></i>
-                 </span>
-        </button>
     </div>
-  </div>
+  </div> -->
 
   <table class="table is-fullwidth is-striped is-hoverable is-bordered">
       <thead>
@@ -174,7 +181,7 @@
             self.refs.event_name.value,self.refs.start_date.value,self.refs.end_date.value,self.refs.detail.value,self.holiday)
          }else if(self.title=='Update'){
            console.log('update')
-           neweventStore.trigger('edit__new_event', self.refs.event_type_id.value,
+           neweventStore.trigger('edit_new_event', self.refs.event_type_id.value,
             self.refs.event_name.value,self.refs.start_date.value,self.refs.end_date.value,self.refs.detail.value ,self.holiday,self.edit_id)
          }
        }

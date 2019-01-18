@@ -32,12 +32,17 @@ router.get('/', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
-
+   var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate); 
   req.getConnection(function(err,connection){
         var data = {}
 
         var values = {
             level    : input.level,
+            creation_date    : formatted,
+            modification_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("INSERT INTO level_master set ? ",values, function(err, rows)
@@ -65,12 +70,16 @@ router.post('/edit/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
   var id = input.id;
-
+  var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate); 
   req.getConnection(function(err,connection){
         var data = {}
 
         var values = {
             level    : input.level,
+            modification_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("UPDATE level_master set ? WHERE level_id = ?",[values,id], function(err, rows)

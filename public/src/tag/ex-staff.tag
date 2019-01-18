@@ -1,13 +1,13 @@
 <ex-staff>
 	<section class=" is-fluid">
-		<div class="level">
+		<h2 class="title has-text-centered" style="color: #ff3860;">Ex-Employee Details</h2>
+	<!-- 	<div class="level">
 			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">Staff</h2>
 			</div>
-		</div>
-		<div class="box">
+		</div> -->
+		<div class="box no-print">
 			<div class="columns">
-				<div class="column is-narrow">
+				<div class="column ">
 					<div class="control">
 						<div class="select">
 							<select ref="emp_type_id" onchange={ReadExStaff}>
@@ -18,11 +18,18 @@
 						</div>
 					</div>
 				</div>
-			<!-- 	<div class="column">
-				<button class="button is-danger has-text-weight-bold"
-				onclick={getStaffData}>GO
-				</button>
-			</div> -->
+				<div class="column">
+				 <button class="button is-primary has-text-weight-bold is-pulled-right is-small" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+		          </button>
+		          <button class="button is-warning is-rounded is-pulled-right is-small" onclick={ReadExStaff} style="margin-left:5px;margin-right:5px">
+		          <span class="icon">
+		            <span class="fas fa-sync-alt"></span>
+		          </span>
+		          </button>
+			</div>
 			</div>
 		</div>
 		<table class="table is-fullwidth is-striped is-hoverable is-narrow">

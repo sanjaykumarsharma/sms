@@ -106,7 +106,11 @@
           route("/inventory-stock")
         }else if(role =='Infirmary'){
           route("/infirmary-setting/infirmary-category")
-        }
+        }else if(role =='Discipline'){
+         route("/discipline-detail")
+       }else if(role =='Admission'){
+         route("/student")
+       }
         window.location.reload(true);
 
         //

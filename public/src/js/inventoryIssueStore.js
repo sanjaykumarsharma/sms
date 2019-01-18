@@ -73,7 +73,8 @@ function InventoryIssueStore() {
           console.log(data)
           if(data.status == 's'){
             self.availableItems = data.availableItems
-            self.trigger('read_inventory_available_quantity_changed', data.availableItems)
+            self.rack_ids = data.rack_ids
+            self.trigger('read_inventory_available_quantity_changed', data.availableItems,self.rack_ids)
           }else if(data.status == 'e'){
             showToast("Item Read Error. Please try again.", data)
           }
@@ -110,7 +111,7 @@ function InventoryIssueStore() {
       })
   })
 
-  self.on('edit_inventory_issue', function(issue_date, category_id,sub_category_id,item_id,return_type,issue_type,issue_to,staff_id, available_quantity,issue_quantity,unit_id,purpose,rack_id,id) {
+  self.on('edit_inventory_issue', function(issue_date, category_id,sub_category_id,item_id,return_type,issue_type,issue_to,staff_id, available_quantity,issue_quantity,unit_id,purpose,rack_id,id,category_name, subcategory_name,item_name) {
     let req = {}
     req.issue_date=issue_date,
     req.category_id=category_id,
@@ -149,6 +150,9 @@ function InventoryIssueStore() {
                   cat.rack_id=rack_id
                   cat.remark=remark
                   cat.received_id=id
+                  cat.category_name=category_name
+                  cat.subcategory_name=subcategory_name
+                  cat.item_name=item_name
               }
               // cat.confirmEdit = false
               return cat
@@ -165,7 +169,7 @@ function InventoryIssueStore() {
       })
   })
  
-  self.on('add_inventory_issue', function(issue_date, category_id,sub_category_id,item_id,return_type,issue_type,issue_to,staff_id, available_quantity,issue_quantity,unit_id,purpose,rack_id) {
+  self.on('add_inventory_issue', function(issue_date, category_id,sub_category_id,item_id,return_type,issue_type,issue_to,staff_id, available_quantity,issue_quantity,unit_id,purpose,rack_id,category_name, subcategory_name,item_name) {
     let req = {}
     req.issue_date=issue_date,
     req.category_id=category_id,
@@ -206,6 +210,9 @@ function InventoryIssueStore() {
             obj.unit_id=unit_id,
             obj.purpose=purpose,
             obj.rack_id=rack_id,
+            obj.category_name=category_name
+            obj.subcategory_name=subcategory_name
+            obj.item_name=item_name
            // obj.category_id = category_id
             self.inventoryIssues = [obj, ...self.inventoryIssues]
             toastr.success("Issue Item Inserserted Successfully ")

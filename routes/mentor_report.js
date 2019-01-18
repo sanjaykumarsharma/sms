@@ -355,8 +355,13 @@ router.get('/read_class_wise_report/:standard_id/:section_id/:session_id', funct
             for (var i = result.length - 1; i >= 0; i--) {
                grand_total = grand_total+result[i].total;
              } 
+            /*var average=0;
+            for (var i = result.length - 1; i >= 0; i--) {
+               average = ((result[i].total/grand_total)*100);
+             } */
 
             data.grand_total = grand_total; 
+            
             res.send(JSON.stringify(data))
         }
      

@@ -2,8 +2,7 @@
   <header></header>
   <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-        <h2 class="title has-text-centered" style="color: #ff3860;">Inventory Item Details</h2>
-          
+      <h2 class="title has-text-centered" style="color: #ff3860;">Inventory Item Details</h2>
 		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
@@ -25,7 +24,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select" >
-              <select ref="category_id" style="margin-left:-10px" onchange={filterSubcategory} onkeyup={addEnter}>
+              <select ref="category_id" id="category_id" style="margin-left:-10px" onchange={filterSubcategory} onkeyup={addEnter}>
                 <option each={filteredCategories} value={category_id} >{category_name}
                 </option>
               </select>
@@ -38,7 +37,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="sub_category_id" style="margin-left:-10px">
+              <select ref="sub_category_id" id="sub_category_id" style="margin-left:-10px">
                 <option each={filteredSubcategories} value={sub_category_id} onkeyup={addEnter}>{sub_category}
                 </option>
               </select>
@@ -172,13 +171,17 @@ self.on("unmount", function(){
       }else{
         self.loading = true
         if(self.title=='Create'){
-          console.log('create')
+          
+          self.category_name = $("#category_id option:selected").text();
+          self.subcategory_name = $("#sub_category_id option:selected").text();
+
         inventoryItemStore.trigger('add_inventory_item', self.refs.department.value,
-           self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_name.value)
+           self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_name.value,  self.category_name,self.subcategory_name)
         }else if(self.title=='Update'){
-          console.log('update')
+            self.category_name = $("#category_id option:selected").text();
+          self.subcategory_name = $("#sub_category_id option:selected").text();
         inventoryItemStore.trigger('edit_inventory_item', self.refs.department.value,
-           self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_name.value, self.edit_id)
+           self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_name.value, self.edit_id,self.category_name,self.subcategory_name)
         }
       }
     }
@@ -220,6 +223,8 @@ self.on("unmount", function(){
     self.edit = (ev,e) => {
       console.log(ev)
       self.title='Update'
+
+      document.getElementById("category_id").focus()
       //self.refs.category_id.value = ev.category_id
       self.refs.department.value = ev.department
       
@@ -249,7 +254,7 @@ self.on("unmount", function(){
       self.loading = false
       self.inventoryItems = inventoryItems
       self.update()
-      //self.readInventoryCategory()
+      self.readInventoryItem()
       console.log(self.inventoryItems)
     }
 
@@ -279,7 +284,7 @@ self.on("unmount", function(){
       self.loading = false
       self.inventoryItems = inventoryItems
       self.update()
-      self.readInventoryItem()
+    //  self.readInventoryItem()
       console.log(self.inventoryItems)
     }
 
@@ -320,7 +325,7 @@ self.on("unmount", function(){
       self.refs.department.value = ''
       self.refs.item_name.value = ''
       self.refs.category_id.value = ''
-      self.readInventoryItem()
+      //self.readInventoryItem()
       self.update()
       console.log(self.inventoryItems)
     }  

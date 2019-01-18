@@ -52,11 +52,18 @@
 	  	</p>
 </div>
 <div class="field has-addons no-print">
-	<p class="control">
+	    <p class="control">
 		    <a class="button {is-active: selected_admin_report == 'new-admission-report'}" href="#/admin-report/new-admission-report/new-admission-category-report">
 		      <span>New Admission</span>
 		    </a>
 	  	</p>
+
+	  	  <p class="control">
+		    <a class="button {is-active: selected_admin_report == 'udise-report'}" href="#/admin-report/udise-report">
+		      <span>UDISE</span>
+		    </a>
+	  	</p>
+
 </div>
 <div id="admin-report-view"></div>
  <script>

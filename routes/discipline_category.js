@@ -1,5 +1,43 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var download = require('download-file')
+
+router.get('/csv_export_discipline_category', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var qry = `select category_id,category_name from discipline_category_master order by 2`;
+
+      connection.query(qry,function(err,result)     {    
+        if(err){
+          console.log("Error reading Category : %s ",err );
+          data.status = 'e';
+        }else{
+          data.status = 's';
+          data.categories = result;
+
+          const fields = ['Category Name'];
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(result);
+
+          var path='./public/csv/DisciplineCategory.csv'; 
+          fs.writeFile(path, csv, function(err,data) {
+            if (err) {throw err;}
+            else{ 
+              res.send(data)
+              var url='http://localhost:4000/csv/DisciplineCategory.csv';
+              var open = require("open","");
+              open(url);  
+            }
+          });    
+        }
+     });      
+    });
+});
 
 /* Read discipline listing. */
 router.get('/', function(req, res, next) {

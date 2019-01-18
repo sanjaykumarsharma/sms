@@ -64,6 +64,7 @@ var employeenotificationRouter = require('./routes/employee-notification');
 var idsignatureRouter = require('./routes/id_signature');
 var idcardRouter = require('./routes/id_card');
 var activityReport = require('./routes/activity_report');
+var Career = require('./routes/career');
 
 
 //Tarique
@@ -223,6 +224,7 @@ app.use('/student-notification', verifyToken, studentnotificationRouter);
 app.use('/id_signature', verifyToken, idsignatureRouter);
 app.use('/id_card', verifyToken, idcardRouter);
 app.use('/activity_report', verifyToken, activityReport);
+app.use('/career', verifyToken, Career);
 
 //Tarique
 app.use('/admin_report', verifyToken, adminReportRouter);

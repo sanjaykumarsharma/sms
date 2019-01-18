@@ -1,12 +1,9 @@
 <inventory-department>
+  <header></header>
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
-		<h2 class="title" style="color: #ff3860;">Inventory Department</h2>
-		<div class="flex items-center mt-2 mb-6 no-print">
-			<div class="bg-green py-1 rounded w-10">
-				<div class="bg-grey h-px flex-auto"></div>
-			</div>
-		</div>
-		<div class="box">
+		<h2 class="title has-text-centered" style="color: #ff3860;">Inventory Department</h2>
+		<div class="box no-print">
 			<div class="columns">
 				<div class="column is-narrow">
 					<label class="label">Department</label>
@@ -15,7 +12,7 @@
 					<div class="control">
 						<div class="control">
 							<input class=" input"
-              ref="addInventoryDepartmentInput" type="text">
+              ref="addInventoryDepartmentInput" type="text" onkeyup={addEnter}>
 						</div>
 					</div>
 				</div>
@@ -23,6 +20,17 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+          </button>
+           <button class="button is-warning is-rounded is-pulled-right" onclick={readInventoryDepartment} style="margin-right:5px;margin-left:5px">
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+          </button>
+
 				</div>
 			</div>
 		</div>
@@ -38,7 +46,7 @@
 				<tr each={ev, i in inventoryDepartments}>
 					<td>{ i+1 }</td>
 					<td>{ ev.department}</td>
-		          	<td class="has-text-right">
+		          	<td class="has-text-right no-print">
             			<div class="inline-flex rounded border border-grey overflow-hidden" hide={ev.confirmDelete}>
               				<span><a class="button is-small is-rounded" onclick={edit.bind(this, ev)}>Edit</a></span>
               				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>

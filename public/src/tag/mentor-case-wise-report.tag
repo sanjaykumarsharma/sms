@@ -1,9 +1,9 @@
 <mentor-case-wise-report>
-<header></header>
+<print-header></print-header>
 <loading-bar if={loading}></loading-bar>
 <section class=" is-fluid">
-    <h2 class="title has-text-centered is-size-5" style="color: #ff3860;margin-bottom: 6px;">Student Category wise Mentor Report</h2>
-    <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Grand Total: {grand_total}</h2>
+    <h2 class="title has-text-centered is-size-6" style="color: #ff3860;margin-bottom: 20px;">Student Category wise Mentor Report <br> Grand Total: {grand_total}</h2>
+    
 
 	<div class="box no-print">
 		<div class="columns">
@@ -41,10 +41,37 @@
 		</div>
 	</div>
 
-	<canvas id="canvas_pie" show={report_view =='show_graph'}></canvas>
+	<!-- <canvas id="canvas_pie" show={report_view =='show_graph'}></canvas> -->
+
+	<center>
+		<div id="piechart" style="width: 900px; height: 500px;" show={report_view =='show_graph'}></div>
+	</center>
 
 	<div class="printOnly">
-		<table class="table is-striped is-hoverable is-bordered is-fullwidth " style="margin-top:50px;">
+		<div class="columns is-centered">
+			<table class="table is-striped is-hoverable is-bordered" style="margin-top:50px; width: 50%;">
+				<thead>
+					<tr>
+						<th>Category</th>
+						<th class="has-text-right">Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr each={cd, i in case_wise_reports}>
+						<td>{cd.category_name}</td>
+						<td class="has-text-right">{cd.total}</td>
+					</tr>
+					<tr>
+						<td class="has-text-right">Total</td>
+						<td class="has-text-right">{grand_total}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="columns is-centered no-print">
+		<table class="table is-striped is-hoverable is-bordered" style="width: 50%;" show={report_view =='show_table'}>
 			<thead>
 				<tr>
 					<th>Category</th>
@@ -63,25 +90,6 @@
 			</tbody>
 		</table>
 	</div>
-
-	<table class="table is-striped is-hoverable is-bordered is-fullwidth no-print" show={report_view =='show_table'}>
-		<thead>
-			<tr>
-				<th>Category</th>
-				<th class="has-text-right">Total</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr each={cd, i in case_wise_reports}>
-				<td>{cd.category_name}</td>
-				<td class="has-text-right">{cd.total}</td>
-			</tr>
-			<tr>
-				<td class="has-text-right">Total</td>
-				<td class="has-text-right">{grand_total}</td>
-			</tr>
-		</tbody>
-	</table>
 </section>
 
 <script>
@@ -149,46 +157,32 @@
       self.loading = false;
       self.case_wise_reports = case_wise_reports
       self.grand_total = grand_total
+      
+      var chart_percentage = []
+      chart_percentage.push(['Task', 'Hours per Day'])
+       for (var i = self.case_wise_reports.length - 1; i >= 0; i--) {
+		   chart_percentage.push([self.case_wise_reports[i].category_name,self.case_wise_reports[i].total])
+		}
 
-      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
 
-		var labels = []
-		var chart_percentage = []
-        var backgroundColor = []
+      function drawChart() {
 
+        var data = google.visualization.arrayToDataTable(chart_percentage);
 
-		 for (var i = self.case_wise_reports.length - 1; i >= 0; i--) {
-		 	var total_percentage = ((self.case_wise_reports[i].total*100)/self.grand_total).toFixed(2);
-		    var percentage = self.case_wise_reports[i].category_name + ' ( ' + self.case_wise_reports[i].total + ' , ' + total_percentage + '% )';
+        var options = {
+          is3D: true,
+          legend:{position: 'labeled',
+                  textStyle: {bold: true} },
+          pieSliceText: 'value'
+        };
 
-		    labels.push(percentage)
-		    chart_percentage.push(self.case_wise_reports[i].total)
-		    if(typeof chartColors[i] != "undefined"){
-		    	backgroundColor.push(chartColors[i])
-		    }
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+      }
 
-		 }
-
-		  console.log(labels);
-		  console.log(chart_percentage);
-
-		  var config = {
-		    type: 'pie',
-		    data: {
-		      datasets: [{
-		        data: chart_percentage,
-		        backgroundColor: backgroundColor,
-		        label: 'labels'
-		      }],
-		      labels: labels
-		    },
-		    options: {
-		      responsive: true
-		    }
-		  };
-
-		  var ctx = document.getElementById('canvas_pie').getContext('2d');
-		  window.myPie = new Chart(ctx, config);
+     
       self.update()
       console.log(self.case_wise_reports)
     }

@@ -1,7 +1,7 @@
 <inventory-returnable>
   <header></header>
 	<section class=" is-fluid" show={inventory_returnable_view == 'show_inventory_returnable_table'}>
-		    <h4 class="title has-text-centered" style="color: #ff3860;">Returnable Goods</h4>
+		    <h4 class="title has-text-centered" style="color: #ff3860;">Returnable Items</h4>
 		<div class="box no-print">
 			<div class="columns">
         <div class="column is-narrow">

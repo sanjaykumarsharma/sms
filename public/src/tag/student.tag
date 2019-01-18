@@ -7,32 +7,32 @@
 				<h2 class="title is-size-5" style="color: #ff3860;">Students</h2>
 			</div>
 			<div class="level-right">
-				<button class="button is-primary is-rounded is-small" onclick={first_edit} >
-				<span>Fast Edit</span>
+				<button if={role=='ADMIN'} class="button is-primary is-rounded is-small" onclick={first_edit} >
+				<span >Fast Edit</span>
 				</button>
 
-				<button class="button is-link is-rounded is-small ml5" onclick={print_list} show={print_list_button}>
+				<button if={role=='ADMIN'} class="button is-link is-rounded is-small ml5" onclick={print_list} show={print_list_button}>
 				<span>Print List</span>
 				</button>
 
-				<button class="button is-info is-rounded ml5 is-small" onclick={student_list} show={student_list_button}>
+				<button if={role=='ADMIN'} class="button is-info is-rounded ml5 is-small" onclick={student_list} show={student_list_button}>
 				<span>Student List</span>
 				</button>
 
-				<button class="button is-success is-rounded ml5 is-small" onclick={regenerate_roll_no} show={regenerate_roll_no_button}>
-				<span>Regenerate Roll No</span>
+				<button if={role=='ADMIN'} class="button is-success is-rounded ml5 is-small" onclick={regenerate_roll_no} show={regenerate_roll_no_button}>
+				<span >Regenerate Roll No</span>
 				</button>
 
-				<button class="button is-warning is-rounded ml5 is-small" onclick={add_new_student}>
-				<span class="icon">
+				<button if={role=='ADMIN'} class="button is-warning is-rounded ml5 is-small" onclick={add_new_student}>
+				<span class="icon" >
 					<span class="fas fa-plus"></span>
 				</span>
-				<span>New Student</span>
+				<span >New Student</span>
 				</button>
 			</div>
 		</div>
 		<div class="level box no-print">
-			<div class="level-left">
+			<div class="level-left" show={role=='ADMIN'}>
 				<div class="columns">
 					<div class="column is-narrow">
 						<label class="label">Standard</label>
@@ -61,7 +61,7 @@
 				    </div>
 				</div>
 			</div>
-			<div class="level-right">
+			<div class="level-right" >
 				<div class="column is-narrow field has-addons">
 					<div class="control">
 				    	<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
@@ -70,18 +70,18 @@
 			    		<a class="button is-info " onclick={getStudentData}>Search</a>
 			  		</div>
 				</div>
-				<button class="button is-link has-text-weight-bold ml5 " style="margin-bottom:12px;" onclick={getStudentData}>
+				<button show={role=='ADMIN'} class="button is-link has-text-weight-bold ml5 " style="margin-bottom:12px;" onclick={getStudentData}>
 			        <span class="icon">
 			          <span class="fas fa-sync-alt"></span>
 			        </span>
 	        	</button>
-	        	<button class="button is-success has-text-weight-bold  ml5" style="margin-bottom:12px;"
+	        	<button show={role=='ADMIN'} class="button is-success has-text-weight-bold  ml5" style="margin-bottom:12px;"
 	        	onclick={downloadCSV}>
         			<span class="icon">
           				<i class="far fa-file-excel"></i>
         			</span>
         		</button>
-	        	<button class="button is-primary has-text-weight-bold  ml5" style="margin-bottom:12px;"
+	        	<button show={role=='ADMIN'} class="button is-primary has-text-weight-bold  ml5" style="margin-bottom:12px;"
 	        	onclick="window.print()">
         			<span class="icon">
           				<i class="fas fa-print"></i>
@@ -90,7 +90,8 @@
 			</div>
 		</div>
 		<table class="table is-fullwidth is-bordered is-hoverable is-narrow">
-			<p><center><strong>Class:{StandardName}-{SectionName}  Session:{session_name}</strong></center></p>
+			<center show={role=='ADMIN'}><strong>Class:{StandardName}-{SectionName}  Session:{session_name}
+			</strong></center>
 			<thead>
 				<tr>
 					<th>Roll no</th>
@@ -112,10 +113,10 @@
 					<td>{st.f_name}</td>
 					<td class="has-text-right no-print">
 		            <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
-		              <span><a class="button is-small is-rounded " onclick={withdraw_student.bind(this, st.student_id)}>WithDraw Student</a></span>
+		              <span if={role=='ADMIN'}><a class="button is-small is-rounded " onclick={withdraw_student.bind(this, st.student_id)}>WithDraw Student</a></span>
 		              <span><a class="button is-small is-rounded" onclick={view_profile.bind(this, st.student_id)}>Profile</a></span>
 		              <span><a class="button is-small is-rounded " onclick={edit.bind(this, st.student_id)}>Edit</a></span>
-		              <span > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+		              <span if={role=='ADMIN'}> <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
 		            </div>
 		            <div class="table-buttons" if={st.confirmDelete}>
 		              <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
@@ -658,40 +659,40 @@
 				<td colspan=7 style='background-color:#efefef'><h>Areas Where Parent(Father or Mother) can contribute to the School</h></td>
 			</tr>
 			<tr>
-				<th colspan=4><input type="checkbox" id="music"> Music</th>
-				<th colspan=4><input type="checkbox"  id="academic"> Academic</th>
+				<th colspan=4><input type="checkbox" id="p_music"> Music</th>
+				<th colspan=4><input type="checkbox"  id="p_academic"> Academic</th>
 			</tr>
 
 			<tr>
-				<th colspan=4><input type="checkbox" id="sports"> Sports</th>
-				<th colspan=4><input type="checkbox" id="community"> Community Programme </th>
+				<th colspan=4><input type="checkbox" id="p_sports"> Sports</th>
+				<th colspan=4><input type="checkbox" id="p_community"> Community Programme </th>
 			</tr>
 			<tr>
-				<th colspan=4><input type="checkbox" id="social"> Social Skills</th>
-				<th colspan=4><input type="checkbox" id="medical"> Medical </th>
+				<th colspan=4><input type="checkbox" id="p_social"> Social Skills</th>
+				<th colspan=4><input type="checkbox" id="p_medical"> Medical </th>
 			</tr>
 			<tr>
-				<th colspan=4><input type="checkbox" id="media"> Media/PR</th>
-				<th colspan=4><input type="checkbox" id="hr_training"> HR Training </th>
+				<th colspan=4><input type="checkbox" id="p_media"> Media/PR</th>
+				<th colspan=4><input type="checkbox" id="p_hr_training"> HR Training </th>
 			</tr>
 			<tr>
-				<th colspan=4><input type="checkbox" id="painting"> Painting/Sculpture </th>
-				<th colspan=4><input type="checkbox" id="career"> Career Counselling </th>
+				<th colspan=4><input type="checkbox" id="p_painting"> Painting/Sculpture </th>
+				<th colspan=4><input type="checkbox" id="p_career"> Career Counselling </th>
 			</tr>
 			<tr>
-				<th colspan=4><input type="checkbox" id="information"> Information Technology </th>
-				<th colspan=4><input type="checkbox" id="communication"> Public Communication / Communication Skills </th>
+				<th colspan=4><input type="checkbox" id="p_information"> Information Technology </th>
+				<th colspan=4><input type="checkbox" id="p_communication"> Public Communication / Communication Skills </th>
 			</tr>
 			<tr>
 				<td colspan=7><h>Extra Qualification Possessed by the Parent</h></td>
 			</tr>
 			<tr>
-				<th colspan=4><input type="checkbox" id="med" > M.Ed </th>
-				<th colspan=4><input type="checkbox" id="bed" > B.Ed </th>
+				<th colspan=4><input type="checkbox" id="p_med" > M.Ed </th>
+				<th colspan=4><input type="checkbox" id="p_bed" > B.Ed </th>
 			</tr>
 			<tr>
-				<th colspan=4><input type="checkbox" id="ttc"> TTC </th>
-				<th colspan=3><input type="checkbox" id="montessori" > Montessori Trained </th>
+				<th colspan=4><input type="checkbox" id="p_ttc"> TTC </th>
+				<th colspan=3><input type="checkbox" id="p_montessori" > Montessori Trained </th>
 			</tr>
 		</table>
 	</section>
@@ -791,7 +792,7 @@
 						<label class="label is-small" for="reg_number">Reg. No</label>
 			      	</div>
 			      	<div class="column is-2">
-						<input class="input is-small" ref="reg_number" type="number">
+						<input class="input is-small" ref="reg_number" type="text">
 			      	</div>
 		    	</div>
 		    </div>
@@ -2554,10 +2555,10 @@
       	}else if((self.refs.enroll_number.value).length!=8){
         	toastr.error("Please enter Valid Enroll No and try again")
         	return;
-      	}else if((self.refs.reg_number.value).length<16 && (self.refs.reg_number.value).length!=0){
+      	}/*else if((self.refs.reg_number.value).length<16 && (self.refs.reg_number.value).length!=0){
           	toastr.error("Please enter Valid Registration No and try again")
         	return;
-        }else if((self.refs.p_zip.value).length!=6 && (self.refs.p_zip.value).length!=0){
+        }*/else if((self.refs.p_zip.value).length!=6 && (self.refs.p_zip.value).length!=0){
           	toastr.error("Please enter Valid Zip Code and try again")
           	return;
         }else if(!self.refs.dob.value){
@@ -3935,6 +3936,8 @@
 
     self.first_edit = ()=>{
     	self.student_view = 'first_edit_view'
+	    self.refs.firstEditValue.value=0
+	   	self.student_first_edit =[]
     }
 
     self.close_first_edit = () => {
@@ -4028,14 +4031,15 @@
     }
 
     studentStore.on('read_student_changed',StudentChanged)
-    function StudentChanged(students,session_id,session_name){
+    function StudentChanged(students,session_id,session_name ,role){
       self.loading = false
       self.students = students
       self.session_id = session_id
       self.session_name = session_name
       self.StandardName = $("#read_standard_id option:selected").text();
       self.SectionName = $("#read_section_id option:selected").text();
-      if(self.students.length==0){
+
+      if(self.students.length==0 && role=="ADMIN"){
       	toastr.info("No Data Found")
       }
       self.update()
@@ -4048,7 +4052,7 @@
     	self.st=student_profile_details[0]
     	console.log(student_profile_details) 
       	self.student_profile_details = student_profile_details
-      	self.refs.first_name.value = student_profile_details[0].first_name
+      	/*self.refs.first_name.value = student_profile_details[0].first_name
       	self.refs.middle_name.value = student_profile_details[0].middle_name
       	self.refs.last_name.value = student_profile_details[0].last_name
       	self.refs.standard_id.value = student_profile_details[0].standard_id
@@ -4233,127 +4237,127 @@
 		self.refs.fourth_child_class.value = student_profile_details[0].fourth_child_class
 		self.refs.fourth_child_section.value = student_profile_details[0].fourth_child_section
 		self.refs.fourth_enrol.value = student_profile_details[0].fourth_enrol
-		self.refs.fourth_child_school.value = student_profile_details[0].fourth_child_school
+		self.refs.fourth_child_school.value = student_profile_details[0].fourth_child_school*/
 
 
 		if(student_profile_details[0].music == 1){
-			$('#music').prop('checked', true)
+			$('#p_music').prop('checked', true)
 		}
 		else{
-			$('#music').prop('checked', false)
+			$('#p_music').prop('checked', false)
 		}
 
 		if(student_profile_details[0].sports == 1){
-			$('#sports').prop('checked', true)
+			$('#p_sports').prop('checked', true)
 		}
 		else{
-			$('#sports').prop('checked', false)
+			$('#p_sports').prop('checked', false)
 		}
 
 		if(student_profile_details[0].social == 1){
-			$('#social').prop('checked', true)
+			$('#p_social').prop('checked', true)
 		}
 		else{
-			$('#social').prop('checked', false)
+			$('#p_social').prop('checked', false)
 		}
 
 		if(student_profile_details[0].media == 1){
-			$('#media').prop('checked', true)
+			$('#p_media').prop('checked', true)
 		}
 		else{
-			$('#media').prop('checked', false)
+			$('#p_media').prop('checked', false)
 		}
 
 		if(student_profile_details[0].academic == 1){
-			$('#academic').prop('checked', true)
+			$('#p_academic').prop('checked', true)
 		}
 		else{
-			$('#academic').prop('checked', false)
+			$('#p_academic').prop('checked', false)
 		}
 
 		if(student_profile_details[0].community == 1){
-			$('#community').prop('checked', true)
+			$('#p_community').prop('checked', true)
 		}
 		else{
-			$('#community').prop('checked', false)
+			$('#p_community').prop('checked', false)
 		}
 
 		if(student_profile_details[0].painting == 1){
-			$('#painting').prop('checked', true)
+			$('#p_painting').prop('checked', true)
 		}
 		else{
-			$('#painting').prop('checked', false)
+			$('#p_painting').prop('checked', false)
 		}
 
 		if(student_profile_details[0].information == 1){
-			$('#information').prop('checked', true)
+			$('#p_information').prop('checked', true)
 		}
 		else{
-			$('#information').prop('checked', false)
+			$('#p_information').prop('checked', false)
 		}
 
 		if(student_profile_details[0].hr_training == 1){
-			$('#hr_training').prop('checked', true)
+			$('#p_hr_training').prop('checked', true)
 		}
 		else{
-			$('#hr_training').prop('checked', false)
+			$('#p_hr_training').prop('checked', false)
 		}
 
 		if(student_profile_details[0].medical == 1){
-			$('#medical').prop('checked', true)
+			$('#p_medical').prop('checked', true)
 		}
 		else{
-			$('#medical').prop('checked', false)
+			$('#p_medical').prop('checked', false)
 		}
 
 		if(student_profile_details[0].career == 1){
-			$('#career').prop('checked', true)
+			$('#p_career').prop('checked', true)
 		}
 		else{
-			$('#career').prop('checked', false)
+			$('#p_career').prop('checked', false)
 		}
 
 		if(student_profile_details[0].communication == 1){
-			$('#communication').prop('checked', true)
+			$('#p_communication').prop('checked', true)
 		}
 		else{
-			$('#communication').prop('checked', false)
+			$('#p_communication').prop('checked', false)
 		}
 
 		if(student_profile_details[0].med == 1){
-			$('#med').prop('checked', true)
+			$('#p_med').prop('checked', true)
 		}
 		else{
-			$('#med').prop('checked', false)
+			$('#p_med').prop('checked', false)
 		}
 
 		if(student_profile_details[0].bed == 1){
-			$('#bed').prop('checked', true)
+			$('#p_bed').prop('checked', true)
 		}
 		else{
-			$('#bed').prop('checked', false)
+			$('#p_bed').prop('checked', false)
 		}
 
 		if(student_profile_details[0].ttc == 1){
-			$('#ttc').prop('checked', true)
+			$('#p_ttc').prop('checked', true)
 		}
 		else{
-			$('#ttc').prop('checked', false)
+			$('#p_ttc').prop('checked', false)
 		}
 
 		if(student_profile_details[0].montessori == 1){
-			$('#montessori').prop('checked', true)
+			$('#p_montessori').prop('checked', true)
 		}
 		else{
-			$('#montessori').prop('checked', false)
+			$('#p_montessori').prop('checked', false)
 		}
 
-		self.refs.transport_mode.value = student_profile_details[0].transport_mode
+		/*self.refs.transport_mode.value = student_profile_details[0].transport_mode
 		self.refs.school_distance.value = student_profile_details[0].school_distance
 		self.refs.differently_abled.value = student_profile_details[0].differently_abled
 		self.student_id = student_profile_details[0].student_id
 		self.refs.staff_name.value = student_profile_details[0].staff_name
-        self.refs.section_id.value = student_profile_details[0].section_id
+        self.refs.section_id.value = student_profile_details[0].section_id*/
       	self.update()
     }
 

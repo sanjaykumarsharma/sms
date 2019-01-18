@@ -76,6 +76,9 @@ router.get('/', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+   var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
 
   req.getConnection(function(err,connection){
         var data = {}
@@ -83,6 +86,9 @@ router.post('/add', function(req, res, next) {
         var values = {
             category_name    : input.category_name,
             department : input.department,
+            creation_date    : formatted,
+            modification_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("INSERT INTO inventory_category_master set ? ",values, function(err, rows)
@@ -109,6 +115,9 @@ router.post('/add', function(req, res, next) {
 router.post('/edit/:id', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+   var now = new Date();
+   var jsonDate = now.toJSON();
+   var formatted = new Date(jsonDate);
   var id = input.id;
 
   req.getConnection(function(err,connection){
@@ -117,6 +126,8 @@ router.post('/edit/:id', function(req, res, next) {
         var values = {
             category_name    : input.category_name,
             department : input.department,
+            modification_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("UPDATE inventory_category_master set ? WHERE category_id = ?",[values,id], function(err, rows)

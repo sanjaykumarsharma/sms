@@ -96,9 +96,9 @@
           <td>{c.exam_term}</td>
         	<td class="has-text-right">
       			<div class="inline-flex rounded border border-grey overflow-hidden" hide={c.confirmDelete}>
-                <span><a class="button is-small is-rounded" show={c.standard_id >= 4} onclick={openPhysicalFitnessForm.bind(this, c)}>Add</a></span>
-                <span><a class="button is-small is-rounded" show={c.standard_id >= 4} onclick={viewDetails.bind(this, c)}>View</a></span>
-                <span><a class="button is-small has-text-danger is-rounded" show={c.standard_id >= 4} rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+                <span show={c.exam_term=='N'}><a class="button is-small is-rounded" onclick={openPhysicalFitnessForm.bind(this, c)}>Add</a></span>
+                <span><a class="button is-small is-rounded" onclick={viewDetails.bind(this, c)}>View</a></span>
+                <span><a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
       			</div>
       			<div class="table-buttons" if={c.confirmDelete}>
         				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
@@ -354,7 +354,7 @@
   <section class="is-fluid" show={view=='details'}>
     <div class="level no-print">
       <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">Maturity Development</h2>
+
       </div>
       <div class="level-right">
 
@@ -368,7 +368,7 @@
     </div>
 
     <center>
-     <h6 class="title">Physical Fitness view for Class {student_info.standard} </h6>
+     <h6 class="title is-size-5">Physical Fitness view for Class {student_info.standard} </h6>
     </center>
 
     <table class="table is-fullwidth is-striped is-hoverable">
@@ -382,34 +382,34 @@
                 <td colspan="2">Enrol Number: {c.enroll_number}</td>
               </tr>
               <tr>
-                <th>Skill</th>
-                <th>Grade</th>
+                <th><span show={senior}>Parameters Measured</span><span show={junior}>Skill</span></th>
+                <th><span show={senior}>Obtained Marks (10)</span><span show={junior}>Grade</span></th>
                 <th>Description</th>
               </tr>
               <tr>
-                <td><span show={senior}>Running </span><span show={junior}>Aerobic Capacity </span></td>
-                <td>{c.first_description}</td>
+                <td><span show={senior}> Aerobic Capacity</span><span show={junior}> Running</span></td>
                 <td>{c.first_skill}</td>
+                <td>{c.first_description}</td>
               </tr>
               <tr>
-                <td><span show={senior}>Hopping </span><span show={junior}>Agility </span></td>
-                <td>{c.second_description}</td>
+                <td><span show={senior}> Agility</span><span show={junior}> Hopping</span></td>
                 <td>{c.second_skill}</td>
+                <td>{c.second_description}</td>
               </tr>
               <tr>
-                <td><span show={senior}>Jumping </span><span show={junior}>Explosive Strength </span></td>
-                <td>{c.third_description}</td>
+                <td><span show={senior}> Explosive Strength</span><span show={junior}>Jumping </span></td>
                 <td>{c.third_skill}</td>
+                <td>{c.third_description}</td>
               </tr>
               <tr>
-                <td><span show={senior}>Catching </span><span show={junior}>Abdominal Strength </span></td>
-                <td>{c.fourth_description}</td>
+                <td><span show={senior}> Abdominal Strength</span><span show={junior}>Catching </span></td>
                 <td>{c.fourth_skill}</td>
+                <td>{c.fourth_description}</td>
               </tr>
               <tr>
-                <td><span show={senior}>Throwing </span><span show={junior}>Flexibility </span></td>
-                <td>{c.fifth_description}</td>
+                <td><span show={senior}> Flexibility</span><span show={junior}>Throwing </span></td>
                 <td>{c.fifth_skill}</td>
+                <td>{c.fifth_description}</td>
               </tr>
             </table>
           </td>
@@ -538,16 +538,16 @@
       obj['student_id']=self.student_id
       obj['section_id']=self.refs.sectionSelect.value
       obj['exam_term']=self.refs.examTermSelect.value
-      obj['first_skill']=self.refs.first_skill.value
-      obj['first_description']=$("#first_skill option:selected").text()
-      obj['second_skill']=self.refs.second_skill.value
-      obj['second_description']=$("#second_skill option:selected").text()
-      obj['third_skill']=self.refs.third_skill.value
-      obj['third_description']=$("#third_skill option:selected").text()
-      obj['fourth_skill']=self.refs.fourth_skill.value
-      obj['fourth_description']=$("#fourth_skill option:selected").text()
-      obj['fifth_skill']=self.refs.fifth_skill.value
-      obj['fifth_description']=$("#fifth_skill option:selected").text()
+      obj['first_skill']= $("#first_skill option:selected").text()
+      obj['first_description']=self.refs.first_skill.value
+      obj['second_skill']=$("#second_skill option:selected").text()
+      obj['second_description']=self.refs.second_skill.value 
+      obj['third_skill']= $("#third_skill option:selected").text()
+      obj['third_description']=self.refs.third_skill.value
+      obj['fourth_skill']= $("#fourth_skill option:selected").text()
+      obj['fourth_description']=self.refs.fourth_skill.value
+      obj['fifth_skill']=$("#fifth_skill option:selected").text()
+      obj['fifth_description']=self.refs.fifth_skill.value 
 
       if(error.length!=0){
         toastr.error(error)
@@ -680,7 +680,7 @@
       self.closePhysicalFitnessForm()
       self.loading = false
       self.update()
-      //self.readPhysicalFitnessStudents()
+      self.readPhysicalFitnessStudents()
     }
 
     physicalFitnessStore.on('delete_physical_fitness_changed',DeletePhysicalFitnessChanged)
@@ -690,6 +690,7 @@
         c.confirmDelete = false
       })
       self.update()
+      self.readPhysicalFitnessStudents()
     }
 
 </script>

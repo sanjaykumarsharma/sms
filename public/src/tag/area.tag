@@ -2,7 +2,7 @@
  <header></header>
    <loading-bar if={loading}></loading-bar>  
 	<section class="is-fluid">
-    <h2 class="title" style="color: #ff3860;">Areas</h2>
+     <h2 class="title has-text-centered" style="color: #ff3860;">Area Details</h2>
       <div class="box no-print">
       <div class="columns">
         <div class="column is-narrow">
@@ -11,7 +11,7 @@
         <div class="column is-narrow">
           <div class="control">
             <input class=" input"
-              ref="addAreaInput" type="text">
+              ref="addAreaInput" type="text" onkeyup={addEnter}>
           </div>
         </div>
         <div class="column">
@@ -23,7 +23,7 @@
                      <i class="fas fa-print"></i>
                  </span>
         </button>
-        <button class="button is-warning is-rounded is-pulled-right" onclick={readArea} style="margin-left:2px">
+        <button class="button is-warning is-rounded is-pulled-right" onclick={readArea} style="margin-left:5px;margin-right:5px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>

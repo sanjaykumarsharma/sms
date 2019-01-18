@@ -70,7 +70,7 @@ function InventorySaleStore() {
               return c.sale_id != id
             })
             self.inventorySales = tempInventoryIssues
-            toastr.info("Issue Deleted Successfully")
+            toastr.info("Sale Item Deleted Successfully")
             self.trigger('delete_inventory_sale_changed', self.inventorySales)
           }else if(data.status == 'e'){
             showToast("Error Deleting Issue Item. Please try again.", data)
@@ -82,7 +82,7 @@ function InventorySaleStore() {
       })
   })
 
- self.on('edit_inventory_sale', function(sale_date, category_id,sub_category_id,item_id,sale_to, available_quantity,sale_quantity,unit_id,rate ,id) {
+ self.on('edit_inventory_sale', function(sale_date, category_id,sub_category_id,item_id,sale_to, available_quantity,sale_quantity,unit_id,rate ,id,category_name, subcategory_name,item_name) {
     let req = {}
     req.sale_date=sale_date,
     req.category_id=category_id,
@@ -115,6 +115,9 @@ function InventorySaleStore() {
                   cat.unit_id=unit_id,
                   cat.rate=rate,
                   cat.sale_id=id
+                  cat.category_name=category_name,
+                  cat.subcategory_name=subcategory_name,
+                  cat.item_name=item_name
               }
               // cat.confirmEdit = false
               return cat
@@ -130,7 +133,7 @@ function InventorySaleStore() {
         }
       })
   })
-  self.on('add_inventory_sale', function(sale_date, category_id,sub_category_id,item_id,sale_to,available_quantity,sale_quantity,unit_id,rate) {
+  self.on('add_inventory_sale', function(sale_date, category_id,sub_category_id,item_id,sale_to,available_quantity,sale_quantity,unit_id,rate,category_name, subcategory_name,item_name) {
     let req = {}
     req.sale_date=sale_date,
     req.category_id=category_id,
@@ -163,6 +166,9 @@ function InventorySaleStore() {
             req.sale_quantity=sale_quantity,
             req.unit_id=unit_id,
             req.rate=rate,
+            req.category_name=category_name,
+            req.subcategory_name=subcategory_name,
+            req.item_name=item_name
            // obj.category_id = category_id
             self.inventorySales = [obj, ...self.inventorySales]
             toastr.success("Sale Item Inserserted Successfully ")
