@@ -1657,7 +1657,7 @@
 	      	</div>
 		</div>
 
-		<div class="columns mt30">
+		<!-- <div class="columns mt30">
 			<div class="column is-2">
 				<label class="label is-small" for="level_id">Level</label>
 			</div>
@@ -1680,7 +1680,7 @@
 					</select>
 				</div>
 	      	</div>
-		</div>
+		</div> -->
 
 		<div class="columns mt30">
 		    <div class="column is-full">
@@ -2761,28 +2761,102 @@
     	staff['last_name']=self.refs.last_name.value
     	//staff['employee_id']=self.refs.employee_id.value
     	//staff['short_name']=self.refs.short_name.value
-    	staff['marital_status']=self.refs.marital_status.value
+    	//staff['marital_status']=self.refs.marital_status.value
+
+    	if(self.refs.short_name.value==''){
+    		staff['short_name']=null
+    	}else{
+    	    staff['short_name']=self.refs.short_name.value	
+    	}
+    	//staff['short_name']=self.refs.short_name.value
+    	
+    	if(self.refs.marital_status.value==''){
+    		staff['marital_status']=null
+    	}else{
+    	    staff['marital_status']=self.refs.marital_status.value	
+    	}
     	staff['father_name']=self.refs.father_name.value
     	staff['father_occupation']=self.refs.father_occupation.value
     	staff['spouse']=self.refs.spouse.value
     	staff['spouse_occupation']=self.refs.spouse_occupation.value
     	staff['anniversary']=convertDate(self.refs.anniversary.value)
     	staff['id_mark']=self.refs.id_mark.value
-    	staff['blood_group']=self.refs.blood_group.value
-    	staff['religion_id']=self.refs.religion_id.value
+    	
+
+    	if(self.refs.blood_group.value==''){
+    		staff['blood_group']=null
+    	}else{
+    	    staff['blood_group']=self.refs.blood_group.value	
+    	}
+
+    //	staff['blood_group']=self.refs.blood_group.value
+
+    	if(self.refs.religion_id.value==''){
+    		staff['religion_id']=null
+    	}else{
+    	    staff['religion_id']=self.refs.religion_id.value	
+    	}
+
+    	//staff['religion_id']=self.refs.religion_id.value
     	staff['language']=self.refs.language.value
-    	staff['emp_type_id']=self.refs.emp_type_id.value
-    	staff['department_id']=self.refs.department_id.value
+
+    	if(self.refs.emp_type_id.value==''){
+    		staff['emp_type_id']=null
+    	}else{
+    	    staff['emp_type_id']=self.refs.emp_type_id.value	
+    	}
+
+
+    	if(self.refs.department_id.value==''){
+    		staff['department_id']=null
+    	}else{
+    	    staff['department_id']=self.refs.department_id.value	
+    	}
+
+    	/*if(self.refs.level_id.value==''){
+    		staff['level_id']=null
+    	}else{
+    	    staff['level_id']=self.refs.level_id.value	
+    	}*/
+
+    	if(self.refs.designation_id.value==''){
+    		staff['designation_id']=null
+    	}else{
+    	    staff['designation_id']=self.refs.designation_id.value	
+    	}
+
+    	/*if(self.refs.employment_status_id.value==''){
+    		staff['employment_status_id']=null
+    	}else{
+    	    staff['employment_status_id']=self.refs.employment_status_id.value	
+    	}*/
+        if(self.refs.subject_id.value==''){
+    		staff['subject_id']=null
+    	}else{
+    	    staff['subject_id']=self.refs.subject_id.value	
+    	}
+
+    	 if(self.refs.category_id.value==''){
+    		staff['category_id']=null
+    	}else{
+    	    staff['category_id']=self.refs.category_id.value	
+    	}
+
+    	//staff['blood_group']=self.refs.blood_group.value
+    	//staff['religion_id']=self.refs.religion_id.value
+    	staff['language']=self.refs.language.value
+    	//staff['emp_type_id']=self.refs.emp_type_id.value
+    	//staff['department_id']=self.refs.department_id.value
     	//staff['level_id']=self.refs.level_id.value
     	//staff['employment_status_id']=self.refs.employment_status_id.value
-    	staff['subject_id']=self.refs.subject_id.value
-    	staff['designation_id']=self.refs.designation_id.value
+    	//staff['subject_id']=self.refs.subject_id.value
+    	//staff['designation_id']=self.refs.designation_id.value
     	staff['qualification']=self.refs.qualification.value
     	staff['doj']=convertDate(self.refs.doj.value)
     	staff['place_of_birth']=self.refs.place_of_birth.value
-    	staff['category_id']=self.refs.category_id.value
+    	//staff['category_id']=self.refs.category_id.value
     	staff['dob']=convertDate(self.refs.dob.value)
-    	staff['blood_group']=self.refs.blood_group.value
+    	//staff['blood_group']=self.refs.blood_group.value
     	staff['add_l1']=self.refs.add_l1.value
     	staff['add_l2']=self.refs.add_l2.value
     	staff['city']=self.refs.city.value
@@ -2871,94 +2945,193 @@
     	//family['child3_sex']=self.refs.child3_sex.value
     	family['child3_dob']=convertDate(self.refs.child3_dob.value)
     	family['child3_school']=self.refs.child3_school.value
-        obj['family']=family
+       
+
+       obj['family']=family
     	
     	/*Qualification Information*/
     	var qualification={};
     	qualification['x_subject']=self.refs.x_subject.value
     	qualification['x_institution']=self.refs.x_institution.value
     	qualification['x_board']=self.refs.x_board.value
-    	qualification['x_yop']=self.refs.x_yop.value
+    	if(self.refs.x_yop.value==''){
+    		qualification['x_yop']=null
+    	}else{
+    	    qualification['x_yop']=self.refs.x_yop.value
+    	}
     	qualification['x_marks']=self.refs.x_marks.value
     	qualification['x_div']=self.refs.x_div.value
     	qualification['xii_subject']=self.refs.xii_subject.value
     	qualification['xii_institution']=self.refs.xii_institution.value
     	qualification['xii_board']=self.refs.xii_board.value
-    	qualification['xii_yop']=self.refs.xii_yop.value
+
+    	if(self.refs.xii_yop.value==''){
+    		qualification['xii_yop']=null
+    	}else{
+    	    qualification['xii_yop']=self.refs.xii_yop.value
+    	}
+
+    	//qualification['xii_yop']=self.refs.xii_yop.value
     	qualification['xii_marks']=self.refs.xii_marks.value
     	qualification['xii_div']=self.refs.xii_div.value
     	qualification['ug_course']=self.refs.ug_course.value
     	qualification['ug_institution']=self.refs.ug_institution.value
     	qualification['ug_university']=self.refs.ug_university.value
-    	qualification['ug_yop']=self.refs.ug_yop.value
+    	
+
+    	if(self.refs.ug_yop.value==''){
+    		qualification['ug_yop']=null
+    	}else{
+    	    qualification['ug_yop']=self.refs.ug_yop.value
+    	}
+
+    	//qualification['ug_yop']=self.refs.ug_yop.value
     	qualification['ug_marks']=self.refs.ug_marks.value
     	qualification['ug_div']=self.refs.ug_div.value
     	qualification['pg_course']=self.refs.pg_course.value
     	qualification['pg_institution']=self.refs.pg_institution.value
     	qualification['pg_university']=self.refs.pg_university.value
-    	qualification['pg_yop']=self.refs.pg_yop.value
+
+
+    	if(self.refs.pg_yop.value==''){
+    		qualification['pg_yop']=null
+    	}else{
+    	    qualification['pg_yop']=self.refs.pg_yop.value
+    	}
+
+    	//qualification['pg_yop']=self.refs.pg_yop.value
     	qualification['pg_marks']=self.refs.pg_marks.value
     	qualification['pg_div']=self.refs.pg_div.value
     	qualification['bed_stream']=self.refs.bed_stream.value
     	qualification['bed_institution']=self.refs.bed_institution.value
     	qualification['bed_university']=self.refs.bed_university.value
-    	qualification['bed_yop']=self.refs.bed_yop.value
+
+
+    	if(self.refs.bed_yop.value==''){
+    		qualification['bed_yop']=null
+    	}else{
+    	    qualification['bed_yop']=self.refs.bed_yop.value
+    	}
+
+    	//qualification['bed_yop']=self.refs.bed_yop.value
     	qualification['bed_marks']=self.refs.bed_marks.value
     	qualification['bed_div']=self.refs.bed_div.value
 
     	qualification['bt_stream']=self.refs.bt_stream.value
     	qualification['bt_institution']=self.refs.bt_institution.value
     	qualification['bt_university']=self.refs.bt_university.value
-    	qualification['bt_yop']=self.refs.bt_yop.value
+
+
+    	if(self.refs.bt_yop.value==''){
+    		qualification['bt_yop']=null
+    	}else{
+    	    qualification['bt_yop']=self.refs.bt_yop.value
+    	}
+
+
+    	//qualification['bt_yop']=self.refs.bt_yop.value
     	qualification['bt_marks']=self.refs.bt_marks.value
     	qualification['bt_div']=self.refs.bt_div.value
 
     	qualification['bped_stream']=self.refs.bped_stream.value
     	qualification['bped_institution']=self.refs.bped_institution.value
     	qualification['bped_university']=self.refs.bped_university.value
-    	qualification['bped_yop']=self.refs.bped_yop.value
+    	
+    	if(self.refs.bped_yop.value==''){
+    		qualification['bped_yop']=null
+    	}else{
+    	    qualification['bped_yop']=self.refs.bped_yop.value
+    	}
+
+
+    	//qualification['bped_yop']=self.refs.bped_yop.value
     	qualification['bped_marks']=self.refs.bped_marks.value
     	qualification['bped_div']=self.refs.bped_div.value
 
     	qualification['dped_stream']=self.refs.dped_stream.value
     	qualification['dped_institution']=self.refs.dped_institution.value
     	qualification['dped_university']=self.refs.dped_university.value
-    	qualification['dped_yop']=self.refs.dped_yop.value
+    	 
+    	if(self.refs.dped_yop.value==''){
+    		qualification['dped_yop']=null
+    	}else{
+    	    qualification['dped_yop']=self.refs.dped_yop.value
+    	}
+ 
+    	//qualification['dped_yop']=self.refs.dped_yop.value
     	qualification['dped_marks']=self.refs.dped_marks.value
     	qualification['dped_div']=self.refs.dped_div.value
 
     	qualification['mped_stream']=self.refs.mped_stream.value
     	qualification['mped_institution']=self.refs.mped_institution.value
     	qualification['mped_university']=self.refs.mped_university.value
-    	qualification['mped_yop']=self.refs.mped_yop.value
+
+
+    	if(self.refs.mped_yop.value==''){
+    		qualification['mped_yop']=null
+    	}else{
+    	    qualification['mped_yop']=self.refs.mped_yop.value
+    	}
+
+    	//qualification['mped_yop']=self.refs.mped_yop.value
     	qualification['mped_marks']=self.refs.mped_marks.value
     	qualification['mped_div']=self.refs.mped_div.value
 
     	qualification['med_stream']=self.refs.med_stream.value
     	qualification['med_institution']=self.refs.med_institution.value
     	qualification['med_university']=self.refs.med_university.value
-    	qualification['med_yop']=self.refs.med_yop.value
+
+    	if(self.refs.med_yop.value==''){
+    		qualification['med_yop']=null
+    	}else{
+    	    qualification['med_yop']=self.refs.med_yop.value
+    	}
+
+    	//qualification['med_yop']=self.refs.med_yop.value
     	qualification['med_marks']=self.refs.med_marks.value
     	qualification['med_div']=self.refs.med_div.value
 
     	qualification['mphil_stream']=self.refs.mphil_stream.value
     	qualification['mphil_institution']=self.refs.mphil_institution.value
     	qualification['mphil_university']=self.refs.mphil_university.value
-    	qualification['mphil_yop']=self.refs.mphil_yop.value
+
+    	if(self.refs.mphil_yop.value==''){
+    		qualification['mphil_yop']=null
+    	}else{
+    	    qualification['mphil_yop']=self.refs.mphil_yop.value
+    	}
+
+    	//qualification['mphil_yop']=self.refs.mphil_yop.value
     	qualification['mphil_marks']=self.refs.mphil_marks.value
     	qualification['mphil_div']=self.refs.mphil_div.value
 
     	qualification['phd_stream']=self.refs.phd_stream.value
     	qualification['phd_institution']=self.refs.phd_institution.value
     	qualification['phd_university']=self.refs.phd_university.value
-    	qualification['phd_yop']=self.refs.phd_yop.value
+
+
+    	if(self.refs.phd_yop.value==''){
+    		qualification['phd_yop']=null
+    	}else{
+    	    qualification['phd_yop']=self.refs.phd_yop.value
+    	}
+
+    	//qualification['phd_yop']=self.refs.phd_yop.value
     	qualification['phd_marks']=self.refs.phd_marks.value
     	qualification['phd_div']=self.refs.phd_div.value
 
     	qualification['other_stream']=self.refs.other_stream.value
     	qualification['other_institution']=self.refs.other_institution.value
     	qualification['other_university']=self.refs.other_university.value
-    	qualification['other_yop']=self.refs.other_yop.value
+    	
+
+    	if(self.refs.other_yop.value==''){
+    		qualification['other_yop']=null
+    	}else{
+    	    qualification['other_yop']=self.refs.other_yop.value
+    	}
+
+    	//qualification['other_yop']=self.refs.other_yop.value
     	qualification['other_marks']=self.refs.other_marks.value
     	qualification['other_div']=self.refs.other_div.value
 
@@ -2970,6 +3143,7 @@
     	qualification['details_sport']=self.refs.details_sport.value
     	
     	obj['qualification']=qualification
+    	
     	var previous_job={}
 
     	previous_job['organization_of_previous_job']=self.refs.organization_of_previous_job.value
@@ -2986,6 +3160,7 @@
     	previous_job['allowances_of_previous_job']=self.refs.allowances_of_previous_job.value
     	previous_job['other_benefits_of_previous_job']=self.refs.other_benefits_of_previous_job.value
     	previous_job['bond_details_of_previous_job']=self.refs.bond_details_of_previous_job.value
+		
 		obj['previous_job']=previous_job
 		
 
@@ -3183,6 +3358,7 @@
     	self.refs.details_publication.value=''
     	self.refs.details_curricular_activities.value=''
     	self.refs.details_sport.value=''
+    	pp_box.style.backgroundImage = "";
     }
 
 
@@ -3276,6 +3452,7 @@
         self.workExperienceArray.push(obj)
      	self.workExperienceArray=workExperienceArray
      	if(self.title=='Approve'){
+     		console.log("inside approve")
          self.refs.title.value=staff_details[0].title
     	self.refs.first_name.value=staff_details[0].first_name
     	self.refs.middle_name.value=staff_details[0].middle_name
@@ -3295,8 +3472,8 @@
     	self.refs.language.value=staff_details[0].language
     	self.refs.emp_type_id.value=staff_details[0].emp_type_id
     	self.refs.department_id.value=staff_details[0].department_id
-    	self.refs.level_id.value=staff_details[0].level_id
-    	self.refs.employment_status_id.value=staff_details[0].employment_status_id
+    	//self.refs.level_id.value=staff_details[0].level_id
+    	//self.refs.employment_status_id.value=staff_details[0].employment_status_id
     	self.refs.subject_id.value=staff_details[0].subject_id
     	self.refs.designation_id.value=staff_details[0].designation_id
     	self.refs.qualification.value=staff_details[0].qualification
@@ -3306,7 +3483,7 @@
     	console.log(self.refs.category_id.value)
     	self.refs.place_of_birth.value=staff_details[0].place_of_birth
     	self.refs.dob.value=staff_details[0].dob
-    	self.refs.blood_group.value=staff_details[0].blood_group
+    	//self.refs.blood_group.value=staff_details[0].blood_group
     	self.refs.add_l1.value=staff_details[0].add_l1
     	self.refs.add_l2.value=staff_details[0].add_l2
     	self.refs.city.value=staff_details[0].city
@@ -3468,9 +3645,9 @@
     	self.language=staff_details[0].language
     	self.emp_type_id=staff_details[0].emp_type_id
     	self.department_id=staff_details[0].department_id
-        self.level_id=staff_details[0].level_id
+       // self.level_id=staff_details[0].level_id
     	//console.log(staff_details[0].employment_status_id);
-    	self.employment_status_id=staff_details[0].employment_status_id
+    	//self.employment_status_id=staff_details[0].employment_status_id
     	self.subject_id=staff_details[0].subject_id
     	self.designation_id=staff_details[0].designation_id
     	self.qualification=staff_details[0].qualification

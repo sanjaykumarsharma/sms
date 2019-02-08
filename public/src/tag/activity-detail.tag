@@ -651,6 +651,8 @@
     	self.activity_view='add_activity'
     	self.clearForm()
     	self.title='Add'
+    	self.readStaff()
+        self.readItems()
     	self.update()
     }
 
@@ -769,6 +771,7 @@
 	     	obj['organised_by']=self.refs.organisedByInput.value
 	     	obj['venue']=self.refs.venueInput.value
 	     	obj['emp_id']=self.teachers
+	     	obj['teacher_incharge']=null
 	     	obj['item_taken']=self.refs.itemTakenInput.value
 	     	obj['time_in']=self.refs.inTimeInput.value
 	     	obj['time_out']=self.refs.outTimeInput.value

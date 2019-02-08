@@ -30,6 +30,8 @@ var timeTableRoomSettingsRouter = require('./routes/time-table-room-settings');
 var timeTablePeriodSettingsRouter = require('./routes/time-table-period-settings');
 var timeTableDaySettingsRouter = require('./routes/time-table-day-settings');
 var timeTableReportRouter = require('./routes/time-table-report');
+var firstAssessmentReportRouter = require('./routes/first_assessment_report');
+var finalAssessmentReportRouter = require('./routes/final_assessment_report');
 //======== qadir ==================
 
 var promoteRouter = require('./routes/promote');
@@ -92,6 +94,7 @@ var sectionRouter = require('./routes/section');
 var clubRouter = require('./routes/club');
 var parentgroupRouter = require('./routes/parent_group');
 var remarkRouter = require('./routes/remark');
+var activateSessionRouter = require('./routes/activate_session');
 var inventoryDepartmentRouter = require('./routes/inventory_department');
 var emplyomentStatusRouter = require('./routes/employment_status');
 var employeeStatusRouter = require('./routes/role');
@@ -192,6 +195,8 @@ app.use('/time-table-room-settings', verifyToken, timeTableRoomSettingsRouter);
 app.use('/time-table-period-settings', verifyToken, timeTablePeriodSettingsRouter);
 app.use('/time-table-day-settings', verifyToken, timeTableDaySettingsRouter);
 app.use('/time-table-report', verifyToken, timeTableReportRouter);
+app.use('/first_assessment_report', verifyToken, firstAssessmentReportRouter);
+app.use('/final_assessment_report', verifyToken, finalAssessmentReportRouter);
 //==== promotion by qadir ========
 app.use('/promote', verifyToken, promoteRouter);
 app.use('/student-assign-section', verifyToken, studentAssignSectionRouter);
@@ -250,6 +255,7 @@ app.use('/standard', verifyToken, standardRouter);
 app.use('/section', verifyToken, sectionRouter);
 app.use('/parent_group', verifyToken, parentgroupRouter);
 app.use('/remark', verifyToken, remarkRouter);
+app.use('/activate_session', verifyToken, activateSessionRouter);
 app.use('/inventory_department', verifyToken, inventoryDepartmentRouter);
 app.use('/club', verifyToken, clubRouter);
 app.use('/area', verifyToken, areaRouter);

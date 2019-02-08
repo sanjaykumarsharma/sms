@@ -365,7 +365,12 @@
         document.getElementById("absentCheckBoxId").checked = true;
         $("#absentCheckBoxId").focus();
       }else{
-        self.refs.marksInput.value = c.marks
+         if(self.marksLimit.marking_type =='G'){
+          self.refs.marksInput.value = c.marks_grade
+         }else{
+          self.refs.marksInput.value = c.marks
+         }
+        
         $("#marksInput").focus();
       }
       

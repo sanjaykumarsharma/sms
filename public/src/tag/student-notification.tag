@@ -157,6 +157,7 @@
     		return s.standard_id == self.refs.standard_id.value
     	})
       self.update()
+      self.getStudentData();
     }
     self.getStudentData = ()=>{
   	  var obj={}

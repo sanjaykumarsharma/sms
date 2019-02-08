@@ -11,7 +11,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 						<div class="select">
-							<select ref="category_id">
+							<select ref="category_id"  onkeyup={addEnter}>
 								<option each={infirmaryCategories} value={category_id}>{category_name}
 	              </option>
 							</select>
@@ -24,7 +24,7 @@
 				<div class="column is-narrow">
 					<div class="control">
 						<input class=" input"
-						  ref="infirmary_case" type="text">
+						  ref="infirmary_case" id= "infirmary_case" type="text"  onkeyup={addEnter}>
 					</div>
 				</div>
 				<div class="column">
@@ -158,6 +158,7 @@
       self.refs.infirmary_case.value = ev.case_name
       self.refs.category_id.value = ev.category_id
       self.edit_id = ev.case_id
+      document.getElementById("infirmary_case").focus()
     }
     
     infirmarycaseStore.on('add_infirmary_case_changed',AddInfirmaryCaseChanged)

@@ -485,6 +485,25 @@ function StudentStore() {
       })
   })
 
+  self.on('delete_upload_father_image', function(student_id) {
+
+    $.ajax({
+      url:'/student/delete_upload_father_image/'+student_id,
+        type:"POST",
+        dataType: 'script',
+        processData: false,
+        contentType: false,
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          
+          self.trigger('delete_upload_father_image_changed')
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
   self.on('upload_mother_image', function(mother_image,student_id) {
     var form_data = new FormData(); 
     form_data.append("mother_profile_picture", mother_image);
@@ -496,7 +515,7 @@ function StudentStore() {
         contentType: false,
         data: form_data,
         headers: {"Authorization": getCookie('token')},
-        success: function(image_name){
+        success: function(data){
           console.log(image_name)
           self.trigger('upload_mother_image_changed', image_name)
         },

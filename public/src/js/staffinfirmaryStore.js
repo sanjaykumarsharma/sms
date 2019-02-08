@@ -347,7 +347,7 @@ self.on('read_staff_health_report', function(employee_id,start_date,end_date) {
         success: function(data){
           if(data.status == 's'){
             let tempStaffInfirmary = self.staffInfirmarys.filter(c => {
-              return c.infirmary_id != id
+              return c.staff_infirmary_id != id
             })
             self.staffInfirmarys = tempStaffInfirmary
             toastr.info("Infirmary Deleted Successfully")

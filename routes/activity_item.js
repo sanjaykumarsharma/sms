@@ -82,12 +82,18 @@ router.get('/csv_export_activity_item', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
 
   req.getConnection(function(err,connection){
         var data = {}
 
         var values = {
             item_name    : input.item_name,
+            creation_date : formatted,
+            modified_by : req.cookies.user,
+            
         };
         
         var query = connection.query("INSERT INTO item_master set ? ",values, function(err, rows)
@@ -120,7 +126,8 @@ router.post('/edit/:item_id', function(req, res, next) {
         var data = {}
 
         var values = {
-            item_name    : input.item_name,
+          item_name    : input.item_name,
+          modified_by    : req.cookies.role,
         };
         
         var query = connection.query("UPDATE item_master set ? WHERE item_id = ?",[values,item_id], function(err, rows)

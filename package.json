@@ -36,6 +36,7 @@
     "mysql": "^2.16.0",
     "nodemailer": "^4.6.8",
     "npm-watch": "^0.3.0",
+    "open": "0.0.5",
     "request": "^2.88.0",
     "riot": "^3.11.1",
     "riot-route": "^3.1.3",

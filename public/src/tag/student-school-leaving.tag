@@ -1,5 +1,5 @@
 <student-school-leaving>
-  <header></header>
+  <print-header></print-header>
   <loading-bar if={loading}></loading-bar>  
   <section class=" is-fluid" show={view=='home'}>
     <div class="level">
@@ -7,6 +7,21 @@
         <h2 class="title is-size-5" style="color: #ff3860;">School Leaving Certificate</h2>
       </div>
       <div class="level-right">
+        <div class="column is-narrow"><label class="label">Issue date</label></div>
+          <div class="column is-narrow">
+            <div class="control">
+              <input class="input date is-small" ref="issue_date" type="text">
+            </div>
+          </div>
+        <button class="button is-primary has-text-weight-bold ml5 is-small" onclick={printCertificate} >Print Certificate</button>
+        <button class="button is-info has-text-weight-bold is-small ml5" onclick={printCertificate} >Print Duplicate Certificate</button>
+        <button class="button is-success has-text-weight-bold is-small ml5" onclick={printFeedback} >Print Feedback Form</button>
+        <button class="button is-link has-text-weight-bold ml5 is-small"  
+          onclick={refreshStudents}>
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+        </button>
       </div>
     </div> 
     <div class="level box">
@@ -15,7 +30,7 @@
           <div class="column is-narrow"><label class="label">Standard</label></div> 
             <div class="column is-narrow">  
             <div class="control">
-              <div class="select is-fullwidth">
+              <div class="select is-fullwidth is">
                 <select ref="standardSelect" id="standard" onchange={changeSection}>
                   <option each={classes} value={standard_id}>{standard}</option>
                 </select>
@@ -51,14 +66,7 @@
       </div>
       <div class="level-right">
         <!-- <a class="button is-small is-rounded" style="margin-bottom:12px;" rel="nofollow" onclick={}></a> -->
-        <button class="button is-success has-text-weight-bold" onclick={printFeedback} >Print Feedback Form</button>
-        <button class="button is-primary has-text-weight-bold ml5" onclick={printCertificate} >Print Certificate</button>
-        <button class="button is-link has-text-weight-bold ml5"  
-          onclick={refreshStudents}>
-          <span class="icon">
-            <span class="fas fa-sync-alt"></span>
-          </span>
-        </button>
+        
       </div>
     </div>
 
@@ -109,13 +117,17 @@
   </section>
 
   <section class=" is-fluid" show={view=='school-leaving-certificate'}>
-  
-    <div class="level">
+    <div class="level no-print">
       <div class="level-left">
         
       </div>
       <div class="level-right">
-        <button class="button is-warning is-rounded" onclick={backToHome}>
+        <button class="button is-primary has-text-weight-bold is-small" onclick="window.print()">
+          <span class="icon">
+            <i class="fas fa-print"></i>
+          </span>
+        </button>
+        <button class="button is-warning has-text-weight-bold is-small ml5" onclick={backToHome}>
         <span class="icon">
           <span class="fas fa-arrow-left"></span>
         </span>
@@ -213,7 +225,7 @@
         <tr>
            <td class="principal title"></td>
            <td class="profile-school-leaving">(for school profile, see reverse)</td>
-           <td class="currentDate title">{c.issue_date}</td>               
+           <td class="currentDate "><b>{issue_date}</b></td>               
         </tr>
        </table>   
       
@@ -649,6 +661,9 @@
        console.log(student_id);
       if(student_id==''){
         toastr.info('Please select at least one student and try again')
+      }if(!self.refs.issue_date.value){
+        toastr.error("Please enter Issue Date and try again")
+        return;
       }else{
         
         studentSchoolLeavingStore.trigger('print_feed_back_form', student_id)
@@ -672,6 +687,8 @@
        console.log(student_id);
       if(student_id==''){
         toastr.info('Please select at least one student and try again')
+      }else if(!self.refs.issue_date.value){
+        toastr.error("Please enter Issue Date and try again")
       }else{
         
         studentSchoolLeavingStore.trigger('print_certificate', student_id)
@@ -681,10 +698,18 @@
     }
 
     self.create_certificate = (c,e) => {
-      self.view = 'create-certificate-form'
+      if(!self.refs.issue_date.value){
+        toastr.error("Please enter Issue Date and try again")
+        return;
+      }
+       if(c.type=='Yes'){
+        toastr.error("School Leaving Certificate has already been issued. please use duplicate Certificate Button to print again. ")
+        return;
+      } 
       self.student_id = c.student_id
       self.standard = c.standard
       self.refs.examination_appeared.value = self.standard
+      self.view = 'create-certificate-form'
       if(self.refs.examination_appeared.value == "TWELVE"){
         self.isc_stream = true
       }else{
@@ -840,6 +865,8 @@
       self.printCertificateDetails = students
       self.session_name = session_name
       // self.printDetails = students
+       self.issue_date = self.refs.issue_date.value
+       console.log(self.issue_date);
       self.update()
       
     }

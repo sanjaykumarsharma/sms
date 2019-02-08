@@ -466,6 +466,7 @@ router.get('/csv_export_activity/:category_id', function(req, res, next) {
                     var url='http://localhost:4000/csv/Activity.csv';
                     var open = require("open","");
                     open(url);  
+                    //res.download(url); 
                   }
                 });
               }    
@@ -586,6 +587,7 @@ router.post('/add', function(req, res, next) {
           category_id : input.category_id,
           event_id : input.event_id,
           event_name : input.event_name,
+          teacher_incharge : input.teacher_incharge,
           organised_by : input.organised_by,
           venue : input.venue,
           item_taken : input.item_taken,

@@ -27,33 +27,7 @@ function StudentInfirmaryStore() {
         }
       })
   })
-  /*self.on('read_student_date_wise_case_report', function(category_id,start_date,end_date) {
-    console.log('i am in read_student_date_wise_case_report')
-         let req = {}
-           req.category_id=category_id
-           req.start_date=start_date
-           req.end_date=end_date
-        url:'/infirmary_student/readCaseReport',
-        type:"POST",
-        data: JSON.stringify(req),
-         contentType: "application/json",
-         dataType:"json",
-         headers: {"Authorization": getCookie('token')},
-          success: function(data){
-          console.log(data)
-          if(data.status == 's'){
-            self.studentDateWiseCaseReports = data.studentDateWiseCaseReports
-            self.trigger('read_student_date_wise_case_report_changed', data.studentDateWiseCaseReports)
-          }else if(data.status == 'e'){
-            showToast("case Read Error. Please try again.", data)
-          }
-        },
-        error: function(data){
-          showToast("", data)
-        }
-      })
-  })*/
-
+ 
 self.on('read_student_date_wise_case_report', function(category_id,start_date,end_date) {
     let req = {}
      req.category_id=category_id
@@ -225,7 +199,7 @@ self.on('read_case_wise_report', function(obj) {
       })
   })
 
-  self.on('edit_student_infirmary', function(enroll_number,category_id,case_id,treatment_date,time_in,time_out, treatment,sent_home,id,case_name) {
+  self.on('edit_student_infirmary', function(enroll_number,category_id,case_id,treatment_date,time_in,time_out, treatment,sent_home,id,case_name,category) {
   let req = {}
   console.log(id)
    req.enroll_number=enroll_number
@@ -237,6 +211,8 @@ self.on('read_case_wise_report', function(obj) {
    req.treatment=treatment
    req.sent_home=sent_home
    req.case_name=case_name
+  // req.case=case
+   req.category=category
     req.id=id
     $.ajax({
       url:'/infirmary_student/edit/'+id,
@@ -251,6 +227,8 @@ self.on('read_case_wise_report', function(obj) {
               if(cat.infirmary_id == id){
                  cat.enroll_number=enroll_number
                  cat.category_id=category_id
+                 cat.category_name=category
+                 cat.case_name=case_name
                  cat.case_id=case_id
                  cat.infirmary_id=id
                  cat.treatment_date=treatment_date
@@ -275,7 +253,7 @@ self.on('read_case_wise_report', function(obj) {
       })
   })
  
-  self.on('add_student_infirmary', function(enroll_number,category_id,case_id,treatment_date,time_in,time_out, treatment,sent_home,case_name) {
+  self.on('add_student_infirmary', function(enroll_number,category_id,case_id,treatment_date,time_in,time_out, treatment,sent_home,case_name,category) {
     let req = {}
      req.enroll_number=enroll_number
      req.category_id=category_id
@@ -286,6 +264,8 @@ self.on('read_case_wise_report', function(obj) {
      req.treatment=treatment
      req.sent_home=sent_home
      req.case_name=case_name
+     //req.case=case
+     req.category=category
     $.ajax({
        url:'/infirmary_student/add',
         type:"POST",
@@ -306,7 +286,8 @@ self.on('read_case_wise_report', function(obj) {
                  obj.time_in=time_in
                  obj.time_out=time_out
                  obj.treatment=treatment
-               //  obj.treatment=treatment
+                 obj.category_name=category
+                 obj.case_name=case_name
                  obj.sent_home=sent_home
            // obj.name = name
             self.studentInfirmarys = [obj, ...self.studentInfirmarys]

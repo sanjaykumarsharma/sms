@@ -1436,6 +1436,60 @@
 	      	</div>
 		</div>
 
+
+		<!-- Work Experience-->
+       <div class="columns mt30">
+			<div class="column is-full">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Experience</h3>
+		    </div>
+		</div>
+		<div each={st, i in workExperienceArray} style="margin-bottom:20px;margin-top:20px">
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="work_instituition">Instituition </label>
+			</div>
+			<div class="column is-2">
+				<input class="input is-small" ref="work_instituition" id="work_instituition{i}" value={st.institution} type="text">
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">DOJ</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input date is-small" id="work_doj{i}" type="text"  value={st.date_of_joining}>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">DOL</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input date is-small" id="work_dol{i}" type="text" value={st.date_of_leaving}>
+	      	</div>
+		</div>
+
+		<div class="columns mt30">
+			<div class="column is-2">
+				<label class="label is-small" for="">Position</label>
+	      	</div>
+	      	<div class="column is-2">
+        		<input class="input is-small"  ref="work_position" id="work_position{i}" type="text" value={st.position}>
+	      	</div>
+	      	<div class="column is-2">
+				<label class="label is-small" for="">Subjects</label>
+	      	</div>
+	      	<div class="column is-2 ">
+				<input class="input is-small"  ref="work_subject" id="work_subject{i}" type="text" value={st.subjects_taught}>
+	      	</div>
+	
+			 <div class="column is-2">
+			 <button class="button is-small is-primary is-rounded ml5 " onclick={add_more_work_exp}>
+					<span class="icon"><span class="fas fa-plus"></span></span>
+			 </button>
+			   <button class="button  is-info is-rounded ml5 is-small" onclick={remove.bind(this, i)}>
+					<span class="icon"><span class="fas fa-minus"></span></span>
+			 </button>
+			</div>
+			 </div>
+	    </div>
+
 		<div class="columns mt30">
 		    <div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" onclick={closeExtraActivityInformation}>
@@ -1637,7 +1691,7 @@
 				</div>
 	      	</div>
 		</div>
-
+<!-- 
 		<div class="columns mt30">
 			<div class="column is-2">
 				<label class="label is-small" for="level_id">Level</label>
@@ -1661,7 +1715,7 @@
 					</select>
 				</div>
 	      	</div>
-		</div>
+		</div> -->
 
 		<div class="columns mt30">
 		    <div class="column is-full">
@@ -2220,12 +2274,20 @@
     	self.readEmploymentStatus()
     	self.staff_name = true	
     	self.editProfile()
+    	self.workExperienceArray =[]
+         let obj = {}
+             obj.work_institution=''
+
+        self.workExperienceArray.push(obj)
+       
         self.update()
+        
       //  console.log(self.workArray);
         flatpickr(".date", {
 	    	allowInput: true,
         	dateFormat: "d/m/Y",
   		})
+  		self.update()
     })
 
     self.on("unmount", function(){
@@ -2248,6 +2310,43 @@
       staffStore.off('reset_staff_password_changed',ResetStaffPasswordChanged)
       staffStore.off('update_staff_fast_edit_changed',readStaffFastEditChanged)
     })
+
+    self.add_more_work_exp=()=>{
+	    let obj = {}
+        obj.work_institution=''
+        self.workExperienceArray.push(obj)
+     	//self.update()	
+          let work_doj_id='#work_doj'+ (self.workExperienceArray.length-1).toString()
+          let work_dol_id='#work_dol'+ (self.workExperienceArray.length-1).toString()
+	        
+	        
+			  console.log(work_dol_id)
+		  	setTimeout(function(){
+			  
+                // self.update()
+
+		        flatpickr(work_doj_id, {
+			    	allowInput: true,
+		        	dateFormat: "d/m/Y",
+		  		})
+		       
+		        flatpickr(work_dol_id, {
+			    	allowInput: true,
+		        	dateFormat: "d/m/Y",
+			  	})
+
+			  	// self.update()
+
+			}, 1000);
+      //  console.log(self.workArray);
+    }
+
+
+    self.remove = (index,e) => {
+      console.log(index)
+       self.workExperienceArray.splice(index,1);
+    }  
+
 
      self.addEnter = (e) => {
       if(e.which == 13){
@@ -2454,8 +2553,9 @@
     }
 
     self.close = () =>{
-    	//self.staff_view = 'show_staff'
+    	self.staff_view = 'add_staff'
     	self.clearForm();
+    	self.editProfile()
     }
 
     self.cancelOperation = (e) => {
@@ -2676,6 +2776,29 @@
 
     	/*Student Information */
         var staff={};
+
+
+    	console.log( self.workExperienceArray)
+    	 self.workExperienceArray.map((x, index) => {
+          let work_institution_id='#work_instituition'+index
+          let work_doj_id='#work_doj'+index
+          let work_dol_id='#work_dol'+index
+          let work_position_id='#work_position'+index
+          let work_subject_id='#work_subject'+index
+
+           x.institution =  $(work_institution_id).val()
+           x.date_of_joining = convertDate($(work_doj_id).val())
+           x.date_of_leaving = convertDate($(work_dol_id).val())
+           x.position = $(work_position_id).val()
+           x.subjects_taught = $(work_subject_id).val()
+        });
+
+        var work_experience={}
+      //  work_experience['workExperienceArray']=  self.workExperienceArray
+        obj['workExperienceArray']=self.workExperienceArray
+
+
+    	
         
         
     	staff['title']=self.refs.title.value
@@ -2684,29 +2807,104 @@
     	staff['middle_name']=self.refs.middle_name.value
     	staff['last_name']=self.refs.last_name.value
     	staff['employee_id']=self.refs.employee_id.value
-    	staff['short_name']=self.refs.short_name.value
-    	staff['marital_status']=self.refs.marital_status.value
+    	if(self.refs.short_name.value==''){
+    		staff['short_name']=null
+    	}else{
+    	    staff['short_name']=self.refs.short_name.value	
+    	}
+    	//staff['short_name']=self.refs.short_name.value
+    	
+    	if(self.refs.marital_status.value==''){
+    		staff['marital_status']=null
+    	}else{
+    	    staff['marital_status']=self.refs.marital_status.value	
+    	}
+    	/*staff['short_name']=self.refs.short_name.value
+    	staff['marital_status']=self.refs.marital_status.value*/
     	staff['father_name']=self.refs.father_name.value
     	staff['father_occupation']=self.refs.father_occupation.value
     	staff['spouse']=self.refs.spouse.value
     	staff['spouse_occupation']=self.refs.spouse_occupation.value
     	staff['anniversary']=convertDate(self.refs.anniversary.value)
     	staff['id_mark']=self.refs.id_mark.value
-    	staff['blood_group']=self.refs.blood_group.value
-    	staff['religion_id']=self.refs.religion_id.value
+    	
+    	if(self.refs.blood_group.value==''){
+    		staff['blood_group']=null
+    	}else{
+    	    staff['blood_group']=self.refs.blood_group.value	
+    	}
+
+    //	staff['blood_group']=self.refs.blood_group.value
+
+    	if(self.refs.religion_id.value==''){
+    		staff['religion_id']=null
+    	}else{
+    	    staff['religion_id']=self.refs.religion_id.value	
+    	}
+
+    	//staff['religion_id']=self.refs.religion_id.value
     	staff['language']=self.refs.language.value
-    	staff['emp_type_id']=self.refs.emp_type_id.value
-    	staff['department_id']=self.refs.department_id.value
+
+    	if(self.refs.emp_type_id.value==''){
+    		staff['emp_type_id']=null
+    	}else{
+    	    staff['emp_type_id']=self.refs.emp_type_id.value	
+    	}
+
+
+    	if(self.refs.department_id.value==''){
+    		staff['department_id']=null
+    	}else{
+    	    staff['department_id']=self.refs.department_id.value	
+    	}
+
+    	/*if(self.refs.level_id.value==''){
+    		staff['level_id']=null
+    	}else{
+    	    staff['level_id']=self.refs.level_id.value	
+    	}*/
+
+    	if(self.refs.designation_id.value==''){
+    		staff['designation_id']=null
+    	}else{
+    	    staff['designation_id']=self.refs.designation_id.value	
+    	}
+/*
+    	if(self.refs.employment_status_id.value==''){
+    		staff['employment_status_id']=null
+    	}else{
+    	    staff['employment_status_id']=self.refs.employment_status_id.value	
+    	}*/
+        if(self.refs.subject_id.value==''){
+    		staff['subject_id']=null
+    	}else{
+    	    staff['subject_id']=self.refs.subject_id.value	
+    	}
+
+    	 if(self.refs.category_id.value==''){
+    		staff['category_id']=null
+    	}else{
+    	    staff['category_id']=self.refs.category_id.value	
+    	}
+
+
+
+
+    //	staff['blood_group']=self.refs.blood_group.value
+    	//staff['religion_id']=self.refs.religion_id.value
+    	staff['language']=self.refs.language.value
+    //	staff['emp_type_id']=self.refs.emp_type_id.value
+    	//staff['department_id']=self.refs.department_id.value
     	//staff['level_id']=self.refs.level_id.value
     //	staff['employment_status_id']=self.refs.employment_status_id.value
-    	staff['subject_id']=self.refs.subject_id.value
-    	staff['designation_id']=self.refs.designation_id.value
+    	//staff['subject_id']=self.refs.subject_id.value
+    	//staff['designation_id']=self.refs.designation_id.value
     	staff['qualification']=self.refs.qualification.value
     	staff['doj']=convertDate(self.refs.doj.value)
     	staff['place_of_birth']=self.refs.place_of_birth.value
-    	staff['category_id']=self.refs.category_id.value
+    	//staff['category_id']=self.refs.category_id.value
     	staff['dob']=convertDate(self.refs.dob.value)
-    	staff['blood_group']=self.refs.blood_group.value
+    	//staff['blood_group']=self.refs.blood_group.value
     	staff['add_l1']=self.refs.add_l1.value
     	staff['add_l2']=self.refs.add_l2.value
     	staff['city']=self.refs.city.value
@@ -2780,94 +2978,191 @@
     	family['child3_dob']=convertDate(self.refs.child3_dob.value)
     	family['child3_school']=self.refs.child3_school.value
         
-        obj['family']=family
+       obj['family']=family
     	
     	/*Qualification Information*/
     	var qualification={};
     	qualification['x_subject']=self.refs.x_subject.value
     	qualification['x_institution']=self.refs.x_institution.value
     	qualification['x_board']=self.refs.x_board.value
-    	qualification['x_yop']=self.refs.x_yop.value
+    	if(self.refs.x_yop.value==''){
+    		qualification['x_yop']=null
+    	}else{
+    	    qualification['x_yop']=self.refs.x_yop.value
+    	}
     	qualification['x_marks']=self.refs.x_marks.value
     	qualification['x_div']=self.refs.x_div.value
     	qualification['xii_subject']=self.refs.xii_subject.value
     	qualification['xii_institution']=self.refs.xii_institution.value
     	qualification['xii_board']=self.refs.xii_board.value
-    	qualification['xii_yop']=self.refs.xii_yop.value
+
+    	if(self.refs.xii_yop.value==''){
+    		qualification['xii_yop']=null
+    	}else{
+    	    qualification['xii_yop']=self.refs.xii_yop.value
+    	}
+
+    	//qualification['xii_yop']=self.refs.xii_yop.value
     	qualification['xii_marks']=self.refs.xii_marks.value
     	qualification['xii_div']=self.refs.xii_div.value
     	qualification['ug_course']=self.refs.ug_course.value
     	qualification['ug_institution']=self.refs.ug_institution.value
     	qualification['ug_university']=self.refs.ug_university.value
-    	qualification['ug_yop']=self.refs.ug_yop.value
+    	
+
+    	if(self.refs.ug_yop.value==''){
+    		qualification['ug_yop']=null
+    	}else{
+    	    qualification['ug_yop']=self.refs.ug_yop.value
+    	}
+
+    	//qualification['ug_yop']=self.refs.ug_yop.value
     	qualification['ug_marks']=self.refs.ug_marks.value
     	qualification['ug_div']=self.refs.ug_div.value
     	qualification['pg_course']=self.refs.pg_course.value
     	qualification['pg_institution']=self.refs.pg_institution.value
     	qualification['pg_university']=self.refs.pg_university.value
-    	qualification['pg_yop']=self.refs.pg_yop.value
+
+
+    	if(self.refs.pg_yop.value==''){
+    		qualification['pg_yop']=null
+    	}else{
+    	    qualification['pg_yop']=self.refs.pg_yop.value
+    	}
+
+    	//qualification['pg_yop']=self.refs.pg_yop.value
     	qualification['pg_marks']=self.refs.pg_marks.value
     	qualification['pg_div']=self.refs.pg_div.value
     	qualification['bed_stream']=self.refs.bed_stream.value
     	qualification['bed_institution']=self.refs.bed_institution.value
     	qualification['bed_university']=self.refs.bed_university.value
-    	qualification['bed_yop']=self.refs.bed_yop.value
+
+
+    	if(self.refs.bed_yop.value==''){
+    		qualification['bed_yop']=null
+    	}else{
+    	    qualification['bed_yop']=self.refs.bed_yop.value
+    	}
+
+    	//qualification['bed_yop']=self.refs.bed_yop.value
     	qualification['bed_marks']=self.refs.bed_marks.value
     	qualification['bed_div']=self.refs.bed_div.value
 
     	qualification['bt_stream']=self.refs.bt_stream.value
     	qualification['bt_institution']=self.refs.bt_institution.value
     	qualification['bt_university']=self.refs.bt_university.value
-    	qualification['bt_yop']=self.refs.bt_yop.value
+
+
+    	if(self.refs.bt_yop.value==''){
+    		qualification['bt_yop']=null
+    	}else{
+    	    qualification['bt_yop']=self.refs.bt_yop.value
+    	}
+
+
+    	//qualification['bt_yop']=self.refs.bt_yop.value
     	qualification['bt_marks']=self.refs.bt_marks.value
     	qualification['bt_div']=self.refs.bt_div.value
 
     	qualification['bped_stream']=self.refs.bped_stream.value
     	qualification['bped_institution']=self.refs.bped_institution.value
     	qualification['bped_university']=self.refs.bped_university.value
-    	qualification['bped_yop']=self.refs.bped_yop.value
+    	
+    	if(self.refs.bped_yop.value==''){
+    		qualification['bped_yop']=null
+    	}else{
+    	    qualification['bped_yop']=self.refs.bped_yop.value
+    	}
+
+
+    	//qualification['bped_yop']=self.refs.bped_yop.value
     	qualification['bped_marks']=self.refs.bped_marks.value
     	qualification['bped_div']=self.refs.bped_div.value
 
     	qualification['dped_stream']=self.refs.dped_stream.value
     	qualification['dped_institution']=self.refs.dped_institution.value
     	qualification['dped_university']=self.refs.dped_university.value
-    	qualification['dped_yop']=self.refs.dped_yop.value
+    	 
+    	if(self.refs.dped_yop.value==''){
+    		qualification['dped_yop']=null
+    	}else{
+    	    qualification['dped_yop']=self.refs.dped_yop.value
+    	}
+ 
+    	//qualification['dped_yop']=self.refs.dped_yop.value
     	qualification['dped_marks']=self.refs.dped_marks.value
     	qualification['dped_div']=self.refs.dped_div.value
 
     	qualification['mped_stream']=self.refs.mped_stream.value
     	qualification['mped_institution']=self.refs.mped_institution.value
     	qualification['mped_university']=self.refs.mped_university.value
-    	qualification['mped_yop']=self.refs.mped_yop.value
+
+
+    	if(self.refs.mped_yop.value==''){
+    		qualification['mped_yop']=null
+    	}else{
+    	    qualification['mped_yop']=self.refs.mped_yop.value
+    	}
+
+    	//qualification['mped_yop']=self.refs.mped_yop.value
     	qualification['mped_marks']=self.refs.mped_marks.value
     	qualification['mped_div']=self.refs.mped_div.value
 
     	qualification['med_stream']=self.refs.med_stream.value
     	qualification['med_institution']=self.refs.med_institution.value
     	qualification['med_university']=self.refs.med_university.value
-    	qualification['med_yop']=self.refs.med_yop.value
+
+    	if(self.refs.med_yop.value==''){
+    		qualification['med_yop']=null
+    	}else{
+    	    qualification['med_yop']=self.refs.med_yop.value
+    	}
+
+    	//qualification['med_yop']=self.refs.med_yop.value
     	qualification['med_marks']=self.refs.med_marks.value
     	qualification['med_div']=self.refs.med_div.value
 
     	qualification['mphil_stream']=self.refs.mphil_stream.value
     	qualification['mphil_institution']=self.refs.mphil_institution.value
     	qualification['mphil_university']=self.refs.mphil_university.value
-    	qualification['mphil_yop']=self.refs.mphil_yop.value
+
+    	if(self.refs.mphil_yop.value==''){
+    		qualification['mphil_yop']=null
+    	}else{
+    	    qualification['mphil_yop']=self.refs.mphil_yop.value
+    	}
+
+    	//qualification['mphil_yop']=self.refs.mphil_yop.value
     	qualification['mphil_marks']=self.refs.mphil_marks.value
     	qualification['mphil_div']=self.refs.mphil_div.value
 
     	qualification['phd_stream']=self.refs.phd_stream.value
     	qualification['phd_institution']=self.refs.phd_institution.value
     	qualification['phd_university']=self.refs.phd_university.value
-    	qualification['phd_yop']=self.refs.phd_yop.value
+
+
+    	if(self.refs.phd_yop.value==''){
+    		qualification['phd_yop']=null
+    	}else{
+    	    qualification['phd_yop']=self.refs.phd_yop.value
+    	}
+
+    	//qualification['phd_yop']=self.refs.phd_yop.value
     	qualification['phd_marks']=self.refs.phd_marks.value
     	qualification['phd_div']=self.refs.phd_div.value
 
     	qualification['other_stream']=self.refs.other_stream.value
     	qualification['other_institution']=self.refs.other_institution.value
     	qualification['other_university']=self.refs.other_university.value
-    	qualification['other_yop']=self.refs.other_yop.value
+    	
+
+    	if(self.refs.other_yop.value==''){
+    		qualification['other_yop']=null
+    	}else{
+    	    qualification['other_yop']=self.refs.other_yop.value
+    	}
+
+    	//qualification['other_yop']=self.refs.other_yop.value
     	qualification['other_marks']=self.refs.other_marks.value
     	qualification['other_div']=self.refs.other_div.value
 
@@ -2898,7 +3193,7 @@
 		obj['previous_job']=previous_job
 		
 
-		var work_experience={}
+		//var work_experience={}
     	
     	//obj['parent']=parent
 
@@ -2911,8 +3206,7 @@
 
     self.editProfile = () => {
       self.editType='tempEditProfile'
-      /*console.log(c)
-      self.emp_id = c*/
+        self.workExperienceArray=[{}]
       flatpickr(".date", {
 	    allowInput: true,
         dateFormat: "d/m/Y",
@@ -2935,6 +3229,7 @@
     }*/
 
     self.clearForm = () => {
+    	pp_box.style.backgroundImage = "";
     	self.refs.title.value=''
     	self.refs.first_name.value=''
     	self.refs.middle_name.value=''
@@ -3093,6 +3388,7 @@
     	self.refs.details_publication.value=''
     	self.refs.details_curricular_activities.value=''
     	self.refs.details_sport.value=''
+    	  self.workExperienceArray=[{}]
     }
 
 
@@ -3177,8 +3473,14 @@
     }
 
     staffStore.on('read_for_edit_staff_changed',ReadForEditStaffChanged)
-    function ReadForEditStaffChanged(staff_details){
+    function ReadForEditStaffChanged(staff_details,workArray){
     	console.log("edit Profile")
+    		 flatpickr(".date", {
+	    	allowInput: true,
+        	dateFormat: "d/m/Y",
+  		})
+  	    self.workExperienceArray =[{}]
+        self.workExperienceArray=workArray
      	self.staff_details=staff_details
      	//if(self.title=='Update'){
      		console.log("staff Edit")

@@ -1,11 +1,17 @@
 <id-signature>
+  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
 		<div class="level">
 	    	<div class="level-left">
-	        	<h2 class="title" style="color: #ff3860;">ID Card Signature Management</h2>
+	        	<h2 class="title is-size-5" style="color: #ff3860;">ID Card Signature Management</h2>
 	      	</div>
       		<div class="level-right">
-        		<button class="button is-warning is-rounded" onclick={openAddSignatureModal}>
+        		<button class="button is-link has-text-weight-bold ml5 is-small" onclick={getSignatureData}>
+              <span class="icon">
+                  <span class="fas fa-sync-alt"></span>
+              </span>
+            </button>
+            <button class="button is-warning has-text-weight-bold ml5 is-small" onclick={openAddSignatureModal}>
         			<span class="icon">
           				<span class="fas fa-plus"></span>
         			</span>
@@ -89,7 +95,7 @@
       self.title='Add'
       self.role = getCookie('role')
       self.update()
-      self.readSignature()
+      self.getSignatureData()
     })
 
      self.on("unmount", function(){
@@ -100,8 +106,16 @@
       idSignatureStore.off('delete_signature_changed',DeleteSignatureChanged)
     })
 
+     self.getSignatureData = () => {
+      self.readSignature()
+      self.loading = true
+
+     }
+
     self.openAddSignatureModal = () => {
       self.title = 'Add'
+       self.refs.type.value='Principal'
+       pp_box.style.backgroundImage = "";
       $("#signatureModal").addClass("is-active");
     }
 
@@ -213,21 +227,17 @@
       self.signature = signature
       self.uploadSignatureImage(type)
       $("#signatureModal").removeClass("is-active");
-      self.readSignature()
       self.update()
+      self.readSignature()
     }
 
     idSignatureStore.on('edit_signature_changed',EditSignatureChanged)
     function EditSignatureChanged(signature,type){
-      console.log(signature)
-      console.log("/****************")
-      console.log(type) 
-      console.log("/****************")
       self.signature = signature
       self.uploadSignatureImage(type)
       $("#signatureModal").removeClass("is-active");
-      self.readSignature()
       self.update()
+      self.readSignature()
     }
 
     idSignatureStore.on('delete_signature_changed',DeleteSignatureChanged)
@@ -248,6 +258,7 @@
     function ReadSignatureChanged(signature){
       /*console.log(signature)*/
       self.signature = signature
+      self.loading = false
       self.update()
     }
     
@@ -256,6 +267,8 @@
     function UploadSignatureImage(image_name){
       console.log(image_name) 
       self.signature_picture = image_name
+      //self.readSignature()
+      self.update()
     }
 
 </script>

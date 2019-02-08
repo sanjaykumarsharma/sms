@@ -2,40 +2,49 @@
 	<loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid" show={interviewed_candidate_view =='show_interviewed_candidate'}>
   	<h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Interviewee List</h2>
-
-	<div class="box no-print">
-		<div class="columns">
-			<div class="column is-narrow">
-				<label class="label">From Date</label>
-			</div>
-			<div class="column is-narrow">
-				<input class="input date" ref="start_date" id="start_date" type="text" readonly="readonly">
-			</div>
-			<div class="column is-narrow">
-				<label class="label">To Date</label>
-			</div>
-			<div class="column is-narrow">
-				<input class="input date" ref="end_date" id="end_date" type="text" readonly="readonly">
-			</div>
-			<div class="column">
-				<button class="button is-danger has-text-weight-bold"
-				onclick={getData} > GO
-				</button>
-			</div>
-      		<div class="column">
-        		<button class="button is-primary has-text-weight-bold ml5 is-pulled-right" 
-        		onclick={showStaffField}>
-          		Setting
-        		</button>
-            <button class="button is-link has-text-weight-bold ml5 is-pulled-right" onclick={getData}>
-              <span class="icon">
-                <span class="fas fa-sync-alt"></span>
-              </span>
-            </button>
-      		</div>
-		</div>
-	</div>
-	<table class="table is-fullwidth is-bordered is-hoverable is-narrow">
+    <div class="level box no-print">
+      <div class="level-left">
+        <div class="columns">
+          <div class="column is-narrow">
+            <label class="label">From Date</label>
+          </div>
+          <div class="column is-narrow">
+            <input class="input date" ref="start_date" id="start_date" type="text" readonly="readonly">
+          </div>
+          <div class="column is-narrow">
+            <label class="label">To Date</label>
+          </div>
+          <div class="column is-narrow">
+            <input class="input date" ref="end_date" id="end_date" type="text" readonly="readonly">
+          </div>
+          <div class="column">
+            <button class="button is-danger has-text-weight-bold" onclick={getData} > GO </button>
+          </div>
+        </div>
+      </div>
+      <div class="level-right">
+        <div class="control">
+          <input class="input" ref="searchApplicantDetail" onkeyup={filterApplicantDetail} type="text" placeholder="Search By Enroll No or Name">
+        </div>
+        <button class="button is-primary has-text-weight-bold ml5" onclick={showStaffField}>Setting</button>
+        <button class="button is-link has-text-weight-bold ml5" onclick={getDisciplineData}>
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+        </button>
+        <button class="button is-success has-text-weight-bold ml5" onclick={downloadCSV}>
+          <span class="icon">
+            <i class="far fa-file-excel"></i>
+          </span>
+        </button>
+        <a class="button is-primary has-text-weight-bold ml5" onclick="window.print()">
+          <span class="icon">
+            <i class="fas fa-print"></i>
+          </span>
+        </a> 
+      </div>
+    </div>
+    <table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 		<thead>
 			<tr>
 			    <th>Sl No</th>
@@ -136,7 +145,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr each={a, i in ApplicantData}>
+			<tr each={a, i in filteredApplicantDetail}>
 				<td>{ i+1 }</td>
 				<td>{a.career_id}</td>
 				<td show={view_name=='show_name'}>{a.full_name}</td>
@@ -261,8 +270,8 @@
 	        <p class="modal-card-title">Setting Configuaration</p>
 	      </header>
 	      <section class="modal-card-body">
-	        <div class="columns">
-            <table class="table is-fullwidth">
+	        <!-- <div class="columns is-multiline" > -->
+            <!-- <table class="table is-fullwidth">
               <tbody>
                 <tr each={st, i in fieldList}>
                   <td>
@@ -271,13 +280,17 @@
                   </td>
                 </tr>
               </tbody>
-            </table>
-	        </div>
+            </table> -->
+            <div each={st, i in fieldList}  class="setting-detail">
+              <input class="checkbox" style="" type="checkbox" checked={st.done} id="{'addStaffName' + st.array_name}"
+                     onclick={addCheckedColumn.bind(this,st) }>{st.field_name}
+            </div>
+	        <!-- </div> -->
 	      </section>
 	      <footer class="modal-card-foot">
 	        <div class="control">
 	            <input type="checkbox" id="checkAllCheckBox" 
-		      onclick={selectAllCheckBox}> All
+		      onclick={selectAllCheckBox}><b>Check All</b>
 	        </div>
 	        <button class="button" id="item-modal-close" onclick={closeCheckBoxModal}>Close</button>
 	      </footer>
@@ -1581,6 +1594,13 @@ self.fieldList.map( q => {
       careerStore.trigger('delete_applicant_detail', e.item.a.career_id)
     }
 
+    self.filterApplicantDetail = ()=>{
+      self.filteredApplicantDetail = self.ApplicantData.filter(c => {
+        //var filter_value=c.student_name + c.enroll_number;
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchApplicantDetail.value.toLowerCase())>=0
+      })
+    }
+
     careerStore.on('delete_applicant_detail_changed',DeleteApplicantDetailChanged)
     function DeleteApplicantDetailChanged(){
     	self.loading=false;
@@ -1592,6 +1612,7 @@ self.fieldList.map( q => {
     function ReadApplicantDetailChanged(applicant_details){
       self.ApplicantData=[];
       self.ApplicantData = applicant_details
+      self.filteredApplicantDetail = applicant_details
       if(self.ApplicantData.length==0){
       	toastr.info("No Data Found")
       }
@@ -1605,7 +1626,7 @@ self.fieldList.map( q => {
     function CreateInterviewCallChanged(){
       self.closecreateInterviewModal()
       self.getData()
-      self.update();
+      
     }
 
     careerStore.on('read_applicant_profile_changed',ReadApplicantProfileChanged)

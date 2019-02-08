@@ -173,8 +173,8 @@ function StaffStore() {
           console.log(data)
           if(data.status == 's'){
             self.staff_details = data.staff_details
-            self.workExperienceArray = data.workExperienceArray
-            self.trigger('read_for_edit_staff_changed', data.staff_details,self.workExperienceArray)
+            self.workArray = data.workExperienceArray
+            self.trigger('read_for_edit_staff_changed', data.staff_details,self.workArray)
           }else if(data.status == 'e'){
             showToast("Student Read Error. Please try again.", data)
           }

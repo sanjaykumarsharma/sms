@@ -62,6 +62,11 @@
 				</div>
 			</div>
 			<div class="level-right" >
+				<div class="column is-narrow field">
+					<div class="control">
+				    	<input class="input" ref="searchStudent" onkeyup={filterStudent} type="text" placeholder="Search Here">
+				  	</div>
+				</div>
 				<div class="column is-narrow field has-addons">
 					<div class="control">
 				    	<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
@@ -104,7 +109,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in students}>
+				<tr each={st, i in filteredStudent}>
 					<td>{st.roll_number}</td>
 					<td>{st.name}</td>
 					<td>{st.enroll_number}</td>
@@ -309,7 +314,7 @@
 	<section class=" is-fluid" show={student_view =='student_profile'}>
 		<div class="level no-print">
 			<div class="level-left">
-				<h2 class="title has-text-danger is-size-5">Profile of {st.first_name}{st.middle_name}{st.last_name}</h2>
+				<h2 class="title has-text-danger is-size-5">Profile of {st.first_name} {st.middle_name} {st.last_name}</h2>
 			</div>
 			<div class="level-right">
 				<!-- <a class="button no-print" onclick={}>Back</a> -->
@@ -1287,12 +1292,6 @@
 	      	<div class="column is-2 ">
 				<input class="input is-small" ref="f_other_qualification" type="text">
 	      	</div>
-	      	<div class="column is-2">
-				<label class="label is-small" for="f_office_state">State</label>
-	      	</div>
-	      	<div class="column is-2">
-        		<input class="input is-small" ref="f_office_state" type="text">
-	      	</div>
 		</div>
 
 		<div class="columns mt30">
@@ -1523,12 +1522,6 @@
 	      	</div>
 	      	<div class="column is-2 ">
 				<input class="input is-small" ref="m_office_phone" type="number">
-	      	</div>
-	      	<div class="column is-2">
-				<label class="label is-small" for="m_office_state">State</label>
-	      	</div>
-	      	<div class="column is-2">
-        		<input class="input is-small" ref="m_office_state" type="text">
 	      	</div>
 		</div>
 
@@ -1806,12 +1799,6 @@
 	      	</div>
 	      	<div class="column is-2 ">
 				<input class="input is-small" id="g_office_phone" ref="g_office_phone" type="number">
-	      	</div>
-	      	<div class="column is-2">
-				<label class="label is-small" for="g_office_state">State</label>
-	      	</div>
-	      	<div class="column is-2">
-        		<input class="input is-small" id="g_office_state" ref="g_office_state" type="text">
 	      	</div>
 		</div>
 
@@ -2335,33 +2322,39 @@
     		</button>
 	  	</div>
 	</div>
-	<div class=" box">
-		<div class="columns">
-			<div class="column is-narrow">
-				<div class="control">
-					<div class="select">
-						<select ref="firstEditValue" onchange={getFirstEditData}>
-							<option value="0">Choose Any Field</option>
-							<option value="reg_number">Registration No</option>
-							<option value="enroll_number">Enroll No</option>
-							<option value="mobile">SMS</option>
-							<option value="residence_phone">Student's Phone(R)</option>
-							<option value="fax">Emergency No</option>
-							<option value="email">Student Email</option>
-							<option value="blood_group">Blood Group</option>
-							<option value="f_mobile">Father's Mobile</option>
-							<option value="f_email">Father's Email</option>
-							<option value="m_mobile">Mother's Mobile</option>
-							<option value="m_email">Mother's Email</option>
-							<option value="reference_enrol">Reference Enrol</option>
-						</select>
+	<div class="level box no-print">
+		<div class="level-left">
+			<div class="columns">
+				<div class="column is-narrow">
+					<div class="control">
+						<div class="select">
+							<select ref="firstEditValue" onchange={getFirstEditData}>
+								<option value="0">Choose Any Field</option>
+								<option value="reg_number">Registration No</option>
+								<option value="enroll_number">Enroll No</option>
+								<option value="mobile">SMS</option>
+								<option value="residence_phone">Student's Phone(R)</option>
+								<option value="fax">Emergency No</option>
+								<option value="email">Student Email</option>
+								<option value="blood_group">Blood Group</option>
+								<option value="f_mobile">Father's Mobile</option>
+								<option value="f_email">Father's Email</option>
+								<option value="m_mobile">Mother's Mobile</option>
+								<option value="m_email">Mother's Email</option>
+								<option value="reference_enrol">Reference Enrol</option>
+							</select>
+						</div>
 					</div>
 				</div>
-			</div>		
+			</div>
+		</div>
+		<div class="level-right">
+			<button class="button is-success has-text-weight-bold" onclick={EditFirstData}>Submit</button>
+			<button class="button is-danger has-text-weight-bold ml5" onclick={close_first_edit}>Cancel</button>
 		</div>
 	</div>
 
-	<table class="table is-fullwidth is-striped is-hoverable is-narrow">
+	<table class="table is-fullwidth is-hoverable is-narrow is-bordered">
 		<thead>
 			<tr>
 				<th>SL No</th>
@@ -2395,7 +2388,7 @@
 			</tr>
 		</tbody>
 	</table>
-	<div class="level">
+	<!-- <div class="level">
 	  	<div class="level-left">
 	    	<div class="level-item"></div>
 		</div>
@@ -2405,7 +2398,7 @@
 			<button class="button is-danger has-text-weight-bold adjusted-top ml10" 
 				onclick={close_first_edit}>Cancel</button>
 	  	</div>
-	</div>
+	</div> -->
 
 </section>
 <!-- End First Edit View -->
@@ -2442,6 +2435,10 @@
 		self.column_eight = false   		
 		self.column_nine = false
 		/*first edit column*/
+		self.is_father_image=false
+		self.is_student_image=false
+		self.is_mother_image=false
+		self.is_guardian_image=false
 		
         self.update()
         flatpickr(".date", {
@@ -2461,6 +2458,7 @@
       studentStore.off('read_for_edit_student_changed',ReadForEditStudentChanged)
       studentStore.off('upload_student_image_changed',UploadStudentImage)
       studentStore.off('upload_father_image_changed',UploadFatherImage)
+      studentStore.off('delete_upload_father_image_changed',DeleteUploadFatherImage)
       studentStore.off('upload_mother_image_changed',UploadMotherImage)
       studentStore.off('upload_guardian_image_changed',UploadGuardianImage)
       studentStore.off('upload_copy_father_image_changed',UploadGuardianCopyFatherImage)
@@ -2604,10 +2602,10 @@
     	}else if((self.refs.f_office_zip.value).length!=6 && (self.refs.f_office_zip.value).length!=0){
         	toastr.error("Please enter Valid Office Zip Code and try again")
         	return;
-      	}else if((self.refs.f_office_phone.value).length<16 && (self.refs.f_office_phone.value).length!=0){
+      	}/*else if((self.refs.f_office_phone.value).length<16 && (self.refs.f_office_phone.value).length!=0){
         	toastr.error("Please enter Valid Office Phone No and try again")
         	return;
-      	}else if((self.refs.f_zip.value).length!=6 && (self.refs.f_zip.value).length!=0){
+      	}*/else if((self.refs.f_zip.value).length!=6 && (self.refs.f_zip.value).length!=0){
         	toastr.error("Please enter Valid Zip Code and try again")
         	return;
       	}else if(!self.refs.f_mobile.value.match(phoneno) && (self.refs.f_mobile.value).length!=0){
@@ -2637,10 +2635,10 @@
     	}else if((self.refs.m_office_zip.value).length!=6 && (self.refs.m_office_zip.value).length!=0){
         	toastr.error("Please enter Valid Office Zip Code and try again")
         	return;
-      	}else if((self.refs.m_office_phone.value).length<16 && (self.refs.m_office_phone.value).length!=0){
+      	}/*else if((self.refs.m_office_phone.value).length<16 && (self.refs.m_office_phone.value).length!=0){
         	toastr.error("Please enter Valid Office Phone No and try again")
         	return;
-      	}else if((self.refs.m_zip.value).length!=6 && (self.refs.m_zip.value).length!=0){
+      	}*/else if((self.refs.m_zip.value).length!=6 && (self.refs.m_zip.value).length!=0){
         	toastr.error("Please enter Valid Zip Code and try again")
         	return;
       	}else if(!self.refs.m_mobile.value.match(phoneno) && (self.refs.m_mobile.value).length!=0){
@@ -2677,10 +2675,10 @@
     	}else if((self.refs.g_office_zip.value).length!=6 && (self.refs.g_office_zip.value).length!=0){
         	toastr.error("Please enter Valid Office Zip Code and try again")
         	return;
-      	}else if((self.refs.g_office_phone.value).length<16 && (self.refs.g_office_phone.value).length!=0){
+      	}/*else if((self.refs.g_office_phone.value).length<16 && (self.refs.g_office_phone.value).length!=0){
         	toastr.error("Please enter Valid Office Phone No and try again")
         	return;
-      	}else if((self.refs.g_zip.value).length!=6 && (self.refs.g_zip.value).length!=0){
+      	}*/else if((self.refs.g_zip.value).length!=6 && (self.refs.g_zip.value).length!=0){
         	toastr.error("Please enter Valid Zip Code and try again")
         	return;
       	}else if((self.refs.g_phone.value).length<16 && (self.refs.g_phone.value).length!=0){
@@ -2993,6 +2991,9 @@
 		pp_box.style.backgroundImage = "";
 		document.getElementById(item2).value = ""
 		event.stopPropagation();
+		/*if(self.title=='Update'){
+			studentStore.trigger('delete_upload_student_image', self.student_picture,self.student_id)
+		}*/
 	}
 
 	self.trigger_file_input = (item,e) => {
@@ -3030,6 +3031,11 @@
 		f_pp_box.style.backgroundImage = "";
 		document.getElementById(item2).value = ""
 		event.stopPropagation();
+		self.is_father_image=false
+		console.log(self.is_father_image)
+		if(self.title=='Update'){
+			studentStore.trigger('delete_upload_father_image',self.student_id)
+		}
 	}
 
 	self.trigger_father_file_input = (item,e) => {
@@ -3095,6 +3101,8 @@
     		studentStore.trigger('upload_mother_image', self.mother_picture,student_id)
 		}
     }
+	
+	/* End */
 
     self.uploadCopyFatherImage = (student_id) => {
 		
@@ -3106,8 +3114,6 @@
     	studentStore.trigger('upload_copy_mother_image',student_id)
     }
 
-
-	/* End */
 
 	/* Start Guardian Image*/
 	self.remove_guardian_picture = (item1, item2, e) => {
@@ -3543,12 +3549,13 @@
         dateFormat: "d/m/Y",
   		})
       self.student_view = 'add_student'
+      
       self.title='Update'
       studentStore.trigger('read_for_edit_student',self.student_id)
       document.getElementById('pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/studentImages/'+c+'.jpg)';
       document.getElementById('f_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/fatherImages/'+c+'.jpg)';
       document.getElementById('m_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/motherImages/'+c+'.jpg)';
-      document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/guardianImages/'+c+'.jpg)';
+      //document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/guardianImages/'+c+'.jpg)';
       if(self.refs.is_guardian.value == 'Father'){
       	document.getElementById('g_pp_box').style.backgroundImage = 'url(/images/'+self.session_id+'/fatherImages/'+c+'.jpg)';
       }else if(self.refs.is_guardian.value == 'Mother'){
@@ -3801,9 +3808,13 @@
     	self.GetStaffName()
     	$('#correspondenceCheckbox').prop('checked', false)
 
-    	self.refs.transport_mode.value = ""
+    	/*self.refs.transport_mode.value = ""
     	self.refs.school_distance.value = ""
-    	self.refs.differently_abled.value = ""
+    	self.refs.differently_abled.value = ""*/
+
+    	self.refs.transport_mode.value = "None"
+    	self.refs.school_distance.value = "1 km"
+    	self.refs.differently_abled.value = "None"
 
     	self.refs.section_id.value = ""
     	self.refs.house_id.value = "0"
@@ -3936,8 +3947,9 @@
 
     self.first_edit = ()=>{
     	self.student_view = 'first_edit_view'
-	    self.refs.firstEditValue.value=0
-	   	self.student_first_edit =[]
+    	self.refs.firstEditValue.value=0
+    	self.student_first_edit =[]
+
     }
 
     self.close_first_edit = () => {
@@ -3956,6 +3968,7 @@
     		return;
     	}
     	self.loading = true
+
     	studentStore.trigger('read_student_first_edit', self.refs.read_standard_id.value,
     		self.refs.read_section_id.value,self.refs.firstEditValue.value)
     }
@@ -3973,10 +3986,19 @@
     	studentStore.trigger('edit_student_first',editValues,self.refs.firstEditValue.value)
     }
 
+    self.filterStudent = ()=>{
+    	self.filteredStudent = self.students.filter(c => {
+       		return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchStudent.value.toLowerCase())>=0
+   		})
+    }
+
+    
+
     studentStore.on('read_student_first_edit_changed',ReadStudentFirstEditChanged)
     function ReadStudentFirstEditChanged(student_first_edit){
       console.log(student_first_edit) 
       self.loading=false
+      /*self.student_first_edit =[]*/
       self.student_first_edit = student_first_edit
       self.update()
     }
@@ -4034,6 +4056,7 @@
     function StudentChanged(students,session_id,session_name ,role){
       self.loading = false
       self.students = students
+      self.filteredStudent = students
       self.session_id = session_id
       self.session_name = session_name
       self.StandardName = $("#read_standard_id option:selected").text();
@@ -4052,193 +4075,7 @@
     	self.st=student_profile_details[0]
     	console.log(student_profile_details) 
       	self.student_profile_details = student_profile_details
-      	/*self.refs.first_name.value = student_profile_details[0].first_name
-      	self.refs.middle_name.value = student_profile_details[0].middle_name
-      	self.refs.last_name.value = student_profile_details[0].last_name
-      	self.refs.standard_id.value = student_profile_details[0].standard_id
-      	self.filteredSections = []
-    	self.filteredSections = self.sections.filter(s => {
-    		return s.standard_id == student_profile_details[0].standard_id
-    	})
-    	self.refs.house_id.value = student_profile_details[0].house_id
-    	self.refs.enroll_number.value = student_profile_details[0].enroll_number
-		self.refs.roll_number.value = student_profile_details[0].roll_number
-		self.refs.reg_number.value = student_profile_details[0].reg_number
-		self.refs.gender.value = student_profile_details[0].gender
-		self.refs.category_id.value = student_profile_details[0].category_id
-		self.refs.dob.value = student_profile_details[0].dob
-		self.refs.blood_group.value = student_profile_details[0].blood_group
-		self.refs.p_add_l1.value = student_profile_details[0].p_add_l1
-		self.refs.p_add_l2.value = student_profile_details[0].p_add_l2
-		self.refs.p_city.value = student_profile_details[0].p_city
-		self.refs.p_zip.value = student_profile_details[0].p_zip
-		self.refs.p_state.value = student_profile_details[0].p_state
-		self.refs.p_country.value = student_profile_details[0].p_country
-		
-		if(student_profile_details[0].is_permanent == 1){
-			$('#correspondenceCheckbox').prop('checked', true)
-		}
-		else{
-			$('#correspondenceCheckbox').prop('checked', false)
-		}
-		self.refs.c_add_l1.value=student_profile_details[0].c_add_l1
-    	self.refs.c_add_l2.value=student_profile_details[0].c_add_l2
-    	self.refs.c_city.value=student_profile_details[0].c_city
-    	self.refs.c_zip.value=student_profile_details[0].c_zip
-    	self.refs.c_state.value=student_profile_details[0].c_state
-    	self.refs.c_country.value=student_profile_details[0].c_country
-
-		self.refs.mobile.value = student_profile_details[0].mobile
-		self.refs.emergency_no.value = student_profile_details[0].fax
-		self.refs.student_type.value = student_profile_details[0].student_type
-		self.refs.aadhar_no.value = student_profile_details[0].aadhar_no
-		self.refs.doa.value = student_profile_details[0].doa
-		self.refs.old_doa.value = student_profile_details[0].old_doa
-		self.refs.doj.value = student_profile_details[0].doj
-		self.refs.old_doj.value = student_profile_details[0].old_doj
-		self.refs.mother_tongue.value = student_profile_details[0].mother_tongue
-		self.refs.last_school.value = student_profile_details[0].last_school
-		self.refs.last_class.value = student_profile_details[0].last_class
-		self.refs.admission_for_class.value = student_profile_details[0].admission_for_class
-		self.refs.hobby.value = student_profile_details[0].hobby
-		self.refs.cast.value = student_profile_details[0].cast
-		self.refs.religion_id.value = student_profile_details[0].religion_id
-		self.refs.staff_child.value = student_profile_details[0].staff_child
-		if(self.refs.staff_child.value == "Y"){
-    		self.staff_name = true
-    	}else{
-    		self.staff_name = false
-    	}
-		self.refs.f_name.value = student_profile_details[0].f_name
-		self.refs.f_occupation.value = student_profile_details[0].f_occupation
-		self.refs.f_organisation_type.value = student_profile_details[0].f_organisation_type
-		self.refs.f_annual_income.value = student_profile_details[0].f_annual_income
-		self.refs.f_work_profile.value = student_profile_details[0].f_work_profile
-		self.refs.f_organisation_name.value = student_profile_details[0].f_organisation_name
-		self.refs.f_designation.value = student_profile_details[0].f_designation
-		self.refs.f_department.value = student_profile_details[0].f_department
-		self.refs.f_office_add_l1.value = student_profile_details[0].f_office_add_l1
-		self.refs.f_office_add_l2.value = student_profile_details[0].f_office_add_l2
-		self.refs.f_office_city.value = student_profile_details[0].f_office_city
-		self.refs.f_office_zip.value = student_profile_details[0].f_office_zip
-		self.refs.f_office_state.value = student_profile_details[0].f_office_state
-		self.refs.f_office_country.value = student_profile_details[0].f_office_country
-		self.refs.f_office_phone.value = student_profile_details[0].f_office_phone
-		self.refs.f_qualification.value = student_profile_details[0].f_school_exam_passed
-		self.refs.f_other_qualification.value = student_profile_details[0].f_college_exam_passed
-		self.refs.f_mobile.value = student_profile_details[0].f_mobile
-		self.refs.f_email.value = student_profile_details[0].f_email
-		self.refs.f_nationality.value = student_profile_details[0].f_nationality
-
-    	if(student_profile_details[0].is_caddress == 1){
-			$('#fatherCorrespondenceCheckbox').prop('checked', true)
-		}
-		else{
-			$('#fatherCorrespondenceCheckbox').prop('checked', false)
-		}
-		self.refs.f_add_l1.value=student_profile_details[0].f_add_l1
-		self.refs.f_add_l2.value=student_profile_details[0].f_add_l2
-		self.refs.f_city.value=student_profile_details[0].f_city
-		self.refs.f_zip.value=student_profile_details[0].f_zip
-		self.refs.f_state.value=student_profile_details[0].f_state
-		self.refs.f_country.value=student_profile_details[0].f_country
-
-		self.refs.m_name.value = student_profile_details[0].m_name
-		self.refs.m_occupation.value = student_profile_details[0].m_occupation
-		self.refs.m_organisation_type.value = student_profile_details[0].m_organisation_type
-		self.refs.m_annual_income.value = student_profile_details[0].m_annual_income
-		self.refs.m_work_profile.value = student_profile_details[0].m_work_profile
-		self.refs.m_organisation_name.value = student_profile_details[0].m_organisation_name
-		self.refs.m_designation.value = student_profile_details[0].m_designation
-		self.refs.m_department.value = student_profile_details[0].m_department
-		self.refs.m_office_add_l1.value = student_profile_details[0].m_office_add_l1
-		self.refs.m_office_add_l2.value = student_profile_details[0].m_office_add_l2
-		self.refs.m_office_city.value = student_profile_details[0].m_office_city
-		self.refs.m_office_zip.value = student_profile_details[0].m_office_zip
-		self.refs.m_office_state.value = student_profile_details[0].m_office_state
-		self.refs.m_office_country.value = student_profile_details[0].m_office_country
-		self.refs.m_office_phone.value = student_profile_details[0].m_office_phone
-		self.refs.m_qualification.value = student_profile_details[0].m_school_exam_passed
-		self.refs.m_other_qualification.value = student_profile_details[0].m_college_exam_passed
-
-		if(student_profile_details[0].is_motherAdd == 1){
-			$('#motherCorrespondenceCheckbox').prop('checked', true)
-		}
-		else{
-			$('#motherCorrespondenceCheckbox').prop('checked', false)
-		}
-
-		self.refs.m_add_l1.value = student_profile_details[0].m_add_l1
-		self.refs.m_add_l2.value = student_profile_details[0].m_add_l2
-		self.refs.m_city.value = student_profile_details[0].m_city
-		self.refs.m_zip.value = student_profile_details[0].m_zip
-		self.refs.m_state.value = student_profile_details[0].m_state
-		self.refs.m_country.value = student_profile_details[0].m_country
-		self.refs.m_mobile.value = student_profile_details[0].m_mobile
-		self.refs.m_email.value = student_profile_details[0].m_email
-		self.refs.m_nationality.value = student_profile_details[0].m_nationality
-
-		if(student_profile_details[0].is_guardian == 'Father'){
-			self.refs.is_guardian.value = 'Father'
-		}else if(student_profile_details[0].is_guardian == 'Mother'){
-			self.refs.is_guardian.value = 'Mother'
-		}else{
-			self.refs.is_guardian.value = 'Other'
-		}
-		self.refs.g_name.value = student_profile_details[0].g_name
-		self.refs.g_occupation.value = student_profile_details[0].g_occupation
-		self.refs.g_organisation_type.value = student_profile_details[0].g_organisation_type
-		self.refs.g_annual_income.value = student_profile_details[0].g_annual_income
-		self.refs.g_work_profile.value = student_profile_details[0].g_work_profile
-		self.refs.g_organisation_name.value = student_profile_details[0].g_organisation_name
-		self.refs.g_designation.value = student_profile_details[0].g_designation
-		self.refs.g_department.value = student_profile_details[0].g_department
-		self.refs.g_office_add_l1.value = student_profile_details[0].g_office_add_l1
-		self.refs.g_office_add_l2.value = student_profile_details[0].g_office_add_l2
-		self.refs.g_office_city.value = student_profile_details[0].g_office_city
-		self.refs.g_office_zip.value = student_profile_details[0].g_office_zip
-		self.refs.g_office_state.value = student_profile_details[0].g_office_state
-		self.refs.g_office_country.value = student_profile_details[0].g_office_country
-		self.refs.g_office_phone.value = student_profile_details[0].g_office_phone
-		self.refs.g_qualification.value = student_profile_details[0].g_school_exam_passed
-		self.refs.g_other_qualification.value = student_profile_details[0].g_college_exam_passed
-		self.refs.g_add_l1.value = student_profile_details[0].g_add_l1
-		self.refs.g_add_l2.value = student_profile_details[0].g_add_l2
-		self.refs.g_city.value = student_profile_details[0].g_city
-		self.refs.g_zip.value = student_profile_details[0].g_zip
-		self.refs.g_state.value = student_profile_details[0].g_state
-		self.refs.g_country.value = student_profile_details[0].g_country
-		self.refs.g_phone.value = student_profile_details[0].g_phone
-		self.refs.g_mobile.value = student_profile_details[0].g_mobile
-		self.refs.g_email.value = student_profile_details[0].g_email
-		self.refs.g_nationality.value = student_profile_details[0].g_nationality
-		self.refs.g_relation.value = student_profile_details[0].g_relation
-
-		self.refs.first_child_name.value = student_profile_details[0].first_child_name
-		self.refs.first_child_age.value = student_profile_details[0].first_child_age
-		self.refs.first_child_class.value = student_profile_details[0].first_child_class
-		self.refs.first_child_section.value = student_profile_details[0].first_child_section
-		self.refs.first_enrol.value = student_profile_details[0].first_enrol
-		self.refs.first_child_school.value = student_profile_details[0].first_child_school
-		self.refs.second_child_name.value = student_profile_details[0].second_child_name
-		self.refs.second_child_age.value = student_profile_details[0].second_child_age
-		self.refs.second_child_class.value = student_profile_details[0].second_child_class
-		self.refs.second_child_section.value = student_profile_details[0].second_child_section
-		self.refs.second_enrol.value = student_profile_details[0].second_enrol
-		self.refs.second_child_school.value = student_profile_details[0].second_child_school
-		self.refs.third_child_name.value = student_profile_details[0].third_child_name
-		self.refs.third_child_age.value = student_profile_details[0].third_child_age
-		self.refs.third_child_class.value = student_profile_details[0].third_child_class
-		self.refs.third_child_section.value = student_profile_details[0].third_child_section
-		self.refs.third_enrol.value = student_profile_details[0].third_enrol
-		self.refs.third_child_school.value = student_profile_details[0].third_child_school
-		self.refs.fourth_child_name.value = student_profile_details[0].fourth_child_name
-		self.refs.fourth_child_age.value = student_profile_details[0].fourth_child_age
-		self.refs.fourth_child_class.value = student_profile_details[0].fourth_child_class
-		self.refs.fourth_child_section.value = student_profile_details[0].fourth_child_section
-		self.refs.fourth_enrol.value = student_profile_details[0].fourth_enrol
-		self.refs.fourth_child_school.value = student_profile_details[0].fourth_child_school*/
-
+      	
 
 		if(student_profile_details[0].music == 1){
 			$('#p_music').prop('checked', true)
@@ -4389,9 +4226,23 @@
       self.students = students
       console.log(self.student_id)
       self.uploadStudentImage(self.student_id)
-      self.uploadFatherImage(self.student_id)
-      self.uploadMotherImage(self.student_id)
-      self.uploadGuardianImage(self.student_id)
+      /*self.uploadFatherImage(self.student_id)*/
+      /*self.uploadMotherImage(self.student_id)*/
+      if(document.getElementById("f_pp_box").style.backgroundImage != ""){
+      	self.uploadFatherImage(self.student_id)
+      }if(document.getElementById("m_pp_box").style.backgroundImage != ""){
+      	self.uploadMotherImage(self.student_id)
+      }if(document.getElementById("g_pp_box").style.backgroundImage != ""){
+      	self.uploadGuardianImage(self.student_id)
+      }
+
+      if(self.copyGuardianImage =='Father'){
+      	self.uploadCopyFatherImage(self.student_id)
+      }else if(self.copyGuardianImage=='Mother'){
+      	self.uploadCopyMotherImage(self.student_id)
+      }/*else{
+      	self.uploadGuardianImage(self.student_id)
+      }*/
       self.clearForm()
       self.getStudentData()
       self.student_view = 'show_student'
@@ -4432,6 +4283,7 @@
     studentStore.on('create_student_withdraw_changed',WithDrawStudentChanged)
     function WithDrawStudentChanged(withdraw_students){
       self.closewithdrawModal();
+      self.getStudentData();
       self.update()
     }
 
@@ -4766,6 +4618,11 @@
     function UploadFatherImage(image_name){
       console.log(image_name) 
       self.father_profile_picture = image_name
+    }
+
+    studentStore.on('delete_upload_father_image_changed',DeleteUploadFatherImage)
+    function DeleteUploadFatherImage(){
+      
     }
 
     studentStore.on('upload_mother_image_changed',UploadMotherImage)

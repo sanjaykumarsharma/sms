@@ -48,7 +48,7 @@
 				</div>
 			</div>
 		</div>
-		<!-- <div style="height:270px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;"> -->
+		<div style="height:450px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;">
 		    <table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 			<thead>
 				<tr>
@@ -250,34 +250,7 @@
 				</tr>
 			</tbody>
 		   </table>
-	   <!--  </div> -->
-<!-- 		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
-	<thead>
-		<tr>
-			<th>#</th>
-			<th>Roll No</th>
-			<th>Enroll No</th>
-			<th>Student Name</th>
-			<th>Class</th>
-			<th>SMS</th>
-			<th>Student Email</th>
-			<th>Father's Name</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr each={st, i in browseStudents}>
-			<td>{i+1}</td>
-			<td>{st.roll_number}</td>
-			<td> {st.enroll_number}</td>
-			<td>{st.first_name} {st.middle_name} {st.last_name}</td>
-			<td>{st.standard}</td>
-			<td>{st.mobile}</td>
-			<td> {st.email}</td>
-			<td>{st.f_name}</td>
-			
-		</tr>
-	</tbody>
-</table> -->
+		</div>
 	</section>
 	<section>	
 		  <div id="columnSetting" class="modal">

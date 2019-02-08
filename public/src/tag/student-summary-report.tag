@@ -44,8 +44,18 @@
 					<td>{st.s4}</td>
 					<td>{st.n}</td>
 					<td>{st.total}</td>
-					
 				</tr>
+				<!-- <tr>
+					<td colspan="2" class="has-text-centered" style="font-size:18px">Total</td>
+					<td style="font-size:18px">{total_s0}</td>
+					<td style="font-size:18px">{total_s1}</td>
+					<td style="font-size:18px">{total_s2}</td>
+					<td style="font-size:18px">{total_s3}</td>
+					<td style="font-size:18px">{total_s4}</td>
+					<td style="font-size:18px">{total_B_min}</td>
+					<td style="font-size:18px">{total_O_plus}</td>
+					<td style="font-size:18px">{total_O_min}</td>
+				</tr> -->
 			</tbody>
 		</table>
 	</section>

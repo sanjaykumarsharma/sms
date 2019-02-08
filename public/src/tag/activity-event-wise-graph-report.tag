@@ -193,50 +193,6 @@
         chart.draw(data, options);
       }
 
-      /*var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
-
-		var labels = []
-		var chart_percentage = []
-        var backgroundColor = []
-
-
-		 for (var i = self.activity_event_wise_graph_report.length - 1; i >= 0; i--) {
-		 	var total_percentage = ((self.activity_event_wise_graph_report[i].total*100)/self.grand_total).toFixed(2);
-		    var percentage = self.activity_event_wise_graph_report[i].category_name + ' ( ' + self.activity_event_wise_graph_report[i].total + ' , ' + total_percentage + '% )';
-
-		    labels.push(percentage)
-		    chart_percentage.push(self.activity_event_wise_graph_report[i].total)
-		    if(typeof chartColors[i] != "undefined"){
-		    	backgroundColor.push(chartColors[i])
-		    }
-
-		 }
-
-		  var config = {
-		    type: 'pie',
-		    data: {
-		      datasets: [{
-		        data: chart_percentage,
-		        backgroundColor: backgroundColor,
-		        label: 'labels'
-		      }],
-		      labels: labels
-		    },
-		    options: {
-		      responsive: true,
-		      maintainAspectRatio:false
-		    }
-		  };
-		//$('#canvas_pie').remove();  
-		
-		var ctx = document.getElementById('canvas_pie').getContext('2d');
-		
-		ctx.width=500;
-		if(window.myPie){
-			window.myPie.destroy()
-		}
-		window.myPie = new Chart(ctx, config);*/
-
       self.update()
       console.log(self.activity_event_wise_graph_report)
     }

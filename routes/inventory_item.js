@@ -131,7 +131,7 @@ router.post('/edit/:id', function(req, res, next) {
             subcategory_id    : input.sub_category_id,
             department : input.department,
             category_id : input.category_id,
-            item_id : input.item_id,
+            item_name : input.item_name,
             modification_date    : formatted,
             modified_by    : req.cookies.user,
         };

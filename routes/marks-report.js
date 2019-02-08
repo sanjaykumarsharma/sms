@@ -11,13 +11,14 @@ router.get('/exam-type/:standard_id', function(req, res, next) {
      var qry = `select a.exam_type,a.exam_type_id
                 from exam_type a
                 join exam_scheme_standard_map b on a.scheme_id=b.scheme_id
-                join exam_scheme_master c on (b.scheme_id = c.scheme_id and c.session_id =?)
-                where b.standard_id=?
-                and last_login_date >= curdate()`;
+                join exam_scheme_master c on a.scheme_id = c.scheme_id 
+                where b.standard_id=${req.params.standard_id}
+                and c.session_id = (select session_id from session_master where session_id = ${req.cookies.session_id})
+                order by 2`;
 
          console.log(qry)
      
-     connection.query(qry,[req.cookies.session_id,req.params.standard_id],function(err,result)     {
+     connection.query(qry,function(err,result)     {
             
         if(err){
            console.log("Error reading category : %s ",err );
@@ -190,6 +191,139 @@ router.get('/merit-list/:exam_type_id/:section_id', function(req, res, next) {
 
               data.status = 's';
               data.reports = marksData.sort(function(a, b){return b.marks_obtained - a.marks_obtained});;
+              res.send(JSON.stringify(data))
+            }
+         
+         }); 
+       
+  });
+
+});
+
+
+router.get('/top-five/:exam_type_id/:section_id', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+    var data = {}
+
+    var qry = `select  a.student_id, roll_number, enroll_number,
+              concat(b.first_name,' ',b.middle_name,' ',b.last_name)as student_name,
+              d.subject_id,subject_name,subject_short_name, marks,'' as  grade, e.max_marks,e.min_marks, marking_type,grand_total
+              from marks_entry_master a
+              join student_master b on (a.student_id=b.student_id  and b.current_session_id = ${req.cookies.session_id})
+              join student_current_standing c on (b.student_id=c.student_id and b.current_session_id = ${req.cookies.session_id})
+              join subject_master d on a.subject_id=d.subject_id
+              join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+              where a.section_id=${req.params.section_id}
+              and a.exam_id=${req.params.exam_type_id}
+              and c.session_id=${req.cookies.session_id}
+              and e.grand_total='Y'
+              order by d.subject_id,marks desc`;
+
+               console.log(qry);
+
+        connection.query(qry,function(err,results)     {
+                
+            if(err){
+               console.log("Error reading report : %s ",err );
+               data.status = 'e';
+
+            }else{
+              console.log(results);
+              var count=0;
+              var prev_subject_name="";
+              var maxMarks=0;
+              var marksObtained=0;
+              var j=1;
+              
+              var obj = {};
+              var marksData = []
+              var prev_subject_id = "";
+
+
+              results.map(r=>{
+                 
+                if(prev_subject_id == ""){      // loop runs first time only
+                    prev_subject_id= r.subject_id;
+                    obj = {};                           // for header
+                    obj['enroll_number']=r.subject_name;      
+                    obj['student_name']="";
+                    obj['max_marks']="";
+                    obj['min_marks']="";
+                    obj['marks_obtained']="";
+                    obj['percentage']= "";
+                    marksData.push(obj);
+                                    
+                    obj = {};
+                    obj['enroll_number']=r.enroll_number;
+                    obj['student_name']=r.student_name;
+                    obj['max_marks']=r.max_marks;
+                    obj['min_marks']=r.min_marks;
+                    if(r.marking_type == 'NG' || r.marking_type == 'G'){
+                      obj['marks_obtained']=r.grade;
+                      obj['percentage']= "---";
+                    }else{
+                      obj['marks_obtained']=r.marks;
+                      obj['percentage']= ((r.marks *100)/r.max_marks).toFixed(2) + " %";
+                    }
+                    marksData.push(obj);
+                    count = count + 1;
+                    
+              }else{
+                if(prev_subject_id == r.subject_id){ //check for different subject
+                 prev_subject_id= r.subject_id;
+                 if(count < 5) {               
+                    obj = {};                
+                    obj['enroll_number']=r.enroll_number;
+                    obj['student_name']=r.student_name;
+                    obj['max_marks']=r.max_marks;
+                    obj['min_marks']=r.min_marks;
+                    if(r.marking_type == 'NG' || r.marking_type == 'G'){
+                      obj['marks_obtained']=r.grade;
+                      obj['percentage']= "---";
+                    }else{
+                      obj['marks_obtained']=r.marks;
+                      obj['percentage']= ((r.marks *100)/r.max_marks).toFixed(2) + " %";
+                    }
+                    marksData.push(obj);
+                  }
+                    count = count + 1;
+                 
+                  }else{
+                    count=0;
+                    obj = {};                           // for header
+                    obj['enroll_number']=r.subject_name;      
+                    obj['student_name']="";
+                    obj['max_marks']="";
+                    obj['min_marks']="";
+                    obj['marks_obtained']="";
+                    obj['percentage']= "";
+                    marksData.push(obj);
+                    
+                    prev_subject_id= r.subject_id;
+                    
+                    obj = {};
+                    obj['enroll_number']=r.enroll_number;
+                    obj['student_name']=r.student_name;
+                    obj['max_marks']=r.max_marks;
+                    obj['min_marks']=r.min_marks;
+                    if(r.marking_type == 'NG' || r.marking_type == 'G'){
+                      obj['marks_obtained']=r.grade;
+                      obj['percentage']= "---";
+                    }else{
+                      obj['marks_obtained']=r.marks;
+                      obj['percentage']= ((r.marks *100)/r.max_marks).toFixed(2) + " %";
+                    }
+                    marksData.push(obj);
+                  
+                    count = count + 1; 
+                  }
+               }
+
+              })
+
+              data.status = 's';
+              data.reports = marksData;
               res.send(JSON.stringify(data))
             }
          

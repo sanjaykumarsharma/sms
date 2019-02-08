@@ -447,7 +447,7 @@
    </div>
  </nav>
 
- <nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if={showAdmissionItems}>
+ <!-- <nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if={showAdmissionItems}>
    <div class="container is-fluid" >
      <div class="navbar-brand">
        
@@ -467,9 +467,9 @@
           <a class="navbar-item" href="#/student">Student</a>
          <div class="navbar-item has-dropdown is-hoverable">
            <a class="navbar-item" >Staff Profile</a>
-         </div>
+         </div> -->
  
- <div class="modal" id="passwordChangeModal">
+ <div class="modal" id="passwordChangeModalMainUser">
   <div class="modal-background"></div>
   <div class="modal-card">
     <header class="modal-card-head">
@@ -577,11 +577,12 @@
 
 
     self.changePassword = () => {
-      $("#passwordChangeModal").addClass("is-active");
+      console.log('calling change password')
+      $("#passwordChangeModalMainUser").addClass("is-active");
     }
 
     self.closeChangePasswordModal = () => {
-      $("#passwordChangeModal").removeClass("is-active");
+      $("#passwordChangeModalMainUser").removeClass("is-active");
     }
 
     self.savePassword = () => {
@@ -667,7 +668,7 @@
         self.refs.oldPasswordInput.value=''
         self.refs.newPasswordInput.value=''
         self.refs.newPasswordInput2.value=''
-        $("#passwordChangeModal").removeClass("is-active");
+        $("#passwordChangeModalMainUser").removeClass("is-active");
         toastr.info('Password Changed Successfully')
         self.update()
      }else{

@@ -72,6 +72,9 @@ router.get('/', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
   var modified_by=req.cookies.user;
 
   req.getConnection(function(err,connection){
@@ -79,6 +82,7 @@ router.post('/add', function(req, res, next) {
 
         var values = {
             category_name    : input.category_name,
+            creation_date : formatted,
             modified_by : modified_by,
         };
         
@@ -113,6 +117,7 @@ router.post('/edit/:category_id', function(req, res, next) {
 
         var values = {
             category_name    : input.category_name,
+            modified_by    : req.cookies.role,
         };
         
         var query = connection.query("UPDATE activity_category_master set ? WHERE category_id = ?",[values,category_id], function(err, rows)

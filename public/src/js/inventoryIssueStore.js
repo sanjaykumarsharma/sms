@@ -99,7 +99,7 @@ function InventoryIssueStore() {
               return c.issue_id != id
             })
             self.inventoryIssues = tempInventoryIssues
-            toastr.info("Issue Deleted Successfully")
+            toastr.info("Issue Item Deleted Successfully")
             self.trigger('delete_inventory_issue_changed', self.inventoryIssues)
           }else if(data.status == 'e'){
             showToast("Error Deleting Issue Item. Please try again.", data)
@@ -157,10 +157,10 @@ function InventoryIssueStore() {
               // cat.confirmEdit = false
               return cat
             })
-            toastr.success("Stock Item Updated Successfully ")
+            toastr.success("Issue item Updated Successfully ")
             self.trigger('edit_inventory_issue_changed', self.inventoryIssues)
           }else if(data.status == 'e'){
-            showToast("Error updating Stock Item. Please try again.", data)
+            showToast("Error updating Issue Item. Please try again.", data)
           }
         },
         error: function(data){
@@ -277,7 +277,7 @@ function InventoryIssueStore() {
            // obj.category_id = category_id
             self.inventoryReturnableGoods = [obj, ...self.inventoryReturnableGoods]
             toastr.success("Issue Item Inserserted Successfully ")
-            self.trigger('add_inventory_issue_changed', self.inventoryReturnableGoods)
+            self.trigger('add_inventory_return_goods_changed', self.inventoryReturnableGoods)
           }else if(data.status == 'e'){
             showToast("Error adding Issue Item. Please try again.", data)
           }

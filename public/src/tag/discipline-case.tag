@@ -3,12 +3,13 @@
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
 		<h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Discipline Case Management Console</h2>
-		<div class="box no-print">
-      <div class="columns">
-        <div class="column is-narrow">
-          <label class="label">Category</label>
-        </div>
-        <div class="column is-narrow">
+    <div class="level box no-print">
+      <div class="level-left">
+        <div class="columns">
+          <div class="column is-narrow">
+            <label class="label">Category</label>
+          </div>
+          <div class="column is-narrow">
           <div class="control">
             <div class="select">
               <select ref="category_id">
@@ -20,34 +21,38 @@
         <div class="column is-narrow">
           <label class="label">Case</label>
         </div>
-        <div class="column is-narrow">
+        <div class="column is-half">
           <div class="control">
-            <input class=" input" id="addDisciplineCaseInput" 
-              ref="addDisciplineCaseInput" type="text">
+            <input class="input" id="addDisciplineCaseInput" ref="addDisciplineCaseInput" type="text">
           </div>
         </div>
-        <div class="column">
-          <button class="button is-danger has-text-weight-bold" onclick={add} >{title}</button>
-        </div>
-        <div class="column">
-          <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={csvExport}>
-            <span class="icon">
-              <i class="far fa-file-excel"></i>
-            </span>
-          </button>
-          <button class="button is-primary has-text-weight-bold ml5 is-pulled-right" onclick="window.print()">
-            <span class="icon">
-              <i class="fas fa-print"></i>
-            </span>
-          </button>
-          <button class="button is-link has-text-weight-bold ml5 is-pulled-right" onclick={getData}>
-            <span class="icon">
-              <i class="fas fa-sync-alt"></i>
-            </span>
-          </button>
+          <div class="column">
+            <button class="button is-danger has-text-weight-bold " onclick={add} > {title} </button>
+          </div>
         </div>
       </div>
+      <div class="level-right" >
+        <div class="control">
+          <input class="input" ref="searchDisciplineCase" onkeyup={filterDisciplineCase} type="text" placeholder="Search By Case">
+        </div>
+        <button class="button is-link has-text-weight-bold ml5 " onclick={getData}>
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+        </button>
+        <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+          <span class="icon">
+            <i class="far fa-file-excel"></i>
+          </span>
+        </button>
+        <button class="button is-primary has-text-weight-bold  ml5" onclick="window.print()">
+          <span class="icon">
+            <i class="fas fa-print"></i>
+          </span>
+        </button>
+      </div>
     </div>
+
 		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
@@ -58,7 +63,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ca, i in discipline_case}>
+				<tr each={ca, i in filteredDisciplineCase}>
 					<td>{ i+1 }</td>
 					<td>{ ca.category_name}</td>
 					<td>{ ca.case_name}</td>
@@ -167,9 +172,16 @@
     self.edit = (ca,e) => {
       console.log(ca)
       self.title='Update'
+      document.getElementById("addDisciplineCaseInput").focus()
       self.refs.addDisciplineCaseInput.value = ca.case_name
       self.refs.category_id.value = ca.category_id
       self.edit_id = ca.case_id
+    }
+
+    self.filterDisciplineCase = ()=>{
+      self.filteredDisciplineCase = self.discipline_case.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchDisciplineCase.value.toLowerCase())>=0
+      })
     }
     
     disciplinecaseStore.on('add_discipline_case_changed',AddCaseChanged)
@@ -181,7 +193,7 @@
       self.loading = false
       self.update()
       self.readCase()
-      console.log(self.discipline_case)
+      self.readCategories()
     }
 
     disciplinecaseStore.on('edit_discipline_case_changed',EditCaseChanged)
@@ -193,7 +205,7 @@
       self.loading = false
       self.update()
       self.readCase()
-      console.log(self.discipline_case)
+      self.readCategories()
     }
 
     disciplinecaseStore.on('delete_discipline_case_changed',DeleteCaseChanged)
@@ -204,7 +216,7 @@
       self.discipline_case = discipline_case
       self.update()
       self.readCase()
-      console.log(self.discipline_case)
+      self.readCategories()
     }
 
     disciplinecaseStore.on('read_discipline_case_changed',ReadCaseChanged)
@@ -214,6 +226,7 @@
       self.refs.addDisciplineCaseInput.value = ''
       self.loading = false
       self.discipline_case = discipline_case
+      self.filteredDisciplineCase = discipline_case
       self.update()
     }
 

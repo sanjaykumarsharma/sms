@@ -238,7 +238,7 @@ router.get('/read_returnable/:id/:type', function(req, res, next) {
                 item_name,category_name, concat(first_name,' ',middle_name,' ',last_name ) as staff_name,
                 issue_to, concat(issue_quantity,' ',unit) as issued_quantity,a.issue_sub_category_id,
                 concat(available_quantity,' ',unit) as available_qty, purpose,
-                date_format(issue_date,'%Y-/%m-/%d') as issue_date, issue_category_id, issue_unit,
+                date_format(issue_date,'%Y-%m-%d') as issue_date, issue_category_id, issue_unit,
                 issue_item_id, issue_type, issue_rack_id, rack_name,
                 return_type, staff_id, issue_to, issue_quantity , available_quantity
                 from issue_goods a
@@ -290,9 +290,12 @@ router.post('/add_inventory_return_goods', function(req, res, next) {
       connection.beginTransaction(function(err) { 
         if (err) { throw err; }
         var data = {}
-        var now = new Date();
+     /*   var now = new Date();
         var jsonDate = now.toJSON();
         var formatted = new Date(jsonDate);
+        console.log(formatted)*/
+
+        var today = new Date().toISOString().slice(0, 10)
         var available_quantity='';
        // console.log(input.obj.issue_id)
         var issue_id=input.obj.issue_id;
@@ -306,10 +309,10 @@ router.post('/add_inventory_return_goods', function(req, res, next) {
           return_to : input.return_to,
           return_quantity : input.return_quantity,
           return_remarks : input.remark,
-          creation_date : formatted,
+          creation_date : today,
           created_by : req.cookies.user,
           modified_by : req.cookies.user,
-          modification_date : formatted,
+          modification_date : today,
         };
           
          var values1 = {
@@ -323,10 +326,10 @@ router.post('/add_inventory_return_goods', function(req, res, next) {
           received_from : input.return_to,
           rack_id : input.obj.rack_id,
           remark : input.remark,
-          creation_date : formatted,
+          creation_date : today,
           created_by : req.cookies.user,
           modified_by : req.cookies.user,
-          modification_date : formatted,
+          modification_date : today,
         };
          var qury=`select available_quantity from issue_goods where issue_id=${issue_id}`;
           connection.query(qury,function(err,result){
@@ -336,15 +339,22 @@ router.post('/add_inventory_return_goods', function(req, res, next) {
               
              });
           }
-            
+       
+
+            console.log(today)
+          // console.log(md_1)
           available_quantity=result[0].available_quantity
           issued_quantity=input.return_quantity
           balance = Number(available_quantity) - Number(issued_quantity)
 
+          console.log("balance")
+          console.log(balance)
+         // var modification_date_1=formatted
+
               var qury1=`update issue_goods set 
                          available_quantity=${balance},
-                         modification_date=${formatted},
-                         modified_by='${modified_by}'
+                         modification_date='${today}',
+                         modified_by='${req.cookies.user}'
                          where issue_id=${issue_id}`;
                 connection.query(qury1,function(err,result){
                 if(err){
@@ -492,10 +502,10 @@ router.post('/edit/:id', function(req, res, next) {
 });
 
 /* Delete Event listing. */
-router.get('/delete/:id', function(req, res, next) {
+router.post('/delete/:id', function(req, res, next) {
 
   var id = req.params.id;
-
+  console.log("inside delete")
   req.getConnection(function(err,connection){
         var data = {}
         console.log("inside Delete")

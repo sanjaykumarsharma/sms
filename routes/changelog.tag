@@ -12,3 +12,4 @@
 //marks_entry_master grade_id default 0
 //add id as primary_key
 
+//subject_class_map section_id default 0

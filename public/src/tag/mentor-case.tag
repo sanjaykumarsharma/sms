@@ -3,17 +3,17 @@
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
   <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Mentor Case Management Console</h2>
-  <div class="box no-print">
-      <div class="columns">
-        <div class="column is-narrow">
-          <label class="label">Category</label>
-        </div>
-        <div class="column is-narrow">
+    <div class="level box no-print">
+      <div class="level-left">
+        <div class="columns">
+          <div class="column is-narrow">
+            <label class="label">Category</label>
+          </div>
+          <div class="column is-narrow">
           <div class="control">
             <div class="select">
               <select ref="category_id" id="category_id">
-                <option each={categories} value={category_id}>{category_name}
-                        </option>
+                <option each={categories} value={category_id}>{category_name}</option>
               </select>
             </div>
           </div>
@@ -21,36 +21,38 @@
         <div class="column is-narrow">
           <label class="label">Case</label>
         </div>
-        <div class="column is-narrow">
+        <div class="column is-half">
           <div class="control">
             <input class=" input" ref="addCaseInput" id="addCaseInput" type="text">
           </div>
         </div>
-        <div class="column">
-          <button class="button is-danger has-text-weight-bold"
-          onclick={add} >{title}
-          </button>
-        </div>
-        <div class="column">
-          <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={csvExport}>
-            <span class="icon">
-              <i class="far fa-file-excel"></i>
-            </span>
-          </button>
-          <button class="button is-primary has-text-weight-bold ml5 is-pulled-right" onclick="window.print()">
-            <span class="icon">
-              <i class="fas fa-print"></i>
-            </span>
-          </button>
-          <button class="button is-link has-text-weight-bold ml5 is-pulled-right" onclick={getData}>
-            <span class="icon">
-              <i class="fas fa-sync-alt"></i>
-            </span>
-          </button>
+          <div class="column">
+            <button class="button is-danger has-text-weight-bold " onclick={add} > {title} </button>
+          </div>
         </div>
       </div>
+      <div class="level-right" >
+        <div class="control">
+          <input class="input" ref="searchMentorCase" onkeyup={filterMentorCase} type="text" placeholder="Search By Case">
+        </div>
+        <button class="button is-link has-text-weight-bold ml5 " onclick={getData}>
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+        </button>
+        <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+          <span class="icon">
+            <i class="far fa-file-excel"></i>
+          </span>
+        </button>
+        <button class="button is-primary has-text-weight-bold  ml5" onclick="window.print()">
+          <span class="icon">
+            <i class="fas fa-print"></i>
+          </span>
+        </button>
+      </div>
     </div>
-		<table class="table is-fullwidth is-bordered is-hoverable">
+		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
 					<th>SL</th>
@@ -60,7 +62,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ca, i in mentor_case}>
+				<tr each={ca, i in filteredMentorCase}>
 					<td>{ i+1 }</td>
 					<td>{ ca.category_name}</td>
 					<td>{ ca.case_name}</td>
@@ -84,7 +86,7 @@
       self.title='Create'
       self.loading = false
       self.role = getCookie('role')
-      document.getElementById("addCaseInput").focus()
+      /*document.getElementById("addCaseInput").focus()*/
       self.update()
       self.readCategories()
       self.readCase()
@@ -171,6 +173,12 @@
       self.refs.category_id.value = ca.category_id
       self.edit_id = ca.case_id
     }
+
+    self.filterMentorCase = ()=>{
+      self.filteredMentorCase = self.mentor_case.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchMentorCase.value.toLowerCase())>=0
+      })
+    }
     
     mentorcaseStore.on('add_case_changed',AddCaseChanged)
     function AddCaseChanged(mentor_case){
@@ -211,6 +219,7 @@
       self.refs.addCaseInput.value = ''
       self.loading = false
       self.mentor_case = mentor_case
+      self.filteredMentorCase = mentor_case
       self.update()
     }
 

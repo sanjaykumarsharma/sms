@@ -53,6 +53,11 @@
 				</div>
 			</div>
 			<div class="level-right">
+        <div class="column is-narrow field">
+          <div class="control">
+              <input class="input" ref="searchStudent" onkeyup={filterStudent} type="text" placeholder="Search Here">
+            </div>
+        </div>
 				<div class="column is-narrow field has-addons">
 					<div class="control">
 				    	<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
@@ -82,7 +87,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in students}>
+				<tr each={st, i in filteredStudent}>
 					<td>{ i+1 }</td>
 					<td>{st.enroll_number}</td>
 					<td>{st.roll_number}</td>
@@ -361,16 +366,19 @@
     	idCardStore.off('read_id_card_changed',ReadIdCardChanged)
     })
 
-    self.getStudentData = () =>{
+   /* self.getStudentData = () =>{
+
     	idCardStore.trigger('read_student', self.refs.standard_id.value,self.refs.section_id.value,)
-    }
+    }*/
     self.getStudentData = () =>{
 
     	if(self.refs.read_enroll_number.value==""){
+        self.loading = true
     		idCardStore.trigger('read_student', self.refs.standard_id.value,self.refs.section_id.value,0)
     	}else{
+        self.loading = true
     		idCardStore.trigger('read_student',self.refs.standard_id.value,self.refs.section_id.value,
-      	    self.refs.read_enroll_number.value)
+      	self.refs.read_enroll_number.value)
     	} 
     }
 
@@ -506,6 +514,11 @@
         console.log(self.student_id)
     }
 
+    self.filterStudent = ()=>{
+      self.filteredStudent = self.students.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchStudent.value.toLowerCase())>=0
+      })
+    }
 
     idCardStore.on('read_id_card_changed',ReadIdCardChanged)
     function ReadIdCardChanged(students_id_card_details, session_id){
@@ -543,8 +556,9 @@
 
     idCardStore.on('read_student_changed',StudentChanged)
     function StudentChanged(students){
-      console.log(students) 
+      self.loading = false
       self.students = students
+      self.filteredStudent = students
       self.students.map(i=>{
 	      i.done = false;
       })

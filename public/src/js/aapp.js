@@ -63,9 +63,11 @@ RiotControl.addStore(physicalFitnessStore)
 var examSubjectGroupMapStore = new ExamSubjectGroupMapStore() 
 RiotControl.addStore(examSubjectGroupMapStore)
 
-var examSubjectGroupMapStore = new ExamSubjectGroupMapStore() 
-RiotControl.addStore(examSubjectGroupMapStore)
+var firstAssessmentReportStore = new FirstAssessmentReportStore() 
+RiotControl.addStore(firstAssessmentReportStore)
 
+var finalAssessmentReportStore = new FinalAssessmentReportStore() 
+RiotControl.addStore(finalAssessmentReportStore)
 
 //student
 var studentAssignHouseStore = new StudentAssignHouseStore() 
@@ -271,6 +273,9 @@ RiotControl.addStore(parentgroupStore) ;
 
 var remarkStore = new RemarkStore() 
 RiotControl.addStore(remarkStore) ;
+
+var activatesessionStore = new ActivatesessionStore() 
+RiotControl.addStore(activatesessionStore) ;
 
 var inventorydepartmentStore = new InventoryDepartmentStore() 
 RiotControl.addStore(inventorydepartmentStore) ;
@@ -862,7 +867,7 @@ let adminRoute = (path1, path2, path3) => {
           riot.mount("div#marks-report-view", 'final-assessment-report-card')
         break;
         default:
-          riot.mount("div#marks-report-view", 'consolidate-tabulation-sheet')
+          riot.mount("div#marks-report-view", 'top-five')
       }
     break;
     case 'student-assign-house':
@@ -1235,6 +1240,12 @@ case 'receive-fees':
         case 'student-class-teacher-report':
           riot.mount("div#admin-report-view", 'student-class-teacher-report')
         break;
+        case 'student-blood-group-report':
+         riot.mount("div#admin-report-view", 'student-blood-group-report')
+        break;
+        case 'udise-report':
+         riot.mount("div#admin-report-view", 'udise-report')
+        break;
         case 'new-admission-report':
           currentPage = riot.mount('div#admin-report-view', 'new-admission-report', {selected_new_admission_report: path3})[0];
           switch(path3){
@@ -1403,6 +1414,9 @@ case 'receive-fees':
         break;
         case 'remark':
           riot.mount("div#master-view", 'remark')
+        break;
+        case 'activate-session':
+         riot.mount("div#master-view", 'activate-session')
         break;
         case 'inventory-department':
           riot.mount("div#master-view", 'inventory-department')

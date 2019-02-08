@@ -153,6 +153,7 @@
     certificateStore.on('read_issued_certificate_change',ReadIssuedCertificateChanged)
     function ReadIssuedCertificateChanged(issuedCertificates){
       console.log(issuedCertificates) 
+      self.loading=false
       self.issuedCertificates = issuedCertificates
       self.update()
     }

@@ -1,8 +1,11 @@
 <birthday>
 	<section class=" is-fluid">
-		<h2 class="title has-text-centered" style="color: #ff3860;">Birthday Details</h2>
-	
-		<div class="box no-print" style="font-size:13px ">
+		<div class="level">
+			<div class="level-left">
+				<h2 class="title" style="color: #ff3860;">Birth Day</h2>
+			</div>
+		</div>
+		<div class="box" style="font-size:13px ">
 			<div class="columns">
 				<div class="column is-narrow">
 					<div class="control">
@@ -46,14 +49,11 @@
 		              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text">
 		          </div>
 		        </div>
-		        <div class="column">
+		        <div class="column is-narrow">
 					<div class="control">
 						<button class="button is-danger has-text-weight-bold" onclick={dateRangeBirthDay}>Go</button>
 						<input type="checkbox" id="checkTable" checked={e.done}
 				         onclick={viewTable}  style="margin-top: 12px;"> Table
-				         <button class="button is-small is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-			          <span class="icon"> <i class="fas fa-print"></i></span>
-			        </button>
 					</div>
 				</div>
 			</div>
@@ -86,13 +86,15 @@
 				</tr>
 			</tbody>
 		</table>
-		<div class="columns is-multiline no-print">
+		<div class="columns is-multiline">
 			<div class="column is-narrow " each={st, i in birthDayData} show={report_view =='show_card'} style="width:150px;width:200px">
 			    <div class="control">
 					<div class="card">
 					  <div class="card-image">
 					    <figure class="image is-4by3">
-					      <img src="" alt="Placeholder image" style='height:70px'>
+					      <!-- <img src="" alt="Placeholder image" style='height:70px'> -->
+					      <div style="padding:2px;" show={st.type=='Student'}><img src="images/{session_id}/studentImages/{st.id}.jpg"></div>
+					      <div style="padding:2px;" show={st.type=='Teacher'}><img src="images/employee/{st.id}.jpg"></div>
 					    </figure>
 					  </div>
 					  <div class="card-content">
@@ -166,11 +168,12 @@
     }
      
     birthDayStore.on('read_birth_day_changed',ReadBirthDayChanged)
-    function ReadBirthDayChanged(birthDayData){
+    function ReadBirthDayChanged(birthDayData,session_id){
       //console.log(birthDayData) 
       self.title='Create'
       self.loading = false
       self.birthDayData = birthDayData
+      self.session_id = session_id
       self.update()
       //console.log(self.employeeTypes)
     }

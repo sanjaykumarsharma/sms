@@ -207,27 +207,28 @@
     disciplineReportStore.on('read_class_wise_report_changed',ReadClassWiseReportChanged)
     function ReadClassWiseReportChanged(class_wise_case_report,grand_total){
       self.class_wise_case_report = class_wise_case_report
-      if(self.class_wise_case_report.length==0){
-      	toastr.info("No Data Found")
-      }
-      self.grand_total = grand_total
-      self.standard_name = $("#Standard option:selected").text();
-      self.section_name = $("#Section option:selected").text();
       self.loading = false
+      self.grand_total = grand_total
+	  self.standard_name = $("#Standard option:selected").text();
+	  self.section_name = $("#Section option:selected").text();
 
-      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC'];
+      	if(self.class_wise_case_report.length==0){
+	      	toastr.info("No Data Found")
+	    }
+      	var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC'];
 
-	    var chart_percentage = []
-      	chart_percentage.push(['Head', 'Value', { role: 'style' }])
-       	for (var i = self.class_wise_case_report.length - 1; i >= 0; i--) {
+	     var chart_percentage = []
+	     chart_percentage.push(['Head', 'Value', { role: 'style' }])
+
+       	 for (var i = self.class_wise_case_report.length - 1; i >= 0; i--) {
        		var p = 0
        		p = Number(((self.class_wise_case_report[i].total*100)/self.grand_total).toFixed(2))
        		
        		console.log(p);
 		   chart_percentage.push([self.class_wise_case_report[i].category_name,p,chartColors[i]])
-		}
-      	google.charts.load("current", {packages:['corechart']});
-    	google.charts.setOnLoadCallback(drawChart);
+		 }
+      	 google.charts.load("current", {packages:['corechart']});
+    	 google.charts.setOnLoadCallback(drawChart);
     		function drawChart() {
       			var data = google.visualization.arrayToDataTable(chart_percentage);
       			var view = new google.visualization.DataView(data);
@@ -249,13 +250,12 @@
 			            }
       			};
       			var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
-      			//var chart_print = new google.visualization.ColumnChart(document.getElementById("chart_div_one"));
       			chart.draw(view, options);
-      			//chart_print.draw(view, options);
   			}
-
-      self.update()
-      console.log(self.class_wise_case_report)
+  		
+      		self.update()
+      		//self.update()
+      		console.log(self.class_wise_case_report)
     }
 </script>
 </discipline-class-wise-report>

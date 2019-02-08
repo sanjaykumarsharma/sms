@@ -1,5 +1,6 @@
 <inventory-returnable>
   <header></header>
+  <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" show={inventory_returnable_view == 'show_inventory_returnable_table'}>
 		    <h4 class="title has-text-centered" style="color: #ff3860;">Returnable Items</h4>
 		<div class="box no-print">
@@ -11,6 +12,7 @@
           <div class="control">
             <div class="select" >
               <select ref="r_returnable_type">
+                  <option></option>
                   <option>Staff</option>
                   <option>College</option>
                   <option>Health</option>
@@ -27,6 +29,7 @@
           <div class="control">
             <div class="select" >
               <select ref="r_category_id" onchange={readInventoryReturnableItem}>
+                   <option></option>
                 <option each={inventoryCategories} value={category_id} >{category_name}
                 </option>
               </select>
@@ -39,9 +42,9 @@
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
-           <button class="button is-info is-rounded is-pulled-right" onclick={show_inventory_returnable_modal}>
+          <!--  <button class="button is-info is-rounded is-pulled-right" onclick={show_inventory_returnable_modal}>
          <span class="icon"><span class="fas fa-plus"></span></span>
-          </button>
+          </button> -->
 			</div>
     </div>
 		</div>
@@ -89,7 +92,7 @@
             <div class="field">
               <label class="label" for="role">Return Date</label>
               <div class="control">
-                <input class="input" type="text" ref="return_date" >
+                <input class="input date flatpickr-input form-control input" type="text" ref="return_date" >
               </div>
             </div>
           </div>
@@ -157,8 +160,8 @@
       self.readInventoryCategory()
       flatpickr(".date", {
          allowInput: true,
-         altFormat: "d/m/Y",
-         dateFormat: "Y-m-d",
+         dateFormat: "d/m/Y",
+       //  dateFormat: "Y-m-d",
        })
       self.update()
     })
@@ -190,7 +193,7 @@
         self.obj.available_quantity=item.available_quantity
         self.obj.issue_quantity=item.issue_quantity
         self.refs.available_quantity.value=item.available_quantity
-       self.refs.rack_name.value=item.rack_name
+        self.refs.rack_name.value=item.rack_name
         console.log(self.obj)
         self.show_inventory_returnable_modal()
         
@@ -206,6 +209,7 @@
     }
 
     self.closeReturnableModal = () => {
+       self.loading=false
       $("#returnableModal").removeClass("is-active");
       self.refs.return_date.value=''
       self.refs.available_quantity.value=''
@@ -217,9 +221,12 @@
           i.done = false;
           $('IssueId'+i.issue_id).prop('checked', false); 
        })
+
+       
     }
     
     self.readInventoryReturnableItem = () => {
+      self.loading=true
        inventoryIssueStore.trigger('read_inventory_returnable_item', self.refs.r_category_id.value,self.refs.r_returnable_type.value,)
     }
     
@@ -230,9 +237,16 @@
       }else{
         self.loading = true
           console.log('create')
-          inventoryIssueStore.trigger('add_inventory_return_goods',self.obj, self.refs.return_date.value,
+          if(Number(self.refs.return_quantity.value)>Number(self.obj.issue_quantity)){
+             toastr.info("Return Quantity Cannot be greater than available quantity")
+            console.log(self.obj.issue_quantity)
+            return;
+          }
+          self.return_date=convertDate(self.refs.return_date.value)
+          inventoryIssueStore.trigger('add_inventory_return_goods',self.obj, self.return_date,
             self.refs.return_to.value,self.refs.return_quantity.value,self.refs.remark.value)
       }
+
     }
 
     self.addEnter = (e) => {
@@ -248,25 +262,16 @@
     }
 
    
-    
-    /*inventoryIssueStore.on('add_inventory_returnable_changed',AddInventoryReturnableChanged)
-    function AddInventoryReturnableChanged(inventoryReturnableGoods){
-      console.log(inventoryReturnableGoods) 
-      self.title='Create'
-      self.loading = false
-      self.update()
-      //self.readInventoryCategory()
-      console.log(self.inventoryReturnableGoods)
-    }*/
+
 
     inventoryIssueStore.on('add_inventory_return_goods_changed',AddInventoryReturnGoodsChanged)
     function AddInventoryReturnGoodsChanged(inventoryReturnableGoods){
       console.log(inventoryReturnableGoods) 
       self.title='Create'
       self.loading = false
-      self.update()
       self.closeReturnableModal();
-      //self.readInventoryCategory()
+      self.update()
+      self.readInventoryReturnableItem()
       console.log(self.inventoryReturnableGoods)
     }
 
@@ -278,7 +283,7 @@
       self.loading = false
       self.inventoryCategories = inventoryCategories
       self.update()
-      self.readInventoryReturnableItem()
+     // self.readInventoryReturnableItem()
       console.log(self.inventoryCategories)
       //self.readInventoryIssue()
     }
@@ -286,6 +291,7 @@
     inventoryIssueStore.on('read_inventory_returnable_changed',ReadInventoryReturnableChanged)
     function ReadInventoryReturnableChanged(inventoryReturnableGoods){
       console.log(inventoryReturnableGoods) 
+      self.loading=false
       self.inventoryReturnableGoods = inventoryReturnableGoods
       self.inventoryReturnableGoods.map(i=>{
          if(i.issue_id==null){
@@ -296,28 +302,12 @@
           $('IssueId'+i.issue_id).prop('checked', false);
          }  
        })
-      self.loading = false
+     // self.loading = false
       self.update()
       console.log(self.inventoryReturnableGoods)
     }
   
-    /*inventoryIssueStore.on('read_inventory_returnable_changed',ReadInventoryReturrnableChanged)
-    function ReadInventoryReturrnableChanged(inventoryIssues){
-      console.log(inventoryIssues) 
-      self.title='Create'
-      self.loading = false
-      self.inventoryIssues = inventoryIssues
-      self.update()
-      console.log(self.inventoryIssues)
-    }  
-*/
- /* staffinfirmaryStore.on('read_employee_changed',EmployeeChanged)
-     function EmployeeChanged(employees){
-       console.log(employees) 
-       self.employees = employees
-       self.update()
-       console.log(self.employees)
-     }*/
+   
 
 </script>
 </inventory-returnable>

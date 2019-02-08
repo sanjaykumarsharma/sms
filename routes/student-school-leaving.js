@@ -247,7 +247,7 @@ router.get('/print_certificate/:student_id', function(req, res, next) {
 
       var data = {}
       
-      var sql =`select distinct concat(b.first_name,' ',b.middle_name,' ',b.last_name) as name,
+      /*var sql =`select distinct a.student_id, concat(b.first_name,' ',b.middle_name,' ',b.last_name) as name,
                 f_name,r_no, date_format(b.dob,'%d/%m/%Y') as dob, 
                 date_format(leaving_date, '%d/%m/%Y') as dol,
                 date_format(h.doa, '%d/%m/%Y') as doa,
@@ -264,10 +264,27 @@ router.get('/print_certificate/:student_id', function(req, res, next) {
                 join standard_master g on f.standard_id = g.standard_id
                 left join student_master h on (b.reference_enrol = h.enroll_number  and b.current_session_id= ${req.cookies.session_id})
                 where a.student_id in (${student_id})
-                and d.session_id=${req.cookies.session_id} `;
+                and d.session_id=${req.cookies.session_id} `;*/
+      var sql= `select concat(b.first_name,' ',b.middle_name,' ',b.last_name) as name,f_name,
+                r_no, date_format(b.dob,'%d/%m/%Y') as dob, 
+                date_format(leaving_date, '%d/%m/%Y') as dol, house_name, 
+                date_format(b.doa, '%d/%m/%Y') as doa,
+                g.standard,section,
+                admission_for_class, 
+                type,examination_appeared, b.enroll_number,punctuality,
+                conduct, attendance, faculty_relationship, peer_group_relationship,
+                class_responsibility, house_responsibility, attitude,remarks
+                from school_leaving a 
+                join student_master b on (a.student_id=b.student_id and b.current_session_id=${req.cookies.session_id})
+                join student_current_standing d on (a.student_id = d.student_id and d.session_id = ${req.cookies.session_id})
+                join parent_master e on (a.student_id = e.student_id  and e.current_session_id=${req.cookies.session_id})
+                join section_master f on d.section_id = f.section_id
+                join standard_master g on f.standard_id = g.standard_id
+                join house_master c on d.house_id = c.house_id
+                where a.student_id in (${student_id})
+                and b.current_session_id= ${req.cookies.session_id}`;
       
       console.log(sql);
-      /*group by a.student_id*/
 
       connection.query(sql, function(err, result)
       {

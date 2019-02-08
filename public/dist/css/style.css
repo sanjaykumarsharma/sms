@@ -749,3 +749,62 @@ hr{
           font-size: 8px;
         }
 }
+
+  /*report card css start*/
+  .fa-report-card-one-two-four  table  td{
+    font-size: 18px;
+  }
+
+  .fa-report-card-one-two-four > hr{
+    width: 100%;
+  }
+
+  .signature-table td{
+    border: none !important;
+  }
+
+  .signature > hr {
+    width: 250px;
+  }
+
+  .signature{
+    width: 250px;
+    text-align: center;
+  }
+
+  .report-caption{
+    font-weight: bold;
+    text-transform: none;
+    background-color: #fff;
+  }
+
+  .report-h3{
+    background-color: #FFF;
+    color: #000;
+  }
+
+  .table-head{
+    font-family: times;
+    border-top: double !important;
+    border-bottom: double !important;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 17px;
+  }
+  .lr-table-border{
+    border-left: 1px solid #000 !important;
+    border-right: 1px solid #000 !important;
+  }
+  
+  .border-less-table tbody  td{
+    border-bottom: none !important;
+  }
+
+  .divider-subject .B2:nth-child(odd){
+     border-bottom: 1px solid #000 !important;
+  }
+  /*.divider-subject .B1:last-child(){
+     border-bottom: 1px solid #000 !important;
+  }*/
+
+  /*report card css end*/

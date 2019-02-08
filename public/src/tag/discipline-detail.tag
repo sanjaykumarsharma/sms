@@ -20,22 +20,25 @@
         </div>
       </div>
       <div class="level-right">
-        <button class="button is-warning has-text-weight-bold is-small" onclick={add_new_discipline}>
+        <div class="control">
+          <input class="input" ref="searchDisciplineDetail" onkeyup={filterDisciplineDetail} type="text" placeholder="Search By Enroll No or Name">
+        </div>
+        <button class="button is-warning has-text-weight-bold ml5" onclick={add_new_discipline}>
           <span class="icon">
             <span class="fas fa-plus"></span>
           </span>
         </button>
-        <button class="button is-link has-text-weight-bold is-small ml5" onclick={getDisciplineData}>
+        <button class="button is-link has-text-weight-bold ml5" onclick={getDisciplineData}>
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
         </button>
-        <button class="button is-success has-text-weight-bold is-small ml5" onclick={downloadCSV}>
+        <button class="button is-success has-text-weight-bold ml5" onclick={downloadCSV}>
           <span class="icon">
             <i class="far fa-file-excel"></i>
           </span>
         </button>
-        <a class="button is-primary has-text-weight-bold is-small ml5" onclick="window.print()">
+        <a class="button is-primary has-text-weight-bold ml5" onclick="window.print()">
           <span class="icon">
             <i class="fas fa-print"></i>
           </span>
@@ -60,7 +63,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ac, i in disciplines }>
+				<tr each={ac, i in filteredDisciplineDetail }>
           <td>{i + 1}</td>
 					<td>{ac.referred_by}</td>
 					<td>{ac.created_by}</td>
@@ -311,6 +314,13 @@
       self.readCategoryCase()
     }
 
+    self.filterDisciplineDetail = ()=>{
+      self.filteredDisciplineDetail = self.disciplines.filter(c => {
+        var filter_value=c.student_name + c.enroll_number;
+        return JSON.stringify(filter_value).toLowerCase().indexOf(self.refs.searchDisciplineDetail.value.toLowerCase())>=0
+      })
+    }
+
     disciplinedetailStore.on('read_discipline_categories_changed',CategoriesChanged)
     function CategoriesChanged(categories){
       console.log(categories) 
@@ -330,6 +340,7 @@
     function ReadDisciplineChanged(disciplines){
       self.loading = false;
       self.disciplines = disciplines
+      self.filteredDisciplineDetail = disciplines
       self.categoryName = $("#CategoryName option:selected").text();
       if(self.disciplines.length==0){
         toastr.info("No Data Found")
@@ -343,6 +354,7 @@
       self.disciplines = disciplines
       self.discipline_view='show_discipline'
       self.getDisciplineData()
+      self.filteredDisciplineDetail = disciplines
       self.update()
     }
 
@@ -371,12 +383,14 @@
       console.log(disciplines) 
       self.disciplines = disciplines
       self.getDisciplineData()
+      self.filteredDisciplineDetail = disciplines
       self.update()
     }
 
     disciplinedetailStore.on('delete_discipline_detail_changed',DeleteDisciplineDetailsChanged)
     function DeleteDisciplineDetailsChanged(delete_discipline_details){
       self.getDisciplineData()
+
       self.update()
      }
 </script>

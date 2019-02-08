@@ -337,7 +337,7 @@
        self.loading = false
        self.staffInfirmarys = staffInfirmarys
        self.update()
-       self.readStudentInfirmary()
+       self.readStaffInfirmary()
        console.log(self.staffInfirmarys)
      }
 

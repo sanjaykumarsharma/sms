@@ -341,13 +341,13 @@
       if(!self.refs.category_id.value){
         toastr.info("Please enter category name and try again")
       }else{
+        self.available_quantity=self.refs.issue_quantity.value
         self.loading = true
         if(self.title=='Create'){
-      
-        inventoryIssueStore.trigger('add_inventory_issue', self.issue_date, self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_id.value,self.refs.return_type.value,self.refs.issue_type.value,self.refs.issue_to.value,self.refs.staff_id.value, self.refs.available_quantity.value,self.refs.issue_quantity.value,self.unit_id,self.refs.purpose.value,self.rack_id,self.category_name, self.subcategory_name,self.item_name)
+        inventoryIssueStore.trigger('add_inventory_issue', self.issue_date, self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_id.value,self.refs.return_type.value,self.refs.issue_type.value,self.refs.issue_to.value,self.refs.staff_id.value, self.available_quantity,self.refs.issue_quantity.value,self.unit_id,self.refs.purpose.value,self.rack_id,self.category_name, self.subcategory_name,self.item_name)
         }else if(self.title=='Update'){
         
-        inventoryIssueStore.trigger('edit_inventory_issue', self.issue_date, self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_id.value,self.refs.return_type.value,self.refs.issue_type.value,self.refs.issue_to.value,self.refs.staff_id.value, self.refs.available_quantity.value,self.refs.issue_quantity.value,self.unit_id,self.refs.purpose.value , self.rack_id, self.edit_id,self.category_name, self.subcategory_name,self.item_name)
+        inventoryIssueStore.trigger('edit_inventory_issue', self.issue_date, self.refs.category_id.value,self.refs.sub_category_id.value,self.refs.item_id.value,self.refs.return_type.value,self.refs.issue_type.value,self.refs.issue_to.value,self.refs.staff_id.value, self.available_quantity,self.refs.issue_quantity.value,self.unit_id,self.refs.purpose.value , self.rack_id, self.edit_id,self.category_name, self.subcategory_name,self.item_name)
         }
       }
     }

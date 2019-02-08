@@ -107,6 +107,11 @@
 		    <a class="button {is-active: selected_master == 'inventory-department'}" href="#/master/inventory-department">Inventory Department</a>
 		    </a>
 	  	</p>
+	  	<p class="control">
+	   		<a class="button {is-active: selected_master == 'activate-session' }" href="#/master/activate-session">
+	     		<span>Activate Session</span>
+	   		</a>
+	 	</p>
 </div>
 <div id="master-view"></div>
  <script>

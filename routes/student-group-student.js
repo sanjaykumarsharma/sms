@@ -574,7 +574,7 @@ router.get('/hide-group/:group_id/:section_id', function(req, res, next) {
               var today = new Date();
               var dt= today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
               var qry1 = `insert into student_group_hide_map(group_id, section_id, hidden_session, creation_date, modified_by)
-                          values(${req.params.group_id}, ${req.params.section_id}, ${req.cookies.session_id}, ${dt}, '${req.cookies.user}')`;
+                          values(${req.params.group_id}, ${req.params.section_id}, ${req.cookies.session_id}, '${dt}', '${req.cookies.user}')`;
               console.log(qry1)
               connection.query(qry1,function(err,result){
             

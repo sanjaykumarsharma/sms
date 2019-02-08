@@ -3,37 +3,42 @@
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">	
   <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Item Management Console</h2>
-    <div class="box no-print">
-      <div class="columns">
-        <div class="column is-narrow">
-          <label class="label" for="role">Item</label>
-        </div>
-        <div class="column">
-          <input class="input" type="text" id="item_name" ref="addItemInput" onkeyup={addEnter}>
-        </div>
-        <div class="column">
-          <button class="button is-danger has-text-weight-bold " onclick={add} > {title} </button>
-        </div>
-        <div class="column">
-          <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={csvExport}>
-            <span class="icon">
-              <i class="far fa-file-excel"></i>
-            </span>
-          </button>
-          <button class="button is-primary has-text-weight-bold ml5 is-pulled-right" onclick="window.print()">
-            <span class="icon">
-              <i class="fas fa-print"></i>
-            </span>
-          </button>
-          <button class="button is-link has-text-weight-bold ml5 is-pulled-right" onclick={getData}>
-            <span class="icon">
-              <i class="fas fa-sync-alt"></i>
-            </span>
-          </button>
+    <div class="level box no-print">
+      <div class="level-left">
+        <div class="columns">
+          <div class="column is-narrow">
+            <label class="label">Item</label>
+          </div>
+          <div class="column is-full">
+            <input class="input" type="text" id="item_name" ref="addItemInput" onkeyup={addEnter}>
+          </div>
+            <div class="column">
+              <button class="button is-danger has-text-weight-bold " onclick={add} > {title} </button>
+            </div>
         </div>
       </div>
+      <div class="level-right" >
+        <div class="control">
+          <input class="input" ref="searchActivityItem" onkeyup={filterActivityItem} type="text" placeholder="Search By Item">
+        </div>
+        <button class="button is-link has-text-weight-bold ml5 " onclick={getData}>
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+        </button>
+        <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+          <span class="icon">
+            <i class="far fa-file-excel"></i>
+          </span>
+        </button>
+        <button class="button is-primary has-text-weight-bold  ml5" onclick="window.print()">
+          <span class="icon">
+            <i class="fas fa-print"></i>
+          </span>
+        </button>
+      </div>
     </div>
-		<table class="table is-fullwidth is-bordered is-hoverable">
+		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
 					<th>SL</th>
@@ -42,7 +47,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={r, i in Items}>
+				<tr each={r, i in filteredActivityItem}>
 					<td>{ i+1 }</td>
 					<td>{ r.item_name}</td>
           	<td class="has-text-right ">
@@ -145,16 +150,22 @@
       self.refs.addItemInput.value = r.item_name
       self.edit_id = r.item_id
     }
+
+    self.filterActivityItem = ()=>{
+      self.filteredActivityItem = self.Items.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchActivityItem.value.toLowerCase())>=0
+      })
+    }
     
     activityitemStore.on('items_changed',ItemsChanged)
     function ItemsChanged(items){
-      console.log(items) 
       self.title='Create'
       self.refs.addItemInput.value = ''
       self.loading = false
       self.Items = items
+      self.filteredActivityItem = items
+      console.log(items) 
       self.update()
-      console.log(self.Items)
     }
 
 </script>

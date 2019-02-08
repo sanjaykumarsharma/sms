@@ -1,23 +1,21 @@
-function StudentResultActivationStore() {
+function FinalAssessmentReportStore() {
   riot.observable(this) // Riot provides our event emitter.
   var self = this
 
-  self.studentGroups = []
-
-
-  self.on('read_classes', function() {
+  self.on('read_standard', function() {
     let req = {}
     $.ajax({
-      url:'/standard',
+      url:'/final_assessment_report/read_standard/',
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.trigger('read_classes_changed', data.standards)
+            self.standards = data.standards
+            self.trigger('read_standard_changed', data.standards)
           }else if(data.status == 'e'){
-            showToast("standards Read Error. Please try again.", data)
+            showToast("Standard Read Error. Please try again.", data)
           }
         },
         error: function(data){
@@ -29,16 +27,17 @@ function StudentResultActivationStore() {
   self.on('read_section', function() {
     let req = {}
     $.ajax({
-      url:'/section',
+      url:'/final_assessment_report/read_section/',
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
+            self.sections = data.sections
             self.trigger('read_section_changed', data.sections)
           }else if(data.status == 'e'){
-            showToast("section Read Error. Please try again.", data)
+            showToast("Section Read Error. Please try again.", data)
           }
         },
         error: function(data){
@@ -47,26 +46,22 @@ function StudentResultActivationStore() {
       })
   })
 
-
-  /*******************************************************************subjects start*****************************************************************/
-
- self.on('read_students', function(standard_id,section_id) {
-     var obj = {}
-    obj['standard_id'] = standard_id
-    obj['section_id'] = section_id
+  self.on('read_student', function(standard_id,section_id) {
+    let req = {}
+    req.standard_id=standard_id
+    req.section_id=section_id
     $.ajax({
-      url:'/student-result-activation/students',
-        type:"POST",
-        data: JSON.stringify(obj),
+      url:'/final_assessment_report/read_student/'+standard_id+'/'+section_id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.trigger('read_students_changed', data.students)
+            self.students = data.students
+            self.trigger('read_student_changed', data.students)
           }else if(data.status == 'e'){
-            showToast("ResultActivation Read Error. Please try again.", data.messaage)
+            showToast("Student Read Error. Please try again.", data)
           }
         },
         error: function(data){
@@ -75,24 +70,22 @@ function StudentResultActivationStore() {
       })
   })
 
-  self.on('update_result_status', function(enroll_number,active_result) {
-    var obj = {}
-    obj['enroll_number'] = enroll_number
-    obj['active_result'] = active_result
+    self.on('read_final_assessment_report_card', function(obj) {
+    console.log('i am in read_categories api call from ajax')
     $.ajax({
-      url:'/student-result-activation/update-result-status/',
-        type:"POST",
-        data: JSON.stringify(obj),
+      url:'/final_assessment_report/read_final_assessment_report_card',
         contentType: "application/json",
+        type:"POST",
         dataType:"json",
+        data: JSON.stringify(obj),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
+          console.log(data)
           if(data.status == 's'){
             
-            toastr.success("Result Activation Updated Successfully ")
-            self.trigger('update_result_status_changed') 
+            self.trigger('read_final_assessment_report_card_changed')
           }else if(data.status == 'e'){
-            showToast("Error updating status. Please try again.", data.messaage)
+            showToast("Data Read Error. Please try again.", data)
           }
         },
         error: function(data){
@@ -100,6 +93,5 @@ function StudentResultActivationStore() {
         }
       })
   })
-  
 
 }

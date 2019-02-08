@@ -105,7 +105,8 @@
       <label class="label" for="class">Category</label>
         <div class="control">
             <div class="select is-fullwidth">
-            <select ref="category_id" onkeyup={addEnter}>
+            <select ref="category_id" id="category_id" onkeyup={addEnter} onchange={filterInfiramryCase}>
+              <option></option>  
               <option each={infirmaryCategories} value={category_id}>{category_name}
               </option>
             </select>
@@ -116,8 +117,8 @@
         <label class="label" for="class">Case</label>
         <div class="control">
             <div class="select is-fullwidth">
-            <select ref="case_id" onkeyup={addEnter}>
-              <option each={infirmaryCases} value={case_id}>{case_name}
+            <select ref="case_id" id="case_id" onkeyup={addEnter}>
+              <option each={filterInfirmaryCases} value={case_id}>{case_name}
                             </option>
             </select>
           </div>
@@ -161,7 +162,7 @@
         self.infirmary_student_view='show_student_table'
         self.readInfirmaryCategory()
         self.readInfirmaryCase()
-       // self.readStudentInfirmary()
+       // self.close_student_infirmary_form()
         console.log("inside student infirmary")
         flatpickr(".date", {
           allowInput: true,
@@ -181,18 +182,27 @@
 
      //read courses
      self.readStudentInfirmary = () => {
-        self.loading=true
+         self.loading=true
          self.category_name = $("#read_category_id option:selected").text();
          self.infirmary_student_view='show_student_table'
-           studentinfirmaryStore.trigger('read_student_infirmary', self.refs.read_category_id.value)
+         studentinfirmaryStore.trigger('read_student_infirmary', self.refs.read_category_id.value)
            //studentStore.trigger('read_students', obj)
-     }
-      self.readInfirmaryCategory = () => {
-        studentinfirmaryStore.trigger('read_infirmary_category')
      }
      self.readInfirmaryCase = () => {
         studentinfirmaryStore.trigger('read_infirmary_case')
      }
+    self.readInfirmaryCategory = () => {
+        studentinfirmaryStore.trigger('read_infirmary_category')
+      //  self.update()
+       // self.filterInfiramryCase()
+     }
+
+    self.filterInfiramryCase = () => {
+      self.filterInfirmaryCases = []
+      self.filterInfirmaryCases = self.infirmaryCases.filter(s => {
+        return s.category_id == self.refs.category_id.value
+      })
+    }
 
      self.add_student_infirmary = () => {
         self.infirmary_student_view='show_infirmary_student_form'
@@ -200,7 +210,14 @@
      }
     self.close_student_infirmary_form = () => {
         self.infirmary_student_view='show_student_table'
-       // self.readStudentInfirmary()
+        self.refs.enroll_number.value=''
+        self.refs.category_id.value=''
+        self.refs.case_id.value=''
+        self.refs.treatment_date.value=''
+        self.refs.time_in.value=''
+        self.refs.time_out.value=''
+        self.refs.treatment.value=''
+     
     }
 
     self.addEnter = (e) => {
@@ -211,13 +228,14 @@
 
 
       self.add = () => {
+        self.category_id=self.refs.category_id.value;
       	if($('#sent_home_check_box').is(":checked")){
       		self.sent_home=1;
       	}else{
       		self.sent_home=0;
       	}
          self.infirmaryCases.map(ev => {
-              if(ev.case_id==self.refs.category_id.value){
+              if(ev.category_id==self.refs.category_id.value){
                self.case_name=ev.case_name;
               }
             })
@@ -226,14 +244,15 @@
        }else{
          self.loading = true
          if(self.title=='Create'){
-            console.log('create')
-
+             self.category = $("#category_id option:selected").text();
+             self.case= $("#case_id option:selected").text();
             self.treatment_date=convertDate(self.refs.treatment_date.value)
-           studentinfirmaryStore.trigger('add_student_infirmary', self.refs.enroll_number.value,self.refs.category_id.value,self.refs.case_id.value, self.treatment_date,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value, self.sent_home,self.case_name)
+           studentinfirmaryStore.trigger('add_student_infirmary', self.refs.enroll_number.value,self.refs.category_id.value,self.refs.case_id.value, self.treatment_date,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value, self.sent_home,self.case_name, self.category)
          }else if(self.title=='Update'){
-           console.log('update')
            self.treatment_date=convertDate(self.refs.treatment_date.value)
-           studentinfirmaryStore.trigger('edit_student_infirmary',  self.refs.enroll_number.value,self.refs.category_id.value,self.refs.case_id.value, self.treatment_date,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value, self.sent_home,self.edit_id,self.case_name)
+           self.category = $("#category_id option:selected").text();
+           self.case= $("#case_id option:selected").text();
+           studentinfirmaryStore.trigger('edit_student_infirmary',  self.refs.enroll_number.value,self.refs.category_id.value,self.refs.case_id.value, self.treatment_date,self.refs.time_in.value,self.refs.time_out.value, self.refs.treatment.value, self.sent_home,self.edit_id,self.case_name,self.category)
          }
        }
      }
@@ -288,6 +307,8 @@
        self.refs.time_out.value=ev.time_out
        self.refs.treatment.value=ev.treatment
        self.sent_home
+       self.filterInfiramryCase()
+       self.update()
        if(ev.sent_home==1){
        	 $('#sent_home_check_box').prop('checked',true)
        }else{
@@ -310,7 +331,8 @@
        self.loading = false
        self.studentInfirmarys = studentInfirmarys
        self.update()
-       self.readStudentInfirmary()
+       self.refs.read_category_id.value=self.category_id
+       self.readStudentInfirmary ();
        console.log(self.studentInfirmarys)
      }
 

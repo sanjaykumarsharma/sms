@@ -3,39 +3,44 @@
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
   <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Mentor Category Management</h2>
-    <div class="box no-print">
-      <div class="columns">
-        <div class="column is-narrow">
-          <label class="label" for="role">Category</label>
-        </div>
-        <div class="column">
-          <input class="input" type="text" ref="addMentorCategoryInput" id="addMentorCategoryInput" 
+    <div class="level box no-print">
+      <div class="level-left">
+        <div class="columns">
+          <div class="column is-narrow">
+            <label class="label">Category</label>
+          </div>
+          <div class="column is-full">
+            <input class="input" type="text" ref="addMentorCategoryInput" id="addMentorCategoryInput" 
               onkeyup={addEnter}>
+          </div>
+            <div class="column">
+              <button class="button is-danger has-text-weight-bold " onclick={add} > {title} </button>
+            </div>
         </div>
-        <div class="column">
-          <button class="button is-danger has-text-weight-bold " onclick={add} > {title} </button>
+      </div>
+      <div class="level-right" >
+        <div class="control">
+          <input class="input" ref="searchMentorCategory" onkeyup={filterMentorCategory} type="text" placeholder="Search By Category">
         </div>
-        <div class="column">
-          <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={csvExport}>
-            <span class="icon">
-              <i class="far fa-file-excel"></i>
-            </span>
-          </button>
-          <button class="button is-primary has-text-weight-bold ml5 is-pulled-right" onclick="window.print()">
-            <span class="icon">
-              <i class="fas fa-print"></i>
-            </span>
-          </button>
-          <button class="button is-link has-text-weight-bold ml5 is-pulled-right" onclick={getData}>
-            <span class="icon">
-              <i class="fas fa-sync-alt"></i>
-            </span>
-          </button>
-        </div>
+        <button class="button is-link has-text-weight-bold ml5 " onclick={getData}>
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+        </button>
+        <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+          <span class="icon">
+            <i class="far fa-file-excel"></i>
+          </span>
+        </button>
+        <button class="button is-primary has-text-weight-bold  ml5" onclick="window.print()">
+          <span class="icon">
+            <i class="fas fa-print"></i>
+          </span>
+        </button>
       </div>
     </div>
 		
-		<table class="table is-fullwidth is-bordered is-hoverable">
+		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
 					<th>SL</th>
@@ -44,7 +49,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={mc, i in mentor_categories}>
+				<tr each={mc, i in filteredMentorCategory}>
 					<td>{ i+1 }</td>
 					<td>{ mc.category_name}</td>
           	<td class="has-text-right no-print">
@@ -67,7 +72,7 @@
       self.title='Create'
       self.loading = false;
       self.role = getCookie('role')
-      document.getElementById("addMentorCategoryInput").focus()
+      /*document.getElementById("addMentorCategoryInput").focus()*/
       self.update()
       self.readCategories()
     })
@@ -144,16 +149,21 @@
       self.refs.addMentorCategoryInput.value = mc.category_name
       self.edit_id = mc.category_id
     }
+
+    self.filterMentorCategory = ()=>{
+      self.filteredMentorCategory = self.mentor_categories.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchMentorCategory.value.toLowerCase())>=0
+      })
+    }
     
     mentorcategoryStore.on('mentor_category_changed',MentorCategoryChanged)
     function MentorCategoryChanged(mentor_categories){
-      console.log(mentor_categories) 
       self.title='Create'
       self.refs.addMentorCategoryInput.value = ''
       self.loading = false
       self.mentor_categories = mentor_categories
+      self.filteredMentorCategory = mentor_categories
       self.update()
-      console.log(self.mentor_categories)
     }
 
 </script>

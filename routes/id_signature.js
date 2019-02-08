@@ -130,7 +130,7 @@ router.post('/edit_signature/:type/:old_type', function(req, res, next) {
                 }
 
                 //rename code
-                fs.rename('./public/images/7/signatureImages/'+req.params.old_type+'.jpg', './public/images/7/signatureImages/'+req.params.type+'.jpg', function(err) {
+                fs.rename('./public/images/signatureImages/'+req.params.old_type+'.jpg', './public/images/signatureImages/'+req.params.type+'.jpg', function(err) {
                    if ( err ) console.log('ERROR: ' + err);
                 });
                 data.status = 's';
@@ -174,7 +174,7 @@ router.post('/delete_signature/:type', function(req, res, next) {
 
         }else{
             //Delete Image Form Folder code
-            fs.unlink('./public/images/7/signatureImages/'+req.params.type+'.jpg', (err) => {
+            fs.unlink('./public/images/signatureImages/'+req.params.type+'.jpg', (err) => {
               if (err) throw err; console.log('path/file.txt was deleted');
             });
             data.status = 's';
@@ -278,7 +278,7 @@ const upload = multer({
 
 router.post('/upload_signature_image/:folder_name/:image_name', upload.single('signature_picture'), function(req, res, next) {
   console.log('inside uploading images');
-  res.send('ok')
+  res.send(200)
 });
 
 

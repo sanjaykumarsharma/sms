@@ -3,57 +3,58 @@
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
   <h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Activity Event Management</h2>
-
-		<div class="box no-print">
-			<div class="columns">
-				<div class="column is-narrow">
-					<label class="label">Category</label>
-				</div>
-				<div class="column is-narrow">
-					<div class="control">
-						<div class="select">
-							<select ref="category_id">
-								<option each={categories} value={category_id}>{category_name}
-	              </option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="column is-narrow">
-					<label class="label">Event</label>
-				</div>
-				<div class="column is-narrow">
-					<div class="control">
-						<input class=" input" id="addEventInput" 
-						  ref="addEventInput" type="text">
-					</div>
-				</div>
-				<div class="column">
-					<button class="button is-danger has-text-weight-bold"
-					onclick={add} >{title}
-					</button>
-				</div>
-        <div class="column">
-          <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={csvExport}>
-            <span class="icon">
-              <i class="far fa-file-excel"></i>
-            </span>
-          </button>
-          <button class="button is-primary has-text-weight-bold ml5 is-pulled-right" onclick="window.print()">
-            <span class="icon">
-              <i class="fas fa-print"></i>
-            </span>
-          </button>
-          <button class="button is-link has-text-weight-bold ml5 is-pulled-right" onclick={getData}>
-            <span class="icon">
-              <i class="fas fa-sync-alt"></i>
-            </span>
-          </button>
+    <div class="level box no-print">
+      <div class="level-left">
+        <div class="columns">
+          <div class="column is-narrow">
+            <label class="label">Category</label>
+          </div>
+          <div class="column is-narrow">
+          <div class="control">
+            <div class="select">
+              <select ref="category_id">
+                <option each={categories} value={category_id}>{category_name}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
-			</div>
-		</div>
+        <div class="column is-narrow">
+          <label class="label">Event</label>
+        </div>
+        <div class="column is-half">
+          <div class="control">
+            <input class=" input" id="addEventInput" ref="addEventInput" type="text">
+          </div>
+        </div>
+          <div class="column">
+            <button class="button is-danger has-text-weight-bold " onclick={add} > {title} </button>
+          </div>
+        </div>
+      </div>
+      <div class="level-right" >
+        <div class="control">
+          <input class="input" ref="searchActivityEvent" onkeyup={filterActivityEvent} type="text" placeholder="Search By Event">
+        </div>
+        <button class="button is-link has-text-weight-bold ml5 " onclick={getData}>
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+        </button>
+        <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+          <span class="icon">
+            <i class="far fa-file-excel"></i>
+          </span>
+        </button>
+        <button class="button is-primary has-text-weight-bold  ml5" onclick="window.print()">
+          <span class="icon">
+            <i class="fas fa-print"></i>
+          </span>
+        </button>
+      </div>
+    </div>
 
-		<table class="table is-fullwidth is-bordered is-hoverable">
+		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
 					<th>SL</th>
@@ -63,7 +64,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in eventDataItems}>
+				<tr each={ev, i in filteredActivityEvent}>
 					<td>{ i+1 }</td>
 					<td>{ ev.category_name}</td>
 					<td>{ ev.event_name}</td>
@@ -176,19 +177,23 @@
       self.refs.category_id.value = ev.category_id
       self.edit_id = ev.event_id
     }
+
+    self.filterActivityEvent = ()=>{
+      self.filteredActivityEvent = self.events.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchActivityEvent.value.toLowerCase())>=0
+      })
+    }
     
     activityeventStore.on('add_event_changed',AddEventsChanged)
     function AddEventsChanged(events){
       console.log(events) 
       self.title='Create'
       self.refs.addEventInput.value = ''
-      //self.refs.category_id.value = ''
       self.loading = false
       self.events = events
       self.update()
       self.readEvents()
       self.readCategories()
-      console.log(self.events)
     }
 
     activityeventStore.on('edit_event_changed',EditEventsChanged)
@@ -196,13 +201,11 @@
       console.log(events) 
       self.title='Create'
       self.refs.addEventInput.value = ''
-      //self.refs.category_id.value = ''
       self.loading = false
       self.events = events
       self.update()
       self.readEvents()
       self.readCategories()
-      console.log(self.events)
     }
 
     activityeventStore.on('delete_event_changed',DeleteEventsChanged)
@@ -210,12 +213,11 @@
       console.log(events) 
       self.title='Create'
       self.refs.addEventInput.value = ''
-      self.refs.category_id.value = ''
       self.loading = false
       self.events = events
       self.update()
       self.readEvents()
-      console.log(self.events)
+      self.readCategories()
     }
 
     activityeventStore.on('read_event_changed',ReadEventsChanged)
@@ -224,8 +226,7 @@
       self.refs.addEventInput.value = ''
       self.loading = false
       self.events = events
-      self.eventDataItems = []
-      self.eventDataItems = events
+      self.filteredActivityEvent = events
       self.update()
     }
 
@@ -235,7 +236,6 @@
       self.categories = categories
       self.loading = false
       self.update()
-      console.log(self.categories)
     }
 
 </script>

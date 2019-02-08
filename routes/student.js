@@ -761,20 +761,30 @@ router.post('/edit_student/:student_id', function(req, res, next) {
                 var guardianName = values_parent.is_guardian;
                 console.log(guardianName)
                 if(guardianName == 'Mother'){
-                  copyFile('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+                  if (fs.existsSync('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg')) {
+                    copyFile('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+                      if (err) throw err; console.log('path/file.txt was deleted');
+                    });
+                  }
+                  /*copyFile('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
                   if (err)
                     throw err;
     
                     console.log('source.txt was copied to destination.txt');
-                  });
+                  });*/
                 }
                 else if(guardianName == 'Father'){
-                  copyFile('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+                  if (fs.existsSync('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg')) {
+                    copyFile('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+                      if (err) throw err; console.log('path/file.txt was deleted');
+                    });
+                  }
+                  /*copyFile('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
                   if (err)
                     throw err;
     
                     console.log('source.txt was copied to destination.txt');
-                  });
+                  });*/
                 }
                 
                 data.status = 's';
@@ -929,18 +939,26 @@ router.get('/delete_student/:student_id', function(req, res, next) {
                     throw err;
                   });
                 }
-                fs.unlink('./public/images/'+req.cookies.session_id+'/studentImages/'+req.params.student_id+'.jpg', (err) => {
-                  if (err) throw err; console.log('path/file.txt was deleted');
-                });
-                fs.unlink('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', (err) => {
-                  if (err) throw err; console.log('path/file.txt was deleted');
-                });
-                fs.unlink('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', (err) => {
-                  if (err) throw err; console.log('path/file.txt was deleted');
-                });
-                fs.unlink('./public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
-                  if (err) throw err; console.log('path/file.txt was deleted');
-                });
+                if (fs.existsSync('./public/images/'+req.cookies.session_id+'/studentImages/'+req.params.student_id+'.jpg')) {
+                  fs.unlink('./public/images/'+req.cookies.session_id+'/studentImages/'+req.params.student_id+'.jpg', (err) => {
+                    if (err) throw err; console.log('path/file.txt was deleted');
+                  });
+                }
+                if (fs.existsSync('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg')) {
+                  fs.unlink('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', (err) => {
+                    if (err) throw err; console.log('path/file.txt was deleted');
+                  }); 
+                }
+                if (fs.existsSync('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg')) {
+                  fs.unlink('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', (err) => {
+                    if (err) throw err; console.log('path/file.txt was deleted');
+                  }); 
+                }
+                if (fs.existsSync('./public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg')) {
+                  fs.unlink('./public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+                    if (err) throw err; console.log('path/file.txt was deleted');
+                  }); 
+                }
                 data.status = 's';
                 data.students = result;
                 console.log('success!');
@@ -1237,6 +1255,17 @@ router.post('/upload_father_image/:folder_name/:image_name', upload_father.singl
   res.send(200)
 });
 
+// Father Image Delete
+
+router.post('/delete_upload_father_image/:student_id', function(req, res, next) {
+
+  fs.unlink('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', (err) => {
+    if (err) throw err; console.log('path/file.txt was deleted');
+  });
+  res.send(200)
+
+});
+
 // Mother Image Upload
 const upload_mother = multer({
   storage: multer.diskStorage({
@@ -1284,23 +1313,25 @@ router.post('/upload_guardian_image/:folder_name/:image_name', upload_guardian.s
 
 
 router.post('/upload_copy_father_image/:student_id', function(req, res, next) {
-  
+  if (fs.existsSync('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg')) {  
   copyFile('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
   if (err)
     throw err;
     console.log('source.txt was copied to destination.txt');
   });
+  }
   res.send(200)
 
 });
 
 router.post('/upload_copy_mother_image/:student_id', function(req, res, next) {
-  
+  if (fs.existsSync('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg')) {  
   copyFile('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
   if (err)
     throw err;
     console.log('source.txt was copied to destination.txt');
   });
+  }
   res.send(200)
 
 });

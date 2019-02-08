@@ -21,26 +21,28 @@
 				</div>
 			</div>
 			<div class="level-right">
-
-				<button class="button is-warning has-text-weight-bold  is-small" onclick={add_new_mentor}>
+				<div class="control">
+          			<input class="input" ref="searchMentorDetail" onkeyup={filterMentorDetail} type="text" placeholder="Search By Enroll No or Name">
+        		</div>
+				<button class="button is-warning has-text-weight-bold ml5" onclick={add_new_mentor}>
 				<span class="icon">
 					<span class="fas fa-plus"></span>
 				</span>
 				
 				</button>
-	        	<button class="button is-link has-text-weight-bold is-small ml5" onclick={getMentorData}>
+	        	<button class="button is-link has-text-weight-bold  ml5" onclick={getMentorData}>
 			        <span class="icon">
 			          <span class="fas fa-sync-alt"></span>
 			        </span>
 	        	</button>
 
-	        	<button class="button is-success has-text-weight-bold is-small ml5" onclick={downloadCSV}>
+	        	<button class="button is-success has-text-weight-bold ml5" onclick={downloadCSV}>
         			<span class="icon">
           				<i class="far fa-file-excel"></i>
         			</span>
         		</button>
 
-        		<a class="button is-primary has-text-weight-bold is-small ml5" onclick="window.print()">
+        		<a class="button is-primary has-text-weight-bold ml5" onclick="window.print()">
         			<span class="icon">
           				<i class="fas fa-print"></i>
         			</span>
@@ -68,7 +70,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ac, i in mentors }>
+				<tr each={ac, i in filteredMentorDetail }>
           			<td>{i + 1}</td>
 					<td>{ac.referred_by}</td>
 					<td>{ac.student_name}</td>
@@ -586,6 +588,14 @@
 		self.refs.statusInput.value = ' '
 		self.refs.addCasesuggestionInput.value = ' '
     }
+
+    self.filterMentorDetail = ()=>{
+      self.filteredMentorDetail = self.mentors.filter(c => {
+      	var filter_value=c.student_name + c.enroll_number;
+        return JSON.stringify(filter_value).toLowerCase().indexOf(self.refs.searchMentorDetail.value.toLowerCase())>=0
+      })
+    }
+
     mentordetailStore.on('read_mentor_categories_changed',CategoriesChanged)
     function CategoriesChanged(categories){
       console.log(categories) 
@@ -607,8 +617,9 @@
       self.mentors = mentors
       self.mentor_view='show_mentor'
       self.clearForm()
-      self.update()
       self.getMentorData()
+      self.filteredMentorDetail = mentors
+      self.update()
     }
 
     mentordetailStore.on('add_case_detail_changed',AddCaseChanged)
@@ -616,6 +627,7 @@
       console.log(case_details) 
       self.case_details = case_details
       self.refress_case_detail();
+      self.filteredMentorDetail = mentors
       self.update()
     }
 
@@ -624,6 +636,7 @@
       console.log(mentors)
       self.loading = false;
       self.mentors = mentors
+      self.filteredMentorDetail = mentors
       self.categoryName = $("#CategoryName option:selected").text();
       if(self.mentors.length==0){
       	toastr.info("No Data Found")
@@ -660,6 +673,7 @@
       self.mentor_view='show_mentor'
       self.clearForm()
       self.getMentorData()
+      self.filteredMentorDetail = mentors
       self.update()
     }
 
@@ -711,6 +725,7 @@
     function DeleteMentorDetailsChanged(delete_mentor_details){
       console.log(delete_mentor_details) 
       self.getMentorData()
+      
       self.update()
      }
 </script>

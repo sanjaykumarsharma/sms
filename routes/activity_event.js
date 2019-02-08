@@ -115,6 +115,9 @@ router.get('/read_event', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
 
   req.getConnection(function(err,connection){
         var data = {}
@@ -122,6 +125,8 @@ router.post('/add', function(req, res, next) {
         var values = {
             event_name    : input.event_name,
             category_id : input.category_id,
+            creation_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("INSERT INTO activity_event_master set ? ",values, function(err, rows)
@@ -156,6 +161,7 @@ router.post('/edit/:event_id', function(req, res, next) {
         var values = {
             event_name    : input.event_name,
             category_id : input.category_id,
+            modified_by    : req.cookies.role,
         };
         
         var query = connection.query("UPDATE activity_event_master set ? WHERE event_id = ?",[values,event_id], function(err, rows)

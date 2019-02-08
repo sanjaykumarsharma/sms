@@ -23,7 +23,7 @@ function BirthDayStore() {
           if(data.status == 's'){
              self.birthDayData=data.birthDayData
             toastr.success("Successfully")
-            self.trigger('read_birth_day_changed', self.birthDayData)
+            self.trigger('read_birth_day_changed', self.birthDayData, getCookie('session_id'))
           }else if(data.status == 'e'){
             showToast("Error . Please try again.", data)
           }
