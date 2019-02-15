@@ -464,25 +464,25 @@
     			<span style="border-bottom: dotted 2px #000;">FIRST ASSESSMENT 2018-2019</span>
     		</h4>
 
-        	<table class="table is-fullwidth is-narrow">    
+        	<table class="table is-fullwidth is-narrow border-less-table">    
 	          <tbody>
 	          	<tr>             
 	             <th style="width:180px">Name</th> 
-	             <td style="width:430px">{r.marks[0].student_name}</td>
+	             <td style="width:430px">{r.sd.student_name}</td>
 	             <th style="width:180px">Issue Date</th>             
 	             <td style="width:250px">{issue_date}</td>
 	            </tr>
 	            <tr>             
 	             <th>Enroll No</th>
-	             <td>{r.marks[0].enroll_number}</td>
+	             <td>{r.sd.enroll_number}</td>
 	             <th>Class</th>             
 	             <td>{standard}</td>
 	            </tr>
 	            <tr>             
 	             <th>Date of birth</th>
-	             <td>{r.marks[0].dob}</td>
+	             <td>{r.sd.dob}</td>
 	             <th>House</th>             
-	             <td>{r.marks[0].house_name}</td>
+	             <td>{r.sd.house_name}</td>
 	            </tr>
 	          </tbody>
 	        </table>
@@ -491,20 +491,38 @@
 				<thead>
 					<tr>
 						<td class="table-head">Subject</td>
-						<td style="width:250px" class="has-text-centered table-head lr-table-border">Grade Obtained<br/>(100)</td>
-						<td style="width:250px" class="has-text-centered table-head">Highest Grade</td>
+						<td style="width:175px" class="has-text-centered table-head lr-table-border">Class Test<br/>50</td>
+						<td style="width:175px" class="has-text-centered table-head lr-table-border">First <br/>Assessment<br/>100</td>
+						<td style="width:175px" class="has-text-centered table-head lr-table-border">M.O.<br/>150</td>
+						<td style="width:175px" class="has-text-centered table-head lr-table-border">H.M.<br/>150</td>
+						<td style="width:250px" class="has-text-centered table-head">Comparison of student performance with class average</td>
 					</tr>
 				</thead>
 				<tbody>
 					<tr each={m in r.marks} class={m.show_in}>
 						<td>{m.subject_name}</td>
-						<td class="has-text-centered lr-table-border">{m.marks}</td>
-						<td class="has-text-centered">{m.max_marks}</td>
+						<td class="has-text-centered lr-table-border {m.first_marks_limit}">{m.first_marks}</td>
+						<td class="has-text-centered lr-table-border {m.second_marks_limit}">{m.second_marks}</td>
+						<td class="has-text-centered lr-table-border">
+							<span if={m.marking_type=='N'}>{m.mo_marks}</span>
+						</td>
+						<td class="has-text-centered lr-table-border">
+							<span if={m.marking_type=='N'}>{m.max_marks}</span>
+						</td>
+						<td class="has-text-centered">
+							<div class="graph" style="width:{(m.mo_marks * 0.80)}px" if={m.marking_type=='N'}>
+                            	<div style="font-size:.7em;margin-left:{((m.mo_marks * 0.80) + 5 )}px">{m.mo_marks}</div>
+                            </div>
+                            <div class="graph1" style="width:{(m.avg_marks * 0.80)}px" if={m.marking_type=='N'}>
+                            	<div style="font-size:.7em;margin-left:{((m.avg_marks * 0.80) + 5 )}px">{m.avg_marks}</div>
+                            </div>
+					    </td>
 					</tr>
 				</tbody>
 			</table>
+            
 
-			<hr style="border-top: double !important;">
+			<!-- <hr style="border-top: double !important;">
 			<table class="table is-fullwidth signature-table is-narrow" style="margin-top:35px">
 				<tr>
 					<td>*Remarks</td>
@@ -775,7 +793,7 @@
 		            <td class="has-text-centered">Average</td>
 		            <td class="has-text-centered">Needs Improvement</td>
 		          <tr>
-		    </table>
+		    </table> -->
 
 		</div>	
 

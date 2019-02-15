@@ -803,8 +803,23 @@ hr{
   .divider-subject .B2:nth-child(odd){
      border-bottom: 1px solid #000 !important;
   }
-  /*.divider-subject .B1:last-child(){
-     border-bottom: 1px solid #000 !important;
-  }*/
+  
+  .graph {
+    background-color: rgb(253, 142, 0);
+    height: 10px;
+    line-height: 12px;
+  } 
 
+  .graph1 {
+    background-color: rgb(243, 188, 14);
+    height: 10px;
+    line-height: 12px;
+  }
+  
+  .error {
+    color: #000;
+    font-weight: bold;
+    text-decoration: underline !important;
+    -webkit-print-color-adjust: exact;
+  }
   /*report card css end*/
