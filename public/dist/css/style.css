@@ -822,4 +822,15 @@ hr{
     text-decoration: underline !important;
     -webkit-print-color-adjust: exact;
   }
+
+  .total{
+    border-top: 1px solid #000 !important;
+    border-bottom: 1px solid #000 !important;
+    font-weight: 600;
+  }
+
+  .remove-border{
+    border: none;
+  }
+
   /*report card css end*/

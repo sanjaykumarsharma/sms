@@ -351,8 +351,8 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
     var marksQry = `select q.roll_number, q.student_id, q.subject_id, p.marks as first_marks, q.marks as second_marks,
                   (coalesce(p.marks,0)+coalesce(q.marks,0)) as mo_marks, q.subject_name, q.order_no, 
                   CAST(p.min_marks AS UNSIGNED) as first_min_marks, (q.min_marks/2) as second_min_marks, q.show_in, q.marking_type,
-                  if(p.marks<p.min_marks,'error','normal') as first_marks_limit,
-                  if(q.marks<(q.min_marks/2),'error','normal') as second_marks_limit from
+                  if((p.marks<p.min_marks and q.marking_type ='N'),'error','normal') as first_marks_limit,
+                  if((q.marks<(q.min_marks/2) and q.marking_type ='N'),'error','normal') as second_marks_limit from
 
                   (select roll_number, student_id, exam_id, subject_id, marks, subject_name, exam_group, order_no, min_marks, show_in, marking_type from
 
@@ -523,7 +523,7 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
                                   and exam_term='First'
                                   and session_id = ${req.cookies.session_id}        
                                   order by 1,2`; 
-    
+
     var physicalFitnessQry =`select student_id, first_skill, first_description, second_skill, 
                             second_description, third_skill, third_description, fourth_skill,
                             fourth_description, fifth_skill, fifth_description
@@ -534,7 +534,7 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
                             order by student_id`;
 
     var attendanceQry = `select a.student_id, 'Attendance' as subject_name,
-                         concat( (concat(pr, '/')),(COALESCE(ab,0)+pr)) as marks, 'At' as show_in from
+                         concat( (concat(pr, '/')),(COALESCE(ab,0)+pr)) as second_marks, 'At' as show_in from
                         (select student_id, count(attendance_date) as pr 
                          from student_attendance 
                          where attendance = '1' and student_id in (${input.student_id})
@@ -549,8 +549,8 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
                          and session_id=${req.cookies.session_id}
                          and attendance_date <='${input.end_date}' group by student_id) b on a.student_id=b.student_id`;
 
-     var qry = marksQry+';'+studentDetailsQuery+';'+maxMarksQry+';'+avgMarksQry;
-     console.log(marksQry);
+     var qry = marksQry+';'+studentDetailsQuery+';'+maxMarksQry+';'+avgMarksQry+';'+maturityDevelopmentQry+';'+physicalFitnessQry+';'+attendanceQry;
+     console.log(qry);
      // var qry = marksQryView+';'+marksQry+';'+maxMarksQry+';'+maturityDevelopmentQry+';'+physicalFitnessQry+';'+attendanceQry;
 
 
@@ -582,22 +582,22 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
           })
 
           //maturity development
-          // var maturityDevelopment={}
-          // result[3].map(r=>{
-          //     maturityDevelopment[r.student_id]=r
-          // })
+          var maturityDevelopment={}
+          result[4].map(r=>{
+              maturityDevelopment[r.student_id]=r
+          })
 
           //physicalFitness
-          // var physicalFitness={}
-          // result[4].map(r=>{
-          //     physicalFitness[r.student_id]=r
-          // })
+          var physicalFitness={}
+          result[5].map(r=>{
+              physicalFitness[r.student_id]=r
+          })
 
           //attendance
-          // var attendance={}
-          // result[5].map(r=>{
-          //     attendance[r.student_id]=r
-          // })
+          var attendance={}
+          result[6].map(r=>{
+              attendance[r.student_id]=r
+          })
 
           //data according to student_id
           var student_id=''
@@ -614,13 +614,13 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
               r.avg_marks=avgMarks[r.subject_id]
               obj.push(r)
             }else{
-              // obj.push(attendance[student_id])
+              obj.push(attendance[student_id])
               var row={}
               row[student_id]=student_id
               row['marks']=obj
               row['sd']=studentDetails[student_id]
-              //row['md']=maturityDevelopment[student_id]
-              //row['pf']=physicalFitness[student_id]
+              row['md']=maturityDevelopment[student_id]
+              row['pf']=physicalFitness[student_id]
               marks_data.push(row)
               student_id=r.student_id
               obj=[]
@@ -630,28 +630,35 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
             }
           })
 
-          // obj.push(attendance[student_id])
+          obj.push(attendance[student_id])
           var row={}
           row[student_id]=student_id
           row['marks']=obj
           row['sd']=studentDetails[student_id]
-          // row['md']=maturityDevelopment[student_id]
-          // row['pf']=physicalFitness[student_id]
+          row['md']=maturityDevelopment[student_id]
+          row['pf']=physicalFitness[student_id]
           marks_data.push(row)
 
 
           marks_data.map(r=>{
               var first_marks_total=0
               var second_marks_total=0
+              var mo_marks_total=0
               var last_index=0
             r.marks.map((r1,index)=>{
               if(r1.marking_type=='N'){
                 first_marks_total = Number(first_marks_total) + Number(r1.first_marks)
                 second_marks_total = Number(second_marks_total) +  Number(r1.second_marks)
+                mo_marks_total = Number(mo_marks_total) +  Number(r1.mo_marks)
                 last_index=index
               }
             })
-            r.marks.splice(last_index, 0, {'subject_name':'Total','first_marks':first_marks_total,'second_marks':second_marks_total});
+
+            var fm_t_p = first_marks_total + '/' + ((first_marks_total/(50*(last_index+1)))*100).toFixed(2)
+            var sm_t_p = second_marks_total + '/' + ((second_marks_total/(100*(last_index+1)))*100).toFixed(2)
+            var mo_t_p = mo_marks_total + '/' + ((mo_marks_total/(150*(last_index+1)))*100).toFixed(2)
+
+            r.marks.splice((last_index+1), 0, {'subject_name':'Total','first_marks':fm_t_p,'second_marks':sm_t_p, 'mo_marks':mo_t_p, 'class':'total', 'marking_type':'T'});
 
           })
 
@@ -659,26 +666,9 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
           data.avgMarks= avgMarks // max_marks of subject_id
           //data.maturityDevelopmentQry=maturityDevelopment
           // data.physicalFitness=result[4]
-          // data.physicalFitness=physicalFitness
-          // data.attendance=attendance
-
+          data.physicalFitness=physicalFitness
+          data.attendance=attendance
           
-          //creating marks based on group
-          // var temp_marks_data=[]
-          // var obj=[]
-          // var prev_subject_id = ''
-          // result[0].map(r=>{
-          //   if(prev_subject_id == ''){//loop runs first time
-          //     prev_subject_id=r.subject_id
-          //     obj.push(r)
-          //   }else if(r.subject_id==prev_subject_id){
-          //     obj.push(r)
-          //   }else{
-
-          //   }
-          // })
-
-
           res.send(data)
         }
      });    

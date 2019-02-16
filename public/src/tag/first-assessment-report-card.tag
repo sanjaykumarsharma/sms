@@ -464,7 +464,7 @@
     			<span style="border-bottom: dotted 2px #000;">FIRST ASSESSMENT 2018-2019</span>
     		</h4>
 
-        	<table class="table is-fullwidth is-narrow border-less-table">    
+        	<table class="table is-fullwidth is-narrow no-border">    
 	          <tbody>
 	          	<tr>             
 	             <th style="width:180px">Name</th> 
@@ -487,7 +487,7 @@
 	          </tbody>
 	        </table>
 
-		  	<table class="table is-fullwidth is-narrow border-less-table divider-subject">
+		  	<table class="table is-fullwidth is-narrow divider-subject no-border">
 				<thead>
 					<tr>
 						<td class="table-head">Subject</td>
@@ -500,16 +500,16 @@
 				</thead>
 				<tbody>
 					<tr each={m in r.marks} class={m.show_in}>
-						<td>{m.subject_name}</td>
-						<td class="has-text-centered lr-table-border {m.first_marks_limit}">{m.first_marks}</td>
-						<td class="has-text-centered lr-table-border {m.second_marks_limit}">{m.second_marks}</td>
-						<td class="has-text-centered lr-table-border">
-							<span if={m.marking_type=='N'}>{m.mo_marks}</span>
+						<td class="{m.class}">{m.subject_name}</td>
+						<td class="has-text-centered lr-table-border {m.first_marks_limit} {m.class}">{m.first_marks}</td>
+						<td class="has-text-centered lr-table-border {m.second_marks_limit} {m.class}">{m.second_marks}</td>
+						<td class="has-text-centered lr-table-border {m.class}">
+							<span if={m.marking_type=='N' || m.marking_type=='T'}>{m.mo_marks}</span>
 						</td>
-						<td class="has-text-centered lr-table-border">
+						<td class="has-text-centered lr-table-border {m.class}">
 							<span if={m.marking_type=='N'}>{m.max_marks}</span>
 						</td>
-						<td class="has-text-centered">
+						<td class="has-text-centered {m.class}">
 							<div class="graph" style="width:{(m.mo_marks * 0.80)}px" if={m.marking_type=='N'}>
                             	<div style="font-size:.7em;margin-left:{((m.mo_marks * 0.80) + 5 )}px">{m.mo_marks}</div>
                             </div>
@@ -522,7 +522,7 @@
 			</table>
             
 
-			<!-- <hr style="border-top: double !important;">
+			<hr style="border-top: double !important;">
 			<table class="table is-fullwidth signature-table is-narrow" style="margin-top:35px">
 				<tr>
 					<td>*Remarks</td>
@@ -775,25 +775,25 @@
 		    	</tr>
 		    </table>
 
-            <table class="table is-fullwidth is-narrow is-bordered">
-		        <caption class="report-caption" style="text-align:left">Physical Fitness Description</caption>
+		    <table class="table is-fullwidth is-narrow is-bordered">
+		        <caption class="report-caption">Physical Fitness Description</caption>
 		          <tr>
-		            <th>Grade</th>
-		            <td class="has-text-centered">A</td>
-		            <td class="has-text-centered">B</td>
-		            <td class="has-text-centered">C</td>
-		            <td class="has-text-centered">D</td>
-		            <td class="has-text-centered">E</td>
+		            <th>Obtained Marks</th>
+		            <td class="centeralign">9-10</td>
+		            <td class="centeralign">7-8</td>
+		            <td class="centeralign">5-6</td>
+		            <td class="centeralign">3-4</td>
+		            <td class="centeralign">0-2</td>
 		          <tr>
 		          <tr>
 		            <th>Description</th>
-		            <td class="has-text-centered">Excellent</td>
-		            <td class="has-text-centered">Very Good</td>
-		            <td class="has-text-centered">Good</td>
-		            <td class="has-text-centered">Average</td>
-		            <td class="has-text-centered">Needs Improvement</td>
+		            <td class="centeralign">Excellent</td>
+		            <td class="centeralign">Very Good</td>
+		            <td class="centeralign">Good</td>
+		            <td class="centeralign">Average</td>
+		            <td class="centeralign">Needs Improvement</td>
 		          <tr>
-		    </table> -->
+		    </table>
 
 		</div>	
 
