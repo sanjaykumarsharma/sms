@@ -9333,6 +9333,52 @@ function FirstAssessmentReportStore() {
       }
     });
   });
+
+  self.on('read_first_assessment_report_card_nine', function (obj) {
+    $.ajax({
+      url: '/first_assessment_report/read_first_assessment_report_card_nine',
+      contentType: "application/json",
+      type: "POST",
+      dataType: "json",
+      data: JSON.stringify(obj),
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+
+          self.trigger('read_first_assessment_report_card_nine_changed', data.marks);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_first_assessment_report_card_eleven', function (obj) {
+    $.ajax({
+      url: '/first_assessment_report/read_first_assessment_report_card_eleven',
+      contentType: "application/json",
+      type: "POST",
+      dataType: "json",
+      data: JSON.stringify(obj),
+      headers: { "Authorization": getCookie('token') },
+      success: function success(data) {
+        console.log(data);
+        if (data.status == 's') {
+
+          self.trigger('read_first_assessment_report_card_eleven_changed', data.marks);
+        } else if (data.status == 'e') {
+          showToast("Data Read Error. Please try again.", data);
+        }
+      },
+      error: function error(data) {
+        showToast("", data);
+      }
+    });
+  });
 }
 'use strict';
 

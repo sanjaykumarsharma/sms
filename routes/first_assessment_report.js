@@ -122,6 +122,7 @@ router.post('/read_first_assessment_report_card_one_to_four/', function(req, res
   req.getConnection(function(err,connection){
        
     var data = {}
+    var groupByQry = `SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))`; 
 
     var marksQryView =`CREATE OR REPLACE VIEW first_assessment_report_card_one_to_four AS 
                   select roll_number, a.student_id, a.exam_id, a.subject_id, subject_name,
@@ -238,7 +239,7 @@ router.post('/read_first_assessment_report_card_one_to_four/', function(req, res
                          and session_id=${req.cookies.session_id}
                          and attendance_date <='${input.end_date}' group by student_id) b on a.student_id=b.student_id`;
 
-     var qry = marksQryView+';'+marksQry+';'+maxMarksQry+';'+maturityDevelopmentQry+';'+physicalFitnessQry+';'+attendanceQry;
+     var qry = groupByQry+';'+marksQryView+';'+marksQry+';'+maxMarksQry+';'+maturityDevelopmentQry+';'+physicalFitnessQry+';'+attendanceQry;
 
      console.log(attendanceQry);
 
@@ -253,25 +254,25 @@ router.post('/read_first_assessment_report_card_one_to_four/', function(req, res
           
           //converting max_marks as onject by subject_id
           var maxMarks={}
-          result[2].map(r=>{
+          result[3].map(r=>{
               maxMarks[r.subject_id]=r.max_marks
           })
 
           //maturity development
           var maturityDevelopment={}
-          result[3].map(r=>{
+          result[4].map(r=>{
               maturityDevelopment[r.student_id]=r
           })
 
           //physicalFitness
           var physicalFitness={}
-          result[4].map(r=>{
+          result[5].map(r=>{
               physicalFitness[r.student_id]=r
           })
 
           //attendance
           var attendance={}
-          result[5].map(r=>{
+          result[6].map(r=>{
               attendance[r.student_id]=r
           })
 
@@ -279,7 +280,7 @@ router.post('/read_first_assessment_report_card_one_to_four/', function(req, res
           var student_id=''
           var marks_data=[]
           var obj=[]
-          result[1].map(r=>{
+          result[2].map(r=>{
             if(student_id==''){ //loop runs the first time
               student_id=r.student_id
               r.max_marks=maxMarks[r.subject_id]
@@ -335,6 +336,7 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
        
     var data = {}
 
+    var groupByQry = `SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))`; 
     var studentDetailsQuery =`select distinct a.student_id, enroll_number, 
                               concat(first_name,' ',middle_name,' ',last_name)as student_name,
                               date_format(dob, '%d/%m/%Y') as  dob, house_name, session_name
@@ -348,7 +350,9 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
                               and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})        
                               order by 1`;
     
-    var marksQry = `select q.roll_number, q.student_id, q.subject_id, p.marks as first_marks, q.marks as second_marks,
+    var marksQry = `select q.roll_number, q.student_id, q.subject_id,
+                  if((p.marks=-1),'Ab',p.marks) as first_marks,
+                  if((q.marks=-1),'Ab',q.marks) as second_marks,
                   (coalesce(p.marks,0)+coalesce(q.marks,0)) as mo_marks, q.subject_name, q.order_no, 
                   CAST(p.min_marks AS UNSIGNED) as first_min_marks, (q.min_marks/2) as second_min_marks, q.show_in, q.marking_type,
                   if((p.marks<p.min_marks and q.marking_type ='N'),'error','normal') as first_marks_limit,
@@ -505,8 +509,8 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
                      join exam_type f on e.exam_id = f.exam_type_id
                      where e.marking_type='N'
                      and f.assessment='H'
-                     and a.section_id=39
-                     and a.session_id=7
+                     and a.section_id=${input.section_id}
+                     and a.session_id=${req.cookies.session_id}
                      group by a.subject_id,a.student_id) p
 
                      group by subject_id`;
@@ -549,8 +553,8 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
                          and session_id=${req.cookies.session_id}
                          and attendance_date <='${input.end_date}' group by student_id) b on a.student_id=b.student_id`;
 
-     var qry = marksQry+';'+studentDetailsQuery+';'+maxMarksQry+';'+avgMarksQry+';'+maturityDevelopmentQry+';'+physicalFitnessQry+';'+attendanceQry;
-     console.log(qry);
+     var qry = groupByQry+';'+marksQry+';'+studentDetailsQuery+';'+maxMarksQry+';'+avgMarksQry+';'+maturityDevelopmentQry+';'+physicalFitnessQry+';'+attendanceQry;
+     // console.log(qry);
      // var qry = marksQryView+';'+marksQry+';'+maxMarksQry+';'+maturityDevelopmentQry+';'+physicalFitnessQry+';'+attendanceQry;
 
 
@@ -565,37 +569,37 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
 
           //student details
           var studentDetails = {};
-          result[1].map(r=>{
+          result[2].map(r=>{
               studentDetails[r.student_id]=r
           })
           
           //converting max_marks as onject by subject_id
           var maxMarks={}
-          result[2].map(r=>{
+          result[3].map(r=>{
               maxMarks[r.subject_id]=r.max_marks
           })
 
           //converting avg_marks as onject by subject_id
           var avgMarks={}
-          result[3].map(r=>{
+          result[4].map(r=>{
               avgMarks[r.subject_id]=r.avg_marks
           })
 
           //maturity development
           var maturityDevelopment={}
-          result[4].map(r=>{
+          result[5].map(r=>{
               maturityDevelopment[r.student_id]=r
           })
 
           //physicalFitness
           var physicalFitness={}
-          result[5].map(r=>{
+          result[6].map(r=>{
               physicalFitness[r.student_id]=r
           })
 
           //attendance
           var attendance={}
-          result[6].map(r=>{
+          result[7].map(r=>{
               attendance[r.student_id]=r
           })
 
@@ -603,7 +607,7 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
           var student_id=''
           var marks_data=[]
           var obj=[]
-          result[0].map(r=>{
+          result[1].map(r=>{
             if(student_id==''){ //loop runs the first time
               student_id=r.student_id
               r.max_marks=maxMarks[r.subject_id]
@@ -647,8 +651,12 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
               var last_index=0
             r.marks.map((r1,index)=>{
               if(r1.marking_type=='N'){
-                first_marks_total = Number(first_marks_total) + Number(r1.first_marks)
-                second_marks_total = Number(second_marks_total) +  Number(r1.second_marks)
+                if(r1.first_marks!=-1){
+                  first_marks_total = Number(first_marks_total) + Number(r1.first_marks)
+                }
+                if(r1.second_marks!=-1){
+                  second_marks_total = Number(second_marks_total) +  Number(r1.second_marks)
+                }
                 mo_marks_total = Number(mo_marks_total) +  Number(r1.mo_marks)
                 last_index=index
               }
@@ -668,6 +676,832 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
           // data.physicalFitness=result[4]
           data.physicalFitness=physicalFitness
           data.attendance=attendance
+          
+          res.send(data)
+        }
+     });    
+  });
+
+});
+
+router.post('/read_first_assessment_report_card_nine/', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  console.log("HERE");
+  console.log(input);
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+
+    var groupByQry = `SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))`; 
+
+    var studentDetailsQuery =`select distinct a.student_id, enroll_number, 
+                              concat(first_name,' ',middle_name,' ',last_name)as student_name,
+                              date_format(dob, '%d/%m/%Y') as  dob, house_name, session_name
+                              from marks_entry_master a
+                              join student_master b on a.student_id=b.student_id
+                              join student_current_standing c on (b.student_id=c.student_id and b.current_session_id = ${req.cookies.session_id}) 
+                              join session_master d on a.session_id = d.session_id
+                              left join house_master e on c.house_id = e.house_id
+                              where a.student_id in (${input.student_id})
+                              and a.session_id=${req.cookies.session_id}
+                              and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})        
+                              order by 1`;
+
+    var marksQry = `select q.roll_number, q.student_id, q.subject_id,
+                    if((p.marks=-1),'Ab',p.marks) as first_marks,
+                    if((q.marks=-1),'Ab',q.marks) as second_marks,
+                    (coalesce(p.marks,0)+coalesce(q.marks,0)) as mo_marks,
+                    q.subject_name, q.order_no, 
+                    CAST(p.min_marks AS UNSIGNED) as first_min_marks, (q.min_marks) as second_min_marks, q.show_in, q.marking_type,
+                    if((p.marks<p.min_marks and q.marking_type ='N'),'error','normal') as first_marks_limit,
+                    if((q.marks<(q.min_marks) and q.marking_type ='N'),'error','normal') as second_marks_limit, q.subject_group from
+
+                    (select roll_number, student_id, exam_id, subject_id, subject_name, marks, exam_group, order_no,
+                     min_marks, show_in, marking_type from
+                    (select distinct roll_number, a.student_id, a.exam_id, a.subject_id, marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='Y'
+                    and exam_group='First'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+
+                    UNION
+
+                    select distinct roll_number, a.student_id, a.exam_id, a.subject_id, marks_grade as marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='N'
+                    and e.marking_type = 'G'
+                    and exam_group='First'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+
+                    UNION
+
+                    select distinct roll_number, a.student_id, a.exam_id, a.subject_id, i.grade as  marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    left join grade_master i on a.grade_id = i.grade_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='N'
+                    and e.marking_type = 'NG'
+                    and exam_group='First'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+                    ) z
+
+                    group by z.student_id, z.subject_id
+                    order by z.roll_number, z.student_id, z.exam_id, z.subject_id) p
+
+                    right join
+
+                    (select roll_number, student_id, exam_id, subject_id, subject_name, marks, exam_group, order_no, min_marks,
+                     show_in, marking_type, subject_group from
+                    (select distinct roll_number, a.student_id, a.exam_id, a.subject_id, marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type, subject_group
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    left join (select x.subject_id, x.session_id, subject_group
+                          from subject_group_subject_map x
+                          where session_id = ${req.cookies.session_id}) z on (a.subject_id = z.subject_id and a.session_id = z.session_id)
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='Y'
+                    and exam_group='Second'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+
+                    UNION
+
+                    select distinct roll_number, a.student_id, a.exam_id, a.subject_id, marks_grade as marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type, subject_group
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    left join (select x.subject_id, x.session_id, subject_group
+                          from subject_group_subject_map x
+                          where session_id = ${req.cookies.session_id}) z on (a.subject_id = z.subject_id and a.session_id = z.session_id)
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='N'
+                    and e.marking_type = 'G'
+                    and exam_group='Second'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+
+                    UNION
+
+                    select distinct roll_number, a.student_id, a.exam_id, a.subject_id, i.grade as  marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type, subject_group
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    left join grade_master i on a.grade_id = i.grade_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    left join (select x.subject_id, x.session_id, subject_group
+                          from subject_group_subject_map x
+                          where session_id = ${req.cookies.session_id}) z on (a.subject_id = z.subject_id and a.session_id = z.session_id)
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='N'
+                    and e.marking_type = 'NG'
+                    and exam_group='Second'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+                    ) z
+
+                    group by z.student_id, z.subject_id
+                    order by z.roll_number, z.student_id, z.exam_id, z.subject_id) q on (p.student_id=q.student_id and p.subject_id=q.subject_id)
+                    order by q.student_id, q.order_no`;
+
+    var avgMarksQry = `select subject_id, subject_name, max(marks) as avg_marks from 
+
+                     (SELECT a.student_id,a.subject_id, subject_name, round(sum(marks)/count(a.student_id)) as marks 
+                     FROM marks_entry_master a
+                     join subject_master b on a.subject_id = b.subject_id
+                     join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                     join exam_type f on e.exam_id = f.exam_type_id
+                     where e.marking_type='N'
+                     and f.assessment='H'
+                     and a.section_id=${input.section_id}
+                     and a.session_id=${req.cookies.session_id}
+                     group by a.subject_id,a.student_id) p
+
+                     group by subject_id`;
+
+    var groupSubjectCountQry = `select count(subject_group) as group_count, subject_group
+                                from subject_group_subject_map 
+                                where session_id = ${req.cookies.session_id}
+                                group by subject_group`;
+
+    var maturityDevelopmentQry = `select  student_id, exam_term, initiative_first, initiative_second,
+                                  initiative_third, initiative_fourth, interest_first, interest_second,
+                                  interest_third, interest_fourth, use_time_first, use_time_second,
+                                  use_time_third, use_time_fourth, work_habit_first, work_habit_second,
+                                  work_habit_third, work_habit_fourth, participation_first, participation_second,
+                                  participation_third, participation_fourth, responsibility_first, 
+                                  responsibility_second, responsibility_third, responsibility_fourth
+                                  from student_maturity_development
+                                  where student_id in (${input.student_id})
+                                  and exam_term='First'
+                                  and session_id = ${req.cookies.session_id}        
+                                  order by 1,2`; 
+
+    var physicalFitnessQry =`select student_id, first_skill, first_description, second_skill, 
+                            second_description, third_skill, third_description, fourth_skill,
+                            fourth_description, fifth_skill, fifth_description
+                            from student_fitness a
+                            where a.student_id in (${input.student_id})
+                            and exam_term = 'First'
+                            and session_id = ${req.cookies.session_id} 
+                            order by student_id`;
+
+    var attendanceQry = `select a.student_id, 'Attendance' as subject_name,
+                         concat( (concat(pr, '/')),(COALESCE(ab,0)+pr)) as second_marks, 'At' as show_in from
+                        (select student_id, count(attendance_date) as pr 
+                         from student_attendance 
+                         where attendance = '1' and student_id in (${input.student_id})
+                         and session_id=${req.cookies.session_id}
+                         and attendance_date <='${input.end_date}' group by student_id) a
+                        
+                        left join
+
+                        (select student_id, count(attendance_date) as ab 
+                         from student_attendance 
+                         where attendance = '0' and student_id in (${input.student_id})
+                         and session_id=${req.cookies.session_id}
+                         and attendance_date <='${input.end_date}' group by student_id) b on a.student_id=b.student_id`;
+
+     var qry = groupByQry+';'+marksQry+';'+studentDetailsQuery+';'+avgMarksQry+';'+groupSubjectCountQry+';'+maturityDevelopmentQry+';'+physicalFitnessQry+';'+attendanceQry;
+
+
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+        }else{
+          data.status = 's';
+
+          //student details
+          var studentDetails = {};
+          result[2].map(r=>{
+              studentDetails[r.student_id]=r
+          })
+          
+          //converting avg_marks as onject by subject_id
+          var avgMarks={}
+          result[3].map(r=>{
+              avgMarks[r.subject_id]=r.avg_marks
+          })
+
+          //converting group_count as onject by subject_id
+          var subjectCount={}
+          result[4].map(r=>{
+              subjectCount[r.subject_group]=r.group_count
+          })
+
+          //maturity development
+          var maturityDevelopment={}
+          result[5].map(r=>{
+              maturityDevelopment[r.student_id]=r
+          })
+
+          //physicalFitness
+          var physicalFitness={}
+          result[6].map(r=>{
+              physicalFitness[r.student_id]=r
+          })
+
+          //attendance
+          var attendance={}
+          result[7].map(r=>{
+              attendance[r.student_id]=r
+          })
+
+          //data according to student_id
+          var student_id=''
+          var marks_data=[]
+          var obj=[]
+          result[1].map(r=>{
+            if(student_id==''){ //loop runs the first time
+              student_id=r.student_id
+              r.avg_marks=avgMarks[r.subject_id]
+              //r.subject_group_count=subjectCount[r.subject_group] 
+              obj.push(r)
+            }else if(r.student_id==student_id){
+              r.avg_marks=avgMarks[r.subject_id]
+              //r.subject_group_count=subjectCount[r.subject_group]
+              obj.push(r)
+            }else{
+              obj.push(attendance[student_id])
+              var row={}
+              row[student_id]=student_id
+              row['marks']=obj
+              row['sd']=studentDetails[student_id]
+              row['md']=maturityDevelopment[student_id]
+              row['pf']=physicalFitness[student_id]
+              marks_data.push(row)
+              student_id=r.student_id
+              obj=[]
+              r.avg_marks=avgMarks[r.subject_id]
+              //r.subject_group_count=subjectCount[r.subject_group]
+              obj.push(r)
+            }
+          })
+
+          obj.push(attendance[student_id])
+          var row={}
+          row[student_id]=student_id
+          row['marks']=obj
+          row['sd']=studentDetails[student_id]
+          row['md']=maturityDevelopment[student_id]
+          row['pf']=physicalFitness[student_id]
+          marks_data.push(row)
+         
+
+
+          marks_data.map(r=>{
+              var first_marks_total=0
+              var second_marks_total=0
+              var mo_marks_total=0
+              var last_index=0
+            r.marks.map((r1,index)=>{
+              if(r1.marking_type=='N'){
+                if(r1.first_marks!=-1){
+                  first_marks_total = Number(first_marks_total) + Number(r1.first_marks)
+                }
+                if(r1.second_marks!=-1){
+                  second_marks_total = Number(second_marks_total) +  Number(r1.second_marks)
+                }
+                mo_marks_total = Number(mo_marks_total) +  Number(r1.mo_marks)
+                last_index=index
+              }
+            })
+
+            var fm_t_p = first_marks_total + '/' + ((first_marks_total/(50*(last_index+1)))*100).toFixed(2)
+            var sm_t_p = second_marks_total + '/' + ((second_marks_total/(100*(last_index+1)))*100).toFixed(2)
+            var mo_t_p = mo_marks_total + '/' + ((mo_marks_total/(150*(last_index+1)))*100).toFixed(2)
+
+            r.marks.splice((last_index+1), 0, {'subject_name':'Total','first_marks':fm_t_p,'second_marks':sm_t_p, 'mo_marks':mo_t_p, 'class':'total', 'marking_type':'T'});
+
+          })
+
+
+          //avg_marks
+
+          marks_data.map(r=>{
+            var prev_subject_group = ''
+            var prev_subject_total = 0;
+            var prev_subject_total_2 = 0;
+            var prev_subject_count = 0;
+            var first_index = 0;// used for rowspan and show avg data
+            var last_index = 0;// used to drwa line
+
+            var data_inserted = false;
+           
+            r.marks.map((r1,index)=>{
+              
+              if(r1.marking_type=='N' && r1.subject_group !=null){
+                if(prev_subject_group == ''){//loop runs first time
+                  prev_subject_group = r1.subject_group
+                  prev_subject_total_2 = Number(r1.second_marks)
+                  prev_subject_total = Number(r1.first_marks)
+                  prev_subject_count = 1
+                  first_index=index
+                  last_index=index
+                  data_inserted = false
+                }else if(prev_subject_group == r1.subject_group){
+                  prev_subject_total = Number(prev_subject_total) + Number(r1.first_marks)
+                  prev_subject_total_2 = Number(prev_subject_total_2) + Number(r1.second_marks)
+                  prev_subject_count = Number(prev_subject_count) + 1
+                  last_index=index
+                  data_inserted = false
+                }else{
+                  r.marks[first_index].first_avg_marks = (Number(prev_subject_total)/Number(prev_subject_count)).toFixed(2)
+                  r.marks[first_index].second_avg_marks = (Number(prev_subject_total_2)/Number(prev_subject_count)).toFixed(2)
+                  r.marks[first_index].subject_group_count = prev_subject_count
+                  r.marks[last_index].subject_group_class = 'draw-line'
+                  //prevent extra td in next rows
+                  var rows = Number(prev_subject_count) - 1
+                  var next_index=Number(first_index) + 1
+                  while(rows>0){
+                    r.marks[next_index].hide_avg_td = true
+                    rows = Number(rows) - 1
+                    next_index = Number(next_index) + 1
+                  }
+
+                  data_inserted = true
+                  prev_subject_group = r1.subject_group
+                  prev_subject_total = Number(r1.first_marks)
+                  prev_subject_total_2 = Number(r1.second_marks)
+                  prev_subject_count = 1
+                  first_index=index
+                  last_index=index
+                  data_inserted = false
+                }
+              }
+
+            })
+
+            if(data_inserted==false){
+                r.marks[first_index].first_avg_marks = (Number(prev_subject_total)/Number(prev_subject_count)).toFixed(2)
+                r.marks[first_index].second_avg_marks = (Number(prev_subject_total_2)/Number(prev_subject_count)).toFixed(2)
+                r.marks[first_index].subject_group_count = prev_subject_count
+                r.marks[last_index].subject_group_class = 'draw-line'
+                //prevent extra td in next rows
+                var rows = Number(prev_subject_count) - 1
+                var next_index=Number(first_index) + 1
+                while(rows>0){
+                  r.marks[next_index].hide_avg_td = true
+                  rows = Number(rows) - 1
+                  next_index = Number(next_index) + 1
+                }
+              }
+
+          })
+
+          data.marks = marks_data // marks
+          //data.subjectCount= subjectCount 
+          // data.physicalFitness=result[4]
+          // data.physicalFitness=physicalFitness
+          data.avgMarks=avgMarks
+          
+          res.send(data)
+        }
+     });    
+  });
+
+});
+
+
+router.post('/read_first_assessment_report_card_eleven/', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  console.log("HERE");
+  console.log(input);
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+
+    var groupByQry = `SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''))`; 
+
+    var studentDetailsQuery =`select distinct a.student_id, enroll_number, 
+                              concat(first_name,' ',middle_name,' ',last_name)as student_name,
+                              date_format(dob, '%d/%m/%Y') as  dob, house_name, session_name
+                              from marks_entry_master a
+                              join student_master b on a.student_id=b.student_id
+                              join student_current_standing c on (b.student_id=c.student_id and b.current_session_id = ${req.cookies.session_id}) 
+                              join session_master d on a.session_id = d.session_id
+                              left join house_master e on c.house_id = e.house_id
+                              where a.student_id in (${input.student_id})
+                              and a.session_id=${req.cookies.session_id}
+                              and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})        
+                              order by 1`;
+
+    var marksQry = `select q.roll_number, q.student_id, q.subject_id,
+                    if((p.marks=-1),'Ab',p.marks) as first_marks,
+                    if((q.marks=-1),'Ab',q.marks) as second_marks,
+                    (coalesce(p.marks,0)+coalesce(q.marks,0)) as mo_marks,
+                    q.subject_name, q.order_no, 
+                    CAST(p.min_marks AS UNSIGNED) as first_min_marks, (q.min_marks) as second_min_marks, q.show_in, q.marking_type,
+                    if((p.marks<p.min_marks and q.marking_type ='N'),'error','normal') as first_marks_limit,
+                    if((q.marks<(q.min_marks) and q.marking_type ='N'),'error','normal') as second_marks_limit, q.subject_group from
+
+                    (select roll_number, student_id, exam_id, subject_id, subject_name, marks, exam_group, order_no,
+                     min_marks, show_in, marking_type from
+                    (select distinct roll_number, a.student_id, a.exam_id, a.subject_id, marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='Y'
+                    and exam_group='First'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+
+                    UNION
+
+                    select distinct roll_number, a.student_id, a.exam_id, a.subject_id, marks_grade as marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='N'
+                    and e.marking_type = 'G'
+                    and exam_group='First'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+
+                    UNION
+
+                    select distinct roll_number, a.student_id, a.exam_id, a.subject_id, i.grade as  marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    left join grade_master i on a.grade_id = i.grade_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='N'
+                    and e.marking_type = 'NG'
+                    and exam_group='First'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+                    ) z
+
+                    group by z.student_id, z.subject_id
+                    order by z.roll_number, z.student_id, z.exam_id, z.subject_id) p
+
+                    right join
+
+                    (select roll_number, student_id, exam_id, subject_id, subject_name, marks, exam_group, order_no, min_marks,
+                     show_in, marking_type, subject_group from
+                    (select distinct roll_number, a.student_id, a.exam_id, a.subject_id, marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type, subject_group
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    left join (select x.subject_id, x.session_id, subject_group
+                          from subject_group_subject_map x
+                          where session_id = ${req.cookies.session_id}) z on (a.subject_id = z.subject_id and a.session_id = z.session_id)
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='Y'
+                    and exam_group='Second'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+
+                    UNION
+
+                    select distinct roll_number, a.student_id, a.exam_id, a.subject_id, marks_grade as marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type, subject_group
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    left join (select x.subject_id, x.session_id, subject_group
+                          from subject_group_subject_map x
+                          where session_id = ${req.cookies.session_id}) z on (a.subject_id = z.subject_id and a.session_id = z.session_id)
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='N'
+                    and e.marking_type = 'G'
+                    and exam_group='Second'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+
+                    UNION
+
+                    select distinct roll_number, a.student_id, a.exam_id, a.subject_id, i.grade as  marks,
+                    subject_name, exam_group, h.order_no, e.min_marks, show_in, marking_type, subject_group
+                    from marks_entry_master a
+                    join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
+                    join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
+                    join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                    join exam_type f on e.exam_id = f.exam_type_id
+                    left join grade_master i on a.grade_id = i.grade_id
+                    join subject_master g on a.subject_id = g.subject_id
+                    join group_subject_map h on (c.group_id=h.group_id and a.subject_id = h.subject_id and h.session_id=${req.cookies.session_id})
+                    left join (select x.subject_id, x.session_id, subject_group
+                          from subject_group_subject_map x
+                          where session_id = ${req.cookies.session_id}) z on (a.subject_id = z.subject_id and a.session_id = z.session_id)
+                    where a.student_id in (${input.student_id})
+                    and f.assessment='H'
+                    and a.session_id=${req.cookies.session_id}
+                    and e.grand_total='N'
+                    and e.marking_type = 'NG'
+                    and exam_group='Second'
+                    and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
+                    ) z
+
+                    group by z.student_id, z.subject_id
+                    order by z.roll_number, z.student_id, z.exam_id, z.subject_id) q on (p.student_id=q.student_id and p.subject_id=q.subject_id)
+                    order by q.student_id, q.order_no`;
+
+    var avgMarksQry = `select subject_id, subject_name, max(marks) as avg_marks from 
+
+                     (SELECT a.student_id,a.subject_id, subject_name, round(sum(marks)/count(a.student_id)) as marks 
+                     FROM marks_entry_master a
+                     join subject_master b on a.subject_id = b.subject_id
+                     join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                     join exam_type f on e.exam_id = f.exam_type_id
+                     where e.marking_type='N'
+                     and f.assessment='H'
+                     and a.section_id=${input.section_id}
+                     and a.session_id=${req.cookies.session_id}
+                     group by a.subject_id,a.student_id) p
+
+                     group by subject_id`;
+
+    var firstMaxMarksQry = `select subject_id, max(marks) as max_marks
+                            from (
+                            SELECT a.student_id,a.subject_id, subject_name, 
+                            sum(if(a.marks = -1,0, a.marks)) as  marks,scheme_id
+                            FROM marks_entry_master a
+                            join subject_master b on a.subject_id = b.subject_id
+                            join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                            join exam_type f on e.exam_id = f.exam_type_id
+                            where e.marking_type ='N'
+                            and f.assessment='H'
+                            and a.section_id=${input.section_id}
+                            and a.session_id=${req.cookies.session_id}
+                            and exam_group='first'
+                            group by a.student_id, a.subject_id, f.assessment
+                            order by a.subject_id,a.student_id
+                            ) zz
+                            group by zz.subject_id`;
+
+    var secondMaxMarksQry = `select subject_id, max(marks) as max_marks
+                            from (
+                            SELECT a.student_id,a.subject_id, subject_name, 
+                            sum(if(a.marks = -1,0, a.marks)) as  marks,scheme_id
+                            FROM marks_entry_master a
+                            join subject_master b on a.subject_id = b.subject_id
+                            join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                            join exam_type f on e.exam_id = f.exam_type_id
+                            where e.marking_type ='N'
+                            and f.assessment='H'
+                            and a.section_id=${input.section_id}
+                            and a.session_id=${req.cookies.session_id}
+                            and exam_group='Second'
+                            group by a.student_id, a.subject_id, f.assessment
+                            order by a.subject_id,a.student_id
+                            ) zz
+                            group by zz.subject_id`;                  
+
+
+
+    var maturityDevelopmentQry = `select  student_id, exam_term, initiative_first, initiative_second,
+                                  initiative_third, initiative_fourth, interest_first, interest_second,
+                                  interest_third, interest_fourth, use_time_first, use_time_second,
+                                  use_time_third, use_time_fourth, work_habit_first, work_habit_second,
+                                  work_habit_third, work_habit_fourth, participation_first, participation_second,
+                                  participation_third, participation_fourth, responsibility_first, 
+                                  responsibility_second, responsibility_third, responsibility_fourth
+                                  from student_maturity_development
+                                  where student_id in (${input.student_id})
+                                  and exam_term='First'
+                                  and session_id = ${req.cookies.session_id}        
+                                  order by 1,2`; 
+
+    var physicalFitnessQry =`select student_id, first_skill, first_description, second_skill, 
+                            second_description, third_skill, third_description, fourth_skill,
+                            fourth_description, fifth_skill, fifth_description
+                            from student_fitness a
+                            where a.student_id in (${input.student_id})
+                            and exam_term = 'First'
+                            and session_id = ${req.cookies.session_id} 
+                            order by student_id`;
+
+    var attendanceQry = `select a.student_id, 'Attendance' as subject_name,
+                         concat( (concat(pr, '/')),(COALESCE(ab,0)+pr)) as second_marks, 'At' as show_in from
+                        (select student_id, count(attendance_date) as pr 
+                         from student_attendance 
+                         where attendance = '1' and student_id in (${input.student_id})
+                         and session_id=${req.cookies.session_id}
+                         and attendance_date <='${input.end_date}' group by student_id) a
+                        
+                        left join
+
+                        (select student_id, count(attendance_date) as ab 
+                         from student_attendance 
+                         where attendance = '0' and student_id in (${input.student_id})
+                         and session_id=${req.cookies.session_id}
+                         and attendance_date <='${input.end_date}' group by student_id) b on a.student_id=b.student_id`;
+
+     var qry = groupByQry+';'+marksQry+';'+studentDetailsQuery+';'+avgMarksQry+';'+firstMaxMarksQry+';'+maturityDevelopmentQry+';'+physicalFitnessQry+';'+attendanceQry+';'+secondMaxMarksQry;
+
+
+     connection.query(qry, function(err, result)     
+     {
+            
+        if(err){
+           console.log("Error reading event : %s ",err );
+           data.status = 'e';
+        }else{
+          data.status = 's';
+
+          //student details
+          var studentDetails = {};
+          result[2].map(r=>{
+              studentDetails[r.student_id]=r
+          })
+
+          //avg
+          var avgMarks={}
+          result[3].map(r=>{
+              avgMarks[r.subject_id]=r.avg_marks
+          })
+          
+          //converting firstMaxMarks as onject by subject_id
+          var firstMaxMarks={}
+          result[4].map(r=>{
+              firstMaxMarks[r.subject_id]=r.max_marks
+          })
+
+          var secondMaxMarks={}
+          result[8].map(r=>{
+              secondMaxMarks[r.subject_id]=r.max_marks
+          })
+
+          //maturity development
+          var maturityDevelopment={}
+          result[5].map(r=>{
+              maturityDevelopment[r.student_id]=r
+          })
+
+          //physicalFitness
+          var physicalFitness={}
+          result[6].map(r=>{
+              physicalFitness[r.student_id]=r
+          })
+
+          //attendance
+          var attendance={}
+          result[7].map(r=>{
+              attendance[r.student_id]=r
+          })
+
+          //data according to student_id
+          var student_id=''
+          var marks_data=[]
+          var obj=[]
+          result[1].map(r=>{
+            if(student_id==''){ //loop runs the first time
+              student_id=r.student_id
+              r.avg_marks=avgMarks[r.subject_id]
+              r.first_max_marks=firstMaxMarks[r.subject_id]
+              r.second_max_marks=secondMaxMarks[r.subject_id]
+              obj.push(r)
+            }else if(r.student_id==student_id){
+              r.avg_marks=avgMarks[r.subject_id]
+              r.first_max_marks=firstMaxMarks[r.subject_id]
+              r.second_max_marks=secondMaxMarks[r.subject_id]
+              obj.push(r)
+            }else{
+              obj.push(attendance[student_id])
+              var row={}
+              row[student_id]=student_id
+              row['marks']=obj
+              row['sd']=studentDetails[student_id]
+              row['md']=maturityDevelopment[student_id]
+              row['pf']=physicalFitness[student_id]
+              marks_data.push(row)
+              student_id=r.student_id
+              obj=[]
+              r.avg_marks=avgMarks[r.subject_id]
+              r.first_max_marks=firstMaxMarks[r.subject_id]
+              r.second_max_marks=secondMaxMarks[r.subject_id]
+              obj.push(r)
+            }
+          })
+
+          obj.push(attendance[student_id])
+          var row={}
+          row[student_id]=student_id
+          row['marks']=obj
+          row['sd']=studentDetails[student_id]
+          row['md']=maturityDevelopment[student_id]
+          row['pf']=physicalFitness[student_id]
+          marks_data.push(row)
+         
+
+
+          marks_data.map(r=>{
+              var first_marks_total=0
+              var second_marks_total=0
+              var last_index=0
+            r.marks.map((r1,index)=>{
+              if(r1.marking_type=='N'){
+                if(r1.first_marks!=-1){
+                  first_marks_total = Number(first_marks_total) + Number(r1.first_marks)
+                }
+                if(r1.second_marks!=-1){
+                  second_marks_total = Number(second_marks_total) +  Number(r1.second_marks)
+                }
+                
+                last_index=index
+              }
+            })
+
+            var fm_t_p = ((first_marks_total/(50*(last_index+1)))*100).toFixed(2)
+            var sm_t_p = ((second_marks_total/(100*(last_index+1)))*100).toFixed(2)
+
+            r.marks.splice((last_index+1), 0, {'subject_name':'Total','first_marks':first_marks_total,'second_marks':second_marks_total,
+                                              'first_max_marks':fm_t_p, 'second_max_marks':sm_t_p, 'class':'total', 'marking_type':'T'});
+
+          })
+
+
+          
+          data.marks = marks_data // marks
+          //data.subjectCount= subjectCount 
+          // data.physicalFitness=result[4]
+          // data.physicalFitness=physicalFitness
           
           res.send(data)
         }

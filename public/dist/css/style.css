@@ -72,6 +72,9 @@ html, body, *, .textarea, .input, .select, .button {
       .no-border td{
         border: none;
       }
+      .no-border th{
+        border: none;
+      }
       .pp-box{
         width: 8em;
         height: 8em;
@@ -194,6 +197,7 @@ html, body, *, .textarea, .input, .select, .button {
         }
         .no-print{
           display: none !important;
+          height: 0px;
         }
         .card-print{
           margin-bottom: -95px !important;
@@ -234,9 +238,7 @@ html, body, *, .textarea, .input, .select, .button {
         .to-print{
           display: block !important;
         }
-        .no-print{
-          display: none !important;
-        }
+       
         body{
           background-color: #fff !important;
         }
@@ -275,11 +277,6 @@ html, body, *, .textarea, .input, .select, .button {
     max-width: 100%;
     margin: 0 auto;
   }
-  
-  .no-print, .no-print *
-    {
-        display: none !important;
-    }
 
 }/*end of media print*/
 
@@ -752,7 +749,7 @@ hr{
 
   /*report card css start*/
   .fa-report-card-one-two-four  table  td{
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .fa-report-card-one-two-four > hr{
@@ -776,6 +773,7 @@ hr{
     font-weight: bold;
     text-transform: none;
     background-color: #fff;
+    font-size: 18px;
   }
 
   .report-h3{
@@ -833,4 +831,11 @@ hr{
     border: none;
   }
 
+  .bottom-border td{
+    border-bottom: 1px solid #000 !important;
+  }
+  
+  .draw-line{
+    border-bottom: 2px solid #000 !important;
+  }
   /*report card css end*/
