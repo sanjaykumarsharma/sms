@@ -168,7 +168,8 @@ router.post('/read_staff_wise_report', function(req, res, next) {
 
         if(req.cookies.role != 'ADMIN') condition = ` and a.created_by = ${user}' `;
 
-         var qry =`select concat(first_name,' ',middle_name,' ',last_name) as name,
+         var qry =`select concat(first_name,' ',middle_name,' ',last_name) as name,employee_id, 
+          date_format(dob, '%d/%m/%Y') as dob,
          date_format(checkup_date,'%d/%m/%Y') as checkup_date, checkup_date as c_date, height,weight, 
          concat(upper_bp,'/',lower_bp,' mmHg') as blood_pressure, bmi 
          from staff_health a 
@@ -195,6 +196,62 @@ router.post('/read_staff_wise_report', function(req, res, next) {
   });
 
 });
+
+router.post('/read_staff_date_wise_bp_report', function(req, res, next) {
+     var input = JSON.parse(JSON.stringify(req.body));
+    // console.log(input.staff_id)
+    req.getConnection(function(err,connection){
+         
+
+      // var staff_id = input.staff_id;
+       var start_date = input.start_date;
+       console.log(start_date)
+       var end_date =input.end_date;
+     //  console.log(staff_id);
+       var session_id=req.cookies.session_id
+       var user='';
+       user=req.cookies.user
+       var data = {}
+       //var staff_id=-1;
+       var staff_condition="";
+       var date_condition="";
+        
+        if(start_date !=''){
+          date_condition =` and checkup_date between '${start_date}' and '${end_date}' `;
+        }
+       var condition = "";
+
+        if(req.cookies.user != 'ADMIN') condition = ` a.created_by = '${user}' `;
+
+         var qry =`select concat(first_name,' ',middle_name,' ',last_name) as name, employee_id,
+          date_format(dob, '%d/%m/%Y') as dob,
+         date_format(checkup_date,'%d/%m/%Y') as checkup_date, checkup_date as c_date, height,weight, 
+         concat(upper_bp,'/',lower_bp,' mmHg') as blood_pressure, bmi 
+         from staff_health a 
+         join employee b on a.staff_id=b.emp_id
+          where ${condition} ${date_condition} 
+           order by c_date`; 
+         connection.query(qry,function(err,result)     {
+           console.log(qry);
+        if(err){
+           console.log("Error reading staff infirmary : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.staffDateWiseBpWeightReports = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+          
+     });
+       
+  });
+
+});
+
 
 router.get('/read_staff_bp_weight', function(req, res, next) {
     req.getConnection(function(err,connection){

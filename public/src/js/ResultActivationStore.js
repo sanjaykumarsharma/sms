@@ -25,11 +25,11 @@ function ResultActivationStore() {
       })
   })
 
-  self.on('result_activation_update', function(obj) {
+  self.on('result_activation_update', function(st) {
     $.ajax({
       url:'/result-activation/update',
         type:"POST",
-        data: JSON.stringify(obj),
+        data: JSON.stringify(st),
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},

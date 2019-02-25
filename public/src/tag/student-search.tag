@@ -1,5 +1,5 @@
 <student-search>
-	<header></header>
+ <print-header></print-header> 
 	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 			<h2 class="title has-text-centered" style="color: #ff3860;">Searched Student's Details</h2>
@@ -87,14 +87,18 @@
 					<th show={enroll_no_view =='show_enroll_no'}>Enroll No</th>
 					<th show={reg_no_view =='show_reg_no'}>Reg. No</th>
 					<th show={roll_no_view =='show_roll_no'}>Roll No</th>
+					<th show={income_view =='show_income'}>Income</th>
 					<th show={group_view =='show_group'}>Group</th>
 					<th show={house_view =='show_house'}>House</th>
 					<th show={class_view =='show_class'}>Class</th>
 					<th show={gender_view =='show_gender'}>Gender</th>
 					<th show={category_view =='show_category'}>Category</th>
 					<th show={dob_view =='show_dob'}>DOB</th>
+					<th show={age_view =='show_age'}>Age</th>
 					<th show={doa_view =='show_doa'}>DOA</th>
 					<th show={doj_view =='show_doj'}>DOJ</th>
+					<th show={old_doa_view =='show_old_doa'}>Old DOA</th>
+					<th show={old_doj_view =='show_old_doj'}>Old DOJ</th>
 					<th show={mother_tongue_view =='show_mother_tongue'}>Mother Tongue</th>
 					<th show={last_school_view =='show_last_school'}>Last School</th>
 					<th show={last_class_view =='show_last_class'}>Last Class</th>
@@ -108,7 +112,7 @@
 					<th show={p_add_view =='show_p_add'}>P Add</th>
 					<th show={sms_view =='show_sms'}>SMS</th>
 					<th show={residence_phone_view =='show_residence_phone'}>Residence Phone </th>
-					<th show={fax_view =='show_fax'}>Fax</th>
+					<th show={fax_view =='show_fax'}>Emergency No.</th>
 					<th show={student_type_view =='show_student_type'}>Student Type</th>
 					<th show={staff_child_view =='show_staff_child'}>Staff Child</th>
 					<th show={staff_name_view =='show_staff_name'}>Staff Name</th>
@@ -169,6 +173,7 @@
 					<th show={g_office_add_view =='show_g_office_add'}>Guardian's Office  Add</th>
 					<th show={g_office_phone_view =='show_g_office_phone'}>Guardian's Office Phone</th>
 					<th show={g_nationality_view =='show_g_nationality'}>Guardian's Nationality</th>
+					<th show={g_relation_view =='show_g_relation'}>Guardian's Relation</th>
 					<th show={sibling_name_view =='show_sibling_name'}>Sibling Name</th>
 					<th show={sibling_enroll_no_view =='show_sibling_enroll_no'}>Sibling Enroll No</th>
 					
@@ -186,14 +191,20 @@
 					<td show={enroll_no_view =='show_enroll_no'}>{st.enroll_number}</td>
 					<td show={reg_no_view =='show_reg_no'}>{st.reg_number}</td>
 					<td show={roll_no_view =='show_roll_no'}>{st.roll_number}</td>
+					<td show={income_view =='show_income'}>{st.f_annual_income}</td>
 					<td show={group_view =='show_group'}>{st.group_name}</td>
 					<td show={house_view =='show_house'}>{st.house_name}</td>
 					<td show={class_view =='show_class'}>{st.standard}</td>
 					<td show={gender_view =='show_gender'}>{st.gender}</td>
 					<td show={category_view =='show_category'}>{st.category_name}</td>
 					<td show={dob_view =='show_dob'}>{st.dob}</td>
+					<td show={age_view =='show_age'}>{st.age}</td>
 					<td show={doa_view =='show_doa'}>{st.doa}</td>
 					<td show={doj_view =='show_doj'}>{st.doj}</td>
+
+					<td show={old_doa_view =='show_old_doa'}>{st.old_doa}</td>
+					<td show={old_doj_view =='show_old_doj'}>{st.old_doj}</td>
+
 					<td show={mother_tongue_view =='show_mother_tongue'}>{st.mother_tongue}</td>
 					<td show={last_school_view =='show_last_school'}>{st.last_school}</td>
 					<td show={last_class_view =='show_last_class'}>{st.last_class}</td>
@@ -269,7 +280,8 @@
 					<td show={g_office_add_view =='show_g_office_add'}>{st.g_office_add_l1} {st.g_office_add_l2} <br> {st.g_office_city}-{st.g_office_zip} <br>{st.g_office_state}, {st.g_office_country}</td>
 					<td show={g_office_phone_view =='show_g_office_phone'}>{st.g_office_phone}</td>
 					<td show={g_nationality_view =='show_g_nationality'}>{st.g_nationality}</td>
-					<td show={sibling_view =='show_sibling'}>{st.sibling_name}</td>
+					<td show={g_relation_view =='show_g_relation'}>{st.g_relation}</td>
+					<td show={sibling_name_view =='show_sibling_name'}>{st.sibling_name}</td>
 					<td show={sibling_enroll_no_view =='show_sibling_enroll_no'}>{st.sibling_enroll_number}</td>
 				</tr>
 			</tbody>
@@ -349,7 +361,7 @@
 			{ field_name : "p_Address", array_name : "Permanent Address"},
 			{ field_name : "Mobile" , array_name : "SMS"},
 			{ field_name : "ResidencePhone", array_name : "Residence Phone"},
-			{ field_name : "Fax", array_name : "Fax"},
+			{ field_name : "Emergency No.", array_name : "Emergency No."},
 			{ field_name : "StudentType", array_name : "Student Type"},
 			{ field_name : "StaffChild", array_name : "Staff Child"},
 			{ field_name : "StaffName", array_name : "Staff Name"},
@@ -527,11 +539,11 @@
 			if(q.done==true && q.array_name=="DOB"){
 					self.dob_view='show_dob'		
 			}
-			if(q.done==true && q.array_name=="age as on 1st Apr"){
+			if(q.done==true && q.array_name=="Age as on 1st Apr"){
 					self.age_view='show_age'		
 			}
 			if(q.done==true && q.array_name=="Income"){
-					self.annual_income_view='show_annual_income'		
+					self.income_view='show_income'		
 			}
 			if(q.done==true && q.array_name=="DOA"){
 					self.doa_view='show_doa'		
@@ -555,7 +567,7 @@
 					self.last_class_view='show_last_class'		
 			}
 			if(q.done==true && q.array_name=="Admission for Class"){
-					self.admission_for_view='show_title'		
+					self.admission_for_view='show_admission_for'		
 			}
 			if(q.done==true && q.array_name=="Hobby"){
 					self.hobby_view='show_hobby'		
@@ -639,6 +651,9 @@
 					self.f_organisation_view='show_f_organisation'		
 			}
 			if(q.done==true && q.array_name=="f_Annual Income"){
+					self.f_annual_income_view='show_f_annual_income'		
+			}
+			if(q.done==true && q.array_name=="Income"){
 					self.f_annual_income_view='show_f_annual_income'		
 			}
 			if(q.done==true && q.array_name=="f_Organisation Name"){
@@ -783,10 +798,10 @@
 			}
 			
 			if(q.done==true && q.array_name=="g_relation"){
-
+				self.g_relation_view='show_g_relation'		
 			}
 			if(q.done==true && q.array_name=="Sibling Name"){
-				self.sibling_view='show_sibling'		
+				self.sibling_name_view='show_sibling_name'		
 			}	
 			if(q.done==true && q.array_name=="Sibling Enrol Number"){
 				self.sibling_enroll_no_view='show_sibling_enroll_no'		
@@ -842,7 +857,7 @@
 			if(q.done==false && q.array_name=="DOB"){
 					self.dob_view=''
 			}
-			if(q.done==false && q.array_name=="age as on 1st Apr"){
+			if(q.done==false && q.array_name=="Age as on 1st Apr"){
 					self.age_view=''
 			}
 			if(q.done==false && q.array_name=="Income"){
@@ -981,6 +996,9 @@
 			if(q.done==false && q.array_name=="Mother Name"){
 					self.m_name_view=''
 			}
+			if(q.done==false && q.array_name=="Income"){
+					self.income_view=''		
+			}
 			if(q.done==false && q.array_name=="m_School Name"){
 					self.m_school_name_view=''
 			}
@@ -1096,12 +1114,12 @@
 			if(q.done==false && q.array_name=="g_Nationality"){
 					self.g_nationality_view=''
 			}
-			
-			if(q.done==false && q.array_name=="g_relation"){
-
+			if(q.done==true && q.array_name=="g_relation"){
+				self.g_relation_view=''		
 			}
+			
 			if(q.done==false && q.array_name=="Sibling Name"){
-				self.sibling_view=''
+				self.sibling_name_view=''
 			}	
 			if(q.done==false && q.array_name=="Sibling Enrol Number"){
 				self.sibling_enroll_no_view=''

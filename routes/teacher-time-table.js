@@ -7,8 +7,10 @@ router.get('/read-init', function(req, res, next) {
      var data = {}
 
       var condition="";
-      if(req.cookies.role == "TEACHER"){
-        condition = ` and employee_id = ${req.cookies.role} `;
+      console.log(req.cookies.role)
+      if(req.cookies.role == "Teacher" || req.cookies.role == "Class Teacher"){
+        condition = ` and employee_id = '${req.cookies.user}' `;
+        /*user_condition = ` and employee_id = ${req.cookies.user} `;*/
       }
 
       var teachers = `select emp_id, concat(first_name,' ',middle_name,' ',last_name)as name 

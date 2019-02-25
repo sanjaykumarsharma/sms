@@ -1,5 +1,5 @@
 <student-religion-strength-report>
-	<header></header>
+	<print-header></print-header> 
 	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<h4 class="title has-text-centered" style="color: #ff3860;">Class Wise Religion  Strength({session_name}) </h4>
@@ -41,7 +41,15 @@
 					<td>{st.Jainism}</td>
 					<td>{st.Islam}</td>
 					<td>{st.Sikhism}</td>
-					
+				</tr>
+				<tr>
+					<th colspan="2">Total</th>
+					<th>{totalBuddhism}</th>
+					<th>{totalChristianity}</th>
+					<th>{totalHinduism}</th>
+					<th>{totalJainism}</th>
+					<th>{totalIslam}</th>
+					<th>{totalSikhism}</th>
 				</tr>
 			</tbody>
 		</table>
@@ -77,6 +85,34 @@
       self.loading = false
       self.studentReligionListingReports = studentReligionListingReports
       self.session_name = session_name
+        self.totalBuddhism=0
+		self.totalChristianity=0
+		self.totalHinduism=0
+		self.totalJainism=0
+		self.totalIslam=0
+		self.totalSikhism=0
+		self.studentReligionListingReports.map(c => {
+      	console.log("c.General");
+      	console.log(c.General);
+	      	if(c.Buddhism!=undefined){
+	          self.totalBuddhism=Number(self.totalBuddhism) + Number(c.Buddhism)
+	        }
+           if(c.Christianity!=undefined){
+            self.totalChristianity=Number(self.totalChristianity) + Number(c.Christianity)
+          }
+          if(c.Hinduism!=undefined){
+              self.totalHinduism=Number(self.totalHinduism) + Number(c.Hinduism)
+   			}
+            if(c.Jainism!=undefined){
+              self.totalJainism=Number(self.totalJainism) + Number(c.Jainism)
+   			 }
+   			 if(c.Islam!=undefined){
+              self.totalIslam=Number(self.totalIslam) + Number(c.Islam)
+   			 }
+   			 if(c.Sikhism!=undefined){
+              self.totalSikhism=Number(self.totalSikhism) + Number(c.Sikhism)
+   			 }
+      })
       self.update()
       //console.log(self.employeeTypes)
     }

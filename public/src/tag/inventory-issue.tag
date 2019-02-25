@@ -1,5 +1,5 @@
 <inventory-issue>
-  <header></header>
+ <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" show={inventory_issue_view == 'show_inventory_issue_table'}>
         <h4 class="title has-text-centered" style="color: #ff3860;">Goods Issue from Store Department</h4>

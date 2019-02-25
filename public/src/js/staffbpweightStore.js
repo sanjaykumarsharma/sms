@@ -56,6 +56,35 @@ function StaffBPWeightStore() {
       })
   })
 
+  // read Staff date Wsie B.p report 
+
+  self.on('read_staff_date_wise_bp_report', function(start_date,end_date) {
+    let req = {}
+     req.start_date=start_date
+     req.end_date=end_date
+    $.ajax({
+       url:'/staff_bp_weight/read_staff_date_wise_bp_report',
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully ")
+            self.staffDateWiseBpWeightReports = data.staffDateWiseBpWeightReports
+            self.trigger('read_staff_bp_weight_date_wise_report_changed', self.staffDateWiseBpWeightReports)
+          }else if(data.status == 'e'){
+            showToast("Invalid Username or password. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
   self.on('read_staff_bp_weight', function(id) {
     console.log('i am in read_section api call from ajax');
     let req = {}

@@ -1,5 +1,5 @@
 <student-house-report>
-	<header></header>
+	<print-header></print-header> 
 	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 			<h4 class="title has-text-centered" style="color: #ff3860;">House Wise Report ({session_name})<br> Grand Total ({grand_total})
@@ -66,6 +66,10 @@
 					<td>{st.house_name}</td>
 					<td>{st.total}</td>
 				</tr>
+				<tr>
+					<th colspan="2">Total</th>
+					<th>{grand_total}</th>
+				</tr>
 			</tbody>
 		</table>
 		<table class="table is-fullwidth is-striped is-hoverable is-narrow no-print" show={report_view =='show_table'}>
@@ -81,6 +85,11 @@
 					<td>{i+1}</td>
 					<td>{st.house_name}</td>
 					<td>{st.total}</td>
+				</tr>
+				</tr>
+				<tr>
+					<th colspan="2">Total</th>
+					<th>{grand_total}</th>
 				</tr>
 			</tbody>
 		</table>

@@ -52,7 +52,7 @@
 			    <th>Marital Status</th>
 			    <th>Interview Date</th>
 			    <th>Interview Time</th>
-			    <th>Action</th>
+			    <th style="width: 130px;"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -70,9 +70,9 @@
 				<td>{a.interview_time}</td>
 				<td class="has-text-right no-print">
 		            <div class="inline-flex rounded border border-grey overflow-hidden" hide={a.confirmDelete}>
-		              <span><a class="button is-small is-rounded " onclick={interviw_feedback.bind(this, a.interview_id)}>Interview Feedback</a></span>
-		              <span><a class="button is-small is-rounded" onclick={view_profile.bind(this, a.career_id)}>Profile</a></span>
-		              <span > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+		              <span><a class="button is-small" onclick={interviw_feedback.bind(this, a.interview_id)} title="Interview Feedback"> <i class="fa fa-comments" aria-hidden="true"></i></a></span>
+		              <span><a class="button is-small" onclick={view_profile.bind(this, a.career_id)} title="Profile"><i class="fa fa-eye" aria-hidden="true"></i></a></span>
+		              <span > <a class="button is-small" rel="nofollow" onclick={confirmDelete} title="Delete"><i class="fa fa-trash" aria-hidden="true"></i></a></span>
 		            </div>
 		            <div class="table-buttons" if={a.confirmDelete}>
 		              <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>

@@ -1,5 +1,5 @@
 <student-category-strength-report>
-	<header></header>
+	<print-header></print-header> 
 	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<h4 class="title has-text-centered " style="color: #ff3860;">Student Category : {category_name} ({session_name})</h4>

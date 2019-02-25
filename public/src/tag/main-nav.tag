@@ -23,7 +23,7 @@
               <a class="navbar-item" href="#/grade">Grade</a>
               <a class="navbar-item" href="#/marks-manager">Marks Manager</a>
               <a class="navbar-item" href="#/marks-entry">Marks Entry</a>
-              <a class="navbar-item" href="#/marks-report">Marks Report</a>
+              <a class="navbar-item" href="#/marks-report/merit-list">Marks Report</a>
               <a class="navbar-item" href="#/maturity-development">Maturity Development</a>
               <a class="navbar-item" href="#/result-activation">Result Activation</a>
               <a class="navbar-item" href="#/physical-fitness">Physical Fitness</a>
@@ -44,6 +44,7 @@
               <a class="navbar-item" href="#/student-assign-subject">Assign Subject</a>
               <a class="navbar-item" href="#/student-assign-section">Assign Section</a>
               <a class="navbar-item" href="#/student-result-activation">Result Activation</a>
+              <a class="navbar-item {active: selected_nav_item == 'alumni-setting'}" href="#/alumni-setting/alumni">Alumni</a>
             </div>
           </div>
 
@@ -125,7 +126,7 @@
            <div class="navbar-dropdown">
              <a class="navbar-item " href="#/activity-detail">Activity Detail</a>
              <a class="navbar-item" href="#/activity-report">Report</a>
-             <a class="navbar-item {active: selected_nav_item == 'activity-setting'}" href="#/activity-setting/item">Setting</a>
+             <a class="navbar-item {active: selected_nav_item == 'activity-setting'}" href="#/activity-setting/activity-item">Setting</a>
            </div>
          </div>
 
@@ -134,6 +135,7 @@
             <div class="navbar-dropdown">
               <a class="navbar-item " href="#/attendance-entry">Attendance Entry</a>
               <a class="navbar-item " href="#/daily-attendance">Daily Attendance</a>
+              <a class="navbar-item " href="#/monthly-attendance">Monthly Attendance</a>
             </div>
           </div>
           <div class="navbar-item has-dropdown is-hoverable">
@@ -179,7 +181,7 @@
           </div>
 
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+            <a class="navbar-item" style="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
             <div class="navbar-dropdown">
               <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
               <a class="navbar-item" onclick={changePassword}><i class="fas fa-key"></i></a>
@@ -225,7 +227,7 @@
           </div>
 
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-item" >Time Table</a>
+            <a class="navbar-item" href="#/teacher-time-table">Teacher Time Table</a>
           </div>
           <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
         </div>
@@ -248,24 +250,24 @@
             <a class="navbar-item">My Class</a>
             <div class="navbar-dropdown">
               <a class="navbar-item" href="#/student-browser">Student</a>
-               <a class="navbar-item" href="#/marks-manager">Mark Attendance</a>
-               <a class="navbar-item" href="#/marks-manager">Attendance Report</a>
+               <a class="navbar-item" href="#/attendance-entry">Mark Attendance</a>
+               <a class="navbar-item" href="#/daily-attendance">Attendance Report</a>
                <a class="navbar-item" href="#/marks-manager">Marks Manager</a>
                 <a class="navbar-item" href="#/marks-entry">Marks Entry</a>
               
-              <a class="navbar-item" href="#/marks-report">Marks Report</a>
-              <a class="navbar-item" href="#/marks-entry">Conduct & Application</a>
-              <a class="navbar-item" href="#/maturity-development">Class Holiday</a>
-              <a class="navbar-item" href="#/maturity-development">School Leaving</a>
-              <a class="navbar-item" href="#/maturity-development">Physical Fitness</a>
+              <a class="navbar-item" href="#/marks-report/merit-list">Marks Report</a>
+              <a class="navbar-item" href="#/class-holiday">Class Holiday</a>
+              <a class="navbar-item" href="#/student-school-leaving">School Leaving</a>
+              <a class="navbar-item" href="#/maturity-development">Maturity Development</a>
+              <a class="navbar-item" href="#/physical-fitness">Physical Fitness</a>
             </div>
           </div>
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-item" >Staff Profile</a>
+            <a class="navbar-item" href="#/staff-profile">Staff Profile</a>
           </div>
 
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-item" >Time Table</a>
+            <a class="navbar-item" href="#/teacher-time-table">Teacher Time Table</a>
           </div>
           <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
         </div>
@@ -341,7 +343,13 @@
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-item" href="#/staff-profile">Staff Profile</a>
           </div>
-          <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+           <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-item" shape="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+              <a class="navbar-item" onclick={changePassword}><i class="fas fa-key"></i></a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -375,11 +383,54 @@
          <div class="navbar-item has-dropdown is-hoverable">
            <a class="navbar-item" >Staff Profile</a>
          </div>
-         <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-item" style="font-size:20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+              <a class="navbar-item" onclick={changePassword}><i class="fas fa-key"></i></a>
+            </div>
+          </div>
        </div>
      </div>
    </div>
  </nav>
+
+ <nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if={showCareerItems}>
+   <div class="container is-fluid" >
+     <div class="navbar-brand">
+       
+         <div class="navbar-item is-size-3 has-text-weight-bold has-text-wight">
+           Sarathi
+         </div>
+  
+       <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
+         <span aria-hidden="true"></span>
+         <span aria-hidden="true"></span>
+         <span aria-hidden="true"></span>
+       </div>
+     </div>
+     <div id="navbarExampleTransparentExample" class="navbar-menu has-text-weight-bold">
+       <div class="navbar-end">
+         <div class="navbar-item has-dropdown is-hoverable">
+           
+         </div>
+         <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-item {active: selected_nav_item == 'career-setting'}" href="#/career-setting/applicant-detail">Career
+           <a class="navbar-item" >Staff Profile</a>
+         </div>
+         <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-item" style="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+              <a class="navbar-item" onclick={changePassword}><i class="fas fa-key"></i></a>
+            </div>
+          </div>
+         <!-- <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a> -->
+       </div>
+     </div>
+   </div>
+ </nav>
+
 
  <nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if={showMentorItems}>
    <div class="container is-fluid" >
@@ -408,7 +459,13 @@
          <div class="navbar-item has-dropdown is-hoverable">
            <a class="navbar-item" >Staff Profile</a>
          </div>
-         <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-item" style="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+              <a class="navbar-item" onclick={changePassword}><i class="fas fa-key"></i></a>
+            </div>
+          </div>
        </div>
      </div>
    </div>
@@ -439,15 +496,24 @@
           </div>
          </div>
          <div class="navbar-item has-dropdown is-hoverable">
+           <a class="navbar-item" href="#/student">Student</a>
+         </div>
+         <div class="navbar-item has-dropdown is-hoverable">
            <a class="navbar-item" >Staff Profile</a>
          </div>
-         <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-item" style="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+              <a class="navbar-item" onclick={changePassword}><i class="fas fa-key"></i></a>
+            </div>
+          </div>
        </div>
      </div>
    </div>
  </nav>
 
- <!-- <nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if={showAdmissionItems}>
+<nav class="navbar is-fixed-top is-light no-print" role="navigation" aria-label="main navigation" if={showAdmissionItems}>
    <div class="container is-fluid" >
      <div class="navbar-brand">
        
@@ -463,13 +529,27 @@
      </div>
      <div id="navbarExampleTransparentExample" class="navbar-menu has-text-weight-bold">
        <div class="navbar-end">
+         
          <div class="navbar-item has-dropdown is-hoverable">
-          <a class="navbar-item" href="#/student">Student</a>
+           <a class="navbar-item" href="#/student">Student</a>
+         </div>
          <div class="navbar-item has-dropdown is-hoverable">
            <a class="navbar-item" >Staff Profile</a>
-         </div> -->
+         </div>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-item" style="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+              <a class="navbar-item" onclick={changePassword}><i class="fas fa-key"></i></a>
+            </div>
+          </div>
+       </div>
+     </div>
+   </div>
+ </nav>
+         
  
- <div class="modal" id="passwordChangeModalMainUser">
+ <div class="modal" id="passwordChangeModal">
   <div class="modal-background"></div>
   <div class="modal-card">
     <header class="modal-card-head">
@@ -537,6 +617,7 @@
       self.showTeacherNavItems=false
       self.showClassTeacherNavItems=false
       self.showActivityItems = false
+      self.showCareerItems = false
       self.showMentorItems = false
       self.showDisciplineItems = false
       self.showAdmissionItems = false
@@ -547,6 +628,7 @@
         self.showTeacherNavItems=false
         self.showClassTeacherNavItems=false
         self.showActivityItems=false
+        self.showCareerItems=false
         self.showMentorItems = false
         self.showDisciplineItems = false
         self.showAdmissionItems = false
@@ -562,8 +644,14 @@
           self.showClassTeacherNavItems=true
         }else if(role=='Activity'){
           self.showActivityItems=true
+        }else if(role=='Discipline'){
+          self.showDisciplineItems=true
+        }else if(role=='Career'){
+          self.showCareerItems=true
         }else if(role=='Mentor'){
          self.showMentorItems=true
+        }else if(role=='Admission'){
+         self.showAdmissionItems=true
         }else {
            
         }
@@ -577,12 +665,11 @@
 
 
     self.changePassword = () => {
-      console.log('calling change password')
-      $("#passwordChangeModalMainUser").addClass("is-active");
+      $("#passwordChangeModal").addClass("is-active");
     }
 
     self.closeChangePasswordModal = () => {
-      $("#passwordChangeModalMainUser").removeClass("is-active");
+      $("#passwordChangeModal").removeClass("is-active");
     }
 
     self.savePassword = () => {
@@ -668,7 +755,7 @@
         self.refs.oldPasswordInput.value=''
         self.refs.newPasswordInput.value=''
         self.refs.newPasswordInput2.value=''
-        $("#passwordChangeModalMainUser").removeClass("is-active");
+        $("#passwordChangeModal").removeClass("is-active");
         toastr.info('Password Changed Successfully')
         self.update()
      }else{

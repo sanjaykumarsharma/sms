@@ -50,7 +50,30 @@ function CareerStore() {
   })
 
 
-   self.on('update_interview', function(obj,interview_id) {
+   self.on('download_cv', function(career_id) {
+   
+    $.ajax({
+      url:'/career/download_cv/'+career_id,
+        type:"POST",
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully Downloaded")
+            self.trigger('download_cv_changed')
+          }else if(data.status == 'e'){
+            showToast("Error Updating Student. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('update_interview', function(obj,interview_id) {
    
     $.ajax({
       url:'/career/update_interview/'+interview_id,

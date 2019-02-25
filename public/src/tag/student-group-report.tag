@@ -1,5 +1,5 @@
 <student-group-report>
-	<header></header>
+	<print-header></print-header> 
 	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<h4 class="title has-text-centered" style="color: #ff3860;">Student Group Report <br> Grand Total ({grand_total})</h4>
@@ -65,6 +65,10 @@
 					<td>{st.group_name}</td>
 					<td>{st.total}</td>
 				</tr>
+				<tr>
+					<th colspan="2">Total</th>
+					<th>{grand_total}</th>
+				</tr>
 			</tbody>
 		</table>
 
@@ -81,6 +85,10 @@
 					<td>{i+1}</td>
 					<td>{st.group_name}</td>
 					<td>{st.total}</td>
+				</tr>
+				<tr>
+					<th colspan="2">Total</th>
+					<th>{grand_total}</th>
 				</tr>
 			</tbody>
 		</table>

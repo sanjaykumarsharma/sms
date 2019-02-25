@@ -75,20 +75,17 @@ function StudentLoginSlipStore() {
       })
   })
 
-  self.on('update_login_status', function(enroll_number,is_active) {
-    var obj = {}
-    obj['enroll_number'] = enroll_number
-    obj['is_active'] = is_active
+  self.on('update_login_status', function(st) {
+    
     $.ajax({
       url:'/student-login-slip/update-login-status/',
         type:"POST",
-        data: JSON.stringify(obj),
+        data: JSON.stringify(st),
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           if(data.status == 's'){
-            
             toastr.success("Login status updated successfully ")
             self.trigger('update_login_status_changed') 
           }else if(data.status == 'e'){

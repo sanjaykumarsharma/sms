@@ -49,6 +49,7 @@ router.post('/students', function(req, res, next) {
 router.post('/update-result-status', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+  console.log(input);
 
   req.getConnection(function(err,connection){
 
@@ -56,10 +57,20 @@ router.post('/update-result-status', function(req, res, next) {
       var dt =today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 
       var data = {}
-      
-      var sql = `update student_master set active_result='${input.active_result}'
-                 where enroll_number='${input.enroll_number}'
+      var sql = '';
+
+      input.map(c=>{
+        if(sql == ''){
+          sql = `update student_master set active_result='${c.active_result}'
+                 where enroll_number='${c.enroll_number}'
                  and current_session_id=${req.cookies.session_id}`;
+        }else{
+          sql = sql+';'+`update student_master set active_result='${c.active_result}'
+                 where enroll_number='${c.enroll_number}'
+                 and current_session_id=${req.cookies.session_id}`;
+        }
+      })  
+      
       
       console.log(sql);
 

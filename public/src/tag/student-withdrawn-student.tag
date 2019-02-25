@@ -1,9 +1,10 @@
 <student-withdrawn-student>
+  <print-header></print-header>
 <loading-bar if={loading}></loading-bar>  
 
   <section class=" is-fluid">
 
-    <div class="level">
+    <div class="level no-print">
       <div class="level-left">
         <h2 class="title" style="color: #ff3860;">Withdrawn Student</h2>
       </div>
@@ -11,7 +12,7 @@
       </div>
     </div>
      
-    <div class="box">
+    <div class="box no-print">
       <div class="columns">
 
         <div class="column is-narrow"><label class="label">From Date</label></div>  
@@ -57,10 +58,21 @@
         <div class="column is-narrow">
           <button class="button is-danger has-text-weight-bold" onclick={refreshStudents} >GO </button>
         </div>
+
+        <div class="column is-narrow">
+          <button class="button is-primary has-text-weight-bold  ml5" style="margin-bottom:12px;"
+          onclick="window.print()">
+            <span class="icon">
+              <i class="fas fa-print"></i>
+            </span>
+        </button>
+        </div>
+
+        
           
       </div>
     </div> 
-
+    <h2 class="title has-text-centered is-size-6" style="color: #ff3860;">Withdraw Report</h2>
      <table class="table is-fullwidth is-striped is-hoverable">
       <thead>
         <tr>
@@ -71,7 +83,7 @@
           <th>Date of withdraw</th>
           <th>Reason</th>
           <th>TC No</th>
-          <th></th>
+          <th class="no-print"></th>
         </tr>
       </thead>
       <tbody>
@@ -83,7 +95,7 @@
           <td>{c.dol}</td>
           <td>{c.remarks}</td>
           <td>{c.tc_no}</td>
-          <td class="has-text-right">
+          <td class="has-text-right no-print">
             <span><a class="button is-small is-rounded is-danger" rel="nofollow" onclick={cancleWithdraw.bind(this, c)}>Cancle Withdraw</a></span>
           </td>
         </tr>
@@ -91,6 +103,29 @@
     </table>
      
   </section>
+
+  <!-- Open Cancel Result Modal Start -->
+    <div id="cancelWithdrawModal" class="modal ">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Confirmation Required</p>
+          </header>
+            <section class="modal-card-body">
+              <div class="columns">
+                  <div class="column">
+                    <h1 class="title has-text-centered is-size-5" style="color: #ff3860;">Are you sure you want to Remove the selected Student?</h1>
+              </div>
+              </div>
+            </section>
+          <footer class="modal-card-foot">
+            <button class="button is-success" onclick={UpdateWithdraw} >Yes</button>
+            <button class="button is-danger" id="item-modal-close" 
+            onclick={closecancelWithdrawModal}>No</button>
+          </footer>
+      </div>
+    </div>
+  <!-- Cancel Result Modal End -->
 	<script>
 	var self = this
     self.on("mount", function(){
@@ -166,8 +201,17 @@
 
 
     self.cancleWithdraw = (c,e) =>{
+      self.student_id = c.student_id
+      $("#cancelWithdrawModal").addClass("is-active");
+      
+    }
+
+    self.closecancelWithdrawModal = () => {
+      $("#cancelWithdrawModal").removeClass("is-active");
+    }
+    self.UpdateWithdraw = () =>{
       self.loading = true
-      studentWithdrawnStudentStore.trigger('cancle_withdraw_students', c.student_id)
+      studentWithdrawnStudentStore.trigger('cancle_withdraw_students', self.student_id)
     }
 
     // ****************************************** all change metods *************************************
@@ -206,7 +250,7 @@
     studentWithdrawnStudentStore.on('cancle_withdraw_students_changed',CancleWithdrawStudentChanged)
     function CancleWithdrawStudentChanged(){
       self.loading = false
-
+      self.closecancelWithdrawModal()
       self.refreshStudents()
       
     } 

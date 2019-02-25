@@ -654,7 +654,7 @@ router.get('/read_activity_session_wise_report/:activity_type/:session_id', func
           teacher_name = result;
            //connection.end()
            console.log(teacher_name);
-
+           console.log(qry);
         connection.query(qry, function(error, result)
           {
             if (error) {
@@ -838,7 +838,7 @@ router.get('/csv_activity_session_wise_report/:activity_type/:session_id', funct
           teacher_name = result;
            //connection.end()
            console.log(teacher_name);
-
+           console.log(qry);
         connection.query(qry, function(error, result)
           {
             if (error) {
@@ -1405,7 +1405,7 @@ router.get('/csv_student_event_report/:start_date/:end_date', function(req, res,
     var condition = "";
     var obj = {}; 
 
-    if(req.cookies.role != 'ADMIN') condition = `and a.created_by = '${created_by}'`;
+    if(req.cookies.role != 'ADMIN') condition = `and b.created_by = '${created_by}'`;
        
     var qry =`select a.student_id, concat(first_name,' ',middle_name,' ',last_name)as student_name,
               g.event_name, enroll_number, concat(standard,' ',section)as standard
@@ -1492,7 +1492,7 @@ router.get('/read_student_event_report/:start_date/:end_date', function(req, res
     var condition = "";
     var obj = {}; 
 
-    if(req.cookies.role != 'ADMIN') condition = `and a.created_by = '${created_by}'`;
+    if(req.cookies.role != 'ADMIN') condition = `and b.created_by = '${created_by}'`;
        
     var qry =`select a.student_id, concat(first_name,' ',middle_name,' ',last_name)as student_name,
               g.event_name, enroll_number, concat(standard,' ',section)as standard

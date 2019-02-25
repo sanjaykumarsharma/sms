@@ -294,7 +294,8 @@ router.get('/read_staff/:emp_type_id/:department_id/:designation_id/:level_id', 
   req.getConnection(function(err,connection){
        
     var data = {}
-      var qry =` select  a.status, a.emp_id, employee_id, first_name, middle_name, last_name, office_phone, mobile, email,
+      var qry =` select  a.status, a.emp_id, employee_id, first_name, middle_name, last_name,
+         office_phone, mobile, email,
         a.department_id, b.department_name, is_active,
         a.designation_id, c.designation,employment_status
         from employee a
@@ -386,14 +387,14 @@ router.get('/read_for_edit_staff/:emp_id', function(req, res, next) {
        
     var data = {}
     var workExperienceArray=''
-
+   
     var qry =` select a.employee_id, a.emp_id,title,first_name, middle_name, last_name, short_name,gender,marital_status,father_name,father_occupation,spouse,spouse_occupation,
-        date_format(anniversary, '%d/%m/%Y') as anniversary,id_mark,blood_group,qualification,a.emp_type_id,e.emp_type,category_id,  
+        date_format(anniversary, '%d/%m/%Y') as anniversary,id_mark,blood_group,qualification,a.emp_type_id,e.emp_type,a.category_id,  
         a.department_id, b.department_name, a.subject_id, d.subject_name,  
-        a.designation_id,a.level_id,a.employment_status_id,c.designation,date_format(dob, '%d/%m/%Y') as dob,date_format(doj, '%d/%m/%Y') as doj,
+        a.designation_id, designation, a.level_id,a.employment_status_id,c.designation,date_format(dob, '%d/%m/%Y') as dob,date_format(doj, '%d/%m/%Y') as doj,
         add_l1,add_l2,city,zip,state,country,same_as_p_add,c_add_l1,c_add_l2,c_city,c_zip,c_state,c_country, 
-        place_of_birth, nationality, religion_id, language,
-        residence_phone,office_phone,mobile,email,
+        place_of_birth, nationality, religion_id, language, category_name,
+        residence_phone,office_phone,mobile,email,level,
         child1_first_name,child1_last_name,child1_sex,date_format(child1_dob, '%d/%m/%Y') as child1_dob,child1_school,
         child2_first_name,child2_last_name,child2_sex,date_format(child2_dob, '%d/%m/%Y') as child2_dob,child2_school,
         child3_first_name,child3_last_name,child3_sex,date_format(child3_dob, '%d/%m/%Y') as child3_dob,child3_school,
@@ -417,6 +418,8 @@ router.get('/read_for_edit_staff/:emp_id', function(req, res, next) {
         allowances_of_previous_job,other_benefits_of_previous_job,bond_details_of_previous_job
         from employee a
         LEFT JOIN department_master b on a.department_id = b.department_id 
+        LEFT JOIN category_master k on a.category_id = k.category_id 
+        LEFT JOIN level_master l on a.level_id = l.level_id 
         LEFT JOIN designation_master c on a.designation_id = c.designation_id
         LEFT JOIN subject_master d on a.subject_id = d.subject_id
         LEFT JOIN emp_type_master e on a.emp_type_id = e.emp_type_id
@@ -442,7 +445,7 @@ router.get('/read_for_edit_staff/:emp_id', function(req, res, next) {
       connection.query(qry,function(err,result) {
             
       if(err){
-        console.log("Error reading Student Details : %s ",err );
+        console.log("Error reading Staff Details : %s ",err );
         data.status = 'e';
 
       }
@@ -472,11 +475,10 @@ router.get('/read_for_edit_temp_staff/:emp_id', function(req, res, next) {
   req.getConnection(function(err,connection){
        
     var data = {}
-
     var qry =` select a.employee_id, a.emp_id,title,first_name, middle_name, last_name, short_name,
         gender,marital_status,father_name,father_occupation,spouse,spouse_occupation,
         date_format(anniversary, '%d/%m/%Y') as anniversary,id_mark,blood_group,qualification,a.emp_type_id,
-        e.emp_type,category_id,  
+        e.emp_type,a.category_id,  category_name, level,
         a.department_id, b.department_name, a.subject_id, d.subject_name,  
         a.designation_id,c.designation,date_format(dob, '%d/%m/%Y') as dob,date_format(doj, '%d/%m/%Y') as doj,
         add_l1,add_l2,city,zip,state,country,same_as_p_add,c_add_l1,c_add_l2,c_city,c_zip,c_state,c_country, 
@@ -505,6 +507,7 @@ router.get('/read_for_edit_temp_staff/:emp_id', function(req, res, next) {
         allowances_of_previous_job,other_benefits_of_previous_job,bond_details_of_previous_job
         from employee_temp a
         LEFT JOIN department_master b on a.department_id = b.department_id 
+        LEFT JOIN category_master k on a.category_id = k.category_id 
         LEFT JOIN designation_master c on a.designation_id = c.designation_id
         LEFT JOIN subject_master d on a.subject_id = d.subject_id
         LEFT JOIN emp_type_master e on a.emp_type_id = e.emp_type_id
@@ -718,13 +721,13 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
               throw error;
             });
           }
-          var log = rows.insertId;
+        //  var log = rows.insertId;
 
       
 
         var values_family = input.family;
         values_family.creation_date=formatted;
-        values_family.emp_id=log;
+        values_family.emp_id=emp_id;
         values_family.modification_date=formatted;
         values_family.modified_by=req.cookies.user;
 
@@ -740,7 +743,7 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
 
         var values_previous_job = input.previous_job;
         values_previous_job.creation_date=formatted;
-        values_previous_job.emp_id=log;
+        values_previous_job.emp_id=emp_id;
         values_previous_job.modification_date=formatted;
         values_previous_job.modified_by=req.cookies.user;
 
@@ -763,7 +766,7 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
           var workExperienceArray = input.workExperienceArray
           for(var i=0; i<workExperienceArray.length; i++){
              var obj= []
-              obj.push(log)
+              obj.push(emp_id)
               obj.push(workExperienceArray[i].institution)
               obj.push(workExperienceArray[i].date_of_joining)
               obj.push(workExperienceArray[i].date_of_leaving)
@@ -794,7 +797,7 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
 
          //**********insert into Parent Data  ***************************
           var values_qualification = input.qualification;
-          values_qualification.emp_id=log;
+          values_qualification.emp_id=emp_id;
           values_qualification.creation_date=formatted;
           //values_qualification.current_session_id=req.cookies.session_id;
           values_qualification.modified_by=req.cookies.user;
@@ -926,12 +929,7 @@ router.post('/edit_staff/:emp_id/:editType', function(req, res, next) {
             });
         }) 
 
-
-        
-
-
-
-         //**********insert into Parent Data  ***************************
+        //**********insert into Parent Data  ***************************
           var values_qualification = input.qualification;
          // values_qualification.emp_id=log;
           values_qualification.creation_date=formatted;
@@ -992,7 +990,7 @@ router.post('/edit_temp_staff/:emp_id', function(req, res, next) {
       connection.beginTransaction(function(err) {
 
 
-        if (err) { throw err; }
+     //   if (err) { throw err; }
         connection.query('update employee set ? WHERE emp_id = ?', [values_staffs, emp_id], function (error, rows) {
           if (error) {
             return connection.rollback(function() {
@@ -1228,7 +1226,7 @@ router.post('/update_staff_status', function(req, res, next) {
 
 
 /* Edit allow_block_staff listing. */
-router.post('/allow_block_staff', function(req, res, next) {
+/*router.post('/allow_block_staff', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
  // var id = input.id;
@@ -1258,6 +1256,168 @@ router.post('/allow_block_staff', function(req, res, next) {
         });
    });
 
+});*/
+
+
+router.post('/fast_edit_staff', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  console.log(input);
+
+  req.getConnection(function(err,connection){
+
+        var today = new Date();
+        var data = {}
+        var sql = '';
+
+        var columnName=input.fast_edit_value
+        var editValue=input.editValues
+
+        //var qry = `update section_master set active_section='${input.active_section}' where section_id=${input.section_id}`;
+
+        editValue.map(c=>{
+        if(sql == ''){
+          sql = `update employee set ` + columnName + ` = '${c.value}'
+                 where emp_id='${c.emp_id}' `;
+        }else{
+          sql = sql+';'+`update employee set  ` + columnName + ` ='${c.value}'
+                where emp_id='${c.emp_id}'`;
+        }
+      }) 
+        console.log(sql);
+        
+        connection.query(sql, function(err, rows)
+        {
+  
+          if(err){
+           console.log("Error updating fast edit : ",err );
+           data.status = 'e';
+           data.error = err
+           data.messaage = err.sqlMessage
+           res.send(JSON.stringify(data))
+        }else{
+              data.status = 's';
+              res.send(JSON.stringify(data))
+        }
+          
+        });
+   });
+
+});
+
+router.post('/allow_block_staff', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  console.log(input);
+
+  req.getConnection(function(err,connection){
+
+        var today = new Date();
+        var data = {}
+        var sql = '';
+
+        //var qry = `update section_master set active_section='${input.active_section}' where section_id=${input.section_id}`;
+
+        input.map(c=>{
+        if(sql == ''){
+          sql = `update employee set is_active='${c.is_active}'
+                 where emp_id='${c.emp_id}'`;
+        }else{
+          sql = sql+';'+`update employee set is_active='${c.is_active}'
+                where emp_id='${c.emp_id}'`;
+        }
+      }) 
+        console.log(sql);
+        
+        connection.query(sql, function(err, rows)
+        {
+  
+          if(err){
+           console.log("Error updating staff : ",err );
+           data.status = 'e';
+           data.error = err
+           data.messaage = err.sqlMessage
+           res.send(JSON.stringify(data))
+        }else{
+              data.status = 's';
+              res.send(JSON.stringify(data))
+        }
+          
+        });
+   });
+
+});
+
+/* Read Staff ID Card */
+
+router.post('/read_staff_id_card/', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  console.log(input);
+  console.log("hiiii");
+
+  req.getConnection(function(err,connection){
+
+    connection.beginTransaction(function(err) {
+      if (err) { throw err; }
+      var data = {}
+      var obj = {};
+      var new_emp_id = '';
+        input.map(c=>{
+          if(new_emp_id=='') {
+            new_emp_id=c.emp_id
+          }else{
+            new_emp_id = new_emp_id+','+c.emp_id;
+          } 
+        })
+        var qry =`select a.emp_id, employee_id, concat(first_name,' ',middle_name,' ',last_name)as staff_name,
+                  blood_group, c_add_l1, c_add_l2, c_city, c_zip, c_state, c_country,
+                  residence_phone, mobile, designation
+                  from employee a
+                  LEFT JOIN designation_master b on a.designation_id=b.designation_id
+                  where a.emp_id in(${new_emp_id})
+                  and a.is_active='Y' `;
+        console.log(qry);
+
+        var querySign = `select type from signature_image where is_active=1 limit 1`;
+        var image_type = '';
+
+        connection.query(querySign, function (error, result) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }
+          image_type = result[0];           
+          console.log(image_type);
+          data.image_type = image_type;
+          
+        connection.query(qry, function(error, result)
+          {
+            if (error) {
+              return connection.rollback(function() {
+                throw error;
+              });
+            }
+            connection.commit(function(err) {
+              if (err) {
+                return connection.rollback(function() {
+                  throw err;
+                });
+              }
+              data.status = 's';
+              data.staff_id_card_details = result;
+              res.send(JSON.stringify(data))
+
+              });
+          
+            });
+
+          });//end of ection con
+        });
+       
+  });
+
 });
 
 /* Edit reset_staff_password listing. */
@@ -1274,7 +1434,7 @@ router.post('/reset_staff_password', function(req, res, next) {
            
         };*/
         
-        var query = connection.query("UPDATE employee set password=md5(12456) WHERE emp_id = ?",[id], function(err, rows)
+        var query = connection.query("UPDATE employee set password=md5(123456) WHERE emp_id = ?",[id], function(err, rows)
         {
   
           if(err){

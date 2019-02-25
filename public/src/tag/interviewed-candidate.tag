@@ -68,7 +68,7 @@
 			    <th>Sex</th>
 			    <th>Marital Status</th>
 			    <th>Interview Date</th>
-			    <th>Action</th>
+			    <th style="width: 90px;"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -87,8 +87,8 @@
 				<td>{a.marital_status}</td>
 				<td>{a.interview_date}</td>
 				<td class="has-text-right no-print">
-		            <span><a class="button is-small is-rounded " onclick={cancel_result.bind(this, a.interview_id)}>Cancel Result</a></span>
-		            <span><a class="button is-small is-rounded" onclick={view_profile.bind(this, a.career_id)}>Profile</a></span>
+		            <span><a class="button is-small" onclick={cancel_result.bind(this, a.interview_id)} title="Cancel Result"><i class="fa fa-times" aria-hidden="true"></i></a></span>
+		            <span><a class="button is-small" onclick={view_profile.bind(this, a.career_id)} title="Profile"><i class="fa fa-eye" aria-hidden="true"></i></a></span>
           		</td>
 			</tr>
 		</tbody>

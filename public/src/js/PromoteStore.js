@@ -103,6 +103,30 @@ function PromoteStore() {
       })
   })
 
+  self.on('re_shuffle_student', function(st,section_id) {
+    let req = {}
+    $.ajax({
+      url:'/promote/re_shuffle_student/'+section_id,
+        type:"POST",
+        data: JSON.stringify(st),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Update Successfull")
+            self.trigger('re_shuffle_student_changed')
+          }else if(data.status == 'e'){
+            showToast("Error updating result activation. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
 
   /*self.on('freeStudents', function(standard_id,section_id) {
     console.log("under read free studer store")

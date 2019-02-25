@@ -51,6 +51,7 @@ router.post('/students', function(req, res, next) {
 router.post('/update-login-status', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+  console.log(input);
 
   req.getConnection(function(err,connection){
 
@@ -58,9 +59,18 @@ router.post('/update-login-status', function(req, res, next) {
       var dt =today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 
       var data = {}
+      var sql = '';
+
+      input.map(c=>{
+        if(sql == ''){
+          sql = `update student_login set is_active='${c.is_active}'
+                 where enroll_number='${c.enroll_number}' `;
+        }else{
+          sql = sql+';'+`update student_login set is_active='${c.is_active}'
+                 where enroll_number='${c.enroll_number}' `;
+        }
+      })  
       
-      var sql = `update student_login set is_active='${input.is_active}'
-                 where enroll_number='${input.enroll_number}'`;
       
       console.log(sql);
 

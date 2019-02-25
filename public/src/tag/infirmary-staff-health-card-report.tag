@@ -1,5 +1,5 @@
 <infirmary-staff-health-card-report>
-  <header></header>
+ <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 <section class="is-fluid">
   <h4 class="title has-text-centered no-print" style="color: #ff3860;">Yearly Health Report</h4>

@@ -1,18 +1,18 @@
 <time-table-settings>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_time_table_settings == 'time-table-room-settings' }" href="#/time-table-admin/time-table-settings/time-table-room-settings">
-		      <span>Room</span>
+		      <span>Room Setting</span>
 		    </a>
 	  	</p>
 	  	<p class="control">
 		    <a class="button {is-active: selected_time_table_settings == 'time-table-period-settings' }" href="#/time-table-admin/time-table-settings/time-table-period-settings">
-		      <span>Period</span>
+		      <span>Period Setting</span>
 		    </a>
 	  	</p>
 	  	<p class="control">
 		    <a class="button {is-active: selected_time_table_settings == 'time-table-day-settings' }" href="#/time-table-admin/time-table-settings/time-table-day-settings">
-		      <span>Day</span>
+		      <span>Day Setting</span>
 		    </a>
 	  	</p>
 	</div>

@@ -1,26 +1,23 @@
 <time-table-teacher-report>
+  <print-header></print-header>
 <loading-bar if={loading}></loading-bar>  
   
   <section class=" is-fluid">
+    <h2 class="title is-size-5 has-text-centered" style="color: #ff3860;">Time Table Teacher</h2>
 
-    <div class="level">
-      <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">Time Table Teacher</h2>
-      </div>
-      <div class="level-right">
-      </div>
-    </div>
-
-    <div class="box">
+    <div class="box no-print">
       <div class="columns">
 
         <div class="column">
-          <button class="button is-rounded" onclick={refreshTimeTable}> Go </button>
+          <button class="button is-danger" onclick={refreshTimeTable}> Go </button>
         </div>
 
         <div class="column">
-          <button class="button is-warning is-rounded" style="float:right" onclick={refreshTimeTable}> 
+          <button class="button is-link ml5" style="float:right" onclick={refreshTimeTable}> 
             <span class="icon"> <span class="fas fa-sync-alt"></span> </span> 
+          </button>
+          <button class="button is-primary" style="float:right" onclick="window.print()"> 
+            <span class="icon"><i class="fas fa-print"></i></span>
           </button>
         </div>
           
@@ -29,6 +26,7 @@
 
 
     <table class="table is-fullwidth is-bordered is-hoverable">
+      <center><strong>Session:{session_name}
       <thead>
         <tr>
           <th class="has-text-centered" style="vertical-align: middle;">Teacher/Day</th>
@@ -41,19 +39,19 @@
         <tr each={t in time_table}>
           <th class="has-text-centered" style="vertical-align: middle;">{t.teacher}</th>
           <td each={d in days} class="has-text-centered" >
-              <p if={d.day_name=='Day 1'}>
+              <p if={d.day_name=='Mon'}>
                 <raw content="{t.day_one}"></raw>
               </p>
-              <p if={d.day_name=='Day 2'}>
+              <p if={d.day_name=='Tues'}>
                 <raw content="{t.day_two}"></raw>
               </p>
-              <p if={d.day_name=='Day 3'}>
+              <p if={d.day_name=='Wed'}>
                 <raw content="{t.day_three}"></raw>
               </p>
-              <p if={d.day_name=='Day 4'}>
+              <p if={d.day_name=='Thurs'}>
                 <raw content="{t.day_four}"></raw>
               </p>
-              <p if={d.day_name=='Day 5'}>
+              <p if={d.day_name=='Fri'}>
                 <raw content="{t.day_five}"></raw>
               </p>
           </td>
@@ -120,12 +118,12 @@
     }
 
    timeTableAdminStore.on('read_periods_teacher_report_changed',PeriodsChanged)
-    function PeriodsChanged(time_table){
+    function PeriodsChanged(time_table,session_name){
       self.loading = false
 
       self.time_table = []
       self.time_table = time_table
-
+      self.session_name = session_name
       self.update()
       console.log(self.periods)
       console.log(self.time_table)

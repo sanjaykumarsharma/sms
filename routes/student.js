@@ -9,7 +9,7 @@ const copyFile = require('fs-copy-file');
 
 /* Read Standard */
 
-router.get('/read_standard', function(req, res, next) {
+/*router.get('/read_standard', function(req, res, next) {
 
   req.getConnection(function(err,connection){
        
@@ -33,11 +33,48 @@ router.get('/read_standard', function(req, res, next) {
        
   });
 
+});*/
+router.get('/read_standard', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+      var user=req.cookies.user 
+      var data = {}
+     console.log("+++++")
+     console.log(req.cookies.role)
+
+      var condition="";
+      if(req.cookies.role== "TEACHER" || req.cookies.role=="Class Teacher"){
+           condition =`where standard_id=(select standard_id from section_master 
+              where teacher_id=(select emp_id from employee where employee_id='${user}')) `;
+      }
+      var qry = `select standard_id,standard 
+                from standard_master 
+                ${condition} `
+
+     connection.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading standards : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.standards = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
 });
 
 /* Read Section */
 
-router.get('/read_section', function(req, res, next) {
+/*router.get('/read_section', function(req, res, next) {
 
   req.getConnection(function(err,connection){
        
@@ -61,7 +98,51 @@ router.get('/read_section', function(req, res, next) {
        
   });
 
+});*/
+router.get('/read_section', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+      var user=req.cookies.user 
+      var session_id=req.cookies.session_id 
+      var data = {}
+     console.log("+++++")
+     console.log(req.cookies.role)
+
+      var condition="";
+      if(req.cookies.role== "TEACHER" || req.cookies.role=="Class Teacher"){
+           condition =` where d.section_id=(select section_id from section_master 
+           where teacher_id=(select emp_id from employee where employee_id='${user}')) `;
+      }
+      var qry = `select  a.section_id, section, b.standard_id, b.standard, d.room as room_no,
+                concat(first_name,' ',middle_name,' ',last_name) as class_teacher
+                from section_master  a
+                LEFT JOIN class_teacher_section d on (a.section_id=d.section_id and d.session_id = ${session_id})
+                LEFT JOIN standard_master b on a.standard_id = b.standard_id
+                LEFT JOIN employee c on d.class_teacher = c.emp_id
+                 ${condition} 
+                order by b.standard_id, section_id `
+
+     connection.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading standards : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.sections = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
 });
+
 
 /* Read House */
 
@@ -355,27 +436,59 @@ router.get('/read_student/:read_standard_id/:read_section_id/:read_enroll_number
   var enroll_number = req.params.read_enroll_number;
   var session_id = req.cookies.session_id
   var Role=req.cookies.role;
-  var admission_session_id = 8;
+  //var admission_session_id = 8;
   console.log("hiiii");
 
   req.getConnection(function(err,connection){
        
     var data = {}
     if(Role!="ADMIN"){
-      var qry=`select a.student_id, b.standard, c.standard_id, c.section_id, c.section, title, 
+      if(enroll_number!="0"){
+        var qry =`select a.student_id, b.standard, c.standard_id, c.section_id, c.section, title, first_name,middle_name, last_name,
+                  concat(first_name,' ',middle_name, ' ' ,last_name)as name,
+                  enroll_number,roll_number, reg_number, mobile, f_title, f_name,house_name as house
+                  from student_master a
+                  JOIN student_current_standing d on (a.student_id = d.student_id and a.current_session_id= ${session_id} )
+                  JOIN section_master c  on d.section_id = c.section_id
+                  JOIN standard_master b on c.standard_id = b.standard_id
+                  JOIN parent_master f  on (a.student_id = f.student_id  and f.current_session_id= ${session_id} )
+                  LEFT JOIN house_master g  on  d.house_id=g.house_id
+                  where a.enroll_number in (${enroll_number})
+                  and (a.withdraw='N' || a.withdraw_session > ${session_id} )
+                  and d.session_id= ${session_id}
+                  order by first_name,middle_name,last_name `;
+      }else{
+        var qry =`select a.student_id, b.standard, c.standard_id, c.section_id, c.section, title, first_name,middle_name, last_name,
+                  concat(first_name,' ',middle_name, ' ' ,last_name)as name,
+                  enroll_number,roll_number, reg_number, mobile, f_title, f_name,house_name as house
+                  from student_master a
+                  JOIN student_current_standing d on (a.student_id = d.student_id and a.current_session_id= ${session_id} )
+                  JOIN section_master c  on d.section_id = c.section_id
+                  JOIN standard_master b on c.standard_id = b.standard_id
+                  JOIN parent_master f  on (a.student_id = f.student_id and f.current_session_id= ${session_id} )
+                  LEFT JOIN house_master g  on  d.house_id=g.house_id
+                  where c.standard_id= ${standard_id} and c.section_id= ${section_id}
+                  and (a.withdraw='N' || a.withdraw_session > ${session_id} )
+                  and d.session_id= ${session_id}
+                  order by first_name,middle_name,last_name,enroll_number `;
+      }
+    }if(Role=="Admission"){
+        var qry=`select a.student_id, b.standard, c.standard_id, c.section_id, c.section, title, 
                first_name,middle_name, last_name,
                concat(first_name,' ',middle_name, ' ' ,last_name)as name,
                enroll_number,roll_number, reg_number, mobile, f_title, f_name,house_name as house
                from student_master a
-               JOIN student_current_standing d on (a.student_id = d.student_id  and a.current_session_id = ${admission_session_id})
+               JOIN student_current_standing d on (a.student_id = d.student_id  and a.current_session_id = ${session_id})
                JOIN section_master c  on d.section_id = c.section_id
                JOIN standard_master b on c.standard_id = b.standard_id
-               JOIN parent_master f  on (a.student_id = f.student_id  and f.current_session_id = ${admission_session_id})
+               JOIN parent_master f  on (a.student_id = f.student_id  and f.current_session_id = ${session_id})
                LEFT JOIN house_master g  on  d.house_id=g.house_id
                where a.enroll_number in (${enroll_number})
                and a.withdraw='N'
-               and d.session_id= ${admission_session_id}
+               and d.session_id= ${session_id}
                order by first_name,middle_name,last_name `;
+
+
     }else{
 
     if(enroll_number!="0"){
@@ -766,12 +879,6 @@ router.post('/edit_student/:student_id', function(req, res, next) {
                       if (err) throw err; console.log('path/file.txt was deleted');
                     });
                   }
-                  /*copyFile('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
-                  if (err)
-                    throw err;
-    
-                    console.log('source.txt was copied to destination.txt');
-                  });*/
                 }
                 else if(guardianName == 'Father'){
                   if (fs.existsSync('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg')) {
@@ -779,12 +886,6 @@ router.post('/edit_student/:student_id', function(req, res, next) {
                       if (err) throw err; console.log('path/file.txt was deleted');
                     });
                   }
-                  /*copyFile('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
-                  if (err)
-                    throw err;
-    
-                    console.log('source.txt was copied to destination.txt');
-                  });*/
                 }
                 
                 data.status = 's';
@@ -1231,6 +1332,18 @@ router.post('/upload_student_image/:folder_name/:image_name', upload.single('stu
   res.send(200)
 });
 
+// Student Image Delete
+
+router.post('/delete_upload_student_image/:student_id', function(req, res, next) {
+
+  if(fs.existsSync('./public/images/'+req.cookies.session_id+'/studentImages/'+req.params.student_id+'.jpg')) {
+    fs.unlink('./public/images/'+req.cookies.session_id+'/studentImages/'+req.params.student_id+'.jpg', (err) => {
+      if (err) throw err; console.log('path/file.txt was deleted');
+    }); 
+  }
+  res.send(200)
+});
+
 // Father Image Upload
 
 const upload_father = multer({
@@ -1259,11 +1372,12 @@ router.post('/upload_father_image/:folder_name/:image_name', upload_father.singl
 
 router.post('/delete_upload_father_image/:student_id', function(req, res, next) {
 
-  fs.unlink('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', (err) => {
-    if (err) throw err; console.log('path/file.txt was deleted');
-  });
+  if(fs.existsSync('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg')) {
+    fs.unlink('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', (err) => {
+      if (err) throw err; console.log('path/file.txt was deleted');
+      }); 
+  }
   res.send(200)
-
 });
 
 // Mother Image Upload
@@ -1289,6 +1403,17 @@ router.post('/upload_mother_image/:folder_name/:image_name', upload_mother.singl
   res.send(200)
 });
 
+// Mother Image Delete
+router.post('/delete_upload_mother_image/:student_id', function(req, res, next) {
+
+  if(fs.existsSync('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg')) {
+    fs.unlink('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', (err) => {
+      if (err) throw err; console.log('path/file.txt was deleted');
+    }); 
+  }
+  res.send(200)
+});
+
 // Guardian Image Upload
 const upload_guardian = multer({
   storage: multer.diskStorage({
@@ -1311,26 +1436,39 @@ router.post('/upload_guardian_image/:folder_name/:image_name', upload_guardian.s
   res.send(200)
 });
 
+// Guardian Image Delete
+router.post('/delete_upload_guardian_image/:student_id', function(req, res, next) {
+
+  if(fs.existsSync('./public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg')) {
+    fs.unlink('./public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+      if (err) throw err; console.log('path/file.txt was deleted');
+    }); 
+  }
+  res.send(200)
+});
 
 router.post('/upload_copy_father_image/:student_id', function(req, res, next) {
-  if (fs.existsSync('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg')) {  
-  copyFile('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
-  if (err)
-    throw err;
-    console.log('source.txt was copied to destination.txt');
-  });
+
+  if (fs.existsSync('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg')) {
+    copyFile('./public/images/'+req.cookies.session_id+'/fatherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+    if (err)
+      throw err;
+      console.log('source.txt was copied to destination.txt');
+    });
   }
+  
   res.send(200)
 
 });
 
 router.post('/upload_copy_mother_image/:student_id', function(req, res, next) {
-  if (fs.existsSync('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg')) {  
-  copyFile('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
-  if (err)
-    throw err;
-    console.log('source.txt was copied to destination.txt');
-  });
+  
+  if (fs.existsSync('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg')) { 
+    copyFile('./public/images/'+req.cookies.session_id+'/motherImages/'+req.params.student_id+'.jpg', './public/images/'+req.cookies.session_id+'/guardianImages/'+req.params.student_id+'.jpg', (err) => {
+    if (err)
+      throw err;
+      console.log('source.txt was copied to destination.txt');
+    });
   }
   res.send(200)
 

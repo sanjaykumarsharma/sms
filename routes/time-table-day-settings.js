@@ -33,6 +33,9 @@ router.get('/', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
 
   req.getConnection(function(err,connection){
         var data = {}
@@ -40,6 +43,7 @@ router.post('/add', function(req, res, next) {
         var values = {
             day_name    : input.day_name,
             session_id    : req.cookies.session_id,
+            creation_date    : formatted,
             modified_by    : req.cookies.user,
         };
         
@@ -72,7 +76,7 @@ router.post('/edit/:id', function(req, res, next) {
   req.getConnection(function(err,connection){
         var data = {}
 
-        var qry =  `UPDATE day_master set day_name ='${input.day_name}' where day_id=${input.day_id} `;
+        var qry =  `UPDATE day_master set day_name ='${input.day_name}',modified_by = '${req.cookies.user}' where day_id=${input.day_id} `;
 
         console.log(qry)
 

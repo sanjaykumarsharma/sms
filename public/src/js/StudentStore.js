@@ -459,7 +459,26 @@ function StudentStore() {
           self.trigger('upload_student_image_changed', image_name)
         },
         error: function(data){
-          showToast("", data)
+         //showToast("", data)
+        }
+      })
+  })
+
+  self.on('delete_upload_student_image', function(student_id) {
+
+    $.ajax({
+      url:'/student/delete_upload_student_image/'+student_id,
+        type:"POST",
+        dataType: 'script',
+        processData: false,
+        contentType: false,
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          
+          self.trigger('delete_upload_student_image_changed')
+        },
+        error: function(data){
+          //showToast("", data)
         }
       })
   })
@@ -480,7 +499,7 @@ function StudentStore() {
           self.trigger('upload_father_image_changed', image_name)
         },
         error: function(data){
-          showToast("", data)
+          //showToast("", data)
         }
       })
   })
@@ -499,7 +518,7 @@ function StudentStore() {
           self.trigger('delete_upload_father_image_changed')
         },
         error: function(data){
-          showToast("", data)
+          //showToast("", data)
         }
       })
   })
@@ -520,7 +539,26 @@ function StudentStore() {
           self.trigger('upload_mother_image_changed', image_name)
         },
         error: function(data){
-          showToast("", data)
+          //showToast("", data)
+        }
+      })
+  })
+
+  self.on('delete_upload_mother_image', function(student_id) {
+
+    $.ajax({
+      url:'/student/delete_upload_mother_image/'+student_id,
+        type:"POST",
+        dataType: 'script',
+        processData: false,
+        contentType: false,
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          
+          self.trigger('delete_upload_mother_image_changed')
+        },
+        error: function(data){
+          //showToast("", data)
         }
       })
   })
@@ -543,7 +581,26 @@ function StudentStore() {
           self.trigger('upload_guardian_image_changed', image_name)
         },
         error: function(data){
-          showToast("", data)
+          //showToast("", data)
+        }
+      })
+  })
+
+  self.on('delete_upload_guardian_image', function(student_id) {
+
+    $.ajax({
+      url:'/student/delete_upload_guardian_image/'+student_id,
+        type:"POST",
+        dataType: 'script',
+        processData: false,
+        contentType: false,
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          
+          self.trigger('delete_upload_guardian_image_changed')
+        },
+        error: function(data){
+          //showToast("", data)
         }
       })
   })
@@ -565,7 +622,7 @@ function StudentStore() {
         self.trigger('upload_copy_father_image_changed')
         },
         error: function(data){
-          showToast("", data)
+          //showToast("", data)
         }
       })
   })
@@ -587,7 +644,7 @@ function StudentStore() {
         self.trigger('upload_copy_mother_image_changed',)
       },
       error: function(data){
-        showToast("", data)
+        //showToast("", data)
       }
     })
   })

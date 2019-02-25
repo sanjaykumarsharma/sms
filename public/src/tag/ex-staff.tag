@@ -1,4 +1,6 @@
 <ex-staff>
+	<print-header></print-header> 
+	  <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
 		<h2 class="title has-text-centered" style="color: #ff3860;">Ex-Employee Details</h2>
 	<!-- 	<div class="level">
@@ -81,6 +83,7 @@
     })
 
     self.ReadExStaff = () =>{
+    	self.loading=true
        staffStore.trigger('read_ex_staff', self.refs.emp_type_id.value)
     }
     self.readEmployeeTypes = () => {

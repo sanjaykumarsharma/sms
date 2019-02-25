@@ -38,15 +38,28 @@ router.get('/', function(req, res, next) {
 router.post('/update', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+  console.log(input);
 
   req.getConnection(function(err,connection){
 
         var today = new Date();
         var data = {}
+        var sql = '';
 
-        var qry = `update section_master set active_section='${input.active_section}' where section_id=${input.section_id}`;
+        //var qry = `update section_master set active_section='${input.active_section}' where section_id=${input.section_id}`;
+
+        input.map(c=>{
+        if(sql == ''){
+          sql = `update section_master set active_section='${c.active_section}'
+                 where section_id='${c.section_id}'`;
+        }else{
+          sql = sql+';'+`update section_master set active_section='${c.active_section}'
+                where section_id='${c.section_id}'`;
+        }
+      }) 
+        console.log(sql);
         
-        connection.query(qry, function(err, rows)
+        connection.query(sql, function(err, rows)
         {
   
           if(err){

@@ -87,21 +87,18 @@
 			</tbody>
 		</table>
 		<div class="columns is-multiline">
-			<div class="column is-narrow " each={st, i in birthDayData} show={report_view =='show_card'} style="width:150px;width:200px">
+			<div class="column is-narrow " each={st, i in birthDayData} show={report_view =='show_card'}>
 			    <div class="control">
-					<div class="card">
-					  <div class="card-image">
-					    <figure class="image is-4by3">
-					      <!-- <img src="" alt="Placeholder image" style='height:70px'> -->
-					      <div style="padding:2px;" show={st.type=='Student'}><img src="images/{session_id}/studentImages/{st.id}.jpg"></div>
-					      <div style="padding:2px;" show={st.type=='Teacher'}><img src="images/employee/{st.id}.jpg"></div>
-					    </figure>
-					  </div>
-					  <div class="card-content">
+					<div class="card" style="height: 250px;">
+						<div class="card-image">
+						    <figure class="image is-4by3">
+						      <div style="padding:2px;" show={st.type=='Student'}><img src="images/{session_id}/studentImages/{st.id}.jpg"></div>
+						      <div style="padding:2px;" show={st.type=='Teacher'}><img src="images/empImages/{st.id}.jpg"></div>
+						    </figure>
+					  	</div>
 					    <div class="content">
-					     <label class="label">{st.group}</label> 
-					      <br>
-					     </label class="label">  {st.category}</label> 
+					    	<p style="padding:10px;" class="has-text-weight-bold">{st.name} <br>
+					    	{st.group} {st.category}</p>
 					    </div>
 					  </div>
 					</div>

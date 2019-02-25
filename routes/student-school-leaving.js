@@ -4,6 +4,88 @@ var pool = require('../db');
 
 /*****************************************************subjects************************************************/
 
+router.get('/standard', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+      var user=req.cookies.user 
+      var data = {}
+     console.log("+++++")
+     console.log(req.cookies.role)
+
+      var condition="";
+      if(req.cookies.role== "TEACHER" || req.cookies.role=="Class Teacher"){
+           condition =`where standard_id=(select standard_id from section_master 
+              where teacher_id=(select emp_id from employee where employee_id='${user}')) `;
+      }
+      var qry = `select standard_id,standard 
+                from standard_master 
+                ${condition} `
+
+     connection.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading standards : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.standards = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});
+
+router.get('/section', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+      var user=req.cookies.user 
+      var session_id=req.cookies.session_id 
+      var data = {}
+     console.log("+++++")
+     console.log(req.cookies.role)
+
+      var condition="";
+      if(req.cookies.role== "TEACHER" || req.cookies.role=="Class Teacher"){
+           condition =` where d.section_id=(select section_id from section_master 
+           where teacher_id=(select emp_id from employee where employee_id='${user}')) `;
+      }
+      var qry = `select  a.section_id, section, b.standard_id, b.standard, d.room as room_no,
+                concat(first_name,' ',middle_name,' ',last_name) as class_teacher
+                from section_master  a
+                LEFT JOIN class_teacher_section d on (a.section_id=d.section_id and d.session_id = ${session_id})
+                LEFT JOIN standard_master b on a.standard_id = b.standard_id
+                LEFT JOIN employee c on d.class_teacher = c.emp_id
+                 ${condition} 
+                order by b.standard_id, section_id `
+
+     connection.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading standards : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.sections = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});
+
 /* Read Sections listing. */
 router.post('/students', function(req, res, next) {
 
@@ -94,7 +176,7 @@ router.post('/create_certificate', function(req, res, next) {
         attitude    : input.attitude,
         punctuality    : input.punctuality,
         remarks    : input.remarks,
-        modified_by    : req.cookies.role,
+        modified_by    : req.cookies.user,
         creation_date    : formatted,
       };
       if(input.examination_appeared =='TEN') values.examination_appeared ='ICSE';
@@ -265,12 +347,12 @@ router.get('/print_certificate/:student_id', function(req, res, next) {
                 left join student_master h on (b.reference_enrol = h.enroll_number  and b.current_session_id= ${req.cookies.session_id})
                 where a.student_id in (${student_id})
                 and d.session_id=${req.cookies.session_id} `;*/
-      var sql= `select concat(b.first_name,' ',b.middle_name,' ',b.last_name) as name,f_name,
+      var sql= `select distinct a.student_id, concat(b.first_name,' ',b.middle_name,' ',b.last_name) as name,f_name,
                 r_no, date_format(b.dob,'%d/%m/%Y') as dob, 
                 date_format(leaving_date, '%d/%m/%Y') as dol, house_name, 
                 date_format(b.doa, '%d/%m/%Y') as doa,
                 g.standard,section,
-                admission_for_class, 
+                b.admission_for_class, 
                 type,examination_appeared, b.enroll_number,punctuality,
                 conduct, attendance, faculty_relationship, peer_group_relationship,
                 class_responsibility, house_responsibility, attitude,remarks

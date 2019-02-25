@@ -823,7 +823,7 @@ router.post('/read_collection_summary', function(req, res, next) {
 
      
       
-     var qry = `SELECT coalesce(bank_name, 'School') as bank, mode, 
+     var qry = `SELECT  coalesce(bank_name, 'School') as bank, if(mode='Cash' || mode='Bank', 'Cash', mode) as mode, 
         sum(amount_due + fine_recevied - coalesce(scholorship_amount, 0) - coalesce(concession_amount, 0)) as amount 
         from fee_received a
         JOIN fee_received_details b on (a.receipt_id = b.receipt_id 
@@ -845,61 +845,98 @@ router.post('/read_collection_summary', function(req, res, next) {
         }else{
 
             var feeData = []
-            var prev_bank =''
-            console.log(result)
-            for(var i = 0;  i < result.length ; i++){                
-            var error = 0;
-            if(result[i].bank != prev_bank){
-              if(prev_bank == ""){
-                var temp = {}
-                temp['bank'] = result[i].bank
-                if(result[i].mode == 'Cash' || result[i].mode == 'Bank'){
-                  temp['cash'] = result[i].amount;
-                  if(temp['cheque']) temp['cheque'] = 0;
-                }else{
-                  temp['cheque'] = result[i].amount;
-                  if(temp['cash']) temp['cash'] = 0;
-                }
+            var obj={}
+            var total = 0;
+            var prev_bank=''
+            
+            result.map(r=>{
+                
+              if(prev_bank==''){//loop runs the first time
+                prev_bank = r.bank
+                obj['bank']=r.bank
+                obj[r.mode]=r.amount
+                total = Number(total) + r.amount;
+                console.log(total);
+              }else if(prev_bank == r.bank){ // same bank
+                total = Number(total) + r.amount;
+                obj[r.mode]=r.amount
               }else{
-                temp['total'] = Number(temp['cash']) + Number(temp['cheque'])
-                feeData.push(temp)
-                temp = {}
-                temp['bank'] = result[i].bank
-                if(result[i].mode == 'Cash' || result[i].mode == 'Bank'){
-                  temp['cash'] = result[i].amount;
-                  if(temp['cheque']) temp['cheque'] = 0;
-                }else{
-                  temp['cheque'] = result[i].amount;
-                  if(temp['cash']) temp['cash'] = 0;
-                }
+                feeData.push(obj)
+                obj={}
+                prev_bank = r.bank
+                obj['bank']=r.bank
+                obj[r.mode]=r.amount
               }
-              prev_bank = result[i].bank;
-            }else{
-              if(result[i].mode == 'Cash' || result[i].mode == 'Bank'){
-                if(temp['cash']){
-                  temp['cash'] = Number(temp['cash']) + Number(result[i].amount)
-                }else{
-                  temp['cash'] = result[i].amount;
-                }
-                if(temp['cheque']) temp['cheque'] = 0;
-              }else{
-                if(temp['cheque']){
-                  temp['cheque'] = Number(temp['cheque']) + Number(result[i].amount) 
-                }else{
-                  temp['cheque'] = result[i].amount;
-                }
-                if(temp['cash']) temp['cash'] = 0;
+
+            }) 
+
+            feeData.push(obj)
+     
+            //row wise total
+            feeData.map(r=>{
+              var row_total = 0;
+
+              if (typeof r.Cash !== 'undefined') {
+                  row_total = Number(row_total) + Number(r.Cash)
               }
-            }
-          }
-          if(temp){
-          temp['total'] = Number(temp['cash']) + Number(temp['cheque']);
-          feeData.push(temp)
-          }
-          
 
+              if (typeof r.Bank !== 'undefined') {
+                  row_total = Number(row_total) + Number(r.Bank)
+              }
 
-             data.status = 's';
+              if (typeof r.Cheque !== 'undefined') {
+                  row_total = Number(row_total) + Number(r.Cheque)
+              }
+
+              if (typeof r.Draft !== 'undefined') {
+                  row_total = Number(row_total) + Number(r.Draft)
+              }
+
+              if (typeof r.Online !== 'undefined') {
+                  row_total = Number(row_total) + Number(r.Online)
+              }
+
+              r.total = row_total;
+            })
+            
+            //column wise total
+            var cash_total = 0;
+            var bank_total = 0;
+            var cheque_total = 0;
+            var draft_total = 0;
+            var online_total = 0;
+            var grand_total = 0;
+            feeData.map(r=>{
+
+              if (typeof r.Cash !== 'undefined') {
+                  cash_total = Number(cash_total) + Number(r.Cash)
+              }
+
+              if (typeof r.Bank !== 'undefined') {
+                  bank_total = Number(bank_total) + Number(r.Bank)
+              }
+
+              if (typeof r.Cheque !== 'undefined') {
+                  cheque_total = Number(cheque_total) + Number(r.Cheque)
+              }
+
+              if (typeof r.Draft !== 'undefined') {
+                  draft_total = Number(draft_total) + Number(r.Draft)
+              }
+
+              if (typeof r.Online !== 'undefined') {
+                  online_total = Number(online_total) + Number(r.Online)
+              }
+
+              if (typeof r.total !== 'undefined') {
+                  grand_total = Number(grand_total) + Number(r.total)
+              }
+
+            })
+
+            feeData.push({'bank':'Total','Cash':cash_total,'Bank':bank_total,'Cheque':cheque_total,'Draft':draft_total,'Online':online_total,'total':grand_total,'class':'total','class_hide':'display-none'})
+
+            data.status = 's';
             data.collectionSummary = feeData;
             
 
@@ -1785,7 +1822,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
           }
           // ======================= sub total ===========
           obj = {}
-          obj['slNo'] = "========="
+          obj['slNo'] = ""
           obj["receipt_date"]=""
           obj['receipt_id'] = ""
           obj["enroll_number"] = ""
@@ -1801,26 +1838,7 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
           obj["total"] =online_sub_total 
           dailyData.push(obj)
 
-          //========= Grand Total ===============
-        // ======================= Grand Total ===========
-          obj = {}
-          obj['slNo'] = ""
-          obj["receipt_date"]=""
-          obj['receipt_id'] = ""
-          obj["enroll_number"] = ""
-          obj["name"] = ""
-          obj['fee_slip_name'] = ""
-          obj["class"] = ""
-          obj["bank_name"] = ""
-          obj["item_no"] = ""
-          obj["mode"] = "Grand Total"
-          obj["amount_due"] = grand_amount_due
-          obj["fine"] = grand_total_fine
-          obj["scholorship_amount"] = grand_scholorship_amount
-          obj["total"] =grand_total 
-          dailyData.push(obj)
           
-          console.log("Grand Total Section");
              
       }
 //============ for quer1-------------------
@@ -2242,31 +2260,38 @@ router.get('/read_daily_fees/:start_date/:end_date', function(req, res, next) {
           obj["total"] =online_sub_total 
           dailyData.push(obj)
 
+
+          //========= Grand Total ===============
+        // ======================= Grand Total ===========
+          obj = {}
+          obj['slNo'] = ""
+          obj["receipt_date"]=""
+          obj['receipt_id'] = ""
+          obj["enroll_number"] = ""
+          obj["name"] = ""
+          obj['fee_slip_name'] = ""
+          obj["class"] = ""
+          obj["bank_name"] = ""
+          obj["item_no"] = ""
+          obj["mode"] = "Grand Total"
+          obj["amount_due"] = grand_amount_due
+          obj["fine"] = grand_total_fine
+          obj["scholorship_amount"] = grand_scholorship_amount
+          obj["total"] =grand_total 
+          dailyData.push(obj)
+          
+          console.log("Grand Total Section");
+
         
           data.status = 's';
           data.dailyData = dailyData;
           res.send(data)  
+
       } 
 
     }); //5th query end        
-         
-    
+             
      });  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     });     
   });

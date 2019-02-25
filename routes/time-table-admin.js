@@ -305,15 +305,15 @@ router.get('/read-periods-teacher-report/', function(req, res, next) {
 
                if(r.teacher_id!=prev_teacher_id){ // CONDITION FOR TEACHER CHANGE
                     
-                     if(prev_day_name=='Day 1'){
+                     if(prev_day_name=='Mon'){
                       display_day_name='day_one';           
-                     }else if(prev_day_name=='Day 2'){
+                     }else if(prev_day_name=='Tues'){
                       display_day_name='day_two';           
-                     }else if(prev_day_name=='Day 3'){
+                     }else if(prev_day_name=='Wed'){
                       display_day_name='day_three';           
-                     }else if(prev_day_name=='Day 4'){
+                     }else if(prev_day_name=='Thurs'){
                       display_day_name='day_four';           
-                     }else if(prev_day_name=='Day 5'){
+                     }else if(prev_day_name=='Fri'){
                       display_day_name='day_five';           
                      }
 
@@ -342,15 +342,15 @@ router.get('/read-periods-teacher-report/', function(req, res, next) {
                       //picking old values
                       teacher=2;
                       obj['teacher']= r.teacher;
-                      if(prev_day_name=='Day 1'){
+                      if(prev_day_name=='Mon'){
                       display_day_name='day_one';           
-                     }else if(prev_day_name=='Day 2'){
+                     }else if(prev_day_name=='Tues'){
                       display_day_name='day_two';           
-                     }else if(prev_day_name=='Day 3'){
+                     }else if(prev_day_name=='Wed'){
                       display_day_name='day_three';           
-                     }else if(prev_day_name=='Day 4'){
+                     }else if(prev_day_name=='Thurs'){
                       display_day_name='day_four';           
-                     }else if(prev_day_name=='Day 5'){
+                     }else if(prev_day_name=='Fri'){
                       display_day_name='day_five';           
                      }
                       obj[display_day_name]= prev_subject;

@@ -1,5 +1,5 @@
 <time-table-admin>
-	<div class="field has-addons">
+	<div class="field has-addons no-print">
 	  	<p class="control">
 		    <a class="button {is-active: selected_time_table_admin == 'time-table-class-report' }" href="#/time-table-admin/time-table-class-report">
 		      <span>Class</span>
@@ -7,7 +7,7 @@
 	  	</p>
 	  	<p class="control">
 		    <a class="button {is-active: selected_time_table_admin == 'time-table-room-report' }" href="#/time-table-admin/time-table-room-report">
-		      <span>Rom</span>
+		      <span>Room</span>
 		    </a>
 	  	</p>
 	  	<p class="control">

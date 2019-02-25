@@ -1,5 +1,5 @@
 <infirmary-staff-date-wise-case-report>
-  <header></header>
+ <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 <section class="is-fluid" show={infirmary_staff_view == 'show_staff_date-wise-case-report-table'}>
      <h4 class="title has-text-centered" style="color: #ff3860;">Staff Wise Infirmary Case Report <br>

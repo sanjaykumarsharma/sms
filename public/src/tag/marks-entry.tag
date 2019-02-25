@@ -103,6 +103,69 @@
       </div>
     </div> 
 
+   <!--  <div class="box">
+      <div class="columns">
+        <div class="column ">
+          <div class="field">
+            <label class="label" for="role">Roll No</label>
+            <div class="control is-narrow">
+             <input class="input" ref="roll_number" type="text" disabled>
+            </div>
+          </div>
+        </div>
+        <div class="column ">
+          <div class="field">
+            <label class="label" for="role">Enroll No</label>
+            <div class="control">
+              <input class="input" ref="enroll_number" type="text" disabled>
+            </div>
+          </div>
+        </div>
+        <div class="column ">
+          <div class="field">
+            <label class="label" for="role">Name</label>
+            <div class="control">
+              <input class="input" ref="name" type="text" disabled>
+            </div>
+          </div>
+        </div>
+        <div class="column ">
+          <div class="field">
+            <label class="label" for="role">Marks</label>
+            <div class="control">
+              <input class="input" type="text" ref="marksInput" id="marksInput" style="width:100px;font-weight:bold;    text-transform: uppercase;" onkeyup={addEnter}>
+             <button class="button is-danger has-text-weight-bold" onclick={add} >{title}</button>
+            </div>
+          </div>
+        </div>
+        <div class="column ">
+          <div class="field">
+            <label class="label" for="role">Absent</label>
+            <div class="control" style="margin-top: 1em;">
+              <input type="checkbox" class="checkbox" ref="absentCheckBox" id="absentCheckBoxId">
+            </div>
+          </div>
+        </div>
+        
+        <div class="column " hide={marksLimit.marking_type=='G'}>
+          <div class="field">
+            <label class="label" for="role">Max Marks</label>
+            <div class="control">
+              
+            </div>
+          </div>
+        </div>
+        <div class="column " hide={marksLimit.marking_type=='G'}>
+          <div class="field">
+            <label class="label" for="role">Min Marks</label>
+            <div class="control">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
 		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
@@ -465,6 +528,9 @@
         self.roll_number = students[0].roll_number
         self.enroll_number = students[0].enroll_number
         self.name = students[0].name
+        self.refs.roll_number.value = self.roll_number
+        self.refs.enroll_number.value = self.enroll_number
+        self.refs.name.value = self.name
       }
       
       self.update()

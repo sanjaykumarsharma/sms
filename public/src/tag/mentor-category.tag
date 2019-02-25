@@ -54,8 +54,12 @@
 					<td>{ mc.category_name}</td>
           	<td class="has-text-right no-print">
         			<div class="inline-flex rounded border border-grey overflow-hidden" hide={mc.confirmDelete}>
-          				<span><a class="button is-small is-rounded" onclick={edit.bind(this, mc)}>Edit</a></span>
-          				<span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+          				<span><a class="button is-small" onclick={edit.bind(this, mc)} title="Edit">
+                    <i class="fa fa-edit" aria-hidden="true"></i>    
+                  </a></span>
+          				<span if={role=='ADMIN'}> <a class="button is-small" rel="nofollow" onclick={confirmDelete} title="Delete">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </a></span>
         			</div>
         			<div class="table-buttons" if={mc.confirmDelete}>
           				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>

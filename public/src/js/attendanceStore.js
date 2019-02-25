@@ -96,6 +96,31 @@ function AttendanceStore() {
       })
   })
 
+  //========= read monthly data =======
+
+  self.on('read_monthly_attendance_data', function(obj) {
+    $.ajax({
+      url:'/attendance/read_monthly_attendance_data',
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.monthlyAttendanceData = data.monthlyAttendanceData
+            self.trigger('read_monthly_attendance_data_changed', data.monthlyAttendanceData, getCookie('session_name'))
+          }else if(data.status == 'e'){
+            showToast("Error in reading data. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
 
   // read Holiday list
 

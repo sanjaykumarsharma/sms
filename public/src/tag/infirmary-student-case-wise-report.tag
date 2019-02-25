@@ -1,5 +1,5 @@
 <infirmary-student-case-wise-report>
-  <header></header>
+ <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
 	<h2 class="title has-text-centered" style="color: #ff3860;">Student Category wise Infirmary Graph<br>Grand Total : <span style="color:#000">{grand_total}</span>

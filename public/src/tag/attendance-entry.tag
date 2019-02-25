@@ -1,5 +1,5 @@
 <attendance-entry>
-  <header></header>
+   <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid" show={atendance_view =='show_atendance'}>
 		<div class="level">

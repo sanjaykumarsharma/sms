@@ -8,7 +8,7 @@ function StudentSchoolLeavingStore() {
   self.on('read_classes', function() {
     let req = {}
     $.ajax({
-      url:'/standard',
+      url:'/student-school-leaving/standard',
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -29,7 +29,7 @@ function StudentSchoolLeavingStore() {
   self.on('read_section', function() {
     let req = {}
     $.ajax({
-      url:'/section',
+      url:'/student-school-leaving/section',
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -136,8 +136,6 @@ function StudentSchoolLeavingStore() {
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           if(data.status == 's'){
-            
-            // toastr.success("Login status updated successfully ")
             self.trigger('print_certificate_changed',data.students,getCookie('session_name')) 
           }else if(data.status == 'e'){
             showToast("Error reading. Please try again.", data.messaage)

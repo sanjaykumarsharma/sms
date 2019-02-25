@@ -36,13 +36,13 @@
 					<td><img src='/images/signatureImages/{st.type}.jpg' width="65" height="75" ></td>
 					<td class="has-text-right">
 		            <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
-		              <span><a class="button is-small is-rounded " onclick={isActive.bind(this, st)}>Active</a></span>
-		              <span><a class="button is-small is-rounded " onclick={edit.bind(this, st)}>Edit</a></span>
-		              <span if={role=='ADMIN'}> <a class="button is-small is-rounded has-text-danger" rel="nofollow"onclick={confirmDelete} >Delete</a></span>
+		              <span><a class="button is-small" onclick={isActive.bind(this, st)} title="Active"><i class="fa fa-power-off" aria-hidden="true"></i></a></span>
+		              <span><a class="button is-small " onclick={edit.bind(this, st)} title="Edit"><i class="fa fa-edit" aria-hidden="true"></i></a></span>
+		              <span if={role=='ADMIN'}> <a class="button is-small" rel="nofollow"onclick={confirmDelete} title="Delete"><i class="fa fa-trash" aria-hidden="true"></i></a></span>
 		            </div>
 		            <div class="table-buttons" if={st.confirmDelete}>
-          				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
-          				<span disabled={loading} class="button is-small  has-text-danger is-rounded" onclick={cancelOperation}><i class="fa fa-times"></i></span>
+          				<span disabled={loading} class="button is-small" onclick={delete}><i class="fa fa-check" ></i></span>
+          				<span disabled={loading} class="button is-small  has-text-danger" onclick={cancelOperation}><i class="fa fa-times"></i></span>
         			</div>
           			</td>
 				</tr>
@@ -52,11 +52,11 @@
 
 <!-- Open Signature Modal Start -->
   	<div id="signatureModal" class="modal ">
-    <div class="modal-background"></div>
-	    <div class="modal-card">
-	    	<header class="modal-card-head">
-	        	<p class="modal-card-title">{title} Signature</p>
-	      	</header>
+      <div class="modal-background"></div>
+	      <div class="modal-card">
+  	    	<header class="modal-card-head">
+  	        <p class="modal-card-title">{title} Signature</p>
+  	      </header>
 	      	<section class="modal-card-body">
 	        	<div class="columns">
 		          	<div class="column">
@@ -73,7 +73,7 @@
 						</div>
 						<div class="control">
 							<label class="label" for="withdraw_remarks">Signature</label>
-					        <div id="pp_box" class="preview-box-wide" onclick={trigger_file_input.bind(this,'signature_picture')}>
+					     <div id="pp_box" class="preview-box-wide" onclick={trigger_file_input.bind(this,'signature_picture')}>
 			        <div class="icon has-text-danger" onclick=
 			        	{remove_picture.bind(this, 'pp_box','signature_picture')}><i class="fas fa-trash"></i>
 			        </div>

@@ -33,7 +33,7 @@ function TimeTableAdminStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.trigger('read_periods_class_report_changed', data.time_table)
+            self.trigger('read_periods_class_report_changed', data.time_table,getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Periods Read Error. Please try again.", data.messaage)
           }
@@ -78,7 +78,7 @@ function TimeTableAdminStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.trigger('read_periods_room_report_changed', data.time_table)
+            self.trigger('read_periods_room_report_changed', data.time_table,getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Periods Read Error. Please try again.", data.messaage)
           }
@@ -122,7 +122,7 @@ function TimeTableAdminStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.trigger('read_periods_teacher_report_changed', data.time_table)
+            self.trigger('read_periods_teacher_report_changed', data.time_table,getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Periods Read Error. Please try again.", data.messaage)
           }

@@ -1,5 +1,6 @@
 <staff>
-	<loading-bar if={loading}></loading-bar>  
+	<print-header></print-header> 
+	<loading-bar if={loading}></loading-bar> 
 	<section class=" is-fluid" show={staff_view =='show_staff'}>
 		<h2 class="title has-text-centered printOnly_t" style="color: #ff3860; font-size:14px">Employee Details <br>
 			Type: <span style="color:#000">{type}</span> Designation: <span style="color:#000">{designation}</span> Level: <span style="color:#000">{level}</span>  Department: <span style="color:#000">{department}</span>
@@ -34,10 +35,15 @@
 				</button>
 			</div>
 			<div>
+				<button class="button is-small  is-rounded ml10" onclick={id_card_print_preview}>
+				Prind ID Card
+				</button>
+			</div>
+			<!-- <div>
 				<button class="button is-small is-danger  is-rounded ml10" onclick={resetStaffPassword}>
 				Reset Password
 				</button>
-			</div>
+			</div> -->
 			</div>
 		</div>
 		<div class="box no-print">
@@ -94,7 +100,7 @@
 	        						<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
 	        	    			</div> -->
 				<div class="column">
-					<button class="button is-small is-danger has-text-weight-bold"
+					<button class="button is-danger has-text-weight-bold"
 					onclick={getStaffData}>GO
 					</button>
 					 <button class="button is-primary has-text-weight-bold is-pulled-right is-small" onclick="window.print()" title="Print">
@@ -111,10 +117,10 @@
 
 			</div>
 		</div>
-		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
+		<table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 			<thead>
 				<tr>
-					<th class="no-print">#</th>
+					<th class="no-print"><input type="checkbox" id="checkStaff" onclick={selectAll}></th>
 					<th>Emp ID</th>
 					<th>Name</th>
 					<th>Department</th>
@@ -123,12 +129,12 @@
 					<th>Status</th>
 					<th>Email</th>
 					<th>Active</th>
-					<th></th>
+					<th class=" no-print"></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr each={st, i in staffs}>
-					<td class="no-print"><input type="checkbox" class="id_check_box"  id="{ 'EmpId' + st.emp_id }" onclick={ selectStaff.bind(this,st) } > </td>
+					<td class="no-print"><input type="checkbox" checked={st.done} class="id_check_box"  id="{ 'StaffId' + st.emp_id }" onclick={ selectStaff.bind(this,st) } > </td>
 					<td>{st.employee_id}</td>
 					<td>{st.first_name} {st.middle_name} {st.last_name}</td>
 					<td>{st.department_name}</td>
@@ -139,9 +145,19 @@
 					<td>{st.is_active}</td>
 					<td class="has-text-right no-print">
 		            <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
-		             <span><a class="button is-small  is-rounded has-text-success" onclick={printProfile.bind(this, st.emp_id)}>Profile</a></span>	
-		              <span><a class="button is-small is-rounded has-text-success" onclick={edit.bind(this, st.emp_id)}>Edit</a></span>
-		              <span> <a class="button is-small  has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+		             <span><a class="button is-small" onclick={printProfile.bind(this, st.emp_id)} title="View Profile">
+		              <i class="fa fa-eye" aria-hidden="true"></i>
+		             </a></span>	
+		              <span><a class="button is-small" onclick={edit.bind(this, st.emp_id)} title="Edit">
+		              	<i class="fa fa-edit" aria-hidden="true"></i>
+		              </a></span>
+		              <span> <a class="button is-small" rel="nofollow" onclick={confirmDelete} title="Delete">
+		              	<i class="fa fa-trash" aria-hidden="true"></i>
+		              </a></span>
+		               <span> <a class="button is-small" rel="nofollow" onclick={resetStaffPassword} title="Reset Password">
+		              	<i class="fa fa-undo" aria-hidden="true"></i>
+		              </a></span>
+		             
 		            </div>
 		            <div class="table-buttons" if={st.confirmDelete}>
 		              <span disabled={loading} class="button is-small is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
@@ -152,6 +168,95 @@
 			</tbody>
 		</table>
 	</section>
+
+	<section class="container is-fluid " show={staff_view =='show_staff_print_view'}>
+	  <div class="level no-print">
+	    <div class="level-left"></div>
+	    <div class="level-right" style="margin-bottom: 5px;">
+	      <button class="button is-warning has-text-weight-bold" onclick={close_print_view} style="margin-right: 5px;">
+	        <span class="icon">
+	          <span class="fas fa-arrow-left"></span>
+	        </span>
+	      </button>
+	      <button class="button is-primary has-text-weight-bold" onclick="window.print()">
+	        <span class="icon">
+	          <span class="fas fa-print"></span>
+	        </span>
+	      </button>
+	    </div>
+	  </div>
+
+  <div each={st, i in staff_id_card_details} style="font-size: 0.9rem; font-family: 'Open Sans', sans-serif;">
+    <center>
+        <div class="card-staff-id schoolbg-staff">
+            <div style="padding:4px"><image src="../images/staffIdHeader.png" width="194"></div>
+              <div class="schoolInformation"><p>Boys School Affiliated to CISCE, New Delhi</p>
+              
+              <p>243, G.T.Road (N), Liluah, Howrah-711204</p>
+                   <p>Tel.:(033)2654-3326/87</p>
+              </div>
+              <hr class="staff-hr-print" style="border-color:#ff0000;margin-top:-2px">
+              <div style=""><img style="border:solid Black 1px;height: 85px;" src="../images/empImages/{st.emp_id}.jpg" height="85"></div>
+              <div >
+              <div padding:"4px;"><span class="barcode">*{st.employee_id}*</span></div>
+              <div class="staffTitle">{st.staff_name}</div>
+                  <table class="staff" style="margin-left:15px;">
+                     <tr>
+                        <td class="print-designation">Designation: {st.designation}</td>
+                     </tr>
+                     <tr>
+                        <td>Employee ID: {st.employee_id}</td> 
+                     </tr>
+                     <tr>
+                        <td>Blood Group: {st.blood_group}</td> 
+                     </tr>
+                  </table>
+                  <div class="staffPrincipal">
+                          <p><image class="staff-id-signature" src="images/signatureImages/{image_type}.jpg" height="16"></p>
+                          <p>{image_type}</p>
+                  </div>
+              </div>
+        </div>
+    </center>  
+        <div class='page-break'></div>
+        
+       <center>
+                <div class="card_lower">
+                  <p class="top">INSTRUCTIONS</p>
+                 <div class="instruction">
+                     <ol>
+                       <li>This Identity-Library-Attendance Card must be carried/ displayed while on duty and produced on demand.</li>
+                       <li>Loss of this card must be immediately reported to the police & to the School Administration in writing & a new card be obtained.</li>
+                       <li>Replacement of card will be on actual cost basis and on production of the police diary.</li>
+                       <li>This card should be returned to the School on cessation of employment. </li>
+                       <li>This card is valid upto 31-03-2020.</li>
+                    </ol>
+                 </div>  
+                 <div>
+                   <h6 class="staffAdd" style="text-decoration:underline;"> Residential Address :</h6>
+                   <table class="address" style="margin-left:14px;">   
+                       <tr> 
+                          <td>{st.staff_name}<td> 
+                       </tr>
+                       <tr> 
+                          <td>{st.c_add_l1}<td> 
+                       </tr>
+                       <tr> 
+                          <td>{st.c_add_l2}<td> 
+                       </tr>
+               
+                      <tr><td>{st.c_city} - {st.c_zip}</td></tr>
+                      <tr><td>{st.c_state} - {st.c_country}</td></tr>
+                      <tr><td>Phone no (Resi): {st.residence_phone}</td></tr>
+                      <tr><td>Mobile No.:{st.mobile}</td></tr>
+                    </table>
+                 </div>
+               </div>
+    </center>
+    <div class="" style="margin-top:100px;"></div>
+    <div class="page-break w-full flex-auto"></div>
+  </div>
+</section>
 
 	<section class=" is-fluid" show={staff_view =='add_staff'}>
 	<div class="label">
@@ -342,8 +447,8 @@
 
   		<div class="columns mt30">
 			<div class="column is-full">
-	          	<h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information(Permanent Address)</h3>
-	          	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+	          	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Contact Information(Permanent Address)</h3>
+	          	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 	        </div>
 	    </div>
 
@@ -391,10 +496,10 @@
 
   		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link"> Check if Correspondence Address is same as Permanent Address
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3"> Check if Correspondence Address is same as Permanent Address
 		    		<input type="checkbox" id="correspondenceCheckbox" name="correspondenceCheckbox" onclick={copyAddress.bind(this)}>
 		      	</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 		
@@ -467,7 +572,7 @@
 		</div>
 	</div>
 	<div class="box">
-		<div class="columns mt30">
+		<div class="columns">
 			<div class="column is-2">
 				<label class="label is-small" for="marital_status">Marital Status</label>
 			</div>
@@ -514,10 +619,10 @@
 	      	</div>
 		</div>
 
-		<div class="columns mt30">
+		<div class="columns">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Child1</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Child1</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 		
@@ -564,8 +669,8 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Child2</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Child2</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 		
@@ -612,8 +717,8 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Child3</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Child3</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 		
@@ -686,16 +791,16 @@
 		</div>
 	</div>
 	<div class="box">
-		<div class="columns mt30">
+		<div class="columns mt20">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Academic Qualification</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Academic Qualification</h3>
 		    </div>
 		</div>
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-8 has-text-link">X information</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<h3 class="has-text-weight-bold is-size-8 has-text-link staff-h3">X information</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -743,12 +848,12 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-8 has-text-link">XII information</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<h3 class="has-text-weight-bold is-size-8 has-text-link staff-h3">XII information</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
-		<div class="columns mt30">
+		<div class="columns">
 			<div class="column is-2">
 				<label class="label is-small" for="xii_subject">XII Subject </label>
 			</div>
@@ -792,14 +897,14 @@
 		
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Professional Qualification</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Professional Qualification</h3>
 		    </div>
 		</div>
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-8 has-text-link">UG information</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<h3 class="has-text-weight-bold is-size-8 has-text-link staff-h3">UG information</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -847,8 +952,8 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-8 has-text-link">PG information</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<h3 class="has-text-weight-bold is-size-8 has-text-link staff-h3">PG information</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -921,9 +1026,10 @@
 		</div>
 	</div>
 	<div class="box">
-		<div class="columns mt30">
+		<div class="columns">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">B.Ed. information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">B.Ed. information</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -971,7 +1077,8 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">B.T. information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">B.T. information</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -1019,7 +1126,8 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">B.P.Ed. information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">B.P.Ed. information</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -1065,9 +1173,10 @@
 	      	</div>
 		</div>
 
-		<div class="columns mt30">
+		<div class="columns">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">D.P.Ed. information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">D.P.Ed. information</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -1139,9 +1248,10 @@
 		</div>
 	</div>
 	<div class="box">
-		<div class="columns mt30">
+		<div class="columns">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">M.P.Ed. information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">M.P.Ed. information</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -1189,7 +1299,8 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">M.Ed. information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">M.Ed. information</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -1237,7 +1348,8 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">M.Phil information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">M.Phil information</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -1285,11 +1397,12 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Phd. information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Phd. information</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
-		<div class="columns mt30">
+		<div class="columns">
 			<div class="column is-2">
 				<label class="label is-small" for="phd_stream">Phd. Stream </label>
 			</div>
@@ -1331,9 +1444,10 @@
 	      	</div>
 		</div>
 
-		<div class="columns mt30">
+		<div class="columns">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Other information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Other information</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -1407,9 +1521,10 @@
 		</div>
 	</div>
 	<div class="box">
-	    <div class="columns mt30">
+	    <div class="columns">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Other information</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Other information</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -1454,7 +1569,8 @@
 		<!-- Work Experience-->
        <div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Experience</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Work Experience</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 		<div each={st, i in workExperienceArray} style="margin-bottom:20px;margin-top:20px">
@@ -1531,9 +1647,10 @@
 		</div>
 	</div>
 	<div class="box">
-	    <div class="columns mt30">
+	    <div class="columns">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Particulars of Previous Job</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Particulars of Previous Job</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -1638,7 +1755,8 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Profile</h3>
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link staff-h3">Work Profile</h3>
+		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="staff-hr">
 		    </div>
 		</div>
 
@@ -1835,8 +1953,8 @@
 				<td colspan="5">{c_add_l1} , {c_add_l2}, {c_city} , {c_state}-{c_zip}, {c_country}</td>
 			</tr>
 			<tr>
-				<th colspan="2">Phone(O)</th>
-				<td>{office_phoe}</td>
+				<th colspan="2">Phone(R)</th>
+				<td>{residence_phone}</td>
 				<th colspan="2">Mobile</th>
 				<td>{mobile}</td>
 				
@@ -1852,7 +1970,7 @@
 			</tr>
 			<tr>
 				<th colspan="2">Phone(O)</th>
-				<td>{office_phoe}</td>
+				<td>{office_phone}</td>
 				<th colspan="2">Mobile</th>
 				<td>{mobile}</td>
 				
@@ -1866,7 +1984,7 @@
 			</tr>
 			<tr>
 				<th colspan="2">Specialization</th>
-				<td>{specialization}</td>
+				<td>{subject_name}</td>
 				<th colspan="2">Employee Type</th>
 				<td>{emp_type}</td>
 				
@@ -1880,7 +1998,7 @@
 			</tr>
 			<tr>
 				<th colspan="2">Level</th>
-				<td>{level_name}</td>
+				<td>{level}</td>
 				<th colspan="2">Employment Status</th>
 				<td>{employment_status}</td>
 				
@@ -2271,6 +2389,7 @@
 	var self = this
     self.on("mount", function(){
         self.title='Add'
+        self.st={}
     	self.staff_view = 'show_staff'
     	self.is_staff_picture=false
     	self.staff_picture=false
@@ -2299,7 +2418,9 @@
 	    	allowInput: true,
         	dateFormat: "d/m/Y",
   		})
-  		 self.update()
+
+
+  		// self.update()
 	
     })
 
@@ -2321,7 +2442,8 @@
       staffStore.off('delete_staff_changed',DeleteStaffChanged)
       staffStore.off('allow_block_staff_changed',AllowBlockStaffChanged)
       staffStore.off('reset_staff_password_changed',ResetStaffPasswordChanged)
-      staffStore.off('update_staff_fast_edit_changed',readStaffFastEditChanged)
+      staffStore.off('update_staff_fast_edit_changed',updateStaffFastEditChanged)
+      staffStore.off('read_staff_id_card_changed',ReadIdCardChanged)
     })
     self.add_more_work_exp=()=>{
 	    let obj = {}
@@ -2332,11 +2454,10 @@
           let work_dol_id='#work_dol'+ (self.workExperienceArray.length-1).toString()
 	        
 	        
-			  console.log(work_dol_id)
-		  	setTimeout(function(){
+			   console.log(work_dol_id)
+		  	   setTimeout(function(){
 			  
-                // self.update()
-
+               
 		        flatpickr(work_doj_id, {
 			    	allowInput: true,
 		        	dateFormat: "d/m/Y",
@@ -2350,6 +2471,8 @@
 			  	// self.update()
 
 			}, 1000);
+		   // self.update()
+
       //  console.log(self.workArray);
     }
 
@@ -2371,9 +2494,29 @@
     }
 
     self.showFastEditModal = () =>{
-       self.staff_view ='show_staff_fast_edit'     
+    	/*if(self.emp_id=='' || self.emp_id==undefined){
+          toastr.info('Please Load Staff Data First')
+          return;
+        }
+    	 var st=[]
+         self.staffs.map( q => {
+          if(q.done){
+            var ob ={}
+            ob.emp_id=q.emp_id
+            st.push(ob)
+          }
+        })*/
+        if(self.staffs.length ==0){
+          toastr.info('Please Load Staff Data First')
+          return
+        }
+
+    // else{
+            self.staff_view ='show_staff_fast_edit'     
+        //} 
     }
-     self.backToStaff = () =>{
+
+    self.backToStaff = () =>{
        self.staff_view ='show_staff'     
     }
     
@@ -2439,7 +2582,9 @@
 	   	      editValues.push(obj);
 	        }
 	         if(self.refs.fast_edit_value.value=='mobile'){
-	       	 obj['value'] = $('#mobile'+q.emp_id).val();
+	         	console.log("inside mobile")
+	         	console.log($('#mobile'+q.emp_id).val())
+	       	  obj['value'] = $('#mobile'+q.emp_id).val();
 	   	      editValues.push(obj);
 	        }
 	         if(self.refs.fast_edit_value.value=='phone_o'){
@@ -2447,12 +2592,14 @@
 	   	      editValues.push(obj);
 	        }
 	         if(self.refs.fast_edit_value.value=='phone_r'){
-	       	 obj['value'] = $('#phone_r'+q.emp_id).val();
+	       	  obj['value'] = $('#phone_r'+q.emp_id).val();
 	   	      editValues.push(obj);
 	        }
 	   	
-	   	})
+	   	 })
+	   	console.log("inside fast edit")
 	   	console.log(editValues)
+	   	self.loading=true
 	     staffStore.trigger('fast_edit_staff',editValues,self.refs.fast_edit_value.value)
     }
 
@@ -2467,6 +2614,7 @@
 
     self.closeFastEditTable=()=>{
     	 $("#fastEditTable").removeClass("is-active");
+    	  self.loading=false
     }
 
     self.close_staff_profile=()=>{
@@ -2477,7 +2625,7 @@
     	self.leaving_date=convertDate(self.refs.leaving_date.value)
     	staffStore.trigger('update_staff_status',self.emp_id,self.leaving_date,self.refs.remark.value)
     }
-    self.allowBlockStaff=()=>{
+    /*self.allowBlockStaff=()=>{
     	if(self.is_active=='Y'){
     		 var active='N'
     		staffStore.trigger('allow_block_staff',self.emp_id, active)
@@ -2487,11 +2635,54 @@
     		console.log(active)
     		staffStore.trigger('allow_block_staff',self.emp_id, active)
     	}
+    }*/
+
+    self.allowBlockStaff=()=>{
+      let emp_id='';
+      var is_active = 'N'
+      var st = []
+       self.staffs.map( q => {
+          if(q.done){
+            var ob ={}
+            ob.emp_id=q.emp_id
+
+            if(q.is_active=='Y'){
+              ob.is_active='N'
+            }else{
+              ob.is_active='Y'
+            }
+            st.push(ob)
+          }
+        })
+        if(st.length==0){
+          toastr.info('Please select at least one Staff and try again')
+        }else{
+          self.loading = true
+          staffStore.trigger('allow_block_staff', st)
+      }
     }
-     self.resetStaffPassword=()=>{
-     	//var password=md5('123456')
-    	staffStore.trigger('reset_staff_password',self.emp_id)
+    self.resetStaffPassword=()=>{
+       /*var st = []
+       self.staffs.map( q => {
+          if(q.done){
+            var ob ={}
+            ob.emp_id=q.emp_id
+            st.push(ob)
+          }
+        })
+        if(st.length==0){
+          toastr.info('Please select at least one Staff and try again')
+          return
+        }
+         if(st.length > 1){
+          toastr.info('Please select only one Staff and try again')
+          return
+        }else{*/
+    	staffStore.trigger('reset_staff_password',self.emp_id)	
+      //  }
+
     }
+
     self.readEmployeeTypes = () => {
        employeeTypeStore.trigger('read_employeeTypes')
     }
@@ -2530,7 +2721,7 @@
     	 self.clearForm()
     }
 
-    self.selectStaff = (item,event) => {
+    self.selectStaff = (item,event) =>{
       item.done=!event.item.st.done
       console.log(item.done)
       if(event.item.st.done==true){
@@ -2539,23 +2730,73 @@
         console.log(self.emp_id)
         console.log(self.is_active)
        }
-     }
+    }
+    self.selectAll = () => {
+
+    	if($('#checkStaff').is(":checked")){
+    		self.staffs.map(i=>{
+	          i.done = true;
+	          $('StaffId'+i.emp_id).prop('checked', true);
+	          
+	        })
+    	}else{
+    		self.staffs.map(i=>{
+	          i.done = false;
+	          $('StaffId'+i.emp_id).prop('checked', false);
+	          self.emp_id = i.emp_id;
+            console.log(self.emp_id)
+	        })
+    	}
+    }
+
+    self.id_card_print_preview = () => {
+    	
+    	let emp_id='';
+    	var st = []
+	    self.staffs.map( q => {
+	        if(q.done){
+	        	var ob ={}
+	        	ob.emp_id=q.emp_id
+              	ob.is_active=q.is_active
+            	st.push(ob)
+	        }
+	    })
+      	if(st.length==0){
+        	toastr.info('Please select at least one Staff and try again')
+        }else if(self.is_active=="N"){
+        	toastr.info('Please select Active Staff and try again')
+        }else{
+          	self.staff_view	= 'show_staff_print_view'
+        	staffStore.trigger('read_staff_id_card',st)
+      	}
+    }
+
+    self.close_print_view = () => {
+      self.staff_view = 'show_staff'
+    }
 
     self.update_staff_status = () => {
-        /*self.empIDArray=[]
-        self.staffs.map(i=>{
-        	var obj ={};
-          if(item.emp_id==i.emp_id){
-            i.selected=!i.selected
-              console.log(i.selected);
-	            if(i.selected){
-	            	obj.emp_id=i.emp_id
-	            	 self.empIDArray.push(obj)
-	            }
-          	//}
-        })*/
         self.title = 'Add'
-        $("#statusModal").addClass("is-active");
+        var st=[]
+         self.staffs.map( q => {
+          if(q.done){
+            var ob ={}
+            ob.emp_id=q.emp_id
+            st.push(ob)
+          }
+        })
+        if(st.length > 1){
+          toastr.info('Please select only one Staff and try again')
+          return
+        }
+
+        if(self.emp_id=='' || self.emp_id==undefined){
+          toastr.info('Please select only one Staff and try again')
+          return;
+        }else{
+          self.loading = true
+            $("#statusModal").addClass("is-active");
+        }
     }
 
     self.closeStatusUpdateModal = () => {
@@ -2564,6 +2805,7 @@
           i.done = false;
           $('EmpId'+i.emp_id).prop('checked', false); 
        })
+        self.loading = false
     }
 
     self.close = () =>{
@@ -2671,14 +2913,40 @@
     }
 
     self.addExtraActivityInformation = () =>{
-    	/*if(!self.refs.m_name.value){
-    		toastr.error("Please enter Mother Name and try again")
-    		return;
-    	}else{*/
-    		self.staff_view='add_extra_activity_information'
-    		self.update()
-    		//document.getElementById("guardian").focus()
-      	//}
+    	self.staff_view='add_extra_activity_information'
+    		console.log("add_extra_activity_information");
+    		console.log(self.workExperienceArray);
+    		if(self.workExperienceArray.length==0){
+    			console.log("inside")
+		  	    self.workExperienceArray =[]
+		         let obj = {}
+		             obj.work_institution=''
+		        self.workExperienceArray.push(obj)  
+	        }
+    	
+    	    let work_doj_id='#work_doj'+ (self.workExperienceArray.length-1).toString()
+            let work_dol_id='#work_dol'+ (self.workExperienceArray.length-1).toString()
+	       
+			   console.log(work_dol_id)
+		  	   setTimeout(function(){
+			  
+               
+		        flatpickr(work_doj_id, {
+			    	allowInput: true,
+		        	dateFormat: "d/m/Y",
+		  		})
+		       
+		        flatpickr(work_dol_id, {
+			    	allowInput: true,
+		        	dateFormat: "d/m/Y",
+			  	})
+
+
+			}, 1000);
+
+
+	    self.update()
+    	
     }
     self.closeExtraActivityInformation = () =>{
     	self.staff_view = 'add_professional_master_course_information'
@@ -3221,7 +3489,12 @@
     self.edit = (c,st) => {
       console.log(c)
       self.emp_id = c
-      self.workExperienceArray=[{}]
+     /*  self.workExperienceArray =[]
+            let obj = {}
+             obj.work_institution=''
+       self.workExperienceArray.push(obj)
+       self.update()*/
+
       flatpickr(".date", {
 	    allowInput: true,
         dateFormat: "d/m/Y",
@@ -3229,7 +3502,8 @@
       staffStore.trigger('read_for_edit_staff',self.emp_id)
       document.getElementById('pp_box').style.backgroundImage = 'url(/images/empImages/'+c+'.jpg)';
       self.title='Update'
-      self.add_new_staff()
+      //self.add_new_staff()
+      self.staff_view='add_staff'
       
     }
     self.printProfile = (c,st) => {
@@ -3289,8 +3563,13 @@
     	self.refs.office_phone.value=''
     	self.refs.mobile.value=''
     	self.refs.email.value=''
-    	self.workExperienceArray=[{}]
-    //	self.refs.photo.value=''
+   
+  	    self.workExperienceArray =[]
+         let obj = {}
+             obj.work_institution=''
+
+        self.workExperienceArray.push(obj)
+       
        
 
     	self.refs.child1_first_name.value=''
@@ -3441,6 +3720,7 @@
       console.log(staffs) 
       self.staffs = staffs
       self.uploadStaffImage(staff_id)
+      self.close();
       self.update()
     }
 
@@ -3450,6 +3730,7 @@
       self.staffs = staffs
       console.log(self.emp_id)
       self.uploadStaffImage(self.emp_id)
+      self.close();
       self.clearForm()
       self.update()
     }
@@ -3479,9 +3760,9 @@
       self.update()
     }
 
-    staffStore.on('update_staff_fast_edit_changed',readStaffFastEditChanged)
-    function readStaffFastEditChanged(){
-      //self.getStaffData();
+    staffStore.on('update_staff_fast_edit_changed',updateStaffFastEditChanged)
+    function updateStaffFastEditChanged(){
+    self.loading=false
       self.update()
     }
 
@@ -3525,6 +3806,7 @@
     	self.refs.qualification.value=staff_details[0].qualification
     	self.refs.doj.value=staff_details[0].doj
     	self.refs.category_id.value=staff_details[0].category_id
+    	
 
     	console.log(self.refs.category_id.value)
     	self.refs.place_of_birth.value=staff_details[0].place_of_birth
@@ -3687,14 +3969,19 @@
     	self.religion_id=staff_details[0].religion_id
     	self.language=staff_details[0].language
     	self.emp_type_id=staff_details[0].emp_type_id
+    	self.emp_type=staff_details[0].emp_type
     	self.department_id=staff_details[0].department_id
+    	self.department_name=staff_details[0].department_name
     	self.level_id=staff_details[0].level_id
+    	self.level=staff_details[0].level
     	//console.log(staff_details[0].employment_status_id);
     	self.employment_status_id=staff_details[0].employment_status_id
     	self.subject_id=staff_details[0].subject_id
     	self.designation_id=staff_details[0].designation_id
+    	self.designation=staff_details[0].designation
     	self.qualification=staff_details[0].qualification
     	self.category_id=staff_details[0].category_id
+    	self.category_name=staff_details[0].category_name
 
     	self.place_of_birth=staff_details[0].place_of_birth
     	self.dob=staff_details[0].dob
@@ -3880,6 +4167,16 @@
       self.departments = departments
       self.update()
       //console.log(self.employeeTypes)
+    }
+
+    staffStore.on('read_staff_id_card_changed',ReadIdCardChanged)
+    function ReadIdCardChanged(staff_id_card_details,image_type){
+      console.log(staff_id_card_details)
+      self.staff_id_card_details = []
+      self.image_type = image_type['type']
+      console.log(self.image_type)
+      self.staff_id_card_details = staff_id_card_details
+      self.update()
     }
     
 

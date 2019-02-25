@@ -89,16 +89,16 @@
 		      <span>Club</span>
 		    </a>
 	  	</p>
-	  	<p class="control">
+	  <!-- 	<p class="control">
 		    <a class="button {is-active: selected_master == 'parentgroup' }" href="#/master/parentgroup">
 		      <span>Parent Group</span>
 		    </a>
-	  	</p>
-	  	<p class="control">
+	  	</p> -->
+	  	<!-- <p class="control">
 		    <a class="button {is-active: selected_master == 'remark' }" href="#/master/remark">
 		      <span>Remark</span>
 		    </a>
-	  	</p>
+	  	</p> -->
 	  	<p class="control">
 		    <a class="button {is-active: selected_master == 'event-master'}" href="#/master/event-master/event-type">Event Calender</a>
 		    </a>

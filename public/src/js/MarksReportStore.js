@@ -75,7 +75,7 @@ function MarksReportStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.trigger('read_consolidate_tabulation_sheet_changed', data.reports)
+            self.trigger('read_consolidate_tabulation_sheet_changed', data.headers, data.reports, data.class_teacher)
           }else if(data.status == 'e'){
             showToast("Marks Entries Read Error. Please try again.", data.message)
           }

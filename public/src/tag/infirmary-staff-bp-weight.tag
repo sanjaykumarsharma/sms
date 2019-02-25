@@ -1,5 +1,5 @@
 <infirmary-staff-bp-weight>
-  <header></header>
+ <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 <section class="is-fluid" show={infirmary_staff_view == 'show_staff_bp_weight_table'}>
   <h2 class="title printOnly_t has-text-centered" style="color: #ff3860;">Staff Weight and B.P Records</h2>

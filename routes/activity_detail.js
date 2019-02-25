@@ -5,7 +5,61 @@ const fs = require('fs');
 var http = require('http');
 var download = require('download-file')
 
-/* Read Course listing. */
+
+/* Read Standard */
+
+router.get('/standard', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     connection.query('SELECT standard_id, standard FROM standard_master',function(err,result)     {
+            
+        if(err){
+           console.log("Error reading Standard : %s ",err );
+           data.status = 'e';
+
+        }else{
+            data.status = 's';
+            data.standards = result;
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+});
+
+/* Read Section */
+
+router.get('/section', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     connection.query('SELECT standard_id, section_id, section FROM section_master',function(err,result)     {
+            
+        if(err){
+           console.log("Error reading Section : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.sections = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});
+
+
+/*Activity Category*/
 router.get('/', function(req, res, next) {
 
   req.getConnection(function(err,connection){
@@ -32,7 +86,7 @@ router.get('/', function(req, res, next) {
 
 });
 
-/* Read Event listing. */
+ /*Read Event listing. */
 router.get('/read_activity_event', function(req, res, next) {
   console.log("HERE")
 
@@ -59,7 +113,7 @@ router.get('/read_activity_event', function(req, res, next) {
 
 });
 
-/* Read Items listing. */
+ /*Read Items listing. */
 router.get('/read_item', function(req, res, next) {
 
   req.getConnection(function(err,connection){
@@ -86,7 +140,7 @@ router.get('/read_item', function(req, res, next) {
 
 });
 
-/* Read Staff listing. */
+ /*Read Staff listing. */
 router.get('/read_staff', function(req, res, next) {
 
   req.getConnection(function(err,connection){
@@ -110,7 +164,7 @@ router.get('/read_staff', function(req, res, next) {
 
 });
 
-/* Read Event listing. */
+ /*Read Event listing. */
 router.get('/read_event/:category_id', function(req, res, next) {
   var category_id = req.params.category_id;
   console.log("HERE")
@@ -141,12 +195,12 @@ router.get('/read_event/:category_id', function(req, res, next) {
 
 });
 
-/* Read Activity By Category. */
 router.get('/read_activity_by_category/:category_id', function(req, res, next) {
   var category_id = req.params.category_id;
   console.log("HERE")
   console.log(category_id)
   var user= req.cookies.user;
+  var session_id=req.cookies.session_id 
   console.log(user);
 
   req.getConnection(function(err,connection){
@@ -159,12 +213,12 @@ router.get('/read_activity_by_category/:category_id', function(req, res, next) {
      var category_condition=""; 
      if(category_id !=-1){
 
-        var category_condition = " where a.category_id = "+ category_id ;
+        var category_condition = " and a.category_id = "+ category_id ;
         var condition = "";
         var user_condition = "";
-        if(req.cookies.role != 'ADMIN')
-        condition = " and a.created_by = "+ req.cookies.role; 
-      
+        
+        /*if(req.cookies.role != 'ADMIN') 
+        condition = " where a.created_by = "+ req.cookies.role;*/
         if(req.cookies.role != 'ADMIN')
         var user_condition =` and a.created_by =  '${user}' `;
 
@@ -177,9 +231,10 @@ router.get('/read_activity_by_category/:category_id', function(req, res, next) {
                   join activity_event_master d on a.event_id = d.event_id 
                   left join activity_teacher_map e on a.activity_id=e.activity_id 
                   left join employee c on e.teacher_id = c.emp_id 
+                  where a.session_id= ${session_id}
                   ${category_condition} ${user_condition}
                   order by a.activity_id `;
-        console.log(qry)
+        
        
         
       }else if(category_id ==-1){
@@ -188,7 +243,7 @@ router.get('/read_activity_by_category/:category_id', function(req, res, next) {
         /*if(req.cookies.role != 'ADMIN') 
         condition = " where a.created_by = "+ req.cookies.role;*/
         if(req.cookies.role != 'ADMIN')
-        var user_condition =` where a.created_by =  '${user}' `;
+        var user_condition =` and a.created_by =  '${user}' `;
 
         var qry =`select a.activity_id, session_name, activity_type,
                   date_format(activity_date,"%d/%m/%Y") as activity_date, activity_date as a_date, 
@@ -199,6 +254,7 @@ router.get('/read_activity_by_category/:category_id', function(req, res, next) {
                   join activity_event_master d on a.event_id = d.event_id 
                   left join activity_teacher_map e on a.activity_id=e.activity_id 
                   left join employee c on e.teacher_id = c.emp_id 
+                  where a.session_id= ${session_id}
                   ${user_condition}
                   order by a.activity_id `;
         }
@@ -321,7 +377,7 @@ router.get('/read_print_event_detail/:activity_id', function(req, res, next) {
             }
           }) 
           console.log(teacher);
-
+          console.log(qry_one);
         connection.query(qry_one, function(error, rows)
         {
           if (error) {

@@ -1,25 +1,17 @@
 <time-table-class-report>
-<loading-bar if={loading}></loading-bar>  
+  <print-header></print-header>
+  <loading-bar if={loading}></loading-bar>  
   
   <section class=" is-fluid">
-
-    <div class="level">
-      <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">Time Table Class</h2>
-      </div>
-      <div class="level-right">
-      </div>
-    </div>
-
-    <div class="box">
+    <h2 class="title is-size-5 has-text-centered" style="color: #ff3860;">Time Table Class</h2>
+    <div class="box no-print">
       <div class="columns">
-
         <div class="column is-narrow"><label class="label">Standard</label></div>  
         <div class="column is-narrow">  
           <div class="control">
             <div class="select ">
-              <select ref="standardSelect" onchange={changeSection}>
-                <option value="">Select Teacher</option>
+              <select ref="standardSelect" id="standardSelect" onchange={changeSection}>
+                <option value="">Select Standard</option>
                 <option each={standards} value={standard_id}>{standard}</option>
               </select>
             </div>
@@ -30,7 +22,7 @@
         <div class="column is-narrow">  
           <div class="control">
             <div class="select ">
-              <select ref="sectionSelect">
+              <select ref="sectionSelect" id="sectionSelect">
                 <option value="">Select Section</option>
                 <option each={tempSections} value={section_id}>{section}</option>
               </select>
@@ -39,12 +31,15 @@
         </div>
 
         <div class="column">
-          <button class="button is-rounded" onclick={refreshTimeTable}> Go </button>
+          <button class="button is-danger" onclick={refreshTimeTable}> Go </button>
         </div>
 
         <div class="column">
-          <button class="button is-warning is-rounded" style="float:right" onclick={refreshTimeTable}> 
+          <button class="button is-link ml5" style="float:right" onclick={refreshTimeTable}> 
             <span class="icon"> <span class="fas fa-sync-alt"></span> </span> 
+          </button>
+          <button class="button is-primary" style="float:right" onclick="window.print()"> 
+            <span class="icon"><i class="fas fa-print"></i></span>
           </button>
         </div>
           
@@ -53,6 +48,7 @@
 
 
     <table class="table is-fullwidth is-bordered is-hoverable">
+      <center><strong>Class:{StandardName}-{SectionName}  Session:{session_name}
       <thead>
         <tr>
           <th class="has-text-centered" style="vertical-align: middle;">Days/Periods</th>
@@ -152,11 +148,14 @@
     }
 
    timeTableAdminStore.on('read_periods_class_report_changed',PeriodsChanged)
-    function PeriodsChanged(time_table){
+    function PeriodsChanged(time_table,session_name){
       self.loading = false
 
       self.time_table = []
       self.time_table = time_table
+      self.session_name = session_name
+      self.StandardName = $("#standardSelect option:selected").text();
+      self.SectionName = $("#sectionSelect option:selected").text();
 
       self.update()
       console.log(self.periods)

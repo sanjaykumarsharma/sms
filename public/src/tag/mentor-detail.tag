@@ -66,7 +66,7 @@
 					<th>Time Out</th>
 					<th>Diagnosis</th>
 					<th>Suggestion</th>
-					<th style="width: 230px;" class="no-print"></th>
+					<th style="width: 120px;" class="no-print"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -84,13 +84,11 @@
 					<td>{ac.suggestion}</td>
 					<td class="has-text-right no-print">
 			            <div class="inline-flex rounded border border-grey overflow-hidden " hide={ac.confirmDelete}>
-			              <span><a class="button is-small is-rounded" onclick={case_detail.bind(this, ac)}>
-			              	Case Detail</a></span>
-
-			              <span><a class="button is-small is-rounded" onclick={edit.bind(this, ac.id)}>
-			              	Edit</i></a></span>
-
-			              <span if={role=='ADMIN'} > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+			              <span><a class="button is-small" onclick={case_detail.bind(this, ac)} title="Case Detail">
+			              	<i class="fa fa-share" aria-hidden="true"></i></a></span>
+			              <span><a class="button is-small" onclick={edit.bind(this, ac.id)} title="Edit">
+			              	<i class="fa fa-edit" aria-hidden="true"></i></a></span>
+			              <span if={role=='ADMIN'} > <a class="button is-small" rel="nofollow" onclick={confirmDelete} title="Delete"><i class="fa fa-trash" aria-hidden="true"></i></a></span>
 			            </div>
 			            <div class="table-buttons" if={ac.confirmDelete}>
 			              <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
@@ -259,7 +257,7 @@
 					<th>Time Out</th>
 					<th>Suggestion</th>
 					<th>Status</th>
-					<th style="width: 130px;" class="no-print"></th>
+					<th style="width: 100px;" class="no-print"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -273,10 +271,11 @@
 					<td>{ca.status}</td>
 					<td class="has-text-right no-print">
 			            <div class="inline-flex rounded border border-grey overflow-hidden" hide={ca.confirmCaseDelete}>
-			              <span><a class="button is-small is-rounded" onclick={editCase.bind(this, ca.id)}>
-			              	Edit</a></span>
-
-			              <span if={role=='ADMIN'} > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmCaseDelete}>Delete</a></span>
+			              <span><a class="button is-small" onclick={editCase.bind(this, ca.id)} title="Edit">
+			              	<i class="fa fa-edit" aria-hidden="true"></i></a></span>
+			              <span if={role=='ADMIN'} > <a class="button is-small" rel="nofollow" onclick={confirmCaseDelete} 
+			              	title="Delete"><i class="fa fa-trash" aria-hidden="true"></i></a>
+			          	  </span>
 			            </div>
 			            <div class="table-buttons" if={ca.confirmCaseDelete}>
 			              <span disabled={loading} class="button is-small is-rounded" onclick={deleteCase}><i class="fa fa-check" ></i></span>

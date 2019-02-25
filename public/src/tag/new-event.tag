@@ -1,5 +1,5 @@
 <new-event>
-   <header></header>
+   <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 <section class="is-fluid" show={event_view =='show_event'}>
     <div class="" style="margin-bottom:10px">

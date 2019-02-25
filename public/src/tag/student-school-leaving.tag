@@ -83,7 +83,7 @@
           <th class="has-text-centered">
             <input type="checkbox" id="checkStudent" onclick={selectAll}>
           </th>
-          <th></th>
+          <th style="width:100px;"></th>
         </tr>
       </thead>
       <tbody>
@@ -97,14 +97,15 @@
           <td class="has-text-centered">{c.type}</td>
           <td class="has-text-centered">
     
-            <span show={c.type=='Yes'}>
+            <span >
               <input type="checkbox" class="id_check_box" checked={c.done}  id="{ 'StudentId' + c.student_id }" onclick={selectStudent.bind(this,c)} >
             </span>
           </td>
           <td class="has-text-right">
             <div class="inline-flex rounded border border-grey overflow-hidden" hide={c.confirmDelete}>
-              <span><a class="button is-small is-rounded" onclick={create_certificate.bind(this, c)}>Create Certificate</a></span>
-              <span > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+              <span><a class="button is-small" onclick={create_certificate.bind(this, c)} title="Create Certificate">
+              <i class="fa fa-plus-circle" aria-hidden="true"></i></i></a></span>
+              <span > <a class="button is-small" rel="nofollow" onclick={confirmDelete} title="Delete"><i class="fa fa-trash" aria-hidden="true"></i></a></span>
             </div>
             <div class="table-buttons" if={c.confirmDelete}>
               <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
@@ -218,7 +219,7 @@
    
       <table class="table is-fullwidth" style="width:860px;">
         <tr>
-           <td class="principal-school-leaving" style=" width:230px;">___________________<br><span class="principalText">Principal</sapn></td>              
+           <td class="principal-school-leaving" style=" width:230px;">___________________<br><span class="principalText" style="padding-left: 35px;">Principal</sapn></td>              
         </tr>
        </table>   
       <table class="table is-fullwidth" style="width:860px;">
@@ -351,8 +352,8 @@
 
       <div class="columns mt30">
         <div class="column is-full">
-          <h3 class="has-text-weight-bold is-size-6 has-text-link">Sociability</h3>
-          <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+          <h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Sociability</h3>
+          <hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
         </div>
       </div>
 
@@ -448,8 +449,8 @@
 
       <div class="columns mt30">
         <div class="column is-full">
-          <h3 class="has-text-weight-bold is-size-6 has-text-link">Details of Achievement</h3>
-          <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+          <h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Details of Achievement</h3>
+          <hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
         </div>
       </div>
 
@@ -556,11 +557,11 @@
                 <th class="socialTitle">Remarks if any </th><td></td>
               </tr>
             </table>
-              <table style="border-style:none;margin-top:60px">
+              <table style="border-style:none;margin-top:60px; width:860px;">
                 <tr>
-                 <td style=" width:230px; text-align: center; border-style:none;">___________________<br><span class="principalText">Class Teacher </sapn></td>
-                 <td style="width:230px; text-align: center;border-style:none;">___________________<br><span class="principalText"> Senior School Incharge</sapn></td>
-                 <td style="width:230px; text-align: center;border-style:none;">___________________<br><span class="principalText">   Headmistress   </sapn></td>
+                 <td style="text-align: center; border-style:none;">___________________<br><span class="principalText">Class Teacher </sapn></td>
+                 <td style="text-align: center;border-style:none;">_______________________<br><span class="principalText"> Senior School Incharge</sapn></td>
+                 <td style="text-align: center;border-style:none;">___________________<br><span class="principalText">   Headmistress   </sapn></td>
                 </tr>
               </table> 
               <div class='page-break'></div>
@@ -575,6 +576,7 @@
 	var self = this
     self.on("mount", function(){
       self.loading = false;
+      self.role = getCookie('role')
       self.view = 'home'
       self.update()
       flatpickr(".date", {
@@ -661,9 +663,6 @@
        console.log(student_id);
       if(student_id==''){
         toastr.info('Please select at least one student and try again')
-      }if(!self.refs.issue_date.value){
-        toastr.error("Please enter Issue Date and try again")
-        return;
       }else{
         
         studentSchoolLeavingStore.trigger('print_feed_back_form', student_id)
@@ -682,13 +681,17 @@
             }else{
               student_id=student_id+','+q.student_id
             }
+            self.type=q.type
           }
         })
        console.log(student_id);
+       console.log(self.type);
       if(student_id==''){
         toastr.info('Please select at least one student and try again')
       }else if(!self.refs.issue_date.value){
         toastr.error("Please enter Issue Date and try again")
+      }else if(self.type!="Yes"){
+        toastr.error("Please Create Certificate and try again")
       }else{
         
         studentSchoolLeavingStore.trigger('print_certificate', student_id)
@@ -831,17 +834,16 @@
       self.loading = false
       self.view='home'
       self.refs.leaving_date.value = ""
-      /*self.refs.examination_appeared.value = ""
-      self.refs.conduct.value = ""
-      self.refs.attendance.value = ""
-      self.refs.faculty_relationship.value = ""
-      self.refs.peer_group_relationship.value = ""
-      self.refs.class_responsibility.value = ""
-      self.refs.house_responsibility.value = ""
-      self.refs.attitude.value = ""
-      self.refs.punctuality.value = ""
+      self.refs.conduct.value = "A"
+      self.refs.attendance.value = "A"
+      self.refs.faculty_relationship.value = "A"
+      self.refs.peer_group_relationship.value = "A"
+      self.refs.class_responsibility.value = "A"
+      self.refs.house_responsibility.value = "A"
+      self.refs.attitude.value = "A"
+      self.refs.punctuality.value = "A"
       self.refs.remarks.value = ""
-      self.refs.isc_stream.value = ""*/
+      self.refs.isc_stream.value = "Science"
       self.update()
       self.refreshStudents()
     }
@@ -852,7 +854,6 @@
       self.view='school-leaving-certificate-form'
       self.printFeedbackDetails = students
       self.session_name = session_name
-      // self.printDetails = students
       self.update()
       
     } 
@@ -861,12 +862,9 @@
     function PrintCertificateChanged(students,session_name){ 
       self.loading = false
       self.view='school-leaving-certificate'
-      //self.view='school-leaving-certificate-form'
       self.printCertificateDetails = students
       self.session_name = session_name
-      // self.printDetails = students
-       self.issue_date = self.refs.issue_date.value
-       console.log(self.issue_date);
+      self.issue_date = self.refs.issue_date.value
       self.update()
       
     }

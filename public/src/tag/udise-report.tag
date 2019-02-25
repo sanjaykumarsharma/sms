@@ -1,5 +1,5 @@
 <udise-report>
-	<header></header>
+ <print-header></print-header> 
 	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<h4 class="title has-text-centered" style="color: #ff3860;">Data Capture Format for student tracking in SDMIS {session_name} (in sync with U-DISE) Class:{standard} Section: {section}</h4>

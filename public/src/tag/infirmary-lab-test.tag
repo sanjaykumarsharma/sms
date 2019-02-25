@@ -1,5 +1,5 @@
 <infirmary-lab-test>
-  <header></header>
+ <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 <section class="is-fluid" show={infirmary_staff_view == 'show_staff_table'}>
     <h2 class="title has-text-centered" style="color: #ff3860;">Staff Lab Test Detail</h2>

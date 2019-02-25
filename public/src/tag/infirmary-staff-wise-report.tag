@@ -1,8 +1,10 @@
 <infirmary-staff-wise-report>
-  <header></header>
+   <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 <section class="is-fluid">
-  <h2 class="title printOnly_t has-text-centered" style="color: #ff3860;">Staff Weight and B.P Records</h2>
+  <h2 class="title printOnly_t has-text-centered" style="color: #ff3860;">Staff Weight and B.P Records<br>
+    From: <span style="color:#000">{sdate}</span> To: <span style="color:#000">{edate}</span>
+    <br> Name :   <span style="color:#000">{emp_name}</span> DOB: <span style="color:#000">{dob}</h2>
   <div class="box no-print">
       <div class="columns">
         <div class="column is-narrow">
@@ -11,7 +13,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="staff_id" onkeyup={addEnter}>
+              <select ref="staff_id" onkeyup={addEnter} id="emp_id">
                 <option each={employees} value={emp_id}>{name}
                 </option>
               </select>
@@ -50,17 +52,8 @@
     <div class="level-left">
       <h4 class="title" style="color: #ff3860;">Staff Weight and B.P Records</h4>
     </div>
-
-    <!-- <div class="level-right">
-      <button class="button is-warning is-rounded" onclick={add_student_infirmary}>
-      <span class="icon">
-        <span class="fas fa-plus"></span>
-      </span>
-      <span>Student Date Wise Case Re</span>
-      </button>
-    </div> -->
   </div>
-
+ 
   <table class="table is-fullwidth is-striped is-hoverable is-bordered">
       <thead>
         <tr>
@@ -109,6 +102,10 @@
      self.readStaffWiseReport = () => {
              self.start_date=convertDate(self.refs.start_date.value)
              self.end_date=convertDate(self.refs.end_date.value)
+             self.sdate=self.refs.start_date.value
+             self.edate=self.refs.end_date.value
+             //self.emp_id =   $("#emp_id option:selected").text();
+             self.emp_name = $("#emp_id option:selected").text();
            staffbpweightStore.trigger('read_staff_wise_report', self.refs.staff_id.value, self.start_date, self.end_date)
            //studentStore.trigger('read_students', obj)
      }
@@ -135,6 +132,8 @@
        console.log(staffWiseReports) 
        self.loading = false
        self.staffWiseReports = staffWiseReports
+       console.log(self.staffWiseReports[0].dob)
+       self.dob=self.staffWiseReports[0].dob
        self.update()
        console.log(self.staffWiseReports)
      }

@@ -1,5 +1,5 @@
 <student-browser>
-	<header></header>
+ <print-header></print-header> 
 	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 				<h4 class="title has-text-centered" style="color: #ff3860;">Students Details <span class="printOnly_t"><br> Session: <span style="color:#000">{session_name}</span></span></h4>
@@ -63,8 +63,12 @@
 					<th show={gender_view =='show_gender'}>Gender</th>
 					<th show={category_view =='show_category'}>Category</th>
 					<th show={dob_view =='show_dob'}>DOB</th>
+					<th show={age_view =='show_age'}>Age</th>
+					<th show={income_view =='show_income'}>Income</th>
 					<th show={f_annual_income_view =='show_f_annual_income'}>Father's AnnualIncome</th>
 					<th show={doa_view =='show_doa'}>DOA</th>
+					<th show={old_doa_view =='show_old_doa'}>Old DOA</th>
+					<th show={old_doj_view =='show_old_doj'}>Old DOJ</th>
 					<th show={title_view =='show_title'}>Title</th>
 					<th show={first_name_view =='show_first_name'}>First Name</th>
 					<th show={middle_name_view =='show_middle_name'}>Middle Name </th>
@@ -85,7 +89,7 @@
 					<th show={p_add_view =='show_p_add'}>P Add</th>
 					<th show={sms_view =='show_sms'}>SMS</th>
 					<th show={residence_phone_view =='show_residence_phone'}>Residence Phone </th>
-					<th show={fax_view =='show_fax'}>Fax</th>
+					<th show={fax_view =='show_fax'}>Emergency No.</th>
 					<th show={student_type_view =='show_student_type'}>Student Type</th>
 					<th show={staff_child_view =='show_staff_child'}>Staff Child</th>
 					<th show={staff_name_view =='show_staff_name'}>Staff Name</th>
@@ -100,8 +104,9 @@
 					<th show={f_add_view =='show_f_add'}>Father's Address</th>
 					<th show={f_phone_view =='show_f_phone'}>Father's Phone</th>
 					<th show={f_mobile_view =='show_f_mobile'}>Father's Mobile</th>
-					<th show={f_fax_view =='show_f_fax'}>Father's Fax</th>
+					<!-- <th show={f_fax_view =='show_f_fax'}>Father's Fax</th> -->
 					<th show={f_email_view =='show_f_email'}>Father's Email</th>
+					<th show={f_organisation_type_view =='show_f_organisation_type'}>Father's Organisation Type</th>
 					<th show={f_organisation_view =='show_f_organisation'}>Father's Organisation</th>
 					<th show={f_designation_view =='show_f_designation'}>Father's Designation</th>
 					<th show={f_department_view =='show_f_department'}>Father's Department</th>
@@ -118,7 +123,7 @@
 					<th show={m_add_view =='show_m_add'}>Mother's Address</th>
 					<th show={m_phone_view =='show_m_phone'}>Mother's Phone</th>
 					<th show={m-mobile_view =='show_m-mobile'}>Mother's Mobile</th>
-					<th show={m_fax_view =='show_m_fax'}>Mother's Fax</th>
+					<!-- <th show={m_fax_view =='show_m_fax'}>Mother's Fax</th> -->
 					<th show={m_email_view =='show_m_email'}>Mother's Email</th>
 					<th show={m_organisation_view =='show_m_organisation'}>Mother's Organisation</th>
 					<th show={m_annual_income_view =='show_m_annual_income'}>Mother's AnnualIncome</th>
@@ -136,7 +141,7 @@
 					<th show={g_add_view =='show_g_add'}>Guardian's Address</th>
 					<th show={g_phone_view =='show_g_phone'}>Guardian's Phone</th>
 					<th show={g_mobile_view =='show_g_mobile'}>Guardian's Mobile</th>
-					<th show={g_fax_view =='show_g_fax'}>Guardian's Fax</th>
+					<!-- <th show={g_fax_view =='show_g_fax'}>Guardian's Fax</th> -->
 					<th show={g_email_view =='show_g_email'}>Guardian's Email</th>
 					<th show={g_organisation_view =='show_g_organisation'}>Guardian's Organisation</th>
 					<th show={g_annual_income_view =='show_g_annual_income'}>Guardian's AnnualIncome</th>
@@ -145,6 +150,7 @@
 					<th show={g_office_add_view =='show_g_office_add'}>Guardian's Office  Add</th>
 					<th show={g_office_phone_view =='show_g_office_phone'}>Guardian's Office Phone</th>
 					<th show={g_nationality_view =='show_g_nationality'}>Guardian's Nationality</th>
+					<th show={g_relation_view =='show_g_relation'}>Guardian's Relation</th>
 					<th show={sibling_name_view =='show_sibling_name'}>Sibling Name</th>
 					<th show={sibling_enroll_no_view =='show_sibling_enroll_no'}>Sibling Enroll No</th>
 					
@@ -162,7 +168,9 @@
 					<td show={reg_no_view =='show_reg_no'}>{st.reg_number}</td>
 					<td show={gender_view =='show_gender'}>{st.gender}</td>
 					<td show={category_view =='show_category'}>{st.category_name}</td>
-					<td show={dob_view =='show_dob'}>{st.dob}</td>
+					<td show={age_view =='show_dob'}>{st.dob}</td>
+					<td show={dob_view =='show_age'}>{st.age}</td>
+					<td show={income_view =='income_age'}>{st.f_annual_income}</td>
 					<td show={f_annual_income_view =='show_f_annual_income'}>{st.f_annual_income}</td>
 					<td show={doa_view =='show_doa'}>{st.doa}</td>
 					<td show={title_view =='show_title'}>{st.title}</td>
@@ -201,6 +209,7 @@
 					<td show={f_mobile_view =='show_f_mobile'}>{st.f_mobile}</td>
 					<td show={f_fax_view =='show_f_fax'}>{st.f_fax}</td>
 					<td show={f_email_view =='show_f_email'}>{st.f_email}</td>
+					<td show={f_organisation_type_view =='show_f_organisation_type'}>{st.f_organisation_type}</td>
 					<td show={f_organisation_view =='show_f_organisation'}>{st.f_organisation_name}</td>
 					<td show={f_designation_view =='show_f_designation'}>{st.f_designation}</td>
 					<td show={f_department_view =='show_f_department'}>{st.f_department}</td>
@@ -245,7 +254,8 @@
 					<td show={g_office_add_view =='show_g_office_add'}>{st.g_office_add_l1} {st.g_office_add_l2} <br> {st.g_office_city}-{st.g_office_zip} <br>{st.g_office_state}, {st.g_office_country}</td>
 					<td show={g_office_phone_view =='show_g_office_phone'}>{st.g_office_phone}</td>
 					<td show={g_nationality_view =='show_g_nationality'}>{st.g_nationality}</td>
-					<td show={sibling_view =='show_sibling'}>{st.sibling_name}</td>
+					<td show={g_relation_view =='show_g_relation'}>{st.g_relation}</td>
+					<td show={sibling_name_view =='show_sibling_name'}>{st.sibling_name}</td>
 					<td show={sibling_enroll_no_view =='show_sibling_enroll_no'}>{st.sibling_enroll_number}</td>
 				</tr>
 			</tbody>
@@ -306,8 +316,8 @@
 			{ field_name : "Income", array_name : "Income"},
 			{ field_name : "DOA", array_name : "DOA"},
 			{ field_name : "DOj", array_name : "DOJ"},
-			{ field_name : "OldDOA", array_name : "Old DOA"},
-			{ field_name : "OldDOj", array_name : "Old DOJ"},
+			{ field_name : "Old DOA", array_name : "Old DOA"},
+			{ field_name : "Old DOJ", array_name : "Old DOJ"},
 			{ field_name : "MotherTongue", array_name : "Mother Tongue"},
 			{ field_name : "LastSchool", array_name : "Last School"},
 			{ field_name : "LastClass", array_name : "Last Class"},
@@ -321,7 +331,7 @@
 			{ field_name : "p_Address", array_name : "Permanent Address"},
 			{ field_name : "Mobile" , array_name : "SMS"},
 			{ field_name : "ResidencePhone", array_name : "Residence Phone"},
-			{ field_name : "Fax", array_name : "Fax"},
+			{ field_name : "Emergency No.", array_name : "Emergency No."},
 			{ field_name : "StudentType", array_name : "Student Type"},
 			{ field_name : "StaffChild", array_name : "Staff Child"},
 			{ field_name : "StaffName", array_name : "Staff Name"},
@@ -550,11 +560,11 @@
 			if(q.done==true && q.array_name=="DOB"){
 					self.dob_view='show_dob'		
 			}
-			if(q.done==true && q.array_name=="age as on 1st Apr"){
+			if(q.done==true && q.array_name=="Age as on 1st Apr"){
 					self.age_view='show_age'		
 			}
 			if(q.done==true && q.array_name=="Income"){
-					self.annual_income_view='show_annual_income'		
+					self.income_view='show_income'		
 			}
 			if(q.done==true && q.array_name=="DOA"){
 					self.doa_view='show_doa'		
@@ -578,7 +588,7 @@
 					self.last_class_view='show_last_class'		
 			}
 			if(q.done==true && q.array_name=="Admission for Class"){
-					self.admission_for_view='show_title'		
+					self.admission_for_view='show_admission_for'		
 			}
 			if(q.done==true && q.array_name=="Hobby"){
 					self.hobby_view='show_hobby'		
@@ -659,7 +669,7 @@
 					self.f_email_view='show_f_email'		
 			}
 			if(q.done==true && q.array_name=="f_Organisation Type"){
-					self.f_organisation_view='show_f_organisation'		
+					self.f_organisation_type_view='show_f_organisation_type'		
 			}
 			if(q.done==true && q.array_name=="f_Annual Income"){
 					self.f_annual_income_view='show_f_annual_income'		
@@ -806,10 +816,10 @@
 			}
 			
 			if(q.done==true && q.array_name=="g_relation"){
-
+				self.g_relation_view='show_g_relation'		
 			}
 			if(q.done==true && q.array_name=="Sibling Name"){
-				self.sibling_view='show_sibling'		
+				self.sibling_name_view='show_sibling_name'		
 			}	
 			if(q.done==true && q.array_name=="Sibling Enrol Number"){
 				self.sibling_enroll_no_view='show_sibling_enroll_no'		
@@ -865,7 +875,7 @@
 			if(q.done==false && q.array_name=="DOB"){
 					self.dob_view=''
 			}
-			if(q.done==false && q.array_name=="age as on 1st Apr"){
+			if(q.done==false && q.array_name=="Age as on 1st Apr"){
 					self.age_view=''
 			}
 			if(q.done==false && q.array_name=="Income"){
@@ -973,8 +983,11 @@
 			if(q.done==false && q.array_name=="f_Email"){
 					self.f_email_view=''
 			}
-			if(q.done==false && q.array_name=="f_Organisation Type"){
+			/*if(q.done==false && q.array_name=="f_Organisation Type"){
 					self.f_organisation_view=''
+			}*/
+			if(q.done==false && q.array_name=="f_Organisation Type"){
+					self.f_organisation_type_view=''
 			}
 			if(q.done==false && q.array_name=="f_Annual Income"){
 					self.f_annual_income_view=''

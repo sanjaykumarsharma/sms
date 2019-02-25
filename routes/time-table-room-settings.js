@@ -32,6 +32,9 @@ router.get('/', function(req, res, next) {
 router.post('/add', function(req, res, next) {
 
   var input = JSON.parse(JSON.stringify(req.body));
+  var now = new Date();
+  var jsonDate = now.toJSON();
+  var formatted = new Date(jsonDate);
 
   req.getConnection(function(err,connection){
         var data = {}
@@ -39,6 +42,8 @@ router.post('/add', function(req, res, next) {
         var values = {
             room_name    : input.room_name,
             room_details    : input.room_details,
+            creation_date    : formatted,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("INSERT INTO room_master set ? ",values, function(err, rows)
@@ -73,6 +78,7 @@ router.post('/edit/:id', function(req, res, next) {
         var values = {
             room_name    : input.room_name,
             room_details    : input.room_details,
+            modified_by    : req.cookies.user,
         };
         
         var query = connection.query("UPDATE room_master set ? WHERE room_name = ?",[values,id], function(err, rows)

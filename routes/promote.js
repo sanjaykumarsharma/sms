@@ -481,4 +481,55 @@ router.post('/free_up_student', function(req, res, next) {
 
 });
 
+// Re Shuffle Student
+router.post('/re_shuffle_student/:section_id', function(req, res, next) {
+  var section_id = req.params.section_id;
+  var session_id = req.cookies.session_id;
+  var user=req.cookies.user 
+  var input = JSON.parse(JSON.stringify(req.body));
+  console.log(input);
+
+  req.getConnection(function(err,connection){
+
+        var today = new Date();
+        var data = {}
+        var sql = '';
+
+        //var qry = `update section_master set active_section='${input.active_section}' where section_id=${input.section_id}`;
+
+        input.map(c=>{
+        if(sql == ''){
+          sql =`update student_current_standing set section_id=${section_id}, group_id=null,
+                modified_by="${user}"
+                where student_id=${c.student_id}
+                and session_id=${session_id}`;
+        }else{
+          sql = sql+';'+`update student_current_standing set section_id=${section_id}, group_id=null,
+                modified_by="${user}"
+                where student_id=${c.student_id}
+                and session_id=${session_id}`;
+        }
+      }) 
+        console.log(sql);
+        
+        connection.query(sql, function(err, rows)
+        {
+  
+          if(err){
+           console.log("Error updating Re Shuffle Student : ",err );
+           data.status = 'e';
+           data.error = err
+           data.messaage = err.sqlMessage
+           res.send(JSON.stringify(data))
+        }else{
+              data.status = 's';
+              res.send(JSON.stringify(data))
+        }
+          
+        });
+
+
+   });
+
+});
 module.exports = router;

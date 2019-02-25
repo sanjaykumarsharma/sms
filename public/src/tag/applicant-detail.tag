@@ -1,5 +1,6 @@
 <applicant-detail>
 	<loading-bar if={loading}></loading-bar>
+  <print-header></print-header>
 	<section class=" is-fluid" show={interviewed_candidate_view =='show_interviewed_candidate'}>
   	<h2 class="title has-text-centered is-size-5" style="color: #ff3860;">Interviewee List</h2>
     <div class="level box no-print">
@@ -26,13 +27,15 @@
         <div class="control">
           <input class="input" ref="searchApplicantDetail" onkeyup={filterApplicantDetail} type="text" placeholder="Search By Enroll No or Name">
         </div>
-        <button class="button is-primary has-text-weight-bold ml5" onclick={showStaffField}>Setting</button>
-        <button class="button is-link has-text-weight-bold ml5" onclick={getDisciplineData}>
+        <button class="button is-primary has-text-weight-bold ml5" onclick={showStaffField} title="Setting">
+          <i class="fa fa-wrench" aria-hidden="true"></i>
+        </button>
+        <button class="button is-link has-text-weight-bold ml5" onclick={getData}>
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
         </button>
-        <button class="button is-success has-text-weight-bold ml5" onclick={downloadCSV}>
+        <button class="button is-success has-text-weight-bold ml5" onclick={csvExport}>
           <span class="icon">
             <i class="far fa-file-excel"></i>
           </span>
@@ -44,6 +47,7 @@
         </a> 
       </div>
     </div>
+    <div style=" overflow-x: scroll;" class="table-border-hide">
     <table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 		<thead>
 			<tr>
@@ -59,6 +63,7 @@
           <th show={view_father_name=='show_father_name'}>Father's Name</th>
           <th show={view_husband_name=='show_husband_name'}>Husband's Name</th>
           <th show={view_marital_status=='show_marital_status'}>Marital Status</th>
+          <th show={view_mobile=='show_mobile'}>Marital Status</th>
           <th show={view_email=='show_email'}>Email </th>
           <th show={view_phone_office=='show_phone_office'}>Phone Office </th>
           <th show={view_phone_residence=='show_phone_residence'}>Phone Residence </th>
@@ -141,7 +146,7 @@
           <th show={view_salary_drawn3=='show_salary_drawn3'}>Salary 3</th>
           <th show={view_creation_date=='show_creation_date'}>Submission Date</th>
 			    <th show={view_interview_call=='show_interview_call'}>Interview Call</th>
-			    <th class="has-text-right no-print">Action</th>
+			    <th class="has-text-right no-print" style="width:130px;"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -247,10 +252,15 @@
 
     		<td class="has-text-right no-print">
           <div class="inline-flex rounded border border-grey overflow-hidden" hide={a.confirmDelete}>
-           <!--  <span><a class="button is-small is-rounded " onclick={download_cv.bind(this, a.career_id)}>Download CV</a></span> -->
-            <span show={a.interview_call=="N"}><a class="button is-small is-rounded " onclick={create_interview.bind(this, a.career_id)}>Call for interview</a></span>
-            <span><a class="button is-small is-rounded" onclick={view_profile.bind(this, a.career_id)}>Profile</a></span>
-            <span > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+            <span show={a.interview_call=="N"}><a class="button is-small" onclick={create_interview.bind(this, a.career_id)} 
+              title="Call for interview"><i class="fa fa-users" aria-hidden="true"></i></a></span>
+            <!-- <span><a class="button is-small" onclick={DownloadCV.bind(this, a.career_id)} title="Download CV">
+            <i class="fa fa-download" aria-hidden="true"></i></a></span> -->
+            <span><a class="button is-small" onclick={view_profile.bind(this, a.career_id)} title="Profile">
+              <i class="fa fa-eye" aria-hidden="true"></i></a></span>
+            <span > <a class="button is-small" rel="nofollow" onclick={confirmDelete} title="Delete">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+            </a></span>
           </div>
           <div class="table-buttons" if={a.confirmDelete}>
             <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
@@ -260,37 +270,25 @@
 			</tr>
 		</tbody>
 	</table>
+</div>
 	</section>
 
 	<!-- columnSetting Modal Start -->
-	<div id="columnSetting" class="modal ">
+	<div id="columnSetting" class="modal">
 	    <div class="modal-background"></div>
 	    <div class="modal-card">
 	      <header class="modal-card-head">
 	        <p class="modal-card-title">Setting Configuaration</p>
 	      </header>
 	      <section class="modal-card-body">
-	        <!-- <div class="columns is-multiline" > -->
-            <!-- <table class="table is-fullwidth">
-              <tbody>
-                <tr each={st, i in fieldList}>
-                  <td>
-                    <input class="checkbox" type="checkbox" checked={st.done} id="{'addStaffName' + st.array_name}"
-                     onclick={addCheckedColumn.bind(this,st) }>{st.field_name}
-                  </td>
-                </tr>
-              </tbody>
-            </table> -->
-            <div each={st, i in fieldList}  class="setting-detail">
-              <input class="checkbox" style="" type="checkbox" checked={st.done} id="{'addStaffName' + st.array_name}"
-                     onclick={addCheckedColumn.bind(this,st) }>{st.field_name}
+          <div each={st, i in fieldList}  class="setting-detail">
+            <input class="checkbox" style="" type="checkbox" checked={st.done} id="{'addStaffName' + st.array_name}"
+                  onclick={addCheckedColumn.bind(this,st) }>{st.field_name}
             </div>
-	        <!-- </div> -->
 	      </section>
 	      <footer class="modal-card-foot">
 	        <div class="control">
-	            <input type="checkbox" id="checkAllCheckBox" 
-		      onclick={selectAllCheckBox}><b>Check All</b>
+	            <input type="checkbox" id="checkAllCheckBox" onclick={selectAllCheckBox}><b>Check All</b>
 	        </div>
 	        <button class="button" id="item-modal-close" onclick={closeCheckBoxModal}>Close</button>
 	      </footer>
@@ -333,7 +331,6 @@
   <!-- Cancel Result Modal End -->
 
   <!-- Start Profile View -->
-  	<print-header></print-header>
   	<section class=" is-fluid" show={interviewed_candidate_view =='applicant_profile'}>
 		<div class="level no-print">
 			<div class="level-left">
@@ -870,6 +867,7 @@
 	    allowInput: true,
         dateFormat: "d/m/Y",
   		})
+      self.role = getCookie('role')
       self.interviewed_candidate_view = 'show_interviewed_candidate'
       self.update();
     })
@@ -1517,7 +1515,6 @@ self.fieldList.map( q => {
           obj['end_date']=convertDate(self.refs.end_date.value)        
           self.loading = true
           careerStore.trigger('read_applicant_detail', obj)
-
           console.log(obj)
         }
     }
@@ -1528,16 +1525,21 @@ self.fieldList.map( q => {
 
         if(!self.refs.start_date.value){
         toastr.info("Please enter Start Date and try again")
-      	}else if(!self.refs.end_date.value){
-      	toastr.info("Please enter End Date and try again")
-      	}else if((Date.parse(startDate) >= Date.parse(endDate))){
+        }else if(!self.refs.end_date.value){
+        toastr.info("Please enter End Date and try again")
+        }else if((Date.parse(startDate) >= Date.parse(endDate))){
           toastr.info("Please enter To Date Grater Than From Date")
         }else{
-    	    var obj={}
+          var obj={}
           obj['start_date']=convertDate(self.refs.start_date.value)
           obj['end_date']=convertDate(self.refs.end_date.value)          
           careerStore.trigger('csv_export_applicant_detail', obj)
         }
+    }
+
+    self.DownloadCV = (c,a) => {
+      self.career_id = c       
+      careerStore.trigger('download_cv', self.career_id)
     }
 
     self.create_interview = (c,a) => {

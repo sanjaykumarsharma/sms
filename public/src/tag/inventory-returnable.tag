@@ -1,5 +1,5 @@
 <inventory-returnable>
-  <header></header>
+   <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" show={inventory_returnable_view == 'show_inventory_returnable_table'}>
 		    <h4 class="title has-text-centered" style="color: #ff3860;">Returnable Items</h4>

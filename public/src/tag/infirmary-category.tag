@@ -1,5 +1,5 @@
 <infirmary-category>
-   <header></header>
+    <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
 		<h2 class="title has-text-centered" style="color: #ff3860;">Infirmary Category Details</h2>

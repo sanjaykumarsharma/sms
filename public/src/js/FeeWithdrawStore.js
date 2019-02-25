@@ -42,7 +42,7 @@ function FeeWithdrawStore() {
           console.log(data)
           if(data.status == 's'){
             self.students = data.students
-            self.trigger('read_student_changed', data.students)
+            self.trigger('read_student_changed', data.students, getCookie('session_id'))
           }else if(data.status == 'e'){
             showToast("No data found Please try again.", data)
           }

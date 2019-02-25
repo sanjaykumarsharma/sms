@@ -1,35 +1,40 @@
 <time-table-day-settings>
+  <print-header></print-header>
   <loading-bar if={loading}></loading-bar> 
 	<section class="is-fluid">
-    <div class="level">
+    <h2 class="title is-size-5 has-text-centered" style="color: #ff3860;">Day Settings</h2>
+    <div class="level box no-print">
       <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">Day Settings</h2>
-      </div>
-      <div class="level-right">
-        <button class="button is-warning is-rounded" onclick={readDay} style="margin-left:2px">
-        <span class="icon">
-          <span class="fas fa-sync-alt"></span>
-        </span>
-        </button>
-      </div>
-    </div>
-      <div class="box">
-      <div class="columns">
-
-        <div class="column is-narrow">
-          <label class="label">Day</label>
-        </div>
-
-        <div class="column is-narrow">
-          <div class="control">
-            <input class=" input" ref="addDayInput" type="text">
+        <div class="columns">
+          <div class="column is-narrow">
+            <label class="label">Day</label>
+          </div>
+          <div class="column is-narrow">
+            <div class="control">
+              <input class=" input" ref="addDayInput" type="text" onkeyup={addEnter}>
+            </div>
+          </div>
+          <div class="column">
+            <button class="button is-danger has-text-weight-bold " onclick={add} > {title} </button>
           </div>
         </div>
-
-        <div class="column">
-          <button class="button is-danger has-text-weight-bold" onclick={add} >{title}
-          </button>
-        </div>
+      </div>
+      <div class="level-right" >
+        <button class="button is-link has-text-weight-bold ml5 " onclick={readDay}>
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+        </button>
+        <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+          <span class="icon">
+            <i class="far fa-file-excel"></i>
+          </span>
+        </button>
+        <button class="button is-primary has-text-weight-bold  ml5" onclick="window.print()">
+          <span class="icon">
+            <i class="fas fa-print"></i>
+          </span>
+        </button>
       </div>
     </div>
     <table class="table is-fullwidth is-striped is-hoverable">
@@ -37,14 +42,14 @@
         <tr>
           <th>#</th>
           <th>Day</th>
-          <th></th>
+          <th class="no-print"></th>
         </tr>
       </thead>
       <tbody>
         <tr each={d, i in days}>
           <td>{i + 1}</td>
           <td>{d.day_name}</td>
-          <td class="has-text-right">
+          <td class="has-text-right no-print">
             <div class="inline-flex rounded border border-grey overflow-hidden" hide={d.confirmDelete}>
               <span><a class="button is-small is-rounded" onclick={edit.bind(this, d)}>Edit</a></span>
               <span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>

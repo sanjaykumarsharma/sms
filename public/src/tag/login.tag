@@ -14,16 +14,16 @@
             <div>
 
               <div class="field">
-                <label class="label" for="user_username">Username</label>              
+                <label class="label" for="username">Username</label>              
                 <div class="control">
-                  <input class="input is-medium" id="user_username" ref="username" type="text">             
+                  <input class="input is-medium" id="username" ref="username" type="text" onkeyup={addEnter}>             
                 </div>
               </div>
 
               <div class="field">
                 <label class="label" for="user_password">Password</label>              
                 <div class="control">
-                  <input class="input is-medium" id="user_password" ref="password" type="password">              
+                  <input class="input is-medium" ref="password" type="password" onkeyup={addEnter}>              
                 </div>
               </div>
 
@@ -60,6 +60,7 @@
     self.login_warning = false
 
     self.on('mount', function() {
+      document.getElementById("username").focus()
       self.update()
       self.readRoles()
     })
@@ -71,6 +72,11 @@
 
     self.readRoles = () => {
       loginStore.trigger('read_roles')
+    }
+    self.addEnter = (e) => {
+      if(e.which == 13){
+        self.login()
+      }
     }
 
     self.login = (e) => {
@@ -100,6 +106,8 @@
           route("/student-browser")
         }else if(role =='Activity'){
           route("/activity-detail")
+        }else if(role =='Career'){
+          route("/career-setting/applicant-detail")
         }else if(role =='Mentor'){
          route("/mentor-detail")
         }else if(role =='Store'){
@@ -108,9 +116,9 @@
           route("/infirmary-setting/infirmary-category")
         }else if(role =='Discipline'){
          route("/discipline-detail")
-       }else if(role =='Admission'){
+        }else if(role =='Admission'){
          route("/student")
-       }
+        }
         window.location.reload(true);
 
         //

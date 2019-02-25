@@ -1,5 +1,5 @@
 <inventory-department>
-  <header></header>
+ <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid"  show={inventory_view =='show_assign_department'}>
 		<h2 class="title has-text-centered" style="color: #ff3860;">Inventory Department</h2>

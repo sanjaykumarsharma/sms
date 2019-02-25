@@ -1,5 +1,5 @@
 <student-summary-report>
-	<header></header>
+	<print-header></print-header> 
 	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 	   <h4 class="title has-text-centered" style="color: #ff3860;">Class Wise Strength ({session_name})</h4>
@@ -43,7 +43,7 @@
 					<td>{st.s3}</td>
 					<td>{st.s4}</td>
 					<td>{st.n}</td>
-					<td>{st.total}</td>
+					<td class="has-text-weight-bold">{st.total}</td>
 				</tr>
 				<!-- <tr>
 					<td colspan="2" class="has-text-centered" style="font-size:18px">Total</td>

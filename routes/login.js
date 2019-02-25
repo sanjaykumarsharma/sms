@@ -57,17 +57,19 @@ router.post('/login', function(req, res, next) {
                 and b.session_id = (select session_id from session_master where is_current=1)
                 where emp_type_id = 14
                 and status = 1
+                and is_active="Y"
                 and  employee_id = "${input.username}" 
                 and password= md5("${input.password}")
                 ` ;
      }else{//login for employee
-        var qry = `select e.employee_id as username, role 
-                   from employee e 
-                   join employee_role er on e.employee_id=er.employee_id
-                   WHERE e.employee_id ="${input.username}" 
-                   and  password = md5("${input.password}")
-                   and e.status = 1
-                    limit 1 `;
+        var qry =`select e.employee_id as username, role 
+                  from employee e 
+                  join employee_role er on e.employee_id=er.employee_id
+                  WHERE e.employee_id ="${input.username}" 
+                  and  password = md5("${input.password}")
+                  and role="${input.role}"
+                  and e.status = 1
+                  limit 1 `;
      }
      
 
@@ -104,6 +106,7 @@ router.post('/login', function(req, res, next) {
                           res.cookie('session_id', session_id)
                           res.cookie('session_name', session_name)
                           res.cookie('user', result[0].username)
+                          res.cookie('emp_id', result[0].emp_id)
                           //res.cookie('role', result[0].role)
 
                           res.json({

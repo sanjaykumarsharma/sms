@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
       var qry = `select standard_id,standard 
                 from standard_master 
                 ${condition} `
-
+     console.log(qry)
      connection.query(qry,function(err,result)     {
             
         if(err){

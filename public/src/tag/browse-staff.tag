@@ -1,4 +1,6 @@
 <browse-staff>
+    <print-header></print-header> 
+      <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
         <h2 class="title has-text-centered printOnly_t" style="color: #ff3860;">Employee Details</h2>
 		<div class="level">
@@ -1413,6 +1415,7 @@ if(q.done==false && q.array_name== "nationality"){
 }
 
     self.ReadBrowseStaff = () =>{
+        self.loading=true
        staffStore.trigger('read_browse_staff', self.refs.emp_type_id.value)
     }
     self.readEmployeeTypes = () => {

@@ -225,6 +225,9 @@ RiotControl.addStore(idCardStore)
 var careerStore = new CareerStore()
 RiotControl.addStore(careerStore)
 
+var alumniStore = new AlumniStore()
+RiotControl.addStore(alumniStore)
+
 //tarique
 var roleStore = new RoleStore() 
 RiotControl.addStore(roleStore) 
@@ -408,6 +411,60 @@ let activityRoute = (path1, path2, path3) => {
           riot.mount("div#activity-setting-view", 'activity-item')
       }
     break;
+    case 'activity-report':
+     currentPage = riot.mount('div#view', 'activity-report', {selected_master: path2})[0];
+     switch(path2){
+       case 'activity-date-wise-report':
+         riot.mount("div#activity-report-view", 'activity-date-wise-report')
+       break;
+       case 'activity-session-wise-report':
+         riot.mount("div#activity-report-view", 'activity-session-wise-report')
+       break;
+       case 'activity-event-wise-report':
+         riot.mount("div#activity-report-view", 'activity-event-wise-report')
+       break;
+       case 'activity-student-event-report':
+         riot.mount("div#activity-report-view", 'activity-student-event-report')
+       break;
+       case 'activity-event-wise-graph-report':
+         riot.mount("div#activity-report-view", 'activity-event-wise-graph-report')
+       break;
+       default:
+         riot.mount("div#activity-report-view", 'activity-date-wise-report')
+     }
+    break;
+  }
+}
+
+//========== career Route Route ===========   
+let careerRoute = (path1, path2, path3) => {
+  riot.mount('main-nav', {selected_nav_item: path1});
+  if (currentPage) {
+    currentPage.unmount(true);
+  }
+  switch(path1) {
+    /*case 'login':
+      currentPage = riot.mount('div#view', 'login')[0];
+    break;*/
+    case 'career-setting':
+     currentPage = riot.mount('div#view', 'career-setting', {selected_master: path2})[0];
+     switch(path2){
+       case 'applicant-detail':
+         riot.mount("div#career-setting-view", 'applicant-detail')
+       break;
+       case 'career-interview':
+         riot.mount("div#career-setting-view", 'career-interview')
+       break;
+       case 'interviewed-candidate':
+         riot.mount("div#career-setting-view", 'interviewed-candidate')
+       break;
+       case 'career-report':
+         riot.mount("div#career-setting-view", 'career-report')
+       break;
+       default:
+         riot.mount("div#career-setting-view", 'applicant-detail')
+     }
+    break;
   }
 }
 
@@ -493,7 +550,9 @@ let disciplineRoute = (path1, path2, path3) => {
    case 'student-browser':
          riot.mount("div#view", 'student-browser')
    break;
-   
+   case 'student':
+     currentPage = riot.mount('div#view', 'student')[0];
+   break;
    case 'discipline-detail':
      currentPage = riot.mount('div#view', 'discipline-detail')[0];
    break;
@@ -543,14 +602,57 @@ let classTeacherRoute = (path1, path2, path3) => {
     case 'student-browser':
           riot.mount("div#view", 'student-browser')
     break;
+    case 'staff-profile':
+          riot.mount("div#view", 'staff-profile')
+    break;
+    case 'student-school-leaving':
+          riot.mount("div#view", 'student-school-leaving')
+    break;
+    case 'maturity-development':
+          riot.mount("div#view", 'maturity-development')
+    break;
+    case 'physical-fitness':
+          riot.mount("div#view", 'physical-fitness')
+    break;
+    case 'marks-entry':
+          riot.mount("div#view", 'marks-entry')
+    break;
+    case 'marks-manager':
+          riot.mount("div#view", 'marks-manager')
+    break;
     case 'attendance-entry':
       currentPage = riot.mount('div#view', 'attendance-entry')[0];
     break;
     case 'daily-attendance':
           riot.mount("div#view", 'daily-attendance')[0];
+    break;  
+    case 'class-holiday':
+          riot.mount("div#view", 'class-holiday')[0];
     break;
     case 'consolidate-tabulation-sheet':
       riot.mount("div#marks-report-view", 'consolidate-tabulation-sheet')
+    break;
+    case 'teacher-time-table':
+      riot.mount("div#view", 'teacher-time-table')
+    break;
+    case 'marks-report':
+      currentPage = riot.mount('div#view', 'marks-report', {selected_marks_report: path2})[0];
+      switch(path2){
+        case 'merit-list':
+          riot.mount("div#marks-report-view", 'merit-list')
+        break;
+        case 'top-five':
+          riot.mount("div#marks-report-view", 'top-five')
+        break;
+        case 'first-assessment-report-card':
+          riot.mount("div#marks-report-view", 'first-assessment-report-card')
+        break;
+        case 'final-assessment-report-card':
+          riot.mount("div#marks-report-view", 'final-assessment-report-card')
+        break;
+        default:
+          riot.mount("div#marks-report-view", 'merit-list')
+      }
     break;
   }
 }
@@ -566,6 +668,9 @@ let teacherRoute = (path1, path2, path3) => {
     break;*/
     case 'student-browser':
           riot.mount("div#view", 'student-browser')
+    break;
+    case 'teacher-time-table':
+          riot.mount("div#view", 'teacher-time-table')
     break;
     case 'marks-entry':
       currentPage = riot.mount('div#view', 'marks-entry')[0];
@@ -867,7 +972,7 @@ let adminRoute = (path1, path2, path3) => {
           riot.mount("div#marks-report-view", 'final-assessment-report-card')
         break;
         default:
-          riot.mount("div#marks-report-view", 'top-five')
+          riot.mount("div#marks-report-view", 'merit-list')
       }
     break;
     case 'student-assign-house':
@@ -1043,6 +1148,19 @@ case 'receive-fees':
       }
     break;
     /*==============qadir end ======*/
+    case 'alumni-setting':
+      currentPage = riot.mount('div#view', 'alumni-setting', {selected_master: path2})[0];
+      switch(path2){
+        case 'alumni':
+          riot.mount("div#alumni-setting-view", 'alumni')
+        break;
+        case 'aprrove-alumni':
+          riot.mount("div#alumni-setting-view", 'aprrove-alumni')
+        break;
+        default:
+          riot.mount("div#alumni-setting-view", 'alumni')
+      }
+    break;
     case 'activity-detail':
       currentPage = riot.mount('div#view', 'activity-detail')[0];
     break;
@@ -1090,6 +1208,9 @@ case 'receive-fees':
     case 'student-notification':
      currentPage = riot.mount('div#view', 'student-notification')[0];
     break;
+    case 'student':
+      currentPage = riot.mount('div#view', 'student')[0];
+    break;
     case 'mentor-detail':
       currentPage = riot.mount('div#view', 'mentor-detail')[0];
     break;
@@ -1125,9 +1246,7 @@ case 'receive-fees':
     case 'discipline-detail':
       currentPage = riot.mount('div#view', 'discipline-detail')[0];
     break;
-    case 'student':
-      currentPage = riot.mount('div#view', 'student')[0];
-    break;
+    
     case 'discipline-setting':
       currentPage = riot.mount('div#view', 'discipline-setting', {selected_master: path2})[0];
       switch(path2){
@@ -1212,6 +1331,9 @@ case 'receive-fees':
     break;
     case 'daily-attendance':
           riot.mount("div#view", 'daily-attendance')
+    break;
+    case 'monthly-attendance':
+          riot.mount("div#view", 'monthly-attendance')
     break;
     case 'admin-report':
       currentPage = riot.mount('div#view', 'admin-report', {selected_admin_report: path2})[0];
@@ -1565,6 +1687,9 @@ if(getCookie('role')=='ADMIN'){
 }else if(getCookie('role')=='Activity'){
   console.log("activity route")
   route(activityRoute);  
+}else if(getCookie('role')=='Career'){
+  console.log("career route")
+  route(careerRoute);  
 }else if(getCookie('role')=='Mentor'){
  console.log("Mentor route")
  route(mentorRoute);  

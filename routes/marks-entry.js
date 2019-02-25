@@ -38,20 +38,35 @@ router.get('/exam-type/:standard_id', function(req, res, next) {
 
 //read subjects
 router.get('/subjects/:standard_id/:section_id', function(req, res, next) {
-
+  var teacher_id = req.cookies.emp_id;
+  var standard_id = req.params.standard_id
+  var section_id = req.params.section_id
+  var session_id = req.cookies.session_id
   req.getConnection(function(err,connection){
+    var data = {}
+    var condition="";
+      if(req.cookies.role== "Teacher" || req.cookies.role=="Class Teacher"){
+        var qry =`select  a.subject_id, subject_name
+                  from time_table a
+                  join subject_master b on a.subject_id = b.subject_id
+                  where teacher_id = ${teacher_id}
+                  and section_id = ${section_id}
+                  and session_id = ${session_id}
+                  group by a.subject_id
+                  order by subject_name`;
+      }else{
+        var qry =`select distinct b.session_id, b.subject_id, subject_name
+                  from student_group a 
+                  JOIN group_subject_map b on (a.group_id=b.group_id and b.session_id= ${session_id})
+                  JOIN  subject_master c on b.subject_id=c.subject_id 
+                  where a.standard_id= ${standard_id} and a.section_id=${section_id}
+                  order by subject_name`;
+      }
        
-     var data = {}
-     var qry = `select distinct b.session_id, b.subject_id, subject_name
-                from student_group a 
-                JOIN group_subject_map b on (a.group_id=b.group_id and b.session_id=?)
-                JOIN  subject_master c on b.subject_id=c.subject_id 
-                where a.standard_id=? and a.section_id=?  
-                order by subject_name`;
 
-         console.log(qry)
+      console.log(qry)
      
-     connection.query(qry,[req.cookies.session_id,req.params.standard_id,req.params.section_id],function(err,result)     {
+     connection.query(qry,function(err,result)     {
             
         if(err){
            console.log("Error reading category : %s ",err );

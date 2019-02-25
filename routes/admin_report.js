@@ -452,9 +452,9 @@ router.post('/read_student_category_summary_report', function(req, res, next) {
 
             // for last row
 
-             var student = {};
+           //  var student = {};
 
-             student["standard"] = "Total";
+             //student["standard"] = "Total";
              total.map(c=>{
               $student[c.category_name] = c;
              })
@@ -595,9 +595,9 @@ router.post('/read_student_religion_listing_report', function(req, res, next) {
 
             // for last row
 
-             var student = {};
+            // var student = {};
 
-             student["standard"] = "Total";
+           //  student["standard"] = "Total";
              total.map(c=>{
               $student[c.religion] = c;
              })

@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* Read Standard */
 
-router.get('/read_standard', function(req, res, next) {
+/*router.get('/read_standard', function(req, res, next) {
 
   req.getConnection(function(err,connection){
        
@@ -27,11 +27,48 @@ router.get('/read_standard', function(req, res, next) {
        
   });
 
+});*/
+router.get('/read_standard', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+      var user=req.cookies.user 
+      var data = {}
+     console.log("+++++")
+     console.log(req.cookies.role)
+
+      var condition="";
+      if(req.cookies.role== "TEACHER" || req.cookies.role=="Class Teacher"){
+           condition =`where standard_id=(select standard_id from section_master 
+              where teacher_id=(select emp_id from employee where employee_id='${user}')) `;
+      }
+      var qry = `select standard_id,standard 
+                from standard_master 
+                ${condition} `
+
+     connection.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading standards : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.standards = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
 });
 
 /* Read Section */
 
-router.get('/read_section', function(req, res, next) {
+/*router.get('/read_section', function(req, res, next) {
 
   req.getConnection(function(err,connection){
        
@@ -40,6 +77,49 @@ router.get('/read_section', function(req, res, next) {
             
         if(err){
            console.log("Error reading Section : %s ",err );
+           data.status = 'e';
+
+        }else{
+          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
+            data.status = 's';
+            data.sections = result;
+           //connection.end()
+
+            res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});*/
+router.get('/read_section', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+      var user=req.cookies.user 
+      var session_id=req.cookies.session_id 
+      var data = {}
+     console.log("+++++")
+     console.log(req.cookies.role)
+
+      var condition="";
+      if(req.cookies.role== "TEACHER" || req.cookies.role=="Class Teacher"){
+           condition =` where d.section_id=(select section_id from section_master 
+           where teacher_id=(select emp_id from employee where employee_id='${user}')) `;
+      }
+      var qry = `select  a.section_id, section, b.standard_id, b.standard, d.room as room_no,
+                concat(first_name,' ',middle_name,' ',last_name) as class_teacher
+                from section_master  a
+                LEFT JOIN class_teacher_section d on (a.section_id=d.section_id and d.session_id = ${session_id})
+                LEFT JOIN standard_master b on a.standard_id = b.standard_id
+                LEFT JOIN employee c on d.class_teacher = c.emp_id
+                 ${condition} 
+                order by b.standard_id, section_id `
+
+     connection.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading standards : %s ",err );
            data.status = 'e';
 
         }else{

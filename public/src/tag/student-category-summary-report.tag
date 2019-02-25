@@ -1,5 +1,5 @@
 <student-category-summary-report>
-	<header></header>
+	<print-header></print-header> 
 	 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<h4 class="title has-text-centered" style="color: #ff3860;">Class Wise Cast Category Strength({session_name}) </h4>
@@ -37,8 +37,13 @@
 					<td>{st.ST}</td>
 					<td>{st.SC}</td>
 					<td>{st.OBC}</td>
-					
 				</tr>
+				<tr><th colspan="2">Total</th>
+					<th>{totalGeneral}</th>
+					<th>{totalST}</th>
+					<th>{totalSC}</th>
+					<th>{totalOBC}</th>
+				 </tr>
 			</tbody>
 		</table>
 	</section>
@@ -90,6 +95,26 @@
       self.loading = false
       self.session_name=session_name
       self.studentCategorySummaryReports = studentCategorySummaryReports
+      self.totalGeneral=0;
+      self.totalST=0;
+      self.totalOBC=0;
+      self.totalSC=0;
+      self.studentCategorySummaryReports.map(c => {
+      	console.log("c.General");
+      	console.log(c.General);
+	      	if(c.General!=undefined){
+	          self.totalGeneral=Number(self.totalGeneral) + Number(c.General)
+	        }
+           if(c.OBC!=undefined){
+            self.totalOBC=Number(self.totalOBC) + Number(c.OBC)
+          }
+          if(c.ST!=undefined){
+              self.totalST=Number(self.totalST) + Number(c.ST)
+   			}
+            if(c.SC!=undefined){
+              self.totalSC=Number(self.totalSC) + Number(c.SC)
+   			 }
+      })
       self.update()
       //console.log(self.employeeTypes)
     }

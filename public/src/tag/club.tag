@@ -1,4 +1,5 @@
 <club>
+ <print-header></print-header> 
 	<section class=" is-fluid">
 		<h2 class="title has-text-centered" style="color: #ff3860;">Club Details</h2>
 		<div class="box no-print">

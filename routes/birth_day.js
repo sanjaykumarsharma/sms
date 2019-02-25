@@ -93,7 +93,7 @@ router.post('/read_birth_day', function(req, res, next) {
 
         and dayofyear(a.dob) between dayofyear('${start_date}') and dayofyear('${end_date}')
 
-        and d.session_id=(select session_id from session_master where session_id = ${session_id})
+        and d.session_id= ${session_id}
 
         and (a.withdraw='N' || a.withdraw_session > ${session_id})
 

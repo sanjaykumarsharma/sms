@@ -75,14 +75,12 @@ function StudentResultActivationStore() {
       })
   })
 
-  self.on('update_result_status', function(enroll_number,active_result) {
-    var obj = {}
-    obj['enroll_number'] = enroll_number
-    obj['active_result'] = active_result
+  self.on('update_result_status', function(st) {
+    
     $.ajax({
       url:'/student-result-activation/update-result-status/',
         type:"POST",
-        data: JSON.stringify(obj),
+        data: JSON.stringify(st),
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},

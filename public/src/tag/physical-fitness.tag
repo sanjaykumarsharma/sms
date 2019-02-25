@@ -96,9 +96,9 @@
           <td>{c.exam_term}</td>
         	<td class="has-text-right">
       			<div class="inline-flex rounded border border-grey overflow-hidden" hide={c.confirmDelete}>
-                <span show={c.exam_term=='N'}><a class="button is-small is-rounded" onclick={openPhysicalFitnessForm.bind(this, c)}>Add</a></span>
-                <span><a class="button is-small is-rounded" onclick={viewDetails.bind(this, c)}>View</a></span>
-                <span><a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+                <span show={c.exam_term=='N'}><a class="button is-small" onclick={openPhysicalFitnessForm.bind(this, c)} title="Add"><i class="fa fa-plus-circle" aria-hidden="true"></i></a></span>
+                <span><a class="button is-small" onclick={viewDetails.bind(this, c)} title="View"><i class="fa fa-eye" aria-hidden="true"></i></a></span>
+                <span><a class="button is-small" rel="nofollow" onclick={confirmDelete} title="Delete"><i class="fa fa-trash" aria-hidden="true"></i></a></span>
       			</div>
       			<div class="table-buttons" if={c.confirmDelete}>
         				<span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
@@ -111,7 +111,6 @@
 
 
     <section class=" is-fluid" show={action=='PhysicalFitnessForm'}> 
-
       <div class="columns" if={first_form}>
         
         <div class="column">  

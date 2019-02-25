@@ -1,24 +1,18 @@
 <time-table-room-report>
+  <print-header></print-header>
 <loading-bar if={loading}></loading-bar>  
   
   <section class=" is-fluid">
+  <h2 class="title is-size-5 has-text-centered" style="color: #ff3860;">Time Table Room</h2>
 
-    <div class="level">
-      <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">Time Table Room</h2>
-      </div>
-      <div class="level-right">
-      </div>
-    </div>
-
-    <div class="box">
+    <div class="box no-print">
       <div class="columns">
 
         <div class="column is-narrow"><label class="label">Room</label></div>  
         <div class="column is-narrow">  
           <div class="control">
             <div class="select ">
-              <select ref="roomSelect" onchange={refreshTimeTable}>
+              <select ref="roomSelect" id="roomSelect" onchange={refreshTimeTable}>
                 <option value="">Select Room</option>
                 <option each={rooms} value={room_id}>{room_name}</option>
               </select>
@@ -27,12 +21,15 @@
         </div>
 
         <div class="column">
-          <button class="button is-rounded" onclick={refreshTimeTable}> Go </button>
+          <button class="button is-danger" onclick={refreshTimeTable}> Go </button>
         </div>
 
         <div class="column">
-          <button class="button is-warning is-rounded" style="float:right" onclick={refreshTimeTable}> 
+          <button class="button is-link ml5" style="float:right" onclick={refreshTimeTable}> 
             <span class="icon"> <span class="fas fa-sync-alt"></span> </span> 
+          </button>
+          <button class="button is-primary" style="float:right" onclick="window.print()"> 
+            <span class="icon"><i class="fas fa-print"></i></span>
           </button>
         </div>
           
@@ -41,6 +38,7 @@
 
 
     <table class="table is-fullwidth is-bordered is-hoverable">
+      <center><strong>Time Table Of Room : {RoomdName} / Session:{session_name}
       <thead>
         <tr>
           <th class="has-text-centered" style="vertical-align: middle;">Days/Periods</th>
@@ -128,12 +126,13 @@
     }
 
    timeTableAdminStore.on('read_periods_room_report_changed',PeriodsChanged)
-    function PeriodsChanged(time_table){
+    function PeriodsChanged(time_table,session_name){
       self.loading = false
 
       self.time_table = []
       self.time_table = time_table
-
+      self.session_name = session_name
+      self.RoomdName = $("#roomSelect option:selected").text();
       self.update()
       console.log(self.periods)
       console.log(self.time_table)

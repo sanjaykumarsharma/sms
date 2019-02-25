@@ -95,6 +95,37 @@ router.get('/csv_export_career_interview/:start_date/:end_date', function(req, r
 });
 
 
+/*download_cv */
+
+/*router.post('/download_cv/:career_id', function(req, res, next) {
+
+  var career_id = req.params.career_id;
+  var input = JSON.parse(JSON.stringify(req.body));
+  var data = {} 
+  
+  var path='./upload/';
+    req.getConnection(function(err,connection){
+      fs.readFile(path, function(err,data) {
+        if (err) {throw err;}
+          else{ 
+            res.send(data)
+            var url='http://localhost:4000/csv/CareerInterview.csv';
+            var open = require("open","");
+            open(url);  
+        }
+      });
+    });
+});*/
+
+router.post('/download_cv/:career_id', function (req, res, next) {
+  var career_id = req.params.career_id;
+  var filePath = './public/csv/...'; 
+  var fileName = career_id +'.'+'pdf'; 
+  console.log(fileName);
+
+    res.download(filePath, fileName);    
+});
+
 /*updateInterview */
 
 router.post('/update_interview/:interview_id', function(req, res, next) {

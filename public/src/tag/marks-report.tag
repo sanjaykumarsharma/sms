@@ -1,15 +1,15 @@
 <marks-report>
 	<div class="field has-addons no-print">
-	  	<!-- <p class="control">
+	  	<p class="control">
 		    <a class="button {is-active: selected_marks_report == 'consolidate-tabulation-sheet' }" href="#/marks-report/consolidate-tabulation-sheet">
 		      <span>Consolidate Tabulation Sheet</span>
 		    </a>
-	  	</p> -->
-		<!-- <p class="control">
+	  	</p>
+		<p class="control">
 		    <a class="button {is-active: selected_marks_report == 'merit-list'}" href="#/marks-report/merit-list">
 		      <span>Merit List</span>
 		    </a>
-		</p> -->
+		</p>
 	    <p class="control">
 		    <a class="button {is-active: selected_marks_report == 'top-five'}" href="#/marks-report/top-five">
 		      <span>Top Five</span>

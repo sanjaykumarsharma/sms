@@ -43,13 +43,13 @@
 					</div>
 					<div class="column is-narrow">
 						<div class="control">
-				        	<div class="select is-fullwidth">
+				      <div class="select is-fullwidth">
 								<select ref="section_id" onchange={getStudentData}>
 									<option each={filteredSections} value={section_id}>{section}</option>
 								</select>
 							</div>
-				      	</div>
 				    </div>
+				  </div>
 				</div>
 			</div>
 			<div class="level-right">
@@ -62,15 +62,16 @@
 					<div class="control">
 				    	<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
 				  	</div>
-			    	<div class="control">
-			    		<a class="button is-info" onclick={getStudentData}>Search</a>
-			  		</div>
+			    <div class="control">
+			    	<a class="button is-info" onclick={getStudentData}>Search</a>
+			  	</div>
 				</div>
+
 				<button class="button is-warning has-text-weight-bold ml5" style="margin-bottom:12px;" onclick={getStudentData}>
-			        <span class="icon">
-			          <span class="fas fa-sync-alt"></span>
-			        </span>
-	        	</button>
+			    <span class="icon">
+			      <span class="fas fa-sync-alt"></span>
+			    </span>
+	      </button>
 			</div>
 		</div>
 		
@@ -82,8 +83,8 @@
 					<th>Roll no</th>
 					<th>Student Name</th>
 					<th class="has-text-centered">
-	        			<input type="checkbox" id="checkStudent" onclick={selectAll}>
-	      			</th>
+	        	<input type="checkbox" id="checkStudent" onclick={selectAll}>
+	      	</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -93,8 +94,8 @@
 					<td>{st.roll_number}</td>
 					<td>{st.name}</td>
 					<td class="has-text-centered">
-	        			<input type="checkbox" class="id_check_box" checked={st.done} id="{ 'StudentId' + st.student_id }" onclick={selectStudent.bind(this,st)} >
-	      			</td>
+	        	<input type="checkbox" class="id_check_box" checked={st.done} id="{ 'StudentId' + st.student_id }" onclick={selectStudent.bind(this,st)} >
+	      	</td>
 				</tr>
 			</tbody>
 		</table>
@@ -130,12 +131,12 @@
               
               <div padding:"2px;"><span class="barcode">*{st.enroll_number}*</span></div>
                  
-                  <table class="detail-student-id-card" style="width: 100%;">
+                  <table class="detail-student-id-card">
                      <tr>
                         <td colSpan="2">Enrolment No.: {st.enroll_number}</td>
                      </tr>
                      <tr>
-                        <td colSpan="2" class="is-uppercase" >Fathers'Name: {st.f_name}</td>
+                        <td colSpan="2" class="" >Fathers'Name: {st.f_name}</td>
                      </tr>
                      <tr>
                       <td align="baseline">Address:</td>
@@ -149,7 +150,7 @@
                      </tr>
                   </table>
 
-                      <div style="width:50%;float:left" class="lower-student-id-card">Blood Group:<span style="color:#ff0000">{st.blood_group}</span></div>
+                      <div style="width:50%;margin-right: 63px;" class="lower-student-id-card">Blood Group:<span style="color:#ff0000">{st.blood_group}</span></div>
                       <div style="width:45%;right: 10px; position:absolute; bottom:10px" class="principal">
                               <p><img src="images/signatureImages/Principal.jpg" style="height: 24px"></p>
                               <p>Principal</p>
@@ -191,12 +192,12 @@
               
               <div padding:"2px;"><span class="barcode">*{st.enroll_number}*</span></div>
                  
-                  <table class="detail-student-id-card" style="width: 100%;">
+                  <table class="detail-student-id-card">
                      <tr>
                         <td colSpan="2">Enrolment No.: {st.enroll_number}</td>
                      </tr>
                      <tr>
-                        <td colSpan="2" class="is-uppercase" >Fathers'Name: {st.f_name}</td>
+                        <td colSpan="2" >Fathers'Name: {st.f_name}</td>
                      </tr>
                      <tr>
                       <td align="baseline">Address:</td>
@@ -210,7 +211,7 @@
                      </tr>
                   </table>
 
-                      <div style="width:50%;float:left" class="lower-student-id-card">Blood Group:<span style="color:#ff0000">{st.blood_group}</span></div>
+                      <div style="width:50%;margin-right: 63px;" class="lower-student-id-card">Blood Group:<span style="color:#ff0000">{st.blood_group}</span></div>
                       <div style="width:45%;right: 10px; position:absolute; bottom:10px" class="principal">
                               <p><img src="images/signatureImages/Principal.jpg" style="height: 24px"></p>
                               <p>Principal</p>
@@ -257,7 +258,7 @@
                         <td colSpan="2">Enrolment No.: {st.enroll_number}</td>
                      </tr>
                      <tr>
-                        <td colSpan="2" class="is-uppercase" >Fathers'Name: {st.f_name}</td>
+                        <td colSpan="2" >Fathers'Name: {st.f_name}</td>
                      </tr>
                      <tr>
                       <td align="baseline">Address:</td>
@@ -318,7 +319,7 @@
                         <td colSpan="2">Enrolment No.: {st.enroll_number}</td>
                      </tr>
                      <tr>
-                        <td colSpan="2" class="is-uppercase" >Fathers'Name: {st.f_name}</td>
+                        <td colSpan="2" >Fathers'Name: {st.f_name}</td>
                      </tr>
                      <tr>
                       <td align="baseline">Address:</td>
@@ -562,6 +563,7 @@
       self.students.map(i=>{
 	      i.done = false;
       })
+      $("#checkStudent").prop("checked", false);
       self.update()
     }
 </script>

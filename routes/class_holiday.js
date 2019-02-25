@@ -36,9 +36,28 @@ router.get('/read_class_holiday', function(req, res, next) {
    //  console.log(res.cookies)
       // var session_id=res.cookies.session_id
       // console.log(res.cookie)
-        //where a.session_id=session_id 
+     var role=req.cookies.role
+     var session_id=req.cookies.session_id
+     var section_id=req.cookies.section_id
+     console.log("section_id")
+     console.log(section_id)
+     console.log("session_id")
+     console.log(session_id)
+     var classCondition=``
+     if(role!=='ADMIN'){
+       classCondition=` a.section_id=${section_id} `
+     }
      var data = {}
-     var qry = "select event_id, event_name,a.section_id,concat(standard, ' ', section) as class, date_format(start_date, '%d/%m/%Y') as s_date,date_format(end_date, '%d/%m/%Y') as e_date, date_format(start_date, '%Y-%m-%d') as start_date,date_format(end_date, '%Y-%m-%d') as end_date, holiday, description from class_holiday a join section_master b on a.section_id=b.section_id join standard_master c on b.standard_id=c.standard_id order by 3"; 
+     var qry = `select event_id, event_name,a.section_id,concat(standard, ' ', section) as class, 
+     date_format(start_date, '%d/%m/%Y') as s_date,date_format(end_date, '%d/%m/%Y') as e_date, 
+     date_format(start_date, '%Y-%m-%d') as start_date,date_format(end_date, '%Y-%m-%d') as end_date,
+      holiday, description 
+      from class_holiday a 
+      join section_master b on a.section_id=b.section_id
+      join standard_master c on b.standard_id=c.standard_id 
+      where session_id=${session_id}
+      and ${classCondition} 
+      order by 3 `; 
      connection.query(qry,function(err,result)     {
             
         if(err){

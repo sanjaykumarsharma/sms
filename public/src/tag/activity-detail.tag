@@ -61,7 +61,7 @@
 					<th>Teacher Incharge</th>
 					<th>Item Taken</th>
 					<th>Result</th>
-					<th style="width: 260px;" class="no-print"></th>
+					<th style="width: 160px;" class="no-print"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -77,10 +77,18 @@
 					<td>{ac.result}</td>
 					<td class="has-text-right no-print">
 			            <div class="inline-flex rounded border border-grey overflow-hidden" hide={ac.confirmDelete}>
-			              <span><a class="button is-small is-rounded " onclick={assign_student.bind(this, ac)}>Assign Student</a></span>
-			              <span><a class="button is-small is-rounded " onclick={printEventDetail.bind(this,ac.activity_id)}>Print</a></span>
-			              <span><a class="button is-small is-rounded" onclick={edit.bind(this, ac.activity_id)}>Edit</a></span>
-			              <span if={role=='ADMIN'} > <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+			              <span><a class="button is-small " onclick={assign_student.bind(this, ac)} title="Assign Participant">
+			              	<i class="fa fa-link" aria-hidden="true"></i>
+			              </a></span>
+			              <span><a class="button is-small" onclick={printEventDetail.bind(this,ac.activity_id)} title="Print">
+			              	<i class="fa fa-print" aria-hidden="true"></i>
+			              </a></span>
+			              <span><a class="button is-small" onclick={edit.bind(this, ac.activity_id)} title="Edit">
+			              	<i class="fa fa-edit" aria-hidden="true"></i>
+			              </a></span>
+			              <span if={role=='ADMIN'}> <a class="button is-small" rel="nofollow" onclick={confirmDelete} title="Delete">
+			              	<i class="fa fa-trash" aria-hidden="true"></i>
+			              </a></span>
 			            </div>
 			            <div class="table-buttons" if={ac.confirmDelete}>
 			              <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>

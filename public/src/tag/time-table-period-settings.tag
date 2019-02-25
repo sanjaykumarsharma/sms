@@ -1,65 +1,68 @@
 <time-table-period-settings>
+  <print-header></print-header>
   <loading-bar if={loading}></loading-bar> 
 	<section class="is-fluid">
-    <div class="level">
-      <div class="level-left">
-        <h2 class="title" style="color: #ff3860;">Period Settings</h2>
-      </div>
-      <div class="level-right">
-        <button class="button is-warning is-rounded" onclick={readPeriod} style="margin-left:2px">
-        <span class="icon">
-          <span class="fas fa-sync-alt"></span>
-        </span>
-        </button>
-      </div>
-    </div>
-      <div class="box">
-      <div class="columns">
-
-        <div class="column is-narrow">
-          <label class="label">Period</label>
-          <div class="control">
-            <input class=" input" ref="addPeriodInput" type="text">
-          </div>
-        </div>
-
-        <div class="column is-narrow">
-          <label class="label">Start Time</label>
-          <div class="control">
-            <input class=" input" ref="addStartTimeInput" type="text" placeholder="00:00">
-          </div>
-        </div>
-
-        <div class="column is-narrow">
-          <label class="label">End Time</label>
-          <div class="control">
-            <input class=" input" ref="addEndTimeInput" type="text" placeholder="00:00">
-          </div>
-        </div>
-        
-        <div class="column is-narrow">
-          <label class="label">Interval</label>
-          <div class="control">
-            <div class="select ">
-              <select ref="IntervalSelect">
-                <option value="">N</option>
-                <option value="Y">Y</option>
-              </select>
+    <h2 class="title is-size-5 has-text-centered" style="color: #ff3860;">Period Settings</h2>
+      <div class="level box no-print">
+        <div class="level-left">
+          <div class="columns">
+            <div class="column is-narrow">
+              <label class="label">Period</label>
+              <div class="control">
+                <input class=" input" ref="addPeriodInput" type="text">
+              </div>
+            </div>
+            <div class="column is-narrow">
+              <label class="label">Start Time</label>
+              <div class="control">
+                <input class=" input" ref="addStartTimeInput" type="text" placeholder="00:00">
+              </div>
+            </div>
+            <div class="column is-narrow">
+              <label class="label">End Time</label>
+              <div class="control">
+                <input class=" input" ref="addEndTimeInput" type="text" placeholder="00:00">
+              </div>
+            </div>
+            <div class="column is-narrow">
+              <label class="label">Interval</label>
+              <div class="control">
+                <div class="select ">
+                  <select ref="IntervalSelect">
+                    <option value="N">N</option>
+                    <option value="Y">Y</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="column is-narrow">
+              <label class="label">Remarks</label>
+              <div class="control">
+                <input class=" input" ref="addRemarksInput" type="text">
+              </div>
+            </div>
+            <div class="column">
+              <button class="button is-danger has-text-weight-bold" style="margin-top: 31px;" onclick={add} >{title}
+              </button>
             </div>
           </div>
-        </div>
-
-        <div class="column is-narrow">
-          <label class="label">Remarks</label>
-          <div class="control">
-            <input class=" input" ref="addRemarksInput" type="text">
-          </div>
-        </div>
-
-        <div class="column">
-          <button class="button is-danger has-text-weight-bold" style="margin-top: 31px;" onclick={add} >{title}
-          </button>
-        </div>
+      </div>
+      <div class="level-right" style="margin-top: 26px;" >
+        <button class="button is-link has-text-weight-bold ml5 " onclick={readPeriod}>
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+        </button>
+        <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+          <span class="icon">
+            <i class="far fa-file-excel"></i>
+          </span>
+        </button>
+        <button class="button is-primary has-text-weight-bold  ml5" onclick="window.print()">
+          <span class="icon">
+            <i class="fas fa-print"></i>
+          </span>
+        </button>
       </div>
     </div>
     <table class="table is-fullwidth is-striped is-hoverable">
@@ -70,7 +73,7 @@
           <th>Start Time</th>
           <th>End Time</th>
           <th>Remarks</th>
-          <th></th>
+          <th class="no-print"></th>
         </tr>
       </thead>
       <tbody>
@@ -80,7 +83,7 @@
           <td>{d.start_time}</td>
           <td>{d.end_time}</td>
           <td>{d.remarks}</td>
-          <td class="has-text-right">
+          <td class="has-text-right no-print">
             <div class="inline-flex rounded border border-grey overflow-hidden" hide={d.confirmDelete}>
               <span><a class="button is-small is-rounded" onclick={edit.bind(this, d)}>Edit</a></span>
               <span if={role=='ADMIN'}> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
@@ -185,7 +188,7 @@
       self.refs.addPeriodInput.value = ''
       self.refs.addStartTimeInput.value = ''
       self.refs.addEndTimeInput.value = ''
-      self.refs.IntervalSelect.value = ''
+      self.refs.IntervalSelect.value = 'N'
       self.refs.addRemarksInput.value = ''
       self.loading = false
       self.periods = periods

@@ -1,5 +1,5 @@
 <role>
-  <header></header> 
+   <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>
 	<section class=" is-fluid">
 		<h2 class="title has-text-centered" style="color: #ff3860;">Employee Role Details</h2>
@@ -57,6 +57,7 @@
 			<thead>
 				<tr>
 					<th>SL</th>
+          <th>Employee ID</th>
 					<th>Employee</th>
 					<th>Role</th>
 					<th></th>
@@ -65,6 +66,7 @@
 			<tbody>
 				<tr each={ev, i in employeeRoles}>
 					<td>{ i+1 }</td>
+          <td>{ ev.employee_id}</td>
 					<td>{ ev.employee_name}</td>
 					<td>{ ev.role}</td>
 		          	<td class="has-text-right no-print">

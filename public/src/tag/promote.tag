@@ -80,7 +80,7 @@
             <div class="column">  
               <div class="control">
                 <div class="select is-fullwidth">
-                  <select ref="assignedStandard" onchange={changeAssignedSection}>
+                  <select ref="assignedStandard" id="StandardAssign" onchange={changeAssignedSection}>
                     <option each={classes} value={standard_id}>{standard}</option>
                   </select>
                 </div>
@@ -100,6 +100,11 @@
               <button class="button is-warning is-rounded ml5" style="margin-bottom:12px;" onclick={readPromotedStudents}>
               <span class="icon">
                 <span class="fas fa-sync-alt"></span>
+              </span>
+            </button>
+            <button class="button is-success is-rounded ml5" style="margin-bottom:12px;" onclick={openReShuffleModal} title="Re-Shuffle">
+              <span class="icon">
+                <i class="fa fa-random" aria-hidden="true"></i>
               </span>
             </button>
             </div>
@@ -128,6 +133,37 @@
         </div>
   </section>
 
+  <!-- Open Re Shuffle  Modal Start -->
+  <div id="reShuffleModal" class="modal ">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title"> Class: {StandardName} </p>
+      </header>
+      <section class="modal-card-body">
+        
+        <div class="columns">
+          <div class="column is-narrow"><label class="label">Section</label></div>  
+            <div class="column">  
+              <div class="control">
+                <div class="select is-fullwidth">
+                  <select ref="assignedSectionForReShuffle" onchange={readPromotedStudents}>
+                    <option each={tempAssignedSections} value={section_id}>{section}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+        </div>
+
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button is-danger" onclick={add} >Submit</button>
+        <button class="button" id="item-modal-close" onclick={closeReShuffleModal}>Cancel</button>
+      </footer>
+    </div>
+  </div>
+  <!-- Exam Scheme Modal End -->
+
 
 <script>
   var self = this
@@ -135,6 +171,7 @@
       self.title='Add'
       self.role = getCookie('role')
       self.loading = false;
+      self.st = [];
       self.update()
       flatpickr(".date", {
         allowInput: true,
@@ -148,10 +185,11 @@
       
       activityStore.off('read_classes_changed',ClassesChanged)
       activityStore.off('read_section_changed',SectionChanged)
-      PromoteStore.off('read_students_changed',ReadStudentsChanged)
-      PromoteStore.off('read_promoted_student_changed',ReadPromotedStudentsChanged)
-      PromoteStore.off('assign_students_changed',AssignStudentChanged)
-      PromoteStore.off('free_students_changed',FreeStudentChanged)
+      promoteStore.off('read_students_changed',ReadStudentsChanged)
+      promoteStore.off('read_promoted_student_changed',ReadPromotedStudentsChanged)
+      promoteStore.off('assign_students_changed',AssignStudentChanged)
+      promoteStore.off('free_students_changed',FreeStudentChanged)
+      promoteStore.off('re_shuffle_student_changed',ReShuffleStudentChanged)
     })
     self.readClass = () => {
        self.loading = true;
@@ -224,9 +262,11 @@
         self.promotedStudents.map(i=>{
           if(student.student_id==i.student_id){
             i.selected=!i.selected
+            self.student_id = student.student_id;
           }
         })
-        console.log(self.promotedStudents)
+        /*console.log(self.student_id)
+        console.log(self.promotedStudents)*/
     }
 
     self.assignStudents = () =>{
@@ -259,6 +299,35 @@
         self.loading = true
         promoteStore.trigger('free_up_student',self.refs.assignedSection.value, students_to_free)
       }
+    }
+
+    self.openReShuffleModal = () => {
+      var student_id='';
+       self.promotedStudents.map( q => {
+          if(q.selected){
+            var ob ={}
+            ob.student_id=q.student_id
+            self.st.push(ob)
+          }
+        })
+       console.log(self.st);
+       console.log(self.refs.assignedSectionForReShuffle.value);
+        if(self.st.length==0){
+          toastr.info('Please select at least one Student and try again')
+        }else{
+          self.StandardName = $("#StandardAssign option:selected").text();
+          $("#reShuffleModal").addClass("is-active");
+        }
+    }
+
+    self.closeReShuffleModal = () => {
+      $("#reShuffleModal").removeClass("is-active");
+      self.st=[];
+    }
+
+    self.add = () =>{
+      self.loading = true
+      promoteStore.trigger('re_shuffle_student', self.st,self.refs.assignedSectionForReShuffle.value)
     }
 
     activityStore.on('read_classes_changed',ClassesChanged)
@@ -326,12 +395,26 @@
       self.loading = false
       self.update()
       
+      self.readFreeStudents()
+      
     }
 
     promoteStore.on('assign_students_changed',AssignStudentChanged)
     function AssignStudentChanged(students_assigned,error_msg){
 
       self.loading = false
+      self.update()
+      self.readPromotedStudents()
+      
+    }
+
+    promoteStore.on('re_shuffle_student_changed',ReShuffleStudentChanged)
+    function ReShuffleStudentChanged(){
+
+      self.loading = false
+      $("#reShuffleModal").removeClass("is-active");
+      self.readPromotedStudents()
+      self.readFreeStudents()
       self.update()
       
     }

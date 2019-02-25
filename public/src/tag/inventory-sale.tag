@@ -1,5 +1,5 @@
 <inventory-sale>
-  <header></header>
+ <print-header></print-header> 
   <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" show={inventory_sale_view == 'show_inventory_sale_table'}>
         <h4 class="title has-text-centered" style="color: #ff3860;">Goods Sale From Store Department</h4>

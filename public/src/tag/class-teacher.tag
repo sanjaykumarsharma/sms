@@ -1,5 +1,5 @@
 <class-teacher>
-   <header></header>
+    <print-header></print-header> 
    <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<div class="level">

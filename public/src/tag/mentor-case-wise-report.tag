@@ -168,9 +168,7 @@
       google.charts.setOnLoadCallback(drawChart);
 
       function drawChart() {
-
         var data = google.visualization.arrayToDataTable(chart_percentage);
-
         var options = {
           is3D: true,
           legend:{position: 'labeled',

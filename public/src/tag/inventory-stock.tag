@@ -1,5 +1,5 @@
 <inventory-stock>
-  <header></header>
+   <print-header></print-header> 
    <loading-bar if={loading}></loading-bar>  
 	  <section class=" is-fluid" show={inventory_stock_view == 'show_inventory_stock_table'}>
         <h4 class="title has-text-centered" style="color: #ff3860;">Goods Entry in Store Department</h4>

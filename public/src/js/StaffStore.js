@@ -75,6 +75,29 @@ function StaffStore() {
   })*/
 
 
+  self.on('read_staff_id_card', function(st) {
+    $.ajax({
+      url:'/staff/read_staff_id_card',
+        contentType: "application/json",
+        type:"POST",
+        data: JSON.stringify(st),
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_staff_id_card_changed', data.staff_id_card_details,data.image_type)
+          }else if(data.status == 'e'){
+            showToast("Student Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+
  //Staff TYpe Report
 
  self.on('read_employee_type_report', function() {
@@ -474,7 +497,7 @@ function StaffStore() {
 
   //allow Block staff 
 
-  self.on('allow_block_staff', function(emp_id,is_active) {
+  /*self.on('allow_block_staff', function(emp_id,is_active) {
     let req = {}
     req.emp_id=emp_id
     req.is_active=is_active
@@ -499,8 +522,31 @@ function StaffStore() {
           showToast("", data)
         }
       })
+  })*/
+
+  self.on('allow_block_staff', function(st) {
+    $.ajax({
+      url:'/staff/allow_block_staff',
+        type:"POST",
+        data: JSON.stringify(st),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Update Successfull")
+            self.trigger('allow_block_staff_changed')
+          }else if(data.status == 'e'){
+            showToast("Error updating result activation. Please try again.", data.messaage)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
   })
-  self.on('reset_staff_password', function(emp_id) {
+  self.on('reset_staff_password', function(emp_id){
     let req = {}
     req.emp_id=emp_id
    // req.password=password
@@ -517,6 +563,34 @@ function StaffStore() {
           if(data.status == 's'){
             toastr.success("Successfully Update")
             self.trigger('reset_staff_password_changed')
+          }else if(data.status == 'e'){
+            showToast("Error Updating staff. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  // fast edit
+
+  self.on('fast_edit_staff', function(editValues,fast_edit_value){
+    let req = {}
+    req.editValues=editValues
+    req.fast_edit_value=fast_edit_value
+    $.ajax({
+      url:'/staff/fast_edit_staff',
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            toastr.success("Successfully Update")
+            self.trigger('update_staff_fast_edit_changed')
           }else if(data.status == 'e'){
             showToast("Error Updating staff. Please try again.", data)
           }

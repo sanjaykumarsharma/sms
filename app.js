@@ -67,6 +67,7 @@ var idsignatureRouter = require('./routes/id_signature');
 var idcardRouter = require('./routes/id_card');
 var activityReport = require('./routes/activity_report');
 var Career = require('./routes/career');
+var Alumni = require('./routes/alumni');
 
 
 //Tarique
@@ -230,6 +231,7 @@ app.use('/id_signature', verifyToken, idsignatureRouter);
 app.use('/id_card', verifyToken, idcardRouter);
 app.use('/activity_report', verifyToken, activityReport);
 app.use('/career', verifyToken, Career);
+app.use('/alumni', verifyToken, Alumni);
 
 //Tarique
 app.use('/admin_report', verifyToken, adminReportRouter);

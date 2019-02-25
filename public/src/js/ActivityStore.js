@@ -242,7 +242,7 @@ function ActivityStore() {
   self.on('read_classes', function() {
     let req = {}
     $.ajax({
-      url:'/standard',
+      url:'/activity_detail/standard',
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
@@ -263,7 +263,7 @@ function ActivityStore() {
   self.on('read_section', function() {
     let req = {}
     $.ajax({
-      url:'/section',
+      url:'/activity_detail/section',
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},

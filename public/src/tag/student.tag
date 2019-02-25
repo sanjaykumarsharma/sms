@@ -32,7 +32,7 @@
 			</div>
 		</div>
 		<div class="level box no-print">
-			<div class="level-left" show={role=='ADMIN'}>
+			<div class="level-left" show={role=='ADMIN' || role=='Discipline'}>
 				<div class="columns">
 					<div class="column is-narrow">
 						<label class="label">Standard</label>
@@ -62,31 +62,31 @@
 				</div>
 			</div>
 			<div class="level-right" >
-				<div class="column is-narrow field">
+				<div class="column is-narrow field" show={role=='ADMIN' || role=='Discipline'}>
 					<div class="control">
 				    	<input class="input" ref="searchStudent" onkeyup={filterStudent} type="text" placeholder="Search Here">
 				  	</div>
 				</div>
 				<div class="column is-narrow field has-addons">
 					<div class="control">
-				    	<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No">
+				    	<input class="input" ref="read_enroll_number" type="text" placeholder="Enter Enroll No" onkeyup={addEnter}>
 				  	</div>
 			    	<div class="control">
 			    		<a class="button is-info " onclick={getStudentData}>Search</a>
 			  		</div>
 				</div>
-				<button show={role=='ADMIN'} class="button is-link has-text-weight-bold ml5 " style="margin-bottom:12px;" onclick={getStudentData}>
+				<button show={role=='ADMIN' || role=='Discipline'} class="button is-link has-text-weight-bold ml5 " style="margin-bottom:12px;" onclick={getStudentData}>
 			        <span class="icon">
 			          <span class="fas fa-sync-alt"></span>
 			        </span>
 	        	</button>
-	        	<button show={role=='ADMIN'} class="button is-success has-text-weight-bold  ml5" style="margin-bottom:12px;"
+	        	<button show={role=='ADMIN' || role=='Discipline'} class="button is-success has-text-weight-bold  ml5" style="margin-bottom:12px;"
 	        	onclick={downloadCSV}>
         			<span class="icon">
           				<i class="far fa-file-excel"></i>
         			</span>
         		</button>
-	        	<button show={role=='ADMIN'} class="button is-primary has-text-weight-bold  ml5" style="margin-bottom:12px;"
+	        	<button show={role=='ADMIN' || role=='Discipline'} class="button is-primary has-text-weight-bold  ml5" style="margin-bottom:12px;"
 	        	onclick="window.print()">
         			<span class="icon">
           				<i class="fas fa-print"></i>
@@ -105,7 +105,7 @@
 					<th>Registration No</th>
 					<th>SMS</th>
 					<th>Father's Name</th>
-					<th class="no-print" style="width:358px;"></th>
+					<th class="no-print {role}" style=""></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -118,10 +118,18 @@
 					<td>{st.f_name}</td>
 					<td class="has-text-right no-print">
 		            <div class="inline-flex rounded border border-grey overflow-hidden" hide={st.confirmDelete}>
-		              <span if={role=='ADMIN'}><a class="button is-small is-rounded " onclick={withdraw_student.bind(this, st.student_id)}>WithDraw Student</a></span>
-		              <span><a class="button is-small is-rounded" onclick={view_profile.bind(this, st.student_id)}>Profile</a></span>
-		              <span><a class="button is-small is-rounded " onclick={edit.bind(this, st.student_id)}>Edit</a></span>
-		              <span if={role=='ADMIN'}> <a class="button is-small is-rounded" rel="nofollow" onclick={confirmDelete}>Delete</a></span>
+		              <span show={role=='ADMIN'}><a class="button is-small " onclick={withdraw_student.bind(this, st.student_id)} title="WithDraw Student">
+		              	<i class="fa fa-unlink" aria-hidden="true"></i>
+		              </a></span>
+		              <span><a class="button is-small" onclick={view_profile.bind(this, st.student_id)} title="View Profile">
+		              	<i class="fa fa-eye" aria-hidden="true"></i>
+		              </a></span>
+		              <span show={role=='ADMIN' || role=='Admission'}><a class="button is-small " onclick={edit.bind(this, st.student_id)} title="Edit">
+		              	<i class="fa fa-edit" aria-hidden="true"></i>
+		              </a></span>
+		              <span show={role=='ADMIN'}> <a class="button is-small" rel="nofollow" onclick={confirmDelete} title="Delete">
+		              	<i class="fa fa-trash" aria-hidden="true"></i>
+		              </a></span>
 		            </div>
 		            <div class="table-buttons" if={st.confirmDelete}>
 		              <span disabled={loading} class="button is-small is-rounded" onclick={delete}><i class="fa fa-check" ></i></span>
@@ -331,7 +339,7 @@
 			</div>
 		</div>
 		
-		<table class="table is-fullwidth is-bordered">
+		<table class="table is-fullwidth is-bordered print-friendly">
 		<caption class="caption"> Student\'s Information ({st.session_name})</caption>
 			<tr>
 				<td rowspan="4" colspan=2 >
@@ -707,7 +715,7 @@
 	<section class=" is-fluid" show={student_view =='add_student'}>
 	<div class="level">
 			<div class="level-left">
-				<h2 class="title" style="color: #ff3860;">{title} Student</h2>
+				<h2 class="title is-size-5" style="color: #ff3860;">{title} Student</h2>
 			</div>
 			<div class="level-right">
 				<!-- <a class="button no-print" onclick={}>Back</a> -->
@@ -866,8 +874,8 @@
 	    </div>  
 	    <div class="columns mt30">
 			<div class="column is-full">
-	          	<h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information(Permanent Address)</h3>
-	          	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+	          	<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Contact Information(Permanent Address)</h3>
+	          	<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em; ">
 	        </div>
 	    </div> 
 
@@ -915,10 +923,10 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link"> Check if Correspondence Address is same as Permanent Address
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3"> Check if Correspondence Address is same as Permanent Address
 		    		<input type="checkbox" id="correspondenceCheckbox" name="correspondenceCheckbox" onclick={copyAddress.bind(this)}>
 		      	</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      	<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
 		</div> 
 
@@ -1001,8 +1009,8 @@
 		</div>  
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Other Information</h3>
-		    	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Other Information</h3>
+		    	<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
 		</div>
 
@@ -1134,7 +1142,7 @@
 <section class=" is-fluid" show={student_view =='add_father_information'}>
 	<div class="label">
 		<div class="level-left">
-			<h2 class="title" style="color: #ff3860;">{title} Father</h2>
+			<h2 class="title is-size-5" style="color: #ff3860;">{title} Father</h2>
 		</div>
 		<div class="level-right">
 		</div>
@@ -1160,8 +1168,8 @@
 		    	</div>
 		       	<div class="columns mt35">
 		       		<div class="column is-full">
-		      			<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Information</h3>
-		      			<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      			<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Work Information</h3>
+		      			<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    		</div>
 		       	</div>
 		       	<div class="columns mt30">
@@ -1272,10 +1280,10 @@
 				<input class="input is-small" ref="f_office_phone" type="number">
 	      	</div>
 		</div>
-		<div class="columns mt30">
+		<div class="columns">
 		    <div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-6 has-text-link">Educational Information</h3>
-		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      <h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Educational Information</h3>
+		      <hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
 		</div>
 
@@ -1296,10 +1304,10 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Check if Candidate's Correspondence Address is same as Father's Address
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Check if Candidate's Correspondence Address is same as Father's Address
 		      		<input type="checkbox" id="fatherCorrespondenceCheckbox" onclick={copyFatherAddress.bind(this)}>
 		      	</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      	<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
 		</div>
 
@@ -1386,7 +1394,7 @@
 <section class=" is-fluid" show={student_view =='add_mother_information'}>
 	<div class="label">
 		<div class="level-left">
-			<h2 class="title" style="color: #ff3860;">{title} Mother</h2>
+			<h2 class="title is-size-5" style="color: #ff3860;">{title} Mother</h2>
 		</div>
 		<div class="level-right">
 		</div>
@@ -1412,8 +1420,8 @@
 		    	</div>
 		    	<div class="columns mt35">
 		       		<div class="column is-full">
-		      			<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Information</h3>
-		      			<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      			<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Work Information</h3>
+		      			<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="student-hr">
 		    		</div>
 		       	</div>
 		       	<div class="columns mt30">
@@ -1525,10 +1533,10 @@
 	      	</div>
 		</div>
 
-		<div class="columns mt30">
+		<div class="columns">
 			<div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-6 has-text-link">Educational Information</h3>
-		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      <h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Educational Information</h3>
+		      <hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
 		</div>
 
@@ -1545,20 +1553,14 @@
 	      	<div class="column is-2 ">
 				<input class="input is-small" ref="m_other_qualification" type="text">
 	      	</div>
-	      	<div class="column is-2">
-				<label class="label is-small" for="m_office_state">State</label>
-	      	</div>
-	      	<div class="column is-2">
-        		<input class="input is-small" ref="m_office_state" type="text">
-	      	</div>
 		</div>
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information Check if Mother's Address is same as Father's Address
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Contact Information Check if Mother's Address is same as Father's Address
 		      		<input type="checkbox" id="motherCorrespondenceCheckbox" onclick={copyMotherAddress.bind(this)}>
 		      	</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      	<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
 		</div>
 
@@ -1646,7 +1648,7 @@
 <section class=" is-fluid" show={student_view =='add_guardian_information'}>
 	<div class="label">
 		<div class="level-left">
-			<h2 class="title" style="color: #ff3860;">{title} Guardian</h2>
+			<h2 class="title is-size-5" style="color: #ff3860;">{title} Guardian</h2>
 		</div>
 		<div class="level-right">
 
@@ -1687,8 +1689,8 @@
 		    	</div>
 		    	<div class="columns mt30">
 		    		<div class="column is-full">
-		      			<h3 class="has-text-weight-bold is-size-6 has-text-link">Work Information</h3>
-		      			<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      			<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Work Information</h3>
+		      			<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="student-hr is-full">
 		    		</div>
 		    	</div>
 		    </div>
@@ -1789,7 +1791,7 @@
 
 		<div class="columns mt30">
 			<div class="column is-2">
-				<label class="label" for="g_office_country">Country</label>
+				<label class="label is-small" for="g_office_country">Country</label>
 			</div>
 			<div class="column is-2">
 				<input class="input is-small" id="g_office_country" ref="g_office_country" type="text">
@@ -1802,10 +1804,10 @@
 	      	</div>
 		</div>
 
-		<div class="columns mt30">
+		<div class="columns mt20">
 			<div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-6 has-text-link">Educational Information</h3>
-		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      <h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Educational Information</h3>
+		      <hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
 		</div>
 
@@ -1826,8 +1828,8 @@
 
 		<div class="columns mt30">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">Contact Information</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Contact Information</h3>
+		      	<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
 		</div>
 
@@ -1930,16 +1932,16 @@
 <section class=" is-fluid" show={student_view =='add_sibling_information'}>
 	<div class="label">
 		<div class="level-left">
-			<h2 class="title" style="color: #ff3860;">Sibling Detail</h2>
+			<h2 class="title is-size-5" style="color: #ff3860;">{title} Sibling Detail</h2>
 		</div>
 		<div class="level-right">
 		</div>
 	</div>
 	<div class="box">
-		<div class="columns mt20">
+		<div class="columns">
 			<div class="column is-full">
-		    	<h3 class="has-text-weight-bold is-size-6 has-text-link">First Child</h3>
-		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">First Child</h3>
+		      	<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="student-hr is-full">
 		    </div>
 		</div>
 		<div class="columns mt30">
@@ -1987,8 +1989,8 @@
 
 		<div class="columns mt35">
 			<div class="column is-full">
-	    		<h3 class="has-text-weight-bold is-size-6 has-text-link">Second Child</h3>
-	      		<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+	    		<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Second Child</h3>
+	      		<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 	    	</div>
 		</div>
 
@@ -2036,8 +2038,8 @@
 		
 		<div class="columns mt35">
 			<div class="column is-full">
-	    		<h3 class="has-text-weight-bold is-size-6 has-text-link">Third Child</h3>
-	      		<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+	    		<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Third Child</h3>
+	      		<hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="student-hr is-full">
 	    	</div>
 		</div>
 
@@ -2086,8 +2088,8 @@
 
 		<div class="columns mt35">
 			<div class="column is-full">
-	    		<h3 class="has-text-weight-bold is-size-6 has-text-link">Fourth Child</h3>
-	      		<hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+	    		<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Fourth Child</h3>
+	      		<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 	    	</div>
 		</div>
 
@@ -2134,7 +2136,7 @@
 	      	</div>
 		</div>
 
-		<div class="columns mt60">
+		<div class="columns mt30">
 			<div class="column is-full">
 			    <button class="button is-primary has-text-weight-bold adjusted-top" 
 			    	onclick={closeSiblingInformation}>Previous
@@ -2155,15 +2157,22 @@
 
 <!-- Start Other Information -->
 <section class=" is-fluid" show={student_view =='add_other_information'}>
+	<div class="label">
+		<div class="level-left">
+			<h2 class="title is-size-5" style="color: #ff3860;">{title} Other Information</h2>
+		</div>
+		<div class="level-right">
+		</div>
+	</div>
 	<div class="box">
 		<div class="columns ">
 			<div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-6 has-text-link">Areas Where Parent(Father or Mentor) can contribute to the school</h3>
-		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      <h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Areas Where Parent(Father or Mentor) can contribute to the school</h3>
+		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;" class="student-hr is-full">
 		    </div>
 		</div>
 
-		<div class="columns mt30">
+		<div class="columns">
 			<table class="table is-fullwidth no-border">
     			<tbody>
     				<tr>
@@ -2219,8 +2228,8 @@
 
 		<div class="columns ">
 			<div class="column is-full">
-		      <h3 class="has-text-weight-bold is-size-6 has-text-link">Please Mention if either parent possesses any of the following Qualification</h3>
-		      <hr style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		      <h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Please Mention if either parent possesses any of the following Qualification</h3>
+		      <hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
 		    </div>
 		</div>
 
@@ -2458,7 +2467,10 @@
       studentStore.off('read_for_edit_student_changed',ReadForEditStudentChanged)
       studentStore.off('upload_student_image_changed',UploadStudentImage)
       studentStore.off('upload_father_image_changed',UploadFatherImage)
+      studentStore.off('delete_upload_student_image_changed',DeleteUploadStudentImage)
       studentStore.off('delete_upload_father_image_changed',DeleteUploadFatherImage)
+      studentStore.off('delete_upload_mother_image_changed',DeleteUploadMotherImage)
+      studentStore.off('delete_upload_guardian_image_changed',DeleteUploadGuardianImage)
       studentStore.off('upload_mother_image_changed',UploadMotherImage)
       studentStore.off('upload_guardian_image_changed',UploadGuardianImage)
       studentStore.off('upload_copy_father_image_changed',UploadGuardianCopyFatherImage)
@@ -2468,6 +2480,12 @@
       studentStore.off('student_list_changed',StudentListChanged)
       studentStore.off('regenerate_roll_no_changed',RegenerateRollNoChanged)
     })
+
+    self.addEnter = (e) => {
+      if(e.which == 13){
+        self.getStudentData()
+      }
+    }
 
     self.getStudentData = () =>{
     	if(self.refs.read_section_id.value !=""){
@@ -2681,10 +2699,10 @@
       	}*/else if((self.refs.g_zip.value).length!=6 && (self.refs.g_zip.value).length!=0){
         	toastr.error("Please enter Valid Zip Code and try again")
         	return;
-      	}else if((self.refs.g_phone.value).length<16 && (self.refs.g_phone.value).length!=0){
+      	}/*else if((self.refs.g_phone.value).length<16 && (self.refs.g_phone.value).length!=0){
         	toastr.error("Please enter Valid Mobile No and try again")
         	return;
-      	}else if(!self.refs.g_mobile.value.match(phoneno) && (self.refs.g_mobile.value).length!=0){
+      	}*/else if(!self.refs.g_mobile.value.match(phoneno) && (self.refs.g_mobile.value).length!=0){
         	toastr.error("Please enter Valid Mobile No and try again")
         	return;
       	}else if(!self.refs.g_email.value.match(validate_email) && (self.refs.g_email.value).length!=0){
@@ -2991,9 +3009,9 @@
 		pp_box.style.backgroundImage = "";
 		document.getElementById(item2).value = ""
 		event.stopPropagation();
-		/*if(self.title=='Update'){
-			studentStore.trigger('delete_upload_student_image', self.student_picture,self.student_id)
-		}*/
+		if(self.title=='Update'){
+			studentStore.trigger('delete_upload_student_image',self.student_id)
+		}
 	}
 
 	self.trigger_file_input = (item,e) => {
@@ -3074,6 +3092,9 @@
 		m_pp_box.style.backgroundImage = "";
 		document.getElementById(item2).value = ""
 		event.stopPropagation();
+		if(self.title=='Update'){
+			studentStore.trigger('delete_upload_mother_image',self.student_id)
+		}
 	}
 
 	self.trigger_mother_file_input = (item,e) => {
@@ -3123,6 +3144,9 @@
 		g_pp_box.style.backgroundImage = "";
 		document.getElementById(item2).value = ""
 		event.stopPropagation();
+		if(self.title=='Update'){
+			studentStore.trigger('delete_upload_guardian_image',self.student_id)
+		}
 	}
 
 	self.trigger_guardian_file_input = (item,e) => {
@@ -3938,6 +3962,7 @@
 		f_pp_box.style.backgroundImage = "";
 		m_pp_box.style.backgroundImage = "";
 		g_pp_box.style.backgroundImage = "";
+    	self.readStandard()
     	self.getSection()
     	self.readSection()
     	self.readCategory()
@@ -4062,7 +4087,7 @@
       self.StandardName = $("#read_standard_id option:selected").text();
       self.SectionName = $("#read_section_id option:selected").text();
 
-      if(self.students.length==0 && role=="ADMIN"){
+      if(self.students.length==0 && role=="ADMIN" && role=="Admission" && role=="Discipline"){
       	toastr.info("No Data Found")
       }
       self.update()
@@ -4614,6 +4639,11 @@
       self.student_profile_picture = image_name
     }
 
+    studentStore.on('delete_upload_student_image_changed',DeleteUploadStudentImage)
+    function DeleteUploadStudentImage(){
+      
+    }
+
     studentStore.on('upload_father_image_changed',UploadFatherImage)
     function UploadFatherImage(image_name){
       console.log(image_name) 
@@ -4631,12 +4661,21 @@
       self.mother_profile_picture = image_name
     }
 
+    studentStore.on('delete_upload_mother_image_changed',DeleteUploadMotherImage)
+    function DeleteUploadMotherImage(){
+      
+    }
+
     studentStore.on('upload_guardian_image_changed',UploadGuardianImage)
     function UploadGuardianImage(image_name){
       console.log(image_name) 
       self.guardian_profile_picture = image_name
     }
 
+    studentStore.on('delete_upload_guardian_image_changed',DeleteUploadGuardianImage)
+    function DeleteUploadGuardianImage(){
+      
+    }
     studentStore.on('upload_copy_father_image_changed',UploadGuardianCopyFatherImage)
     function UploadGuardianCopyFatherImage(image_name){
       console.log(image_name) 

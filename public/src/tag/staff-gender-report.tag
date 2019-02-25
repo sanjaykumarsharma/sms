@@ -1,4 +1,6 @@
 <staff-gender-report>
+	<print-header></print-header> 
+<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 		<h2 class="title has-text-centered" style="color: #ff3860;">Staff BY Gender<br>
 					Grand Total <span style="color:#000">: {grand_total}</span></h2>
@@ -54,7 +56,11 @@
 				</div>
 			</div>
 		</div>
-		<canvas id="canvas_pie" show={report_view =='show_graph'}></canvas>
+
+		<center>
+			<div id="piechart" style="width: 900px; height: 500px;" show={report_view =='show_graph'}></div>
+		</center>
+		
 		<table class="table is-fullwidth is-striped is-hoverable is-narrow" show={report_view =='show_table'}>
 			<thead>
 				<tr>
@@ -111,66 +117,47 @@
     function EmployeeTypesChanged(employeeTypes){
       console.log(employeeTypes) 
       self.employeeTypes = employeeTypes
+        self.loading = false;
       self.update()
       console.log(self.employeeTypes)
     }
 
     self.readEmployeeGenderReport = () => {
+    	self.loading=true
        staffStore.trigger('read_employee_gender_report',self.refs.emp_type_id.value)
     }
     
   
     staffStore.on('read_employee_gender_report_change',ReadEmployeeGenderReportChanged)
     function ReadEmployeeGenderReportChanged(employeeGenderReports,grandTotal){
-      //console.log(employeeGenderReports) 
-      self.title='Create'
-      self.loading = false
-      self.employeeGenderReports = employeeGenderReports
-       self.grand_total = grandTotal
-
-      var chartColors = ['#e3342f','#F6993F','#F2D024','#1F9D55','#2779BD','#9561E2','#B8C2CC','#fff'];
+    	self.title='Create'
+    	self.loading = false
+    	self.employeeGenderReports = employeeGenderReports
+       	self.grand_total = grandTotal
 
 		var labels = []
 		var chart_percentage = []
         var backgroundColor = []
 
+        chart_percentage.push(['Task', 'Hours per Day'])
+        for (var i = self.employeeGenderReports.length - 1; i >= 0; i--) {
+		   chart_percentage.push([self.employeeGenderReports[i].gender,self.employeeGenderReports[i].total])
+		}
+		google.charts.load("current", {packages:["corechart"]});
+      	google.charts.setOnLoadCallback(drawChart);
+      	function drawChart() {
+        	var data = google.visualization.arrayToDataTable(chart_percentage);
+        	var options = {
+          		is3D: true,
+          		legend:{position: 'labeled',
+                		textStyle: {bold: true} },
+          		pieSliceText: 'value'
+        	};
 
-		 for (var i = self.employeeGenderReports.length - 1; i >= 0; i--) {
-		 	var total_percentage = ((self.employeeGenderReports[i].total*100)/self.grand_total).toFixed(2);
-		    var percentage = self.employeeGenderReports[i].gender + ' ( ' + self.employeeGenderReports[i].total + ' , ' + total_percentage + '% )';
-
-		    labels.push(percentage)
-		    chart_percentage.push(self.employeeGenderReports[i].total)
-		    if(typeof chartColors[i] != "undefined"){
-		    	backgroundColor.push(chartColors[i])
-		    }
-
-		 }
-
-		  console.log(labels);
-		  console.log(chart_percentage);
-
-		  var config = {
-		    type: 'pie',
-		    data: {
-		      datasets: [{
-		        data: chart_percentage,
-		        backgroundColor: backgroundColor,
-		        label: 'labels'
-		      }],
-		      labels: labels
-		    },
-		    options: {
-		      responsive: true
-		    }
-		  };
-
-		  var ctx = document.getElementById('canvas_pie').getContext('2d');
-		  window.myPie = new Chart(ctx, config);
-	      self.update()
-	      console.log(self.readEmployeeGenderReports)
-      self.update()
-      //console.log(self.employeeTypes)
+        	var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        	chart.draw(data, options);
+      	}
+      	self.update()
     }
     
 
