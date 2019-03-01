@@ -16,7 +16,7 @@
     </table>
 </center>
     <div>
-        <hr style="border:none;border-top:solid #dd0000 2px;margin:2px 0;">
+        <hr style="border:none;border-top:solid #dd0000 2px;margin:2px 0;width:100%">
         <div>
             <div style="text-align:left;"> Printed on:{print_date} </div>
         </div>

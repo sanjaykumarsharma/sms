@@ -12,10 +12,9 @@ function FinalAssessmentReportStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            self.standards = data.standards
-            self.trigger('read_standard_changed', data.standards)
+            self.trigger('read_standard_changed', data.standards, data.sections, data.end_date)
           }else if(data.status == 'e'){
-            showToast("Standard Read Error. Please try again.", data)
+            showToast("Standard and Sections Read Error. Please try again.", data)
           }
         },
         error: function(data){
@@ -70,10 +69,10 @@ function FinalAssessmentReportStore() {
       })
   })
 
-    self.on('read_final_assessment_report_card', function(obj) {
+  self.on('read_final_assessment_report_card_one_to_four', function(obj) {
     console.log('i am in read_categories api call from ajax')
     $.ajax({
-      url:'/final_assessment_report/read_final_assessment_report_card',
+      url:'/final_assessment_report/read_final_assessment_report_card_one_to_four',
         contentType: "application/json",
         type:"POST",
         dataType:"json",
@@ -83,7 +82,78 @@ function FinalAssessmentReportStore() {
           console.log(data)
           if(data.status == 's'){
             
-            self.trigger('read_final_assessment_report_card_changed')
+            self.trigger('read_final_assessment_report_card_one_to_four_changed',data.marks)
+          }else if(data.status == 'e'){
+            showToast("Data Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+  
+  self.on('read_final_assessment_report_card_five_to_eight', function(obj) {
+    console.log('i am in read_categories api call from ajax')
+    $.ajax({
+      url:'/final_assessment_report/read_final_assessment_report_card_five_to_eight',
+        contentType: "application/json",
+        type:"POST",
+        dataType:"json",
+        data: JSON.stringify(obj),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+            self.trigger('read_final_assessment_report_card_five_to_eight_changed',data.marks)
+          }else if(data.status == 'e'){
+            showToast("Data Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+
+  self.on('read_final_assessment_report_card_nine', function(obj) {
+    $.ajax({
+      url:'/final_assessment_report/read_final_assessment_report_card_nine',
+        contentType: "application/json",
+        type:"POST",
+        dataType:"json",
+        data: JSON.stringify(obj),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+            self.trigger('read_final_assessment_report_card_nine_changed',data.marks)
+          }else if(data.status == 'e'){
+            showToast("Data Read Error. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
+  self.on('read_final_assessment_report_card_eleven', function(obj) {
+    $.ajax({
+      url:'/final_assessment_report/read_final_assessment_report_card_eleven',
+        contentType: "application/json",
+        type:"POST",
+        dataType:"json",
+        data: JSON.stringify(obj),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            
+            self.trigger('read_final_assessment_report_card_eleven_changed',data.marks)
           }else if(data.status == 'e'){
             showToast("Data Read Error. Please try again.", data)
           }
