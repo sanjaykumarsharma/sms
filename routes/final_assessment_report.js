@@ -13,14 +13,21 @@ router.get('/read_standard', function(req, res, next) {
      var data = {}
      var standardQry = `SELECT standard_id, standard FROM standard_master`;
      var sectionQry = `SELECT standard_id, section_id, section FROM section_master`;
-     var endDateQry = `select date_format(max(end_date), '%Y-%m-%d')  as end_date
+     var endDateQryH = `select date_format(max(end_date), '%Y-%m-%d')  as end_date
                       from marks_entry_master c
                       join exam_type a on c.exam_id = a.exam_type_id
                       JOIN exam_scheme_master b on a.scheme_id=b.scheme_id 
                       where assessment='H' 
                       and b.session_id=${req.cookies.session_id}`;
+     
+     var endDateQryF = `select date_format(max(end_date), '%Y-%m-%d')  as end_date
+                      from marks_entry_master c
+                      join exam_type a on c.exam_id = a.exam_type_id
+                      JOIN exam_scheme_master b on a.scheme_id=b.scheme_id 
+                      where assessment='F' 
+                      and b.session_id=${req.cookies.session_id}`;
 
-     var qry = standardQry+';'+sectionQry+';'+endDateQry;
+     var qry = standardQry+';'+sectionQry+';'+endDateQryH+';'+endDateQryF;
      connection.query(qry,function(err,result)     {
             
         if(err){
@@ -33,6 +40,7 @@ router.get('/read_standard', function(req, res, next) {
             data.standards = result[0];
             data.sections = result[1];
             data.end_date = result[2][0]['end_date'];
+            data.end_date_final = result[3][0]['end_date'];
            //connection.end()
 
             res.send(JSON.stringify(data))
@@ -127,16 +135,13 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
     var marksQryViewH =`CREATE OR REPLACE VIEW final_assessment_report_card_one_to_four_h AS 
                       select roll_number, a.student_id, a.exam_id, a.subject_id, subject_name,
                       if( marks_grade = -1,'Ab', marks_grade) as marks,
-                      show_in,marking_type, scheme_id, 
-                      concat(first_name,' ',middle_name,' ',last_name)as student_name,
-                      date_format(dob, '%d/%m/%Y') as  dob, enroll_number, house_name
+                      show_in,marking_type, scheme_id
                       from marks_entry_master a
                       join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
                       join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
                       join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
                       join exam_type f on e.exam_id = f.exam_type_id
                       join subject_master g on a.subject_id = g.subject_id
-                      left join house_master h on c.house_id = h.house_id
                       where a.student_id in (${input.student_id})
                       and f.assessment='H'
                       and a.session_id=${req.cookies.session_id}
@@ -147,16 +152,13 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
                       
                       select roll_number, a.student_id, a.exam_id, a.subject_id, subject_name,
                       sum(if(a.marks = -1,'Ab', a.marks)) as  marks,
-                      show_in, marking_type, scheme_id,
-                      concat(first_name,' ',middle_name,' ',last_name)as student_name,
-                      date_format(dob, '%d/%m/%Y') as  dob, enroll_number, house_name
+                      show_in, marking_type, scheme_id
                       from marks_entry_master a
                       join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
                       join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
                       join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
                       join exam_type f on e.exam_id = f.exam_type_id
                       join subject_master g on a.subject_id = g.subject_id
-                      left join house_master h on c.house_id = h.house_id
                       where a.student_id in (${input.student_id})
                       and f.assessment='H'
                       and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
@@ -167,16 +169,13 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
     var marksQryViewF =`CREATE OR REPLACE VIEW final_assessment_report_card_one_to_four_f AS 
                       select roll_number, a.student_id, a.exam_id, a.subject_id, subject_name,
                       if( marks_grade = -1,'Ab', marks_grade) as marks,
-                      show_in,marking_type, scheme_id, 
-                      concat(first_name,' ',middle_name,' ',last_name)as student_name,
-                      date_format(dob, '%d/%m/%Y') as  dob, enroll_number, house_name
+                      show_in,marking_type, scheme_id
                       from marks_entry_master a
                       join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
                       join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
                       join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
                       join exam_type f on e.exam_id = f.exam_type_id
                       join subject_master g on a.subject_id = g.subject_id
-                      left join house_master h on c.house_id = h.house_id
                       where a.student_id in (${input.student_id})
                       and f.assessment='F'
                       and a.session_id=${req.cookies.session_id}
@@ -187,16 +186,13 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
                       
                       select roll_number, a.student_id, a.exam_id, a.subject_id, subject_name,
                       sum(if(a.marks = -1,'Ab', a.marks)) as  marks,
-                      show_in, marking_type, scheme_id,
-                      concat(first_name,' ',middle_name,' ',last_name)as student_name,
-                      date_format(dob, '%d/%m/%Y') as  dob, enroll_number, house_name
+                      show_in, marking_type, scheme_id
                       from marks_entry_master a
                       join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
                       join student_master b on (a.student_id = b.student_id and b.current_session_id = ${req.cookies.session_id})
                       join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
                       join exam_type f on e.exam_id = f.exam_type_id
                       join subject_master g on a.subject_id = g.subject_id
-                      left join house_master h on c.house_id = h.house_id
                       where a.student_id in (${input.student_id})
                       and f.assessment='F'
                       and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
@@ -207,17 +203,16 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
     
     var marksQry = `select f.roll_number, f.student_id, f.subject_id, f.subject_name,
                     final_assessment_marks, first_assessment_marks, final_marks,
-                    f.show_in, f.marking_type, f.student_name, f.dob, f.enroll_number, f.house_name
+                    f.show_in, f.marking_type
                     from
                     
                     
                     (select  roll_number, student_id, exam_id, subject_id, subject_name,
                             final_assessment_marks,
-                            show_in,marking_type, scheme_id, student_name, dob, enroll_number, house_name 
+                            show_in,marking_type, scheme_id
                     from
                     (select roll_number, student_id, exam_id, subject_id, subject_name,
-                    marks as final_assessment_marks,
-                    show_in,marking_type, scheme_id, student_name, dob, enroll_number, house_name
+                    marks as final_assessment_marks,show_in,marking_type, scheme_id
                     from final_assessment_report_card_one_to_four_f
                     where marking_type='G'
 
@@ -227,7 +222,7 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
                     (SELECT grade FROM grade_master 
                     where min_marks<=marks  and max_marks>=marks
                     and scheme_id=scheme_id and exam_id=exam_id limit 1) as final_assessment_marks,
-                    show_in,marking_type, scheme_id, student_name, dob, enroll_number, house_name
+                    show_in,marking_type, scheme_id
                     from final_assessment_report_card_one_to_four_f
                     where marking_type='N') ff) f
 
@@ -287,7 +282,7 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
                       ) zz
                       group by zz.subject_id) kk`;
 
-    var maturityDevelopmentQry = `select  student_id, exam_term, initiative_first, initiative_second,
+    var maturityDevelopmentFirstQry = `select  student_id, exam_term, initiative_first, initiative_second,
                                   initiative_third, initiative_fourth, interest_first, interest_second,
                                   interest_third, interest_fourth, use_time_first, use_time_second,
                                   use_time_third, use_time_fourth, work_habit_first, work_habit_second,
@@ -296,20 +291,47 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
                                   responsibility_second, responsibility_third, responsibility_fourth
                                   from student_maturity_development
                                   where student_id in (${input.student_id})
-                                  and session_id = ${req.cookies.session_id}        
+                                  and session_id = ${req.cookies.session_id}    
+                                  and exam_term = 'First'    
                                   order by 1,2`; 
 
-    var physicalFitnessQry =`select student_id, first_skill, first_description, second_skill, 
+    var maturityDevelopmentFinalQry = `select  student_id, exam_term, initiative_first, initiative_second,
+                                  initiative_third, initiative_fourth, interest_first, interest_second,
+                                  interest_third, interest_fourth, use_time_first, use_time_second,
+                                  use_time_third, use_time_fourth, work_habit_first, work_habit_second,
+                                  work_habit_third, work_habit_fourth, participation_first, participation_second,
+                                  participation_third, participation_fourth, responsibility_first, 
+                                  responsibility_second, responsibility_third, responsibility_fourth
+                                  from student_maturity_development
+                                  where student_id in (${input.student_id})
+                                  and session_id = ${req.cookies.session_id}    
+                                  and exam_term = 'Final'    
+                                  order by 1,2`;                               
+
+    var physicalFitnessFirstQry =`select student_id, exam_term, first_skill, first_description, second_skill, 
                             second_description, third_skill, third_description, fourth_skill,
                             fourth_description, fifth_skill, fifth_description
                             from student_fitness a
                             where a.student_id in (${input.student_id})
-                            and exam_term = 'First'
                             and session_id = ${req.cookies.session_id} 
+                            and exam_term = 'First'    
                             order by student_id`;
 
+    var physicalFitnessFinalQry =`select student_id, exam_term, first_skill, first_description, second_skill, 
+                            second_description, third_skill, third_description, fourth_skill,
+                            fourth_description, fifth_skill, fifth_description
+                            from student_fitness a
+                            where a.student_id in (${input.student_id})
+                            and session_id = ${req.cookies.session_id} 
+                            and exam_term = 'Final'    
+                            order by student_id`;                        
+
     var attendanceQry = `select a.student_id, 'Attendance' as subject_name,
-                         concat( (concat(pr, '/')),(COALESCE(ab,0)+pr)) as marks, 'At' as show_in from
+                         concat( (concat(pr, '/')),(COALESCE(ab,0)+pr)) as max_marks, 'At' as show_in,
+                         concat( (concat(pr1, '/')),(COALESCE(ab1,0)+pr1)) as max_marks_final,
+                         concat( (concat((pr+pr1), '/')),(COALESCE(ab,0)+pr+COALESCE(ab1,0)+pr1)) as final_marks,
+                         FORMAT(((pr+pr1)*100)/(COALESCE(ab,0)+pr+COALESCE(ab1,0)+pr1),2) as final_att_percentage from
+                        
                         (select student_id, count(attendance_date) as pr 
                          from student_attendance 
                          where attendance = '1' and student_id in (${input.student_id})
@@ -322,7 +344,23 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
                          from student_attendance 
                          where attendance = '0' and student_id in(${input.student_id})
                          and session_id=${req.cookies.session_id}
-                         and attendance_date <='${input.end_date}' group by student_id) b on a.student_id=b.student_id`;
+                         and attendance_date <='${input.end_date}' group by student_id) b on a.student_id=b.student_id
+                        
+                        left join
+
+                         (select student_id, count(attendance_date) as pr1
+                         from student_attendance 
+                         where attendance = '1' and student_id in (${input.student_id})
+                         and session_id=${req.cookies.session_id}
+                         and attendance_date <='${input.end_date_final}' group by student_id) a1 on a.student_id = a1.student_id
+                        
+                        left join
+
+                        (select student_id, count(attendance_date) as ab1
+                         from student_attendance 
+                         where attendance = '0' and student_id in(${input.student_id})
+                         and session_id=${req.cookies.session_id}
+                         and attendance_date <='${input.end_date_final}' group by student_id) b1 on a.student_id=b1.student_id`;
      
     var maxMarksQryF = `select subject_id, (SELECT grade FROM grade_master  where min_marks<=m_marks  and max_marks>=m_marks and scheme_id=scheme_id limit 1) as max_marks
                       from
@@ -343,9 +381,23 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
                       ) zz
                       group by zz.subject_id) kk`; 
     
-     var qry = groupByQry+';'+marksQryViewH+';'+marksQryViewF+';'+marksQry+';'+maxMarksQryH+';'+maturityDevelopmentQry+';'+physicalFitnessQry+';'+attendanceQry+';'+maxMarksQryF;
+    var studentDetailsQry = `select distinct a.student_id, enroll_number, a.session_id,
+                            concat(first_name,' ',middle_name,' ',last_name)as student_name,
+                            date_format(dob, '%d/%m/%Y') as  dob, house_name, session_name,
+                            date_format(doa, '%d/%m/%Y') as doa,
+                            concat(concat(date_format(doa, '%Y'),'-'),(date_format(doa, '%Y')+1)) as year
+                            from marks_entry_master a
+                            join student_master b on (a.student_id=b.student_id and b.current_session_id = ${req.cookies.session_id})
+                            join student_current_standing c on (b.student_id=c.student_id and a.session_id=c.session_id and b.current_session_id = ${req.cookies.session_id}) 
+                            join session_master d on a.session_id = d.session_id
+                            left join house_master e on c.house_id = e.house_id
+                            where a.student_id in (${input.student_id})
+                            and a.session_id=${req.cookies.session_id}
+                            order by 1`;
 
-     console.log(maturityDevelopmentQry);
+     var qry = groupByQry+';'+marksQryViewH+';'+marksQryViewF+';'+marksQry+';'+maxMarksQryH+';'+maturityDevelopmentFirstQry+';'+physicalFitnessFirstQry+';'+attendanceQry+';'+maxMarksQryF+';'+studentDetailsQry+';'+maturityDevelopmentFinalQry+';'+physicalFitnessFinalQry;
+
+     console.log(maturityDevelopmentFirstQry);
 
      connection.query(qry, function(err, result)     
      {
@@ -374,16 +426,32 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
               maturityDevelopment[r.student_id]=r
           })
 
+          var maturityDevelopmentFinal={}
+          result[10].map(r=>{
+              maturityDevelopmentFinal[r.student_id]=r
+          })
+
           //physicalFitness
           var physicalFitness={}
           result[6].map(r=>{
               physicalFitness[r.student_id]=r
           })
 
+          var physicalFitnessFinal={}
+          result[6].map(r=>{
+              physicalFitnessFinal[r.student_id]=r
+          })
+
           //attendance
           var attendance={}
           result[7].map(r=>{
               attendance[r.student_id]=r
+          })
+
+          //converting student_details as onject by stident_id
+          var studentDetails={}
+          result[9].map(r=>{
+              studentDetails[r.student_id]=r
           })
 
           //data according to student_id
@@ -406,7 +474,10 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
               row[student_id]=student_id
               row['marks']=obj
               row['md']=maturityDevelopment[student_id]
+              row['md_final']=maturityDevelopmentFinal[student_id]
               row['pf']=physicalFitness[student_id]
+              row['pf_final']=physicalFitnessFinal[student_id]
+              row['details']=studentDetails[student_id]
               marks_data.push(row)
               student_id=r.student_id
               obj=[]
@@ -421,7 +492,10 @@ router.post('/read_final_assessment_report_card_one_to_four/', function(req, res
           row[student_id]=student_id
           row['marks']=obj
           row['md']=maturityDevelopment[student_id]
+          row['md_final']=maturityDevelopmentFinal[student_id]
           row['pf']=physicalFitness[student_id]
+          row['pf_final']=physicalFitnessFinal[student_id]
+          row['details']=studentDetails[student_id]
           marks_data.push(row) 
 
 

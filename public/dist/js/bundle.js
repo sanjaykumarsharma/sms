@@ -9320,7 +9320,7 @@ function FinalAssessmentReportStore() {
       success: function (data) {
         console.log(data);
         if (data.status == 's') {
-          self.trigger('read_standard_changed', data.standards, data.sections, data.end_date);
+          self.trigger('read_standard_changed', data.standards, data.sections, data.end_date, data.end_date_final);
         } else if (data.status == 'e') {
           showToast("Standard and Sections Read Error. Please try again.", data);
         }
