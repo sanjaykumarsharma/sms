@@ -500,20 +500,18 @@ router.post('/read_first_assessment_report_card_five_to_eight/', function(req, r
 
                      group by subject_id`;
 
-    var avgMarksQry = `select subject_id, subject_name, max(marks) as avg_marks from 
-
-                     (SELECT a.student_id,a.subject_id, subject_name, round(sum(marks)/count(a.student_id)) as marks 
-                     FROM marks_entry_master a
-                     join subject_master b on a.subject_id = b.subject_id
-                     join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
-                     join exam_type f on e.exam_id = f.exam_type_id
-                     where e.marking_type='N'
-                     and f.assessment='H'
-                     and a.section_id=${input.section_id}
-                     and a.session_id=${req.cookies.session_id}
-                     group by a.subject_id,a.student_id) p
-
-                     group by subject_id`;
+    var avgMarksQry = `select subject_id, round(avg(marks)) as avg_marks
+                       from
+                       (SELECT a.student_id,a.subject_id, sum(if(marks=-1,0,marks)) as marks
+                       FROM marks_entry_master a
+                       join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                       join exam_type f on e.exam_id = f.exam_type_id
+                       where e.marking_type='N'
+                       and f.assessment='H'
+                       and a.section_id=${input.section_id}
+                       and a.session_id=${req.cookies.session_id}
+                       group by a.subject_id, a.student_id) x
+                       group by subject_id`;                 
 
     var maturityDevelopmentQry = `select  student_id, exam_term, initiative_first, initiative_second,
                                   initiative_third, initiative_fourth, interest_first, interest_second,
@@ -852,20 +850,18 @@ router.post('/read_first_assessment_report_card_nine/', function(req, res, next)
                     order by z.roll_number, z.student_id, z.exam_id, z.subject_id) q on (p.student_id=q.student_id and p.subject_id=q.subject_id)
                     order by q.student_id, q.order_no`;
 
-    var avgMarksQry = `select subject_id, subject_name, max(marks) as avg_marks from 
-
-                     (SELECT a.student_id,a.subject_id, subject_name, round(sum(marks)/count(a.student_id)) as marks 
-                     FROM marks_entry_master a
-                     join subject_master b on a.subject_id = b.subject_id
-                     join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
-                     join exam_type f on e.exam_id = f.exam_type_id
-                     where e.marking_type='N'
-                     and f.assessment='H'
-                     and a.section_id=${input.section_id}
-                     and a.session_id=${req.cookies.session_id}
-                     group by a.subject_id,a.student_id) p
-
-                     group by subject_id`;
+    var avgMarksQry = `select subject_id, round(avg(marks)) as avg_marks
+                       from
+                       (SELECT a.student_id,a.subject_id, sum(if(marks=-1,0,marks)) as marks
+                       FROM marks_entry_master a
+                       join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                       join exam_type f on e.exam_id = f.exam_type_id
+                       where e.marking_type='N'
+                       and f.assessment='H'
+                       and a.section_id=${input.section_id}
+                       and a.session_id=${req.cookies.session_id}
+                       group by a.subject_id, a.student_id) x
+                       group by subject_id`;     
 
     var groupSubjectCountQry = `select count(subject_group) as group_count, subject_group
                                 from subject_group_subject_map 
@@ -1282,20 +1278,18 @@ router.post('/read_first_assessment_report_card_eleven/', function(req, res, nex
                     order by z.roll_number, z.student_id, z.exam_id, z.subject_id) q on (p.student_id=q.student_id and p.subject_id=q.subject_id)
                     order by q.student_id, q.order_no`;
 
-    var avgMarksQry = `select subject_id, subject_name, max(marks) as avg_marks from 
-
-                     (SELECT a.student_id,a.subject_id, subject_name, round(sum(marks)/count(a.student_id)) as marks 
-                     FROM marks_entry_master a
-                     join subject_master b on a.subject_id = b.subject_id
-                     join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
-                     join exam_type f on e.exam_id = f.exam_type_id
-                     where e.marking_type='N'
-                     and f.assessment='H'
-                     and a.section_id=${input.section_id}
-                     and a.session_id=${req.cookies.session_id}
-                     group by a.subject_id,a.student_id) p
-
-                     group by subject_id`;
+     var avgMarksQry = `select subject_id, round(avg(marks)) as avg_marks
+                       from
+                       (SELECT a.student_id,a.subject_id, sum(if(marks=-1,0,marks)) as marks
+                       FROM marks_entry_master a
+                       join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
+                       join exam_type f on e.exam_id = f.exam_type_id
+                       where e.marking_type='N'
+                       and f.assessment='H'
+                       and a.section_id=${input.section_id}
+                       and a.session_id=${req.cookies.session_id}
+                       group by a.subject_id, a.student_id) x
+                       group by subject_id`;     
 
     var firstMaxMarksQry = `select subject_id, max(marks) as max_marks
                             from (

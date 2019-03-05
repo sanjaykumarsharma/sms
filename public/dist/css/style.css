@@ -970,6 +970,14 @@ hr{
   .divider-subject .B2:nth-child(odd){
      border-bottom: 1px solid #000 !important;
   }
+
+  .divider-subject-1 .B2:nth-child(even){
+     border-top: 1px solid #000 !important;
+  }
+
+  .divider-subject-1 tbody tr:last-child td{
+      border-bottom: double !important;
+  }
   
   .graph {
     background-color: rgb(253, 142, 0);

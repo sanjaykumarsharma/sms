@@ -1437,28 +1437,56 @@
 	          </tbody>
 	        </table>
 
-		  	<table class="table is-fullwidth is-narrow divider-subject no-border">
+		  	<table class="table is-fullwidth is-narrow divider-subject-1 no-border">
 				<thead>
 					<tr>
 						<td class="table-head" rowspan="2" style="vertical-align: middle;">Subject</td>
 						<td class="has-text-centered table-head lr-table-border" colspan="2">Ist Unit Test(50)</td>
 						<td class="has-text-centered table-head lr-table-border" colspan="2">Ist Term (100)</td>
+
+						<td class="has-text-centered table-head lr-table-border" colspan="2">2nd Unit Test(50)</td>
+						<td class="has-text-centered table-head lr-table-border" colspan="2">
+							<span hide={twelve_report}>Final Term (100)</span>
+    				    	<span show={twelve_report}>Pre Board Exam-II</span>
+					    </td>
+
 						<td style="width:200px;vertical-align: middle;" class="has-text-centered table-head" rowspan="2">Comparison of student performance with class average</td>
 					</tr>
 					<tr>
-						<td style="width:100px" class="has-text-centered table-head lr-table-border">M.O</td>
-						<td style="width:100px" class="has-text-centered table-head lr-table-border">H.M</td>
-						<td style="width:100px" class="has-text-centered table-head lr-table-border">M.O</td>
-						<td style="width:100px" class="has-text-centered table-head lr-table-border">H.M</td>
+						<td style="width:80px" class="has-text-centered table-head lr-table-border">M.O</td>
+						<td style="width:80px" class="has-text-centered table-head lr-table-border">H.M</td>
+						<td style="width:80px" class="has-text-centered table-head lr-table-border">M.O</td>
+						<td style="width:80px" class="has-text-centered table-head lr-table-border">H.M</td>
+
+						<td style="width:80px" class="has-text-centered table-head lr-table-border">M.O</td>
+						<td style="width:80px" class="has-text-centered table-head lr-table-border">H.M</td>
+						<td style="width:80px" class="has-text-centered table-head lr-table-border">M.O</td>
+						<td style="width:80px" class="has-text-centered table-head lr-table-border">H.M</td>
 					</tr>
 				</thead>
 				<tbody>
 					<tr each={m in r.marks} class="{m.show_in} {m.subject_group_class}">
 						<td class="{m.class}">{m.subject_name}</td>
-						<td class="has-text-centered lr-table-border {m.final_marks_limit} {m.class}">{m.first_marks}</td>
-					    <td class="has-text-centered lr-table-border {m.class}">{m.first_max_marks}</td>
-						<td class="has-text-centered lr-table-border {m.second_marks_limit} {m.class}">{m.second_marks}</td>
-						<td class="has-text-centered lr-table-border {m.class}">{m.second_max_marks}</td>
+
+						<td class="has-text-centered lr-table-border {m.first_marks_limit} {m.class}" if={m.subject_name=='Total'} style="border-right:1px solid #fff !important">{m.first_marks}</td>
+						<td class="has-text-centered lr-table-border {m.first_marks_limit} {m.class}" if={m.subject_name!='Total'}>{m.first_marks}</td>
+
+					    <td class="has-text-centered lr-table-border {m.class}" >{m.first_max_marks}</td>
+
+						<td class="has-text-centered lr-table-border {m.second_marks_limit} {m.class}" if={m.subject_name=='Total'} style="border-right:1px solid #fff !important">{m.second_marks}</td>
+						<td class="has-text-centered lr-table-border {m.second_marks_limit} {m.class}" if={m.subject_name!='Total'}>{m.second_marks}</td>
+
+						<td class="has-text-centered lr-table-border {m.class}" >{m.second_max_marks}</td>
+
+						<td class="has-text-centered lr-table-border {m.first_marks_limit_final} {m.class}" if={m.subject_name=='Total'} style="border-right:1px solid #fff !important">{m.first_marks_final}</td>
+						<td class="has-text-centered lr-table-border {m.first_marks_limit_final} {m.class}" if={m.subject_name!='Total'}>{m.first_marks_final}</td>
+
+					    <td class="has-text-centered lr-table-border {m.class}">{m.first_max_marks_final}</td>
+
+						<td class="has-text-centered lr-table-border {m.second_marks_limit_final} {m.class}" if={m.subject_name=='Total'} style="border-right:1px solid #fff !important">{m.second_marks_final}</td>
+						<td class="has-text-centered lr-table-border {m.second_marks_limit_final} {m.class}" if={m.subject_name!='Total'}>{m.second_marks_final}</td>
+
+						<td class="has-text-centered lr-table-border {m.class}">{m.second_max_marks_final}</td>
 
 						<td class="has-text-centered {m.class}">
 							<div class="graph" style="width:{m.mo_marks}px" if={m.marking_type=='N'}>
@@ -1467,23 +1495,25 @@
                             <div class="graph1" style="width:{m.avg_marks}px" if={m.marking_type=='N'}>
                             	<div style="font-size:.7em;margin-left:{(m.avg_marks + 5 )}px">{m.avg_marks}</div>
                             </div>
+
+                            <div><b>{m.final_percentage}</div>
 					    </td>
 					</tr>
 				</tbody>
 			</table>
             
 
-			<hr style="border-top: double !important;">
+			<!-- <hr style="border-top: double !important;"> -->
 			<table class="table is-fullwidth signature-table is-narrow" style="margin-top:35px">
 				<tr>
-					<td>*Remarks</td>
+					<td>Remarks</td>
 					<td colspan="3"><hr style="border-top:dotted;width:100%"></td>
 				</tr>
 				<tr>
 					<td colspan="4"><hr style="border-top:dotted;width:100%"></td>
 				</tr>
 				<tr>
-					<td>*Signature</td>
+					<td>Signature</td>
 					<td>
 						<div class="signature">
 							<hr style="border-top:dotted">
@@ -1505,7 +1535,10 @@
 				</tr>
 			</table>
 			
-			<hr style="border-top: double !important;">
+			<hr style="border-top: 2px solid #000 !important;">
+
+			<p hide={twelve_report}>Note : 1. M.O. = Marks Obtained 2. H.M. = Highest Marks 3. Pass Mark in each subject is 40%</p>
+
 			<h6><b>EAP/F/002</b></h6>
 
 			<div class="page-break"></div>
@@ -1515,133 +1548,161 @@
 			<table class="table table-condensed backside is-narrow is-bordered">
 		      <tbody>
 		      	<tr>
-			       <th colspan="2">Given below are six areas in which maturity of the student is shown. Within each area,
-			           four levels of maturity have been given. This information indicates at which level your
-			           son works at school.
+			       <th colspan="3">Given below are six areas in which maturity of the student is shown. Within each area, four levels of maturity have been given. This information indicates at which level your son works at school.
 			       </th>
 			      </tr>
 			      <tr>
 			        <th class="has-text-centered">INITIATIVE &amp; PERSEVERANCE</th>
 			        <th class="has-text-centered" style="width:120px;">1st Term</th>
+			        <th class="has-text-centered" style="width:120px;">Final Term</th>
 			      </tr>
 			      <tr>
 			        <td>1. Self - motivated and completes tasks</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['initiative_first']}.jpg "></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['initiative_first']}.jpg "></td>
 			      </tr>   
 			      <tr>
 			        <td>2. Works well with minimum direction</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['initiative_second']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['initiative_second']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>3. Needs constant guidance</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['initiative_third']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['initiative_third']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>4. Has to be told every thing</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['initiative_fourth']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['initiative_fourth']}.jpg"></td>
 			      </tr>   
 			              
 			      <tr>
 			        <th class="has-text-centered">INTEREST</th>
 			        <td class="has-text-centered"></td>
+			        <td class="has-text-centered"></td>
 			      </tr>
 			      <tr>
 			        <td>1. Easily stimulated &amp; sustained</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['interest_first']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['interest_first']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>2. Interested only in some areas</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['interest_second']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['interest_second']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>3. Inconsistent</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['interest_third']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['interest_third']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>4. Indifferent</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['interest_fourth']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['interest_fourth']}.jpg"></td>
 			      </tr>
 
 			      <tr>
 			        <th class="has-text-centered">USE OF TIME</th>
 			        <th class="has-text-centered"></th>
+			        <th class="has-text-centered"></th>
 			      </tr>
 			      <tr>
 			        <td>1. Uses time profitably</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['use_time_first']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['use_time_first']}.jpg"></td>
 			      </tr>                            
 			      <tr>
 			        <td>2. Organized most of the time</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['use_time_second']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['use_time_second']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>3. Disorganized but responds well to guidance</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['use_time_third']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['use_time_third']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>4. Easily distracted</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['use_time_fourth']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['use_time_fourth']}.jpg"></td>
 			      </tr>  
 			      <tr>
 			        <th class="has-text-centered">WORK HABITS</th>
+			        <th class="has-text-centered"></th>
 			        <th class="has-text-centered"></th>
 			      </tr>
 			      <tr>
 			        <td>1. Very careful worker</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['work_habit_first']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['work_habit_first']}.jpg"></td>
 			      </tr>                                   
 			      <tr>
 			        <td>2. Usually neat</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['work_habit_second']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['work_habit_second']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>3. Untidy</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['work_habit_third']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['work_habit_third']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>4. Careless</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['work_habit_fourth']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['work_habit_fourth']}.jpg"></td>
 			      </tr> 
 			      <tr>
 			        <th class="has-text-centered">PARTICIPATION IN GROUP WORK</th>
+			        <th class="has-text-centered"></th>
 			        <th class="has-text-centered"></th>
 			      </tr>
 			      <tr>
 			        <td>1. Contributes readily</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['participation_first']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['participation_first']}.jpg"></td>
 			      </tr>                                 
 			      <tr>
 			        <td>2. Tries to dominate the group</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['participation_second']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['participation_second']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>3. Takes part occasionally</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['participation_third']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['participation_third']}.jpg"></td>
 			      </tr>   
 			      <tr>
 			        <td>4. Has to be coaxed to participate</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['participation_fourth']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['participation_fourth']}.jpg"></td>
 			      </tr>
 
 			      <tr>
 			        <th class="has-text-centered">RESPONSIBILITY</th>
 			        <th class="has-text-centered"></th>
+			        <th class="has-text-centered"></th>
 			      </tr>
 			      <tr>
 			        <td>1. Takes initiative in situations which require responsibility</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['responsibility_first']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['responsibility_first']}.jpg"></td>
 			      </tr>  
 			      <tr>
 			        <td>2. Accepts a responsibility only when it is assigned</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['responsibility_second']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['responsibility_second']}.jpg"></td>
 			      </tr> 
 			      <tr>
 			        <td>3. Casual about responsibility</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['responsibility_third']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['responsibility_third']}.jpg"></td>
 			      </tr>     
 			      <tr>
 			        <td>4. Reluctant to accept responsibility</td>
 			        <td class="has-text-centered"><img src="dist/img/{r.md['responsibility_fourth']}.jpg"></td>
+			        <td class="has-text-centered"><img src="dist/img/{r.mdf['responsibility_fourth']}.jpg"></td>
 			      </tr>
 		      </tbody>
 		    </table>
@@ -1697,29 +1758,35 @@
 		    				<thead>
 								<tr>
 									<th class="has-text-centered">Parameters</th>
-									<th style="width:250px" class="has-text-centered">Marks (Final Term)</th>
+									<th style="width:175px" class="has-text-centered">Marks (First Term)</th>
+									<th style="width:175px" class="has-text-centered">Marks (Final Term)</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
 						            <td>Aerobic Capacity</td>
 						            <td class="has-text-centered">{r.pf['first_skill']}</td>
+						            <td class="has-text-centered">{r.pf_final['first_skill']}</td>
 						        </tr>
 						        <tr>
 						            <td>Agility</td>
 						            <td class="has-text-centered">{r.pf['second_skill']}</td>
+						            <td class="has-text-centered">{r.pf_final['second_skill']}</td>
 						        </tr>
 						        <tr>
 						            <td>Explosive Strength</td>
 						            <td class="has-text-centered">{r.pf['third_skill']}</td>
+						            <td class="has-text-centered">{r.pf_final['third_skill']}</td>
 						        </tr>
 						        <tr>
 						            <td>Abdominal Strength</td>
 						            <td class="has-text-centered">{r.pf['fourth_skill']}</td>
+						            <td class="has-text-centered">{r.pf_final['fourth_skill']}</td>
 						        </tr>
 						        <tr>
 						            <td>Flexiblity</td>
 						            <td class="has-text-centered">{r.pf['fifth_skill']}</td>
+						            <td class="has-text-centered">{r.pf_final['fifth_skill']}</td>
 						        </tr>
 							</tbody>
 		    			</table>
@@ -1729,7 +1796,7 @@
 		    </table>
 
 		    <table class="table is-fullwidth is-narrow is-bordered" hide={twelve_report}>
-		        <caption class="report-caption">Physical Fitness Description</caption>
+		        <caption class="has-text-left report-caption">Physical Fitness Description</caption>
 		          <tr>
 		            <th>Obtained Marks</th>
 		            <td class="centeralign">9-10</td>
