@@ -20,14 +20,20 @@
 				<button disabled={loading} class="button is-danger has-text-weight-bold"
 				onclick={getScholarshipList} > GO
 				</button>
-				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-		              <span class="icon">
-		                 <i class="fas fa-print"></i>
-		             </span>
-		         </button>
-				
 			</div>
 		</div>
+		<div class="level-right" >
+        <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+              <span class="icon">
+                <i class="far fa-file-excel"></i>
+              </span>
+            </button>
+        <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+                <span class="icon">
+                   <i class="fas fa-print"></i>
+               </span>
+           </button>
+      </div>
 	</div>
 	<p class="has-text-centered" style="color: #ff3860;font-weight:bold">Scholarship List</p>
 	<p class="has-text-centered">Session: {sessionName}</p>
@@ -73,7 +79,20 @@
 
     self.on("unmount", function(){
       feesReportStore.off('read_scholarship_list_changed',ReadScholarshipListChanged)
+      feesReportStore.off('csv_export_scholarshiplist_changed',csvscholarshipChanged)
     })
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_scholarship_list',self.scholarships)
+    }
+
+    feesReportStore.on('csv_export_scholarshiplist_changed',csvscholarshipChanged)
+    function csvscholarshipChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
     self.getScholarshipList = () => {
     	var startDate = document.getElementById("start_date").value

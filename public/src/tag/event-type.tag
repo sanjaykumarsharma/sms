@@ -18,15 +18,17 @@
           <button disabled={loading} class="button is-danger has-text-weight-bold"
           onclick={add} >{title}
           </button>
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readEventTypes} style="margin-left:5px">
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+          <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readEventTypes} style="margin-left:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
-
-        <!--   <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-            <span class="icon"><i class="fas fa-print"></i></span>
-          </button> -->
+           <input class="input is-pulled-right" ref="searchEventType" onkeyup={filteredEventType} type="text" style="width:200px;margin-right:5px" placeholder="Search" >
         </div>
       </div>
     </div>
@@ -39,7 +41,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={r, i in eventTypes}>
+				<tr each={r, i in filteredEventTypes}>
 					<td>{ i+1 }</td>
 					<td>{ r.event_type}</td>
 		          	<td class="has-text-right no-print no-print">
@@ -66,8 +68,19 @@
     })
     self.on("unmount", function(){
       eventTypeStore.off('eventTypes_changed', EventTypesChanged)
+      eventTypeStore.off('csv_export_event_type_changed',csv_export_event_typeChanged)
     })
 
+    self.downloadCSV = () =>{
+          eventTypeStore.trigger('csv_export_event_type')
+        //  console.log(obj)
+    }
+
+    self.filteredEventType = ()=>{
+      self.filteredEventTypes = self.eventTypes.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchEventType.value.toLowerCase())>=0
+      })
+    } 
     //read courses
     self.readEventTypes = () => {
       self.loading=true
@@ -139,8 +152,16 @@
       self.refs.addEventTypeInput.value = ''
       self.loading = false
       self.eventTypes = eventTypes
+      self.filteredEventTypes = eventTypes
       self.update()
       console.log(self.eventTypes)
+    }
+    eventTypeStore.on('csv_export_event_type_changed',csv_export_event_typeChanged)
+    function csv_export_event_typeChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

@@ -24,7 +24,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select" >
-               <select ref="item_id" style="width:300px">
+               <select ref="item_id" style="width:240px">
                 <option each={inventoryItems} value={item_id}>{item_name}</option>
               </select>
             </div>
@@ -35,7 +35,7 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text" style="width:120px">
+             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text" style="width:100px">
           </div>
         </div>
           <div class="column is-narrow">
@@ -43,16 +43,34 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text" style="width:120px">
+              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text" style="width:100px">
           </div>
         </div>
 			  <div class="column">
         <button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
         onclick={getItemWiseIssuedGoodsReport} >GO
         </button>
+         <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+            <input class="input is-pulled-right" ref="searchInventoryItemWiseIssuedGoodsReport" onkeyup={filteredinventoryItemWiseIssuedGoodsReport} type="text" style="width:180px;margin-right:5px;" placeholder="Search" >
       </div>
 			</div>
 		</div>
+ <!--    <div class="columns">
+        <div class="level">
+          <div class="level-right">
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+            <input class="input is-pulled-right" ref="searchInventoryItemWiseIssuedGoodsReport" onkeyup={filteredinventoryItemWiseIssuedGoodsReport} type="text" style="width:160px;margin-right:5px;" placeholder="Search" >
+        </div>
+      </div>
+    </div> -->
 		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
@@ -65,7 +83,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventoryItemWiseIssuedGoodsReports}>
+				<tr each={ev, i in filteredInventoryItemWiseIssuedGoodsReports}>
 					<td>{ i+1 }</td>
 					<td>{ ev.issue_date}</td>
           <td>{ ev.item_name}</td>
@@ -95,6 +113,12 @@
          inventoryReportStore.off('read_inventory_item_wise_issued_goods_report_changed',ReadInventoryItemWiseIssuedGoodsReportChanged)
   })
 
+
+      self.filteredinventoryItemWiseIssuedGoodsReport = ()=>{
+        self.filteredInventoryItemWiseIssuedGoodsReports = self.inventoryItemWiseIssuedGoodsReports.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventoryItemWiseIssuedGoodsReport.value.toLowerCase())>=0
+        })
+      } 
 
     self.getItemWiseIssuedGoodsReport = () => {
       self.loading=true
@@ -150,6 +174,7 @@
       self.title='Create'
       self.loading = false
       self.inventoryItemWiseIssuedGoodsReports = inventoryItemWiseIssuedGoodsReports
+      self.filteredInventoryItemWiseIssuedGoodsReports = inventoryItemWiseIssuedGoodsReports
       self.update()
       console.log(self.inventoryItemWiseIssuedGoodsReports)
     }

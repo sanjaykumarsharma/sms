@@ -102,7 +102,7 @@
 		<table class="table is-striped is-hoverable is-bordered" style="width:50%;" show={report_view =='show_table'}>
 			<thead>
 				<tr>
-				    <th>Case</th>
+				    <th>Category Name</th>
 				    <th class="has-text-right">Total</th>
 				</tr>
 			</thead>
@@ -140,6 +140,7 @@
       disciplineReportStore.off('read_standard_changed',StandardChanged)
       disciplineReportStore.off('read_section_changed',SectionChanged)
       disciplineReportStore.off('read_session_changed',SessionChanged)
+      disciplineReportStore.off('csv_export_read_class_wise_report_changed',csvDisciplineClassWiseCaseReportChanged)
     })
 
     self.readStandard = () => {
@@ -177,8 +178,7 @@
 
     self.csvExport = () => {
 
-        disciplineReportStore.trigger('csv_export_read_class_wise_report', self.refs.standard_id.value,
-          	self.refs.section_id.value,self.refs.session_id.value)
+        disciplineReportStore.trigger('csv_export_read_class_wise_report', self.class_wise_case_report)
 
         }
     
@@ -256,6 +256,14 @@
       		self.update()
       		//self.update()
       		console.log(self.class_wise_case_report)
+    }
+
+    disciplineReportStore.on('csv_export_read_class_wise_report_changed',csvDisciplineClassWiseCaseReportChanged)
+    function csvDisciplineClassWiseCaseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 </script>
 </discipline-class-wise-report>

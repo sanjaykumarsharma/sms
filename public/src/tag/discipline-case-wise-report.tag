@@ -104,6 +104,7 @@
 
     self.on("unmount", function(){
       disciplineReportStore.off('read_case_wise_report_changed',ReadCaseChanged)
+      disciplineReportStore.off('csv_discipline_case_wise_report_changed',csvDisciplineCaseWiseReportChanged)
     })
 
     self.viewTable = () => {
@@ -150,7 +151,7 @@
 
           obj['start_date']=convertDate(self.refs.start_date.value)
           obj['end_date']=convertDate(self.refs.end_date.value)
-          disciplineReportStore.trigger('csv_export_read_case_wise_report', obj)
+          disciplineReportStore.trigger('csv_discipline_case_wise_report', obj)
           console.log(obj)
         }
     }
@@ -189,6 +190,14 @@
       }
       self.update()
       console.log(self.case_wise_reports)
+    }
+    
+    disciplineReportStore.on('csv_discipline_case_wise_report_changed',csvDisciplineCaseWiseReportChanged)
+    function csvDisciplineCaseWiseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 </script>
 </discipline-case-wise-report>

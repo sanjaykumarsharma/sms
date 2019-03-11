@@ -96,6 +96,7 @@
     self.on("unmount", function(){
       disciplineReportStore.off('read_date_wise_case_report_changed',ReadDateWiseCaseReportChanged)
       disciplinedetailStore.off('read_discipline_categories_changed',CategoriesChanged)
+      disciplineReportStore.off('csv_export_read_date_wise_case_report_changed',csvDisciplineDateWiseCaseReportChanged)
     })
 
     self.readCategories = () => {
@@ -138,7 +139,7 @@
 
           obj['start_date']=convertDate(self.refs.start_date.value)
           obj['end_date']=convertDate(self.refs.end_date.value)
-          disciplineReportStore.trigger('csv_export_read_date_wise_case_report', obj,self.refs.category_id.value)
+          disciplineReportStore.trigger('csv_export_read_date_wise_case_report', self.date_wise_case_report)
           console.log(obj)
         }
     }
@@ -161,6 +162,14 @@
       self.loading = false
       self.st_date = self.refs.start_date.value
       self.en_date = self.refs.end_date.value
+      self.update()
+    }
+
+    disciplineReportStore.on('csv_export_read_date_wise_case_report_changed',csvDisciplineDateWiseCaseReportChanged)
+    function csvDisciplineDateWiseCaseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 </script>

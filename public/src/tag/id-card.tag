@@ -67,10 +67,16 @@
 			  	</div>
 				</div>
 
-				<button class="button is-warning has-text-weight-bold ml5" style="margin-bottom:12px;" onclick={getStudentData}>
+				<button class="button is-link has-text-weight-bold ml5" style="margin-bottom:12px;" onclick={getStudentData}>
+          <span class="icon">
+            <span class="fas fa-sync-alt"></span>
+          </span>
+        </button>
+
+        <button class="button is-success has-text-weight-bold ml5" style="margin-bottom:12px;" onclick={downloadCSV}>
 			    <span class="icon">
-			      <span class="fas fa-sync-alt"></span>
-			    </span>
+            <i class="far fa-file-excel"></i>
+          </span>
 	      </button>
 			</div>
 		</div>
@@ -365,12 +371,13 @@
     	idCardStore.off('read_section_changed',SectionChanged)
     	idCardStore.off('read_student_changed',StudentChanged)
     	idCardStore.off('read_id_card_changed',ReadIdCardChanged)
+      idCardStore.off('csv_export_id_card_changed',csvIDCardChanged)
     })
 
-   /* self.getStudentData = () =>{
+    self.downloadCSV = () =>{
+      idCardStore.trigger('csv_export_id_card', self.students)
+    }
 
-    	idCardStore.trigger('read_student', self.refs.standard_id.value,self.refs.section_id.value,)
-    }*/
     self.getStudentData = () =>{
 
     	if(self.refs.read_enroll_number.value==""){
@@ -564,6 +571,14 @@
 	      i.done = false;
       })
       $("#checkStudent").prop("checked", false);
+      self.update()
+    }
+
+    idCardStore.on('csv_export_id_card_changed',csvIDCardChanged)
+    function csvIDCardChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 </script>

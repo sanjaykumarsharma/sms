@@ -7,21 +7,27 @@
   <div class="box no-print">
       <div class="columns">
         <div class="column">
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
            </button>
-           <button class="button is-warning is-rounded is-pulled-right" onclick={readStaffBPWeight} style="margin-left:5px;margin-right:5px">
+           <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readStaffBPWeight} style="margin-left:5px;margin-right:5px">
               <span class="icon">
                 <span class="fas fa-sync-alt"></span>
               </span>
               </button>
-            <button class="button is-info is-rounded is-pulled-right" onclick={add_staff_infirmary}>
+            <button class="button is-info is-rounded is-pulled-right is-small ml5" onclick={add_staff_infirmary}>
           <span class="icon">
             <span class="fas fa-plus"></span>
           </span>
           </button>
+           <input class="input is-pulled-right" ref="searchInfirmaryStaffBpWeight" onkeyup={filteredInfirmaryStaffBpWeight} type="text" style="width:200px;margin-right:5px;" placeholder="Search">  
         </div>
       </div>
     </div>
@@ -52,7 +58,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={st, i in staffBpWeights}>
+        <tr each={st, i in filteredInfirmaryStaffBpWeights}>
           <td>{i+1}</td>
           <td>{st.name}</td>
           <td>{st.employee_id}</td>
@@ -160,7 +166,13 @@
        staffbpweightStore.off('add_staff_bp_weight_changed', AddStaffBPWeightChanged)
        staffbpweightStore.off('edit_staff_bp_weight_changed',EditStaffBPWeightChanged)
        staffbpweightStore.off('delete_staff_bp_weight_changed',DeleteStaffBPWeightChanged)
+       staffbpweightStore.off('csv_export_staff_bp_weight_changed',csvrStaffBpWeightChanged)
      })
+       self.filteredInfirmaryStaffBpWeight = ()=>{
+        self.filteredInfirmaryStaffBpWeights = self.staffBpWeights.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryStaffBpWeight.value.toLowerCase())>=0
+        })
+      } 
 
      self.calculateBmi=()=>{
       self.height=self.refs.height.value
@@ -183,6 +195,11 @@
      self.readEmployee = () => {
         staffbpweightStore.trigger('read_employee')
      }
+
+     self.downloadCSV = () =>{
+      console.log(self.staffBpWeights)
+      staffbpweightStore.trigger('csv_export_staff_bp_weight', self.staffBpWeights)
+    }
 
      self.add_staff_infirmary = () => {
         self.title='Create'
@@ -299,6 +316,7 @@
        self.refs.bmi.value=''
        self.loading = false
        self.staffBpWeights = staffBpWeights
+       self.filteredInfirmaryStaffBpWeights = staffBpWeights
        self.update()
        //self.readStaffInfirmary()
        console.log(self.staffBpWeights)
@@ -319,6 +337,7 @@
        self.refs.bmi.value=''
        self.loading = false
        self.staffBpWeights = staffBpWeights
+       self.filteredInfirmaryStaffBpWeights = staffBpWeights
        self.update()
       // self.readStaffInfirmary()
       // console.log(self.empsectionsloye_roles)
@@ -339,6 +358,7 @@
        self.refs.bmi.value=''
        self.loading = false
        self.staffBpWeights = staffBpWeights
+       self.filteredInfirmaryStaffBpWeights = staffBpWeights
        self.update()
        self.readStaffBPWeight()
        console.log(self.staffBpWeights)
@@ -359,6 +379,7 @@
        self.refs.bmi.value=''
        self.loading = false
        self.staffBpWeights = staffBpWeights
+       self.filteredInfirmaryStaffBpWeights = staffBpWeights
        self.update()
        console.log(self.staffInfirmarys)
      }
@@ -370,6 +391,14 @@
        self.employees = employees
        self.update()
        console.log(self.employees)
+     }
+
+    staffbpweightStore.on('csv_export_staff_bp_weight_changed',csvrStaffBpWeightChanged)
+    function csvrStaffBpWeightChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
      }
 
 </script>

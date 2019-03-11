@@ -51,7 +51,7 @@ router.post('/login', function(req, res, next) {
                   and password= md5("${input.password}")
                   ` ;
      }else if(input.role=='Class Teacher'){
-        var qry = `select employee_id as username, "Class Teacher" as role, a.emp_id, concat(first_name,' ',middle_name,' ',last_name)as name 
+        var qry = `select employee_id as username,section_id, "Class Teacher" as role, a.emp_id, concat(first_name,' ',middle_name,' ',last_name)as name 
                 from employee a
                 JOIN class_teacher_section b on a.emp_id=b.class_teacher
                 and b.session_id = (select session_id from session_master where is_current=1)
@@ -62,7 +62,7 @@ router.post('/login', function(req, res, next) {
                 and password= md5("${input.password}")
                 ` ;
      }else{//login for employee
-        var qry =`select e.employee_id as username, role 
+        var qry =`select e.employee_id as username, role,e.emp_id
                   from employee e 
                   join employee_role er on e.employee_id=er.employee_id
                   WHERE e.employee_id ="${input.username}" 
@@ -107,6 +107,7 @@ router.post('/login', function(req, res, next) {
                           res.cookie('session_name', session_name)
                           res.cookie('user', result[0].username)
                           res.cookie('emp_id', result[0].emp_id)
+                          res.cookie('section_id', result[0].section_id)
                           //res.cookie('role', result[0].role)
 
                           res.json({

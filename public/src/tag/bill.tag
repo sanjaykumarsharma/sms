@@ -20,11 +20,11 @@
 		      <span>Apply Fee Plan </span>
 		    </a>
 		</p>		
-		<p class="control">
+		<!-- <p class="control">
 		    <a class="button {is-active: selected_master == 'copy-fee-plan'}" href="#/fee-bill/copy-fee-plan">
 		      <span>Copy Fee plan</span>
 		    </a>
-		</p>
+		</p> -->
 </div>
 <div id="bill-view"></div>
  <script>

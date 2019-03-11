@@ -85,7 +85,7 @@
 			<table class="table is-striped is-hoverable is-bordered" style="margin-top:50px;width:50%;">
 				<thead>
 					<tr>
-					    <th>Case</th>
+					    <th>Category Name</th>
 					    <th class="has-text-right">Total</th>
 					</tr>
 				</thead>
@@ -107,7 +107,7 @@
 		<table class="table is-striped is-hoverable is-bordered" style="width:50%;" show={report_view =='show_table'}>
 			<thead>
 				<tr>
-				    <th>Case</th>
+				    <th>Category Name</th>
 				    <th class="has-text-right">Total</th>
 				</tr>
 			</thead>
@@ -136,10 +136,11 @@
     })
 
     self.on("unmount", function(){
-      mentorReportStore.on('read_class_wise_report_changed',ReadClassWiseReportChanged)
+      mentorReportStore.off('read_class_wise_report_changed',ReadClassWiseReportChanged)
       mentorReportStore.off('read_standard_changed',StandardChanged)
       mentorReportStore.off('read_section_changed',SectionChanged)
       mentorReportStore.off('read_session_changed',SessionChanged)
+      mentorReportStore.off('csv_class_wise_report_changed',csvMentorClassWiseReportChanged)
     })
 
     self.readStandard = () => {
@@ -178,8 +179,7 @@
     }
 
     self.csvExport = () => {
-        mentorReportStore.trigger('csv_class_wise_report', self.refs.standard_id.value,
-        self.refs.section_id.value,self.refs.session_id.value)
+        mentorReportStore.trigger('csv_class_wise_report', self.class_wise_case_report)
     }
 
     mentorReportStore.on('read_standard_changed',StandardChanged)
@@ -252,5 +252,13 @@
   			}
       	self.update()
     }
+
+    mentorReportStore.on('csv_class_wise_report_changed',csvMentorClassWiseReportChanged)
+    function csvMentorClassWiseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 </script>
 </mentor-class-wise-report>

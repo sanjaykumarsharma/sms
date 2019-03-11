@@ -23,7 +23,8 @@
               <a class="navbar-item" href="#/grade">Grade</a>
               <a class="navbar-item" href="#/marks-manager">Marks Manager</a>
               <a class="navbar-item" href="#/marks-entry">Marks Entry</a>
-              <a class="navbar-item" href="#/marks-report/merit-list">Marks Report</a>
+              <a class="navbar-item" href="#/marks-report/consolidate-tabulation-sheet">Marks Report</a>
+              <a class="navbar-item" href="#/analysis-report/assessment-report">Analysis Report</a>
               <a class="navbar-item" href="#/maturity-development">Maturity Development</a>
               <a class="navbar-item" href="#/result-activation">Result Activation</a>
               <a class="navbar-item" href="#/physical-fitness">Physical Fitness</a>
@@ -223,7 +224,7 @@
             </div>
           </div>
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-item" >Staff Profile</a>
+            <a class="navbar-item" href="#/staff-profile">Staff Profile</a>
           </div>
 
           <div class="navbar-item has-dropdown is-hoverable">
@@ -251,11 +252,11 @@
             <div class="navbar-dropdown">
               <a class="navbar-item" href="#/student-browser">Student</a>
                <a class="navbar-item" href="#/attendance-entry">Mark Attendance</a>
-               <a class="navbar-item" href="#/daily-attendance">Attendance Report</a>
+               <a class="navbar-item" href="#/monthly-attendance">Monthly Attendance</a>
                <a class="navbar-item" href="#/marks-manager">Marks Manager</a>
                 <a class="navbar-item" href="#/marks-entry">Marks Entry</a>
               
-              <a class="navbar-item" href="#/marks-report/merit-list">Marks Report</a>
+              <a class="navbar-item" href="#/marks-report/consolidate-tabulation-sheet">Marks Report</a>
               <a class="navbar-item" href="#/class-holiday">Class Holiday</a>
               <a class="navbar-item" href="#/student-school-leaving">School Leaving</a>
               <a class="navbar-item" href="#/maturity-development">Maturity Development</a>
@@ -269,7 +270,14 @@
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-item" href="#/teacher-time-table">Teacher Time Table</a>
           </div>
-          <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+          <!-- <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a> -->
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-item" style="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item has-text-danger" onclick={logout}><i class="fas fa-power-off"></i></a>
+              <a class="navbar-item" onclick={changePassword}><i class="fas fa-key"></i></a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -381,8 +389,8 @@
           </div>
          </div>
          <div class="navbar-item has-dropdown is-hoverable">
-           <a class="navbar-item" >Staff Profile</a>
-         </div>
+            <a class="navbar-item" href="#/staff-profile">Staff Profile</a>
+          </div>
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-item" style="font-size:20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
             <div class="navbar-dropdown">
@@ -416,8 +424,11 @@
          </div>
          <div class="navbar-item has-dropdown is-hoverable">
           <a class="navbar-item {active: selected_nav_item == 'career-setting'}" href="#/career-setting/applicant-detail">Career
-           <a class="navbar-item" >Staff Profile</a>
+          <a class="navbar-item" href="#/staff-profile">Staff Profile</a>
          </div>
+         <!-- <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-item" href="#/staff-profile">Staff Profile</a>
+          </div> -->
          <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-item" style="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
             <div class="navbar-dropdown">
@@ -457,8 +468,8 @@
           </div>
          </div>
          <div class="navbar-item has-dropdown is-hoverable">
-           <a class="navbar-item" >Staff Profile</a>
-         </div>
+            <a class="navbar-item" href="#/staff-profile">Staff Profile</a>
+          </div>
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-item" style="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
             <div class="navbar-dropdown">
@@ -499,8 +510,8 @@
            <a class="navbar-item" href="#/student">Student</a>
          </div>
          <div class="navbar-item has-dropdown is-hoverable">
-           <a class="navbar-item" >Staff Profile</a>
-         </div>
+            <a class="navbar-item" href="#/staff-profile">Staff Profile</a>
+          </div>
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-item" style="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
             <div class="navbar-dropdown">
@@ -534,8 +545,8 @@
            <a class="navbar-item" href="#/student">Student</a>
          </div>
          <div class="navbar-item has-dropdown is-hoverable">
-           <a class="navbar-item" >Staff Profile</a>
-         </div>
+            <a class="navbar-item" href="#/staff-profile">Staff Profile</a>
+          </div>
           <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-item" style="font-size: 20px;"><i class="fa fa-caret-down" aria-hidden="true"></i></a>
             <div class="navbar-dropdown">
@@ -652,6 +663,8 @@
          self.showMentorItems=true
         }else if(role=='Admission'){
          self.showAdmissionItems=true
+        }else if(role=='Store'){
+         self.showInventoryNavItems=true
         }else {
            
         }

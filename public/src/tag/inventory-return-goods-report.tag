@@ -27,11 +27,17 @@
         <button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
         onclick={getReturnGoodsReport} >GO
         </button>
-         <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+         <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5 " onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
           </button>
+          <input class="input is-pulled-right" ref="searchInventoryReturnGoodsReport" onkeyup={filteredInventoryReturnGoodsReport} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
       </div>
 			</div>
 		</div>
@@ -50,7 +56,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventoryReturnGoodsReports}>
+				<tr each={ev, i in filteredInventoryReturnGoodsReports}>
 					<td>{ i+1 }</td>
 					<td>{ ev.issue_date}</td>
           <td>{ ev.category_name}</td>
@@ -77,9 +83,21 @@
        self.update()
     })
   self.on("unmount", function(){
-         inventoryReportStore.off('read_inventory_return_goods_report_changed',ReadInventoryReturnGoodsReportChanged)
+    inventoryReportStore.off('read_inventory_return_goods_report_changed',ReadInventoryReturnGoodsReportChanged)
+    inventoryReportStore.onff('csv_export_inventory_return_goods_report_changed',csvInventoryReturnGoodsReportChanged)
   })
 
+
+
+  self.filteredInventoryReturnGoodsReport = ()=>{
+    self.filteredInventoryReturnGoodsReports = self.inventoryReturnGoodsReports.filter(c => {
+      return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventoryReturnGoodsReport.value.toLowerCase())>=0
+    })
+  } 
+
+    self.downloadCSV = () => {
+      inventoryReportStore.trigger('csv_export_inventory_return_goods_report',self.inventoryReturnGoodsReports)
+    }
 
     self.getReturnGoodsReport = () => {
       self.start_date=self.refs.start_date.value,
@@ -112,8 +130,17 @@
       self.title='Create'
       self.loading = false
       self.inventoryReturnGoodsReports = inventoryReturnGoodsReports
+      self.filteredInventoryReturnGoodsReports = inventoryReturnGoodsReports
       self.update()
       console.log(self.inventoryReturnGoodsReports)
+    }
+
+    inventoryReportStore.on('csv_export_inventory_return_goods_report_changed',csvInventoryReturnGoodsReportChanged)
+    function csvInventoryReturnGoodsReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
      
 </script>

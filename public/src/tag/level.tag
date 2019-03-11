@@ -15,16 +15,22 @@
         <button disabled={loading} class="button is-danger has-text-weight-bold"
         onclick={add}>{title}
         </button>
-        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+        <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
-        <button class="button is-warning is-rounded is-pulled-right" onclick={readLevel} style="margin-right:2px">
+        <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readLevel} style="margin-right:2px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
         </button>
+         <input class="input is-pulled-right" ref="searchLevel" onkeyup={filteredLevel} type="text" style="width:200px;margin-right:5px" placeholder="Search">
       </div>
     </div>
   </div>  
@@ -37,7 +43,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={d, i in levels}>
+        <tr each={d, i in filteredLevels}>
           <td>{i + 1}</td>
           <td>{d.level}</td>
           <td class="has-text-right no-print">
@@ -65,7 +71,19 @@
 
      self.on("unmount", function(){
       levelStore.off('level_changed', LevelChanged)
+      levelStore.off('csv_export_Level_changed',csv_export_LevelChanged)
     })
+
+    self.downloadCSV = () =>{
+          levelStore.trigger('csv_export_Level')
+        //  console.log(obj)
+    }
+
+     self.filteredLevel = ()=>{
+      self.filteredLevels = self.levels.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchLevel.value.toLowerCase())>=0
+      })
+    } 
 
     //read courses
     self.readLevel = () => {
@@ -141,9 +159,18 @@
       self.levels = levels
       self.levels = []
       self.levels = levels
+      self.filteredLevels = levels
       self.update()
       console.log(self.levels)
       console.log('self.levels')
+    }
+    
+    levelStore.on('csv_export_Level_changed',csv_export_LevelChanged)
+    function csv_export_LevelChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

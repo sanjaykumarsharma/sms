@@ -7,31 +7,31 @@
         <div class="column">
         <!-- <div class="column"> -->
           <span class="title has-text-centered" style="color: #ff3860;"> Events</span>
-              <button class="button is-primary has-text-weight-bold is-pulled-right no-print" onclick="window.print()" title="Print">
+            <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+              <button class="button is-primary has-text-weight-bold is-pulled-right no-print is-small ml5" onclick="window.print()" title="Print">
                         <span class="icon">
                            <i class="fas fa-print"></i>
                        </span>
             </button>
-            <button class="button is-warning is-rounded is-pulled-right no-print" onclick={readNewEvent} style="margin-right:5px;margin-left:5px;margin-right:5px">
+            <button class="button is-warning is-rounded is-pulled-right no-print is-small ml5" onclick={readNewEvent} style="margin-right:5px;margin-left:5px;margin-right:5px">
                 <span class="icon">
                   <span class="fas fa-sync-alt"></span>
                 </span>
                 </button>
-            <button class="button is-info is-rounded is-pulled-right no-print" onclick={add_new_event}>
+            <button class="button is-info is-rounded is-pulled-right no-print is-small ml5" onclick={add_new_event}>
             <span class="icon">
               <span class="fas fa-plus"></span>
             </span>
             </button>
+             <input class="input is-pulled-right" ref="searchNewEvent" onkeyup={filteredNewEvent} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
         </div>
       </div>
     </div>
-      
-  <!-- <div class="level no-print">
-    <div class="level-left">
-    </div>
-    <div class="level-right">
-    </div>
-  </div> -->
+
 
   <table class="table is-fullwidth is-striped is-hoverable is-bordered">
       <thead>
@@ -47,7 +47,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={st, i in newEvents}>
+        <tr each={st, i in filteredNewEvents}>
           <td>{i+1}</td>
           <td>{st.event_type}</td>
           <td>{st.event_name}</td>
@@ -144,8 +144,19 @@
        neweventStore.off('read_event_type_changed',EventTypeChanged)
        neweventStore.off('edit_new_event_changed',EditEventTypeChanged)
        neweventStore.off('delete_new_event_changed',DeleteEventChanged)
+       neweventStore.off('csv_export_new_event_changed',csv_export_new_eventChanged)
      })
 
+     self.downloadCSV = () =>{
+          neweventStore.trigger('csv_export_new_event')
+        //  console.log(obj)
+    }
+
+    self.filteredNewEvent = ()=>{
+      self.filteredNewEvents = self.newEvents.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchNewEvent.value.toLowerCase())>=0
+      })
+    } 
      //read courses
      self.readEventType = () => {
         neweventStore.trigger('read_event_type')
@@ -305,6 +316,7 @@
        self.refs.event_type_id.value =''
        self.loading = false
        self.newEvents = newEvents
+       self.filteredNewEvents = newEvents
        self.update()
        console.log(self.newEvents)
      }
@@ -316,6 +328,14 @@
        self.update()
        console.log(self.eventTypes)
      }
+
+    neweventStore.on('csv_export_new_event_changed',csv_export_new_eventChanged)
+    function csv_export_new_eventChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
 </script>
 </new-event>

@@ -49,7 +49,7 @@
 			</div>
 		</div>
 		<table class="table is-fullwidth is-bordered is-hoverable is-narrow">
-			<p><center><strong>Category:{categoryName}</strong></center></p>
+			<p><center><strong>Category:{categoryName} Session:{session_name}</strong></center></p>
 			<thead>
 				<tr>
           			<th>SL No</th>
@@ -501,6 +501,7 @@
       activityStore.off('read_students_changed',ReadStudentsChanged)
       activityStore.off('assign_students_changed',AssignStandardChanged)
       activityStore.off('read_print_event_detail_changed',PrintEventDetailChanged)
+      activityStore.off('csv_export_activity_changed',csvActivityChanged)
     })
 
     self.readClass = () => {
@@ -845,9 +846,8 @@
 
     self.downloadCSV = () =>{
     	var obj={}
-          obj['category_id']=self.refs.category_id.value
-          activityStore.trigger('csv_export_activity', obj)
-          console.log(obj)
+        obj['category_id']=self.refs.category_id.value
+        activityStore.trigger('csv_export_activity', obj)
     }
 
     activityStore.on('read_print_event_detail_changed',PrintEventDetailChanged)
@@ -919,10 +919,11 @@
     }
 
     activityStore.on('read_activity_by_category_changed',ActivitiesChanged)
-    function ActivitiesChanged(activities){
+    function ActivitiesChanged(activities,session_name){
       console.log(activities) 
       self.loading = false
       self.activities = activities
+      self.session_name = session_name
       if(self.activities.length==0){
       	toastr.info("No Data Found")
       }
@@ -1041,9 +1042,14 @@
     activityStore.on('assign_students_changed',AssignStandardChanged)
     function AssignStandardChanged(students_assigned){
       self.loading = false
-
       self.refreshStudents()
-      
+    }
+    activityStore.on('csv_export_activity_changed',csvActivityChanged)
+    function csvActivityChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

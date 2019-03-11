@@ -92,6 +92,7 @@
 
     self.on("unmount", function(){
       activityReportStore.off('read_activity_date_wise_report_changed',ReadActivityDateWiseReportChanged)
+      activityReportStore.off('csv_activity_date_wise_report_changed',csvActivityDateWiseReportChanged)
     })
 
     self.getData = () => {
@@ -144,6 +145,14 @@
       self.en_date = self.refs.end_date.value
       self.loading = false;
       self.update();
+    }
+
+    activityReportStore.on('csv_activity_date_wise_report_changed',csvActivityDateWiseReportChanged)
+    function csvActivityDateWiseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 </script>
 </activity-date-wise-report>

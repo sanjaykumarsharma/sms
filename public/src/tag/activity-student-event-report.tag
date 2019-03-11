@@ -72,6 +72,7 @@
 
     self.on("unmount", function(){
       activityReportStore.off('read_activity_date_wise_report_changed',ReadStudentEventReportChanged)
+      activityReportStore.off('csv_student_event_report_changed',csvActivityStudentEventReportChanged)
     })
 
     self.getData = () => {
@@ -122,6 +123,14 @@
       self.en_date = self.refs.end_date.value
       self.loading = false;
       self.update();
+    }
+
+    activityReportStore.on('csv_student_event_report_changed',csvActivityStudentEventReportChanged)
+    function csvActivityStudentEventReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 </script>
 </activity-student-event-report>

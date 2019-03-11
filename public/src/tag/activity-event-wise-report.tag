@@ -96,6 +96,7 @@
     self.on("unmount", function(){
       activityReportStore.off('read_activity_event_wise_report_changed',ReadActivityEventWiseReportChanged)
       activityReportStore.off('read_event_changed',EventChanged)
+      activityReportStore.off('csv_activity_event_wise_report_changed',csvActivityEventWiseReportChanged)
     })
 
     self.readEvent = () => {
@@ -130,6 +131,14 @@
       self.ActivityType = self.refs.activity_type.value, 
       self.eventName = $("#EventName option:selected").text();
       self.loading = false;
+      self.update()
+    }
+
+    activityReportStore.on('csv_activity_event_wise_report_changed',csvActivityEventWiseReportChanged)
+    function csvActivityEventWiseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 </script>

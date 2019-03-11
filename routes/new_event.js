@@ -1,5 +1,10 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
+
 
 /* Read Course listing. */
 router.get('/readEventType', function(req, res, next) {
@@ -56,6 +61,52 @@ router.get('/read_new_event', function(req, res, next) {
        
   });
 
+});
+
+router.get('/csv_export_new_event', function(req, res, next) {
+  req.getConnection(function(err,connection){
+
+     var data = {}
+     var qry = `SELECT event_name as 'Event Name',event_type as 'Event Type' , 
+          date_format(start_date, "%d/%m/%Y") as 'Start Date',date_format(end_date, "%d/%m/%Y") as 'End Date',
+          description as 'Description', holiday as 'Holiday' 
+          FROM new_event e
+          LEFT JOIN event_type_master c ON e.event_type_id = c.event_type_id`;
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+      connection.query(qry,function(err,result)     {
+            
+        if(err){
+          console.log("Error reading New Event : %s ",err );
+          data.status = 'e';
+
+        }else{
+          const fields = ['Event Name','Event Type','Start Date','End Date','Description','Holiday']; 
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(result);
+          var path='./public/csv/New Event.csv'; 
+          data.url = '/csv/New Event.csv';
+
+          fs.writeFile(path, csv, function(err,data) {
+            if (err) {
+              throw err;
+            }else{ 
+              callback() 
+            }
+          });
+        }
+      });  
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });//end of async loop  
+
+  });// get connection
 });
 
 /* Add Event listing. */

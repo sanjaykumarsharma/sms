@@ -1,5 +1,255 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
+
+
+router.post('/csv_export_issued_goods_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Date'] = result[i].issue_date;
+        obj['Item Name'] = result[i].item_name;
+        obj['To Whom'] = result[i].staff_name;
+        obj['Quantity'] = result[i].quantity;
+        obj['Purpose'] = result[i].purpose;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Date','Item Name','To Whom','Quantity','Purpose'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/issueGoodsReport.csv'; 
+      data.url = '/csv/issueGoodsReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+
+    });
+});
+
+router.post('/csv_export_inventory_person_wise_issued_goods_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Date'] = result[i].issue_date;
+        obj['Item Name'] = result[i].item_name;
+        obj['Quantity'] = result[i].quantity;
+        obj['Purpose'] = result[i].purpose;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Date','Item Name','Quantity','Purpose'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/inventoryPersonWiseIssuedReport.csv'; 
+      data.url = '/csv/inventoryPersonWiseIssuedReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+
+    });
+});
+
+router.post('/csv_export_inventory_sale_goods_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Date'] = result[i].sale_date;
+        obj['Category'] = result[i].category_name;
+        obj['Item Name'] = result[i].item_name;
+        obj['Quantity'] = result[i].quantity;
+        obj['Rate'] = result[i].sale_rate;
+        obj['Amount'] = result[i].amount;
+        obj['Sale To'] = result[i].sale_to;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Date','Category','Item Name','Quantity','Rate','Amount','Sale To'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/soldItem.csv'; 
+      data.url = '/csv/soldItem.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+
+    });
+});
+
+router.post('/csv_export_inventory_return_goods_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Date'] = result[i].issue_date;
+        obj['Category'] = result[i].category_name;
+        obj['Item Name'] = result[i].item_name;
+        obj['To Whom'] = result[i].return_to;
+        obj['Quantity'] = result[i].quantity;
+        obj['Return Date'] = result[i].return_date;
+        obj['Remarks'] = result[i].return_remarks;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Date','Category','Item Name','To Whom','Quantity','Return Date','Remarks'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/returnItem.csv'; 
+      data.url = '/csv/returnItem.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+
+    });
+});
+
+router.post('/csv_export_inventory_received_goods_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Category'] = result[i].category_name;
+        obj['Item Name'] = result[i].item_name;
+        obj['Quantity'] = result[i].quantity;
+        obj['Rate'] = result[i].rate;
+        obj['Amount'] = result[i].amount;
+        obj['Rack'] = result[i].rack_name;
+        obj['Remarks'] = result[i].remark;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Category','Item Name','Quantity','Rate','Amount','Rack','Remarks'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/inventoryReceivedGoodsReport.csv'; 
+      data.url = '/csv/inventoryReceivedGoodsReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+
+    });
+});
 
 /* Read Course listing. */
 router.get('/read_received_from', function(req, res, next) {
@@ -28,21 +278,21 @@ router.get('/read_received_from', function(req, res, next) {
 
 });
 
-router.get('/read_inventory_received_goods_report/:received_from/:start_date/:end_date', function(req, res, next) {
-
+router.post('/read_inventory_received_goods_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
   req.getConnection(function(err,connection){
        
         var data = {}
         var user_condition="";
         var person = "";
-        var received_from=req.params.received_from
        // var session_id=req.cookies.session_id
         var role=req.cookies.role
         var user=req.cookies.user
-        var start_date=req.params.start_date
-        var end_date=req.params.end_date
-       if(received_from !="All") person =` and received_from= ' ${received_from}' `;
-       if(req.cookies.role != 'ADMIN') user_condition = ` and a.created_by = '${user}' `;
+        var received_from=input.received_from;
+        var start_date=input.start_date
+        var end_date=input.end_date
+       if(received_from !="All") person =` and received_from= '${received_from}' `;
+       if(req.cookies.user != 'admin') user_condition = ` and a.created_by = '${user}' `;
      var qury=`select date_format(received_date,'%d/%m/%Y')as received_date,received_date as r_date,
                 item_name,category_name, concat('',quantity,' ',unit)as quantity, rate,(quantity*rate)as amount,
                 rack_name, remark 

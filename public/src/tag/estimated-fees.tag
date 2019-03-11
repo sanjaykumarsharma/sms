@@ -47,14 +47,19 @@
 				<button disabled={loading} class="button is-danger has-text-weight-bold"
 				onclick={getEstematedFees} > GO
 				</button>
-
-				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-		              <span class="icon">
-		                 <i class="fas fa-print"></i>
-		             </span>
-		         </button>
-				
 			</div>
+      <div class="level-right" >
+              <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+                <span class="icon">
+                  <i class="far fa-file-excel"></i>
+                </span>
+              </button>
+              <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+              </button>
+        </div>
 		</div>
 	</div>
 	<p class="has-text-centered" style="color: #ff3860;font-weight:bold">Estimated Fees Report</p>
@@ -99,7 +104,20 @@
       applyPlanStore.off('read_standard_changed',StandardChanged)
       applyPlanStore.off('read_section_changed',SectionChanged)
       feesReportStore.off('read_estimated_fees_changed',ReadEstimatedFeesChanged)
+      feesReportStore.off('csv_export_estimated_fees_changed',estimatedFeesChanged)
     })
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_estimated_fees',self.estimatedFees)
+    }
+
+    feesReportStore.on('csv_export_estimated_fees_changed',estimatedFeesChanged)
+    function estimatedFeesChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
    //read standard 
    self.readStandard = () => {
        applyPlanStore.trigger('read_standards')

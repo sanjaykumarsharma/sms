@@ -40,7 +40,12 @@
           <button class="button is-danger has-text-weight-bold"
           onclick={readStaffWiseReport} >Go
           </button>
-          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+          <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
@@ -96,6 +101,7 @@
      self.on("unmount", function(){
        staffbpweightStore.off('read_staff_wise_report_changed', ReadStaffWiseReportChanged)
        staffbpweightStore.off('read_epmloyee_changed',EmployeeChanged)
+       staffbpweightStore.off('csv_export_staff_wise_report_changed',csvStaffWiseReportChanged)
      })
 
      //read courses
@@ -125,7 +131,9 @@
          self.edit(e)
        }  
      }
-
+    self.downloadCSV = () =>{
+      staffbpweightStore.trigger('csv_export_staff_wise_report', self.staffWiseReports)
+    }
     
      staffbpweightStore.on('read_staff_wise_report_changed',ReadStaffWiseReportChanged)
      function ReadStaffWiseReportChanged(staffWiseReports){
@@ -144,6 +152,13 @@
        self.employees = employees
        self.update()
        console.log(self.employees)
+     }
+    staffbpweightStore.on('csv_export_staff_wise_report_changed',csvStaffWiseReportChanged)
+    function csvStaffWiseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
      }
 
 </script>

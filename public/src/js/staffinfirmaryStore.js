@@ -29,6 +29,79 @@ function StaffInfirmaryStore() {
         }
       })
   })
+
+  self.on('csv_export_infirmary_staff', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/infirmary_staff/csv_export_infirmary_staff',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_infirmary_staff_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
+
+  self.on('csv_export_staff_date_wise_case_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/infirmary_staff/csv_export_staff_date_wise_case_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_staff_date_wise_case_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
+
+  self.on('csv_export_staff_monthly_case_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/infirmary_staff/csv_export_staff_monthly_case_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_staff_monthly_case_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
+  
   self.on('read_infirmary_category', function() {
     console.log('i am in read_sections api call from ajax')
     let req = {}

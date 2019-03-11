@@ -15,53 +15,26 @@
         <button disabled={loading} class="button is-danger has-text-weight-bold"
         onclick={add}>{title}
         </button>
-        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+         <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+        <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
        </button>
-        <button class="button is-warning is-rounded is-pulled-right" onclick={readCategories} style="margin-right:2px">
+        <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readCategories} style="margin-right:2px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
-        </button>     
+        </button>
+          <input class="input is-pulled-right" ref="searchInfirmaryCategory" onkeyup={filteredInfirmaryCategory} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >     
       </div>
     </div>
   </div>  
-		<!-- <div class="box no-print">
-			<div class="columns">
-				<div class="column is-half">
-					<div class="field">
-						<label class="label" for="role">Category</label>
-						<div class="control">
-							<input class="input" type="text" ref="category_name"
-							onkeyup={addEnter}>
-						</div>
-					</div>
-				</div>
-				<div class="column is-narrow">
-					<div class="field">
-						<div class="control">
-							<button class="button is-danger has-text-weight-bold adjusted-top"
-					         onclick={add} >{title}
-              </button>
-
-              <button class="button is-warning is-rounded is-pulled-right" onclick={readCategories} style="margin-left:5px">
-          <span class="icon">
-            <span class="fas fa-sync-alt"></span>
-          </span>
-          </button>
-
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-                  <span class="icon">
-                     <i class="fas fa-print"></i>
-                 </span>
-        </button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div> -->
+		
 		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
@@ -71,7 +44,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={c, i in infirmaryCategories}>
+				<tr each={c, i in filteredInfirmaryCategorys}>
 					<td>{ i+1 }</td>
 					<td>{ c.category_name}</td>
 		          	<td class="has-text-right no-print">
@@ -98,12 +71,21 @@
     })
     self.on("unmount", function(){
       infirmarycategoryStore.off('categories_changed', CategoriesChanged)
+      infirmarycategoryStore.off('csv_export_infirmary_category_changed',csvInfirmaryCategoryChanged)
     })
 
+    self.filteredInfirmaryCategory = ()=>{
+        self.filteredInfirmaryCategorys = self.infirmaryCategories.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryCategory.value.toLowerCase())>=0
+        })
+      } 
     //read courses
     self.readCategories = () => {
       self.loading=true
        infirmarycategoryStore.trigger('read_categories')
+    }
+    self.downloadCSV = () =>{
+      infirmarycategoryStore.trigger('csv_export_infirmary_category', self.infirmaryCategories)
     }
 
      self.add = () => {
@@ -170,11 +152,19 @@
       self.refs.category_name.value = ''
       self.loading = false
       self.infirmaryCategories = infirmaryCategories
+      self.filteredInfirmaryCategorys = infirmaryCategories
       /*self.categoryDataItems = []
       self.categoryDataItems = infirmaryCategories*/
       self.update()
       console.log(self.infirmaryCategories)
     }
+    infirmarycategoryStore.on('csv_export_infirmary_category_changed',csvInfirmaryCategoryChanged)
+    function csvInfirmaryCategoryChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
 </script>
 </infirmary-category>

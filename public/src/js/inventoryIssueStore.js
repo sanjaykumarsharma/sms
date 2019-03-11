@@ -4,6 +4,49 @@ function InventoryIssueStore() {
 
   self.inventoryIssues=[];
 
+  self.on('csv_export_returnable_item', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/inventory_issue/csv_export_returnable_item',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_returnable_item_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+  
+  self.on('csv_export_inventory_issue', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/inventory_issue/csv_export_inventory_issue',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_inventory_issue_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
   //read Inventory Isseu
 
   self.on('read_inventory_issue', function(id,type) {
@@ -92,6 +135,7 @@ function InventoryIssueStore() {
       url:'/inventory_issue/delete/'+id,
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           if(data.status == 's'){

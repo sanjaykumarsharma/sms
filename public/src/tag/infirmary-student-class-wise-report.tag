@@ -38,10 +38,16 @@
 				<button class="button is-danger has-text-weight-bold"
 				onclick={getData} > GO
 				</button>
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+
 				<input type="checkbox" id="checkTable" checked={e.done}
 				onclick={viewTable}  style="margin-top: 12px;"> Table
 
-				 <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+				 <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
@@ -116,6 +122,7 @@
       studentinfirmaryStore.on('read_class_wise_report_changed',ReadClassWiseReportChanged)
       studentStore.off('read_standard_changed',StandardChanged)
       studentStore.off('read_section_changed',SectionChanged)
+      studentinfirmaryStore.off('csv_export_infirmary_class_wise_case_report_changed',csvInfirmaryClassWiseCaseReportChanged)
     })
 
     self.readStandard = () => {
@@ -146,6 +153,10 @@
            self.section= $("#section_id option:selected").text();
           studentinfirmaryStore.trigger('read_class_wise_report', self.refs.standard_id.value,self.refs.section_id.value)
           	self.report_view = 'show_graph'
+    }
+
+    self.downloadCSV = () =>{
+      studentinfirmaryStore.trigger('csv_export_infirmary_class_wise_case_report', self.class_wise_case_report)
     }
 
     studentStore.on('read_standard_changed',StandardChanged)
@@ -208,5 +219,13 @@
       self.update()
       console.log(self.class_wise_case_report)
     }
+
+    studentinfirmaryStore.on('csv_export_infirmary_class_wise_case_report_changed',csvInfirmaryClassWiseCaseReportChanged)
+    function csvInfirmaryClassWiseCaseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 </script>
 </infirmary-student-class-wise-report>

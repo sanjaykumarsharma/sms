@@ -17,17 +17,23 @@
           <button disabled={loading} class="button is-danger has-text-weight-bold"
           onclick={add} >{title}
           </button>
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readUnit} style="margin-left:5px">
+           <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+          <button class="button is-warning is-rounded is-pulled-right ml5" onclick={readInventoryUnit} style="margin-left:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
 
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-primary has-text-weight-bold is-pulled-right ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
+           <input class="input is-pulled-right" ref="searchInventoryUnit" onkeyup={filteredInventoryUnit} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
         </div>
       </div>
     </div>
@@ -40,7 +46,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={c, i in inventoryUnits}>
+				<tr each={c, i in filteredInventoryUnits}>
 					<td>{ i+1 }</td>
 					<td>{ c.unit}</td>
 		          	<td class="has-text-right no-print">
@@ -67,14 +73,25 @@
     })
     self.on("unmount", function(){
       inventoryUnitStore.off('inventoryUnit_changed', InventoryUnitChanged)
+      inventoryUnitStore.off('csv_export_inventory_unit_changed',csvInventoryUnitChanged)
     })
+
+
+      self.filteredInventoryUnit = ()=>{
+        self.filteredInventoryUnits = self.inventoryUnits.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventoryUnit.value.toLowerCase())>=0
+        })
+      } 
 
     //read courses
     self.readInventoryUnit = () => {
-       inventoryUnitStore.trigger('read_inventory_unit')
+      self.loading=true;
+      inventoryUnitStore.trigger('read_inventory_unit')
     }
-
-     self.add = () => {
+    self.downloadCSV = () => {
+      inventoryUnitStore.trigger('csv_export_inventory_unit',self.inventoryUnits)
+    }
+    self.add = () => {
       if(!self.refs.unit.value){
         toastr.info("Please enter Unit and try again")
       }else{
@@ -139,10 +156,18 @@
       self.refs.unit.value = ''
       self.loading = false
       self.inventoryUnits = inventoryUnits
+      self.filteredInventoryUnits = inventoryUnits
       /*self.categoryDataItems = []
       self.categoryDataItems = inventoryUnits*/
       self.update()
       console.log(self.inventoryUnits)
+    }
+    inventoryUnitStore.on('csv_export_inventory_unit_changed',csvInventoryUnitChanged)
+    function csvInventoryUnitChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

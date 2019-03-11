@@ -45,11 +45,17 @@
 					<button disabled={loading} class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
-          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+          <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
           </button>
+            <input class="input is-pulled-right is-small ml5" ref="searchRole" onkeyup={filteredRole} type="text" style="width:200px;margin-right:5px" placeholder="Search">
 				</div>
 			</div>
 		</div>
@@ -64,7 +70,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in employeeRoles}>
+				<tr each={ev, i in filteredRoles}>
 					<td>{ i+1 }</td>
           <td>{ ev.employee_id}</td>
 					<td>{ ev.employee_name}</td>
@@ -98,8 +104,19 @@
       employeeRoleStore.off('read_employee_changed',EmployeesChanged)
       employeeRoleStore.off('edit_employee_role_changed',EditEmployeeRolesChanged)
       employeeRoleStore.off('delete_employee_role_changed',DeleteEmployeeRolesChanged)
+      employeeRoleStore.off('csv_export_role_changed',csv_export_roleChanged)
     })
 
+    self.downloadCSV = () =>{
+          employeeRoleStore.trigger('csv_export_Role')
+        //  console.log(obj)
+    }
+
+    self.filteredRole = ()=>{
+      self.filteredRoles = self.employeeRoles.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchRole.value.toLowerCase())>=0
+      })
+    } 
     //read courses
     self.readEmployees = () => {
         self.loading=true
@@ -217,6 +234,7 @@
       self.refs.addEmployeeRoleInput.value = ''
       self.loading = false
       self.employeeRoles = employeeRoles
+      self.filteredRoles = employeeRoles
       self.update()
       console.log(self.employeeRoles)
     }
@@ -228,6 +246,14 @@
       self.loading=false
       self.update()
       console.log(self.employees)
+    }
+
+     employeeRoleStore.on('csv_export_role_changed',csv_export_roleChanged)
+    function csv_export_roleChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

@@ -2,16 +2,25 @@
 <print-header></print-header>
 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
-
     <div class="level no-print">
       <div class="level-left">
         <h2 class="title" style="color: #ff3860;">Consolidate Tabulation Sheet</h2>
       </div>
       <div class="level-right">
-        <button class="button is-warning is-rounded ml5" onclick={readReport}>
+        <button class="button is-link ml5" onclick={readReport}>
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
+        </button>
+        <button class="button is-success ml5" onclick={downloadCSV}>
+        <span class="icon">
+          <i class="far fa-file-excel"></i>
+        </span>
+        </button>
+        <button class="button is-primary ml5" onclick="window.print()">
+        <span class="icon">
+            <i class="fas fa-print"></i>
+          </span>
         </button>
       </div>
     </div>
@@ -157,6 +166,10 @@
         marksReportStore.trigger('read_consolidate_tabulation_sheet',self.refs.examTypeSelect.value, self.refs.sectionSelect.value)
       }  
 
+    }
+
+    self.downloadCSV = () =>{
+      marksReportStore.trigger('consolidate_tabulation_sheet_csv', self.headers,self.reports)
     }
 
     self.addEnter = (e) => {

@@ -75,7 +75,7 @@
 			    <div class="column is-narrow">
 					<div class="control">
 			        	<div class="select is-fullwidth">
-							<select ref="r_level_id" id="r_level_id">
+							<select ref="r_level_id" id="r_level_id" style="width:180px">
 								<option value={-2}>Level</option>
 								<option value={-1}>All</option>
 								<option each={levels} value={level_id}>{level}
@@ -87,7 +87,7 @@
 			    <div class="column is-narrow">
 					<div class="control">
 			        	<div class="select is-fullwidth">
-							<select ref="r_department_id" id="r_department_id">
+							<select ref="r_department_id" id="r_department_id" style="width:180px">
 								<option value={-2}>Department</option>
 								<option value={-1}>All</option>
 								<option each={departments} value={department_id}>{department_name}
@@ -103,16 +103,22 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={getStaffData}>GO
 					</button>
-					 <button class="button is-primary has-text-weight-bold is-pulled-right is-small" onclick="window.print()" title="Print">
+					 <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+		              <span class="icon">
+		                  <i class="far fa-file-excel"></i>
+		              </span>
+		           </button>
+					 <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                     <span class="icon">
                        <i class="fas fa-print"></i>
                    </span>
 		          </button>
-		          <button class="button is-warning is-rounded is-pulled-right is-small" onclick={getStaffData} style="margin-left:5px;margin-right:5px">
+		          <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={getStaffData} style="margin-left:5px;margin-right:5px">
 		          <span class="icon">
 		            <span class="fas fa-sync-alt"></span>
 		          </span>
 		          </button>
+		           <input class="input is-pulled-right" ref="searchStaff" onkeyup={filteredStaff} type="text" style="width:200px;margin-right:5px;" placeholder="Search">  
 				</div>
 
 			</div>
@@ -133,7 +139,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in staffs}>
+				<tr each={st, i in filteredStaffs}>
 					<td class="no-print"><input type="checkbox" checked={st.done} class="id_check_box"  id="{ 'StaffId' + st.emp_id }" onclick={ selectStaff.bind(this,st) } > </td>
 					<td>{st.employee_id}</td>
 					<td>{st.first_name} {st.middle_name} {st.last_name}</td>
@@ -2333,7 +2339,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in staffs}>
+				<tr each={st, i in filteredStaffs}>
 				    <td>{i+1}</td>
 				    <td>{st.employee_id}</td>
 				    <td>{st.title}</td>
@@ -2445,6 +2451,12 @@
       staffStore.off('update_staff_fast_edit_changed',updateStaffFastEditChanged)
       staffStore.off('read_staff_id_card_changed',ReadIdCardChanged)
     })
+
+      self.filteredStaff = ()=>{
+        self.filteredStaffs = self.staffs.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchStaff.value.toLowerCase())>=0
+        })
+      } 
     self.add_more_work_exp=()=>{
 	    let obj = {}
         obj.work_institution=''
@@ -2506,7 +2518,7 @@
             st.push(ob)
           }
         })*/
-        if(self.staffs.length ==0){
+        if(self.filteredStaffs.length ==0){
           toastr.info('Please Load Staff Data First')
           return
         }
@@ -2553,8 +2565,8 @@
 
     self.fastUpdateStaff=()=>{
     	var editValues = []
-	    console.log(self.staffs)
-	   	self.staffs.map( q => {
+	    console.log(self.filteredStaffs)
+	   	self.filteredStaffs.map( q => {
 	   	var obj={}
 	     	obj['emp_id'] = q.emp_id
 		    if(self.refs.fast_edit_value.value=='gender'){
@@ -2641,7 +2653,7 @@
       let emp_id='';
       var is_active = 'N'
       var st = []
-       self.staffs.map( q => {
+       self.filteredStaffs.map( q => {
           if(q.done){
             var ob ={}
             ob.emp_id=q.emp_id
@@ -2734,13 +2746,13 @@
     self.selectAll = () => {
 
     	if($('#checkStaff').is(":checked")){
-    		self.staffs.map(i=>{
+    		self.filteredStaffs.map(i=>{
 	          i.done = true;
 	          $('StaffId'+i.emp_id).prop('checked', true);
 	          
 	        })
     	}else{
-    		self.staffs.map(i=>{
+    		self.filteredStaffs.map(i=>{
 	          i.done = false;
 	          $('StaffId'+i.emp_id).prop('checked', false);
 	          self.emp_id = i.emp_id;
@@ -2753,7 +2765,7 @@
     	
     	let emp_id='';
     	var st = []
-	    self.staffs.map( q => {
+	    self.filteredStaffs.map( q => {
 	        if(q.done){
 	        	var ob ={}
 	        	ob.emp_id=q.emp_id
@@ -2778,7 +2790,7 @@
     self.update_staff_status = () => {
         self.title = 'Add'
         var st=[]
-         self.staffs.map( q => {
+         self.filteredStaffs.map( q => {
           if(q.done){
             var ob ={}
             ob.emp_id=q.emp_id
@@ -2801,7 +2813,7 @@
 
     self.closeStatusUpdateModal = () => {
       $("#statusModal").removeClass("is-active");
-       self.staffs.map(i=>{
+       self.filteredStaffs.map(i=>{
           i.done = false;
           $('EmpId'+i.emp_id).prop('checked', false); 
        })
@@ -2814,14 +2826,14 @@
     }
 
     self.cancelOperation = (e) => {
-      self.staffs.map(ev => {
+      self.filteredStaffs.map(ev => {
           ev.confirmDelete = false
           ev.confirmEdit = false
       })
     }
 
     self.confirmDelete = (e) => {
-      self.staffs.map(ev => {
+      self.filteredStaffs.map(ev => {
         if(ev.emp_id != e.item.st.emp_id){
           ev.confirmDelete = false
         }else{
@@ -3702,8 +3714,9 @@
     function StaffChanged(staffs){
       console.log(staffs) 
       self.staffs = staffs
+      self.filteredStaffs = staffs
       self.loading=false
-        self.staffs.map(i=>{
+        self.filteredStaffs.map(i=>{
          if(i.emp_id==null){
               i.done = false; //RoleId1
                self.emp_id=i.emp_id
@@ -3719,6 +3732,7 @@
     function AddStaffChanged(staffs,staff_id){
       console.log(staffs) 
       self.staffs = staffs
+      self.filteredStaffs = staffs
       self.uploadStaffImage(staff_id)
       self.close();
       self.update()
@@ -3728,6 +3742,7 @@
     function EditStaffChanged(staffs){
       console.log(staffs) 
       self.staffs = staffs
+      self.filteredStaffs = staffs
       console.log(self.emp_id)
       self.uploadStaffImage(self.emp_id)
       self.close();

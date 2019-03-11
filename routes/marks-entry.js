@@ -166,22 +166,10 @@ router.get('/marks-entries/:exam_type_id/:section_id/:subject_id/:marking_type',
             and (b.withdraw='N' || b.withdraw_session > ${req.cookies.session_id})
             ORDER BY  first_name, middle_name, last_name,b.enroll_number`;
     }      
-    console.log(qry)
-     connection.query(qry,function(err,marksEntries)     {
-            
-        if(err){
-           console.log("Error reading marks entries : %s ",err );
-           data.status = 'e';
-
-        }else{
-            data.status = 's';
-            data.marksEntries = marksEntries;
-        }
-     
-     });
-
-    //reading students
-    var qry = `select d.student_id, roll_number, enroll_number, concat(first_name,' ',middle_name,' ',last_name) as name
+    
+    
+    // console.log(qry)
+    var qry1 = `select d.student_id, roll_number, enroll_number, concat(first_name,' ',middle_name,' ',last_name) as name
               from ( select group_id,subject_id from group_subject_map where subject_id=${req.params.subject_id} and session_id=${req.cookies.session_id}) a
               JOIN student_group b on a.group_id=b.group_id
               JOIN student_current_standing c on b.group_id=c.group_id
@@ -193,21 +181,39 @@ router.get('/marks-entries/:exam_type_id/:section_id/:subject_id/:marking_type',
               and (d.withdraw='N' || d.withdraw_session > ${req.cookies.session_id} )
               order by first_name,middle_name,last_name,enroll_number limit 1`;
 
-    console.log(qry);
-
-    connection.query(qry,function(err,students)     {
+    var  query1 = qry+';'+qry1;
+    console.log(query1);
+     connection.query(query1,function(err,marksEntries)     {
             
         if(err){
-           console.log("Error reading students : %s ",err );
+           console.log("Error reading marks entries : %s ",err );
            data.status = 'e';
 
         }else{
             data.status = 's';
-            data.students = students;
-            res.send(JSON.stringify(data))
+            data.marksEntries = marksEntries[0];
+            data.students = marksEntries[1];
+            res.send(data)
         }
      
-     }); 
+     });
+
+    //reading students
+    
+
+    // connection.query(qry,function(err,students)     {
+            
+    //     if(err){
+    //        console.log("Error reading students : %s ",err );
+    //        data.status = 'e';
+
+    //     }else{
+    //         data.status = 's';
+    //         data.students = students;
+    //         res.send(JSON.stringify(data))
+    //     }
+     
+    //  }); 
        
   });
 
@@ -278,11 +284,11 @@ router.post('/add', function(req, res, next) {
            data.error = err
            data.messaage = err.sqlMessage
            res.send(JSON.stringify(data))
-  	      }else{
-  	            data.status = 's';
-  	            data.marks_id = rows.insertId;
-  	            res.send(JSON.stringify(data))
-  	      }
+          }else{
+                data.status = 's';
+                data.marks_id = rows.insertId;
+                res.send(JSON.stringify(data))
+          }
           
         });
       }else{

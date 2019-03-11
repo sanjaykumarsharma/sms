@@ -431,6 +431,8 @@
 			<tr>
 				<th>Aadhar No.</th>
 			    <td>{st.aadhar_no}</td>
+			    <th>Last School</th>
+			    <td>{st.last_school}</td>
 			    <th>Second Language</th>
 			    <td  colspan="4">{st.second_language}</td>
 			</tr>
@@ -875,7 +877,7 @@
 	    <div class="columns mt30">
 			<div class="column is-full">
 	          	<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Contact Information(Permanent Address)</h3>
-	          	<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em; ">
+	          	<hr class="student-hr is-full">
 	        </div>
 	    </div> 
 
@@ -1010,7 +1012,7 @@
 		<div class="columns mt30">
 			<div class="column is-full">
 		    	<h3 class="has-text-weight-bold is-size-6 has-text-link student-h3">Other Information</h3>
-		    	<hr class="student-hr is-full" style="margin-top: 0.5em; margin-bottom: 0.5em;">
+		    	<hr class="student-hr is-full">
 		    </div>
 		</div>
 
@@ -2479,6 +2481,7 @@
       studentStore.off('read_student_profile_changed',StudentProfileChanged)
       studentStore.off('student_list_changed',StudentListChanged)
       studentStore.off('regenerate_roll_no_changed',RegenerateRollNoChanged)
+      studentStore.off('read_student_csv_changed',csvStudentDetailsChanged)
     })
 
     self.addEnter = (e) => {
@@ -2511,27 +2514,16 @@
     }
 
     self.downloadCSV = () =>{
-        
-        if(self.refs.read_section_id.value !=""){
-    		self.print_list_button = true;
-    		self.student_list_button = true;
-    		self.regenerate_roll_no_button = true;
-    	}
-    	
-    	if(self.refs.read_section_id.value ==""){
-    		self.print_list_button = false;
-    		self.student_list_button = false;
-    		self.regenerate_roll_no_button = false;
-    		return;
-    	}
-    	if(self.refs.read_enroll_number.value=="" ){
+
+    	/*if(self.refs.read_enroll_number.value=="" ){
     	
     		studentStore.trigger('read_student_csv', self.refs.read_standard_id.value,self.refs.read_section_id.value,0)
     	}else{
     	
     		studentStore.trigger('read_student_csv', self.refs.read_standard_id.value,
     			self.refs.read_section_id.value,self.refs.read_enroll_number.value)
-    	}
+    	}*/
+    	studentStore.trigger('read_student_csv', self.students)
     }
 
     self.add_new_student = () =>{
@@ -4632,6 +4624,14 @@
         self.refs.section_id.value = student_details[0].section_id
 
     }
+
+    studentStore.on('read_student_csv_changed',csvStudentDetailsChanged)
+    function csvStudentDetailsChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
     studentStore.on('upload_student_image_changed',UploadStudentImage)
     function UploadStudentImage(image_name){

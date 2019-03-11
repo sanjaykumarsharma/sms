@@ -82,6 +82,7 @@
     })
     self.on("unmount", function(){
       mentorcategoryStore.off('mentor_category_changed',MentorCategoryChanged)
+      mentorcategoryStore.off('csv_export_mentor_category_changed',csvMentorCategoryChanged)
     })
 
     //read Category
@@ -94,8 +95,8 @@
       mentorcategoryStore.trigger('read_mentor_category')
     }
 
-    self.csvExport = () => {
-      mentorcategoryStore.trigger('csv_export_mentor_category')
+    self.downloadCSV = () => {
+      mentorcategoryStore.trigger('csv_export_mentor_category',self.mentor_categories)
     }
 
      self.add = () => {
@@ -169,6 +170,14 @@
       self.filteredMentorCategory = mentor_categories
       self.update()
     }
+
+    mentorcategoryStore.on('csv_export_mentor_category_changed',csvMentorCategoryChanged)
+    function csvMentorCategoryChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
 </script>
 </mentor-category>

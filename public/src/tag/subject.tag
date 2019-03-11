@@ -53,14 +53,20 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
-          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+          <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readSubject} style="margin-right:3px;margin-left:2px">
+          <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readSubject} style="margin-right:3px;margin-left:2px">
           <span class="icon"><span class="fas fa-sync-alt"></span></span>
         </button>
+         <input class="input is-pulled-right" ref="searchSubject" onkeyup={filteredSubject} type="text" style="width:180px;margin-right:5px" placeholder="Search">
 				</div>
 			</div>
 		</div>
@@ -75,7 +81,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in subjects}>
+				<tr each={ev, i in filteredSubjects}>
 					<td>{ i+1 }</td>
 					<td>{ ev.subject_name}</td>
           <td>{ ev.subject_short_name}</td>
@@ -110,7 +116,19 @@
       subjectStore.off('read_subject_changed',ReadSubjectChanged)
       subjectStore.off('edit_subject_changed',EditSubjectChanged)
       subjectStore.off('delete_subject_changed',DeleteSubjectChanged)
+      subjectStore.off('csv_export_subject_changed',csv_export_subjectChanged)
     })
+
+    self.downloadCSV = () =>{
+          subjectStore.trigger('csv_export_Subject')
+        //  console.log(obj)
+    }
+
+    self.filteredSubject = ()=>{
+      self.filteredSubjects = self.subjects.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchSubject.value.toLowerCase())>=0
+      })
+    } 
 
     //read courses
     self.readDepartment = () => {
@@ -232,9 +250,18 @@
     function ReadSubjectChanged(subjects){
       console.log(subjects) 
       self.subjects = subjects
+      self.filteredSubjects = subjects
        self.loading=false
       self.update()
       console.log(self.subjects)
+    }
+
+    subjectStore.on('csv_export_subject_changed',csv_export_subjectChanged)
+    function csv_export_subjectChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

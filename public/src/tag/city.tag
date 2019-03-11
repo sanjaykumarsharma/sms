@@ -32,12 +32,14 @@
           <button class="button is-danger has-text-weight-bold"
           onclick={add} >{title}
           </button>
-            <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-                    <span class="icon">
-                       <i class="fas fa-print"></i>
-                   </span>
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
           </button>
-             <button class="button is-warning is-rounded is-pulled-right" onclick={readCity} style="margin-left:5px;margin-right:5px">
+            <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i></span>
+          </button>
+             <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readCity} style="margin-left:5px;margin-right:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
@@ -85,7 +87,13 @@
 
      self.on("unmount", function(){
       cityStore.off('city_changed', CityChanged)
+      cityStore.off('csv_export_city_changed',csv_export_cityChanged)
     })
+
+      self.downloadCSV = () =>{
+          cityStore.trigger('csv_export_city')
+        //  console.log(obj)
+    }
 
     //read courses
     self.readCity = () => {
@@ -161,6 +169,14 @@
       self.refs.addCodeInput.value = ''
       self.loading = false
       self.cities = cities
+      self.update()
+    }
+
+     cityStore.on('csv_export_city_changed',csv_export_cityChanged)
+    function csv_export_cityChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 

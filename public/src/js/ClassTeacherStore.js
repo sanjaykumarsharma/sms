@@ -27,6 +27,26 @@ function ClassTeacherStore() {
       })
   })
 
+  self.on('csv_export_class_teacher', function() {
+    console.log('i am in csv_export_class_teacher api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/class_teacher/csv_export_class_teacher',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_class_teacher_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.employees = []
 
   self.on('read_teaching_staff', function() {

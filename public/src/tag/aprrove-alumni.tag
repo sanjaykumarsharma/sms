@@ -999,6 +999,7 @@
 	      alumniStore.off('edit_alumni_changed',EditAlumniChanged)
 	      alumniStore.off('delete_alumni_changed',DeleteAlumniChanged)
 	      alumniStore.off('read_alumni_profile_changed',AlumniProfileChanged)
+	      alumniStore.off('read_alumni_csv_changed',csvAlumniChanged)
 	    })
 
 	    self.showAlumniField = () =>{
@@ -1316,6 +1317,9 @@
           self.loading = true
           alumniStore.trigger('read_alumni')
         }
+        self.downloadCSV = () =>{
+      		alumniStore.trigger('read_alumni_csv', self.AlumniData)
+    	}
 
         self.approve_alumni = (c,a) => {
       		self.alumni_id = c
@@ -1649,6 +1653,13 @@
     	function AlumniProfileChanged(alumni_profile_details){
 	    	self.al=alumni_profile_details[0]
 	    	self.alumni_profile = alumni_profile
+	      	self.update()
+    	}
+    	alumniStore.on('read_alumni_csv_changed',csvAlumniChanged)
+    	function csvAlumniChanged(url){
+	    	var open_url = window.location.origin+url 
+	      	window.open(open_url);
+	      	self.loading = false
 	      	self.update()
     	}
 

@@ -7,10 +7,15 @@
 	   		<div class="columns">
 			    <div class=" column">
 				<!-- <div class="level-right"> -->
-			        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+				<button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+                  <span class="icon">
+                      <i class="far fa-file-excel"></i>
+                  </span>
+                 </button>
+			        <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
 			          <span class="icon"> <i class="fas fa-print"></i></span>
 			        </button>
-			       <button class="button is-warning is-rounded is-pulled-right" onclick={readStudentReligionListingReport} style="margin-left:5px;margin-right:5px">
+			       <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readStudentReligionListingReport} style="margin-left:5px;margin-right:5px">
 			        <span class="icon">
 			          <span class="fas fa-sync-alt"></span>
 			        </span>

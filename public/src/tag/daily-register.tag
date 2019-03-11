@@ -20,14 +20,19 @@
 				<button disabled={loading} class="button is-danger has-text-weight-bold"
 				onclick={getFeesRegisterData} > GO
 				</button>
-
-				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-		               <span class="icon">
-		                 <i class="fas fa-print"></i>
-		             </span>
-		         </button>
-				
 			</div>
+			<div class="level-right no-print" >
+	            <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+	                <span class="icon">
+	                  <i class="far fa-file-excel"></i>
+	                </span>
+	              </button>
+	            <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+               </button>
+          	</div>
 		</div>
 	</div>
 	
@@ -71,7 +76,23 @@
 
     self.on("unmount", function(){
       feesReportStore.off('read_fees_register_changed',ReadFeesRegisterChanged)
+      feesReportStore.off('csv_export_register_changed',feesReigsterSchemeChanged)
     })
+    
+    self.downloadCSV = () =>{
+    	console.log("download");
+      feesReportStore.trigger('csv_fees_register',self.registerData)
+    }
+
+    feesReportStore.on('csv_export_fee_register',feesReigsterSchemeChanged)
+    function feesReigsterSchemeChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
+
+
 
     self.getFeesRegisterData = () => {
     	var startDate = document.getElementById("start_date").value

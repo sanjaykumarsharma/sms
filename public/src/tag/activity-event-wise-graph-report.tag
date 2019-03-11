@@ -124,8 +124,9 @@
     })
 
     self.on("unmount", function(){
-      activityReportStore.off('read_activity_event_wise_graph_report_changed',ReadActivityEventWiseGraphReportChanged)
-      activityReportStore.off('read_session_changed',SessionChanged)
+    	activityReportStore.off('read_activity_event_wise_graph_report_changed',ReadActivityEventWiseGraphReportChanged)
+        activityReportStore.off('read_session_changed',SessionChanged) 
+    	activityReportStore.off('csv_activity_event_wise_graph_report_changed',csvActivityEventWiseGraphReportChanged)
     })
 
     self.readSession = () => {
@@ -195,6 +196,14 @@
 
       self.update()
       console.log(self.activity_event_wise_graph_report)
+    }
+
+    activityReportStore.on('csv_activity_event_wise_graph_report_changed',csvActivityEventWiseGraphReportChanged)
+    function csvActivityEventWiseGraphReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 </script>
 </activity-event-wise-graph-report>

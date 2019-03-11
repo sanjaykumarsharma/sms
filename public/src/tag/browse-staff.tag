@@ -23,7 +23,12 @@
 				</div>
               
 			    <div class="column">
-                      <button class="button is-primary has-text-weight-bold is-pulled-right is-small" onclick="window.print()" title="Print">
+                    <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+                      <span class="icon">
+                          <i class="far fa-file-excel"></i>
+                      </span>
+                   </button>
+                     <button class="button is-primary has-text-weight-bold is-pulled-right is-small" onclick="window.print()" title="Print">
                     <span class="icon">
                        <i class="fas fa-print"></i>
                    </span>
@@ -33,12 +38,14 @@
                     <span class="fas fa-sync-alt"></span>
                   </span>
                   </button>
-					<button class="button is-small  has-text-weight-bold is-pulled-right"
+					<button class="button is-small  has-text-weight-bold is-pulled-right  is-small"
 					onclick={showStaffField}>Setting
 					</button>
+                     <input class="input is-pulled-right" ref="searchBrowseStaff" onkeyup={filteredBrowseStaff} type="text" style="width:200px;margin-right:5px;" placeholder="Search">  
 			    </div> 
 			</div>
 		</div>
+        <div style="overflow-x: scroll ;border:solid #000 1px;">
 		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
 			<thead>
 				<tr>
@@ -169,7 +176,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in browseStaffs}>
+				<tr each={st, i in filteredBrowseStaffs}>
 					<td>{i+1}</td>
 					    <td show={view_title=='show_title'}>{st.title}</td>
     <td show={view_first_name=='show_first_name'}>{st.first_name}</td>
@@ -298,6 +305,7 @@
 				</tr>
 			</tbody>
 		</table>
+    </div>
 	</section>
 	    <section>	
 		  <div id="columnSetting" class="modal ">
@@ -501,6 +509,13 @@
       staffStore.off('read_browse_staff_changed',ReadBrowseStaffChanged)
       employeeTypeStore.off('employeeTypes_changed',EmployeeTypesChanged)
     })
+
+     self.filteredBrowseStaff = ()=>{
+        self.filteredBrowseStaffs = self.browseStaffs.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchBrowseStaff.value.toLowerCase())>=0
+        })
+      } 
+
     self.showStaffField = () =>{
        $("#columnSetting").addClass("is-active")
            
@@ -1437,6 +1452,7 @@ if(q.done==false && q.array_name== "nationality"){
       self.title='Create'
       self.loading = false
       self.browseStaffs = browseStaffs
+      self.filteredBrowseStaffs = browseStaffs
       self.update()
       //console.log(self.employeeTypes)
     }

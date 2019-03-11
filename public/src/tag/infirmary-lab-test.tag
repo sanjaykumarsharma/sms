@@ -6,23 +6,28 @@
   <div class="box no-print">
       <div class="columns">
         <div class="column">
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                 <span class="icon">
                    <i class="fas fa-print"></i>
                </span>
            </button>
 
-           <button class="button is-info is-rounded  is-pulled-right" onclick={readStaffLabTest} style="margin-left:5px;margin-right:5px">
+           <button class="button is-info is-rounded  is-pulled-right is-small ml5" onclick={readStaffLabTest} style="margin-left:5px;margin-right:5px">
             <span class="icon">
               <span class="fas fa-sync-alt"></span>
             </span>
           </button>
-         <button class="button is-warning is-rounded is-pulled-right" onclick={add_staff_infirmary}>
+         <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={add_staff_infirmary}>
           <span class="icon">
             <span class="fas fa-plus"></span>
           </span>
          </button>
-
+            <input class="input is-pulled-right" ref="searchInfirmaryLabTest" onkeyup={filteredInfirmaryLabTest} type="text" style="width:200px;margin-right:5px;" placeholder="Search">    
         </div>
       </div>
     </div>
@@ -48,7 +53,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={st, i in staffInfirmaryLabTests}>
+        <tr each={st, i in filteredInfirmaryLabTests}>
           <td>{i+1}</td>
           <td>{st.employee_id}</td>
           <td>{st.first_name} {st.middle_name} {st.last_name}</td>
@@ -392,7 +397,11 @@
        staffinfirmaryStore.off('delete_staff_infirmary_lab_test_changed',DeleteStaffInfirmaryLabTestChanged)
        staffinfirmaryStore.off('read_employee_changed',EmployeeChanged)
      })
-
+      self.filteredInfirmaryLabTest = ()=>{
+        self.filteredInfirmaryLabTests = self.staffInfirmaryLabTests.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryLabTest.value.toLowerCase())>=0
+        })
+      } 
      //read courses
      self.readStaffLabTest = () => {
          self.infirmary_staff_view='show_staff_table'
@@ -548,6 +557,7 @@
           self.refs.diastolic_bp.value=""
          self.loading = false
          self.staffInfirmaryLabTests = staffInfirmaryLabTests
+         self.filteredInfirmaryLabTests = staffInfirmaryLabTests
         self.update()
       //  self.readStaffInfirmary()
        console.log(self.staffInfirmaryLabTests)
@@ -571,6 +581,7 @@
           self.refs.diastolic_bp.value=""
           self.loading = false
           self.staffInfirmaryLabTests = staffInfirmaryLabTests
+          self.filteredInfirmaryLabTests = staffInfirmaryLabTests
           self.update()
       // self.readStaffInfirmary()
       // console.log(self.empsectionsloye_roles)
@@ -594,6 +605,7 @@
         self.refs.diastolic_bp.value=""
         self.loading = false
         self.staffInfirmaryLabTests = staffInfirmaryLabTests
+        self.filteredInfirmaryLabTests = staffInfirmaryLabTests
         self.update()
      // self.readStudentInfirmary()
        console.log(self.staffInfirmaryLabTests)
@@ -617,6 +629,7 @@
           self.refs.diastolic_bp.value=""
           self.loading = false
           self.staffInfirmaryLabTests = staffInfirmaryLabTests
+          self.filteredInfirmaryLabTests = staffInfirmaryLabTests
           self.update()
         console.log(self.staffInfirmaryLabTests)
      }

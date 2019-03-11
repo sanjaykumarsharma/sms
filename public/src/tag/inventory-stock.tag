@@ -19,21 +19,27 @@
           </div>
         </div>
         <div class="column">
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+            <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                     <span class="icon">
                        <i class="fas fa-print"></i>
                    </span>
           </button>
-        <button class="button is-warning is-rounded is-pulled-right" onclick={readInventoryStock} style="margin-left:3px;margin-right:3px">
+        <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readInventoryStock} style="margin-left:3px;margin-right:3px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
         </button>
-           <button class="button is-info is-rounded is-pulled-right" onclick={show_inventory_stock}>
+           <button class="button is-info is-rounded is-pulled-right is-small ml5" onclick={show_inventory_stock}>
           <span class="icon">
             <span class="fas fa-plus"></span>
           </span>
         </button>
+           <input class="input is-pulled-right" ref="searchInventoryStock" onkeyup={filteredInventoryStock} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
         </div>
 			</div>
 
@@ -56,7 +62,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventoryStocks}>
+				<tr each={ev, i in filteredInventoryStocks}>
 					<td>{ i+1 }</td>
 					<td>{ ev.received_date}</td>
           <td>{ ev.category_name}</td>
@@ -208,8 +214,18 @@
       inventoryStockStore.off('add_inventory_stock_changed', AddInventoryStockChanged) 
       inventoryStockStore.off('edit_inventory_stock_changed', EditInventoryStockChanged)    
       inventoryStockStore.off('delete_inventory_stock_changed', DeleteInventoryStockChanged)
+      inventoryStockStore.off('csv_export_inventory_stock_changed',csvInventoryStockChanged)
   })
 
+     self.filteredInventoryStock = ()=>{
+        self.filteredInventoryStocks = self.inventoryStocks.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventoryStock.value.toLowerCase())>=0
+        })
+      } 
+
+    self.downloadCSV = () => {
+      inventoryStockStore.trigger('csv_export_inventory_stock',self.inventoryStocks)
+    }
 
     self.show_inventory_stock=()=>{
       //self.loading=true
@@ -346,6 +362,7 @@
     inventoryStockStore.on('add_inventory_stock_changed',AddInventoryStockChanged)
     function AddInventoryStockChanged(inventoryStocks,category_id){
       self.inventoryStocks=inventoryStocks
+      self.filteredInventoryStocks=inventoryStocks
       self.refs.r_category_id.value=category_id
       self.title='Create'
       self.refs.received_date.value=''
@@ -359,6 +376,7 @@
       self.refs.quantity.value=''
       self.refs.remark.value=''
       self.loading = false
+      self.readInventoryStock()
       self.update()
       //self.readInventoryCategory()
       console.log(self.inventoryStocks)
@@ -380,6 +398,8 @@
       self.refs.remark.value=''
       self.loading = false
       self.inventoryStocks = inventoryStocks
+      self.filteredInventoryStocks = inventoryStocks
+      self.readInventoryStock()
       self.update()
      // self.readInventoryCategory()
       //console.log(self.empinventoryCategoriesloye_roles)
@@ -391,6 +411,7 @@
       self.title='Create'
       self.loading = false
       self.inventoryStocks = inventoryStocks
+      self.filteredInventoryStocks = inventoryStocks
       self.update()
       //self.readInventoryItem()
       console.log(self.inventoryStocks)
@@ -467,6 +488,7 @@
       self.title='Create'
       self.loading = false
       self.inventoryStocks = inventoryStocks
+      self.filteredInventoryStocks = inventoryStocks
       self.update()
       console.log(self.inventoryStocks)
     }  
@@ -478,6 +500,13 @@
       self.update()
       console.log(self.inventoryDepartments)
     }*/
+    inventoryStockStore.on('csv_export_inventory_stock_changed',csvInventoryStockChanged)
+    function csvInventoryStockChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
 </script>
 </inventory-stock>

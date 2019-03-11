@@ -1,6 +1,18 @@
 <fees-scheme-unassigned>
 <header></header> 
 <loading-bar if={loading}></loading-bar>
+<div class="level-right" >
+  <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+        <span class="icon">
+          <i class="far fa-file-excel"></i>
+        </span>
+      </button>
+  <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+          <span class="icon">
+             <i class="fas fa-print"></i>
+         </span>
+     </button>
+</div>
 <section class=" is-fluid">
 	<p class="has-text-centered" style="color: #ff3860;font-weight:bold">Un-assigned Students</p>
   	<p class="has-text-centered">Session: {sessionName}</p>
@@ -36,7 +48,20 @@
 
     self.on("unmount", function(){
       feesReportStore.off('read_no_scheme_changed',ReadNoSchemeChanged)
+      feesReportStore.off('csv_export_fees_scheme_unassigned_changed',schemeunassignedChanged)
     })
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_scheme_unassigned',self.students)
+    }
+
+    feesReportStore.on('csv_export_fees_scheme_unassigned_changed',schemeunassignedChanged)
+    function schemeunassignedChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
     self.getUnAssignedStudent = () => {
         self.loading = true

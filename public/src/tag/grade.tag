@@ -7,15 +7,20 @@
         <h2 class="title" style="color: #ff3860;">Grade</h2>
       </div>
       <div class="level-right">
-        <button class="button is-warning is-rounded" onclick={openGradeModal}>
+        <button class="button is-warning ml5" onclick={openGradeModal}>
         <span class="icon">
           <span class="fas fa-plus"></span>
         </span>
         </button>
 
-        <button class="button is-warning is-rounded" onclick={readGrade} style="margin-left:2px">
+        <button class="button is-link ml5" onclick={readGrade}>
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
+        <button class="button is-success ml5" onclick={downloadCSV}>
+        <span class="icon">
+          <i class="far fa-file-excel"></i>
         </span>
         </button>
       </div>
@@ -28,7 +33,7 @@
         <div class="column">  
           <div class="control">
             <div class="select is-fullwidth">
-              <select ref="examSchemeSelect" onchange={readExamType}>
+              <select ref="examSchemeSelect" id="examSchemeSelect" onchange={readExamType}>
                 <option value="">Select Exam Scheme</option>
                 <option each={examSchemes} value={scheme_id}>{scheme_name}</option>
               </select>
@@ -40,7 +45,7 @@
         <div class="column">
           <div class="control">
             <div class="select is-fullwidth">
-              <select ref="examTypeSelect">
+              <select ref="examTypeSelect" id="examTypeSelect">
                 <option value="">Select Exam Type</option>
                 <option each={examTypes} value={exam_type_id}>{exam_type}</option>
               </select>
@@ -146,6 +151,7 @@
       gradeStore.off('exam_type_changed',ExamTypeChanged)
       gradeStore.off('add_grade_changed',AddGradeChanged)
       gradeStore.off('delete_grade_changed',DeleteGradeChanged)
+      gradeStore.off('read_grade_csv_changed',csvGradeChanged)
     })
 
     self.readExamScheme = () => {
@@ -182,6 +188,11 @@
         gradeStore.trigger('read_grades',self.refs.examSchemeSelect.value, self.refs.examTypeSelect.value)
       }  
 
+    }
+
+    self.downloadCSV = () =>{
+      gradeStore.trigger('read_grade_csv', self.grades)
+      /*self.ExamScheme,self.ExamType*/
     }
 
     self.openGradeModal = () => {
@@ -307,7 +318,17 @@
       self.grades = []
       self.grades = grades
       self.update()
+      self.ExamScheme = $("#examSchemeSelect option:selected").text();
+      self.ExamType = $("#examTypeSelect option:selected").text();
       console.log(self.grades)
+    }
+
+    gradeStore.on('read_grade_csv_changed',csvGradeChanged)
+    function csvGradeChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
     gradeStore.on('add_grade_changed',AddGradeChanged)//update changes calls the same method

@@ -571,6 +571,417 @@ self.on('read_mode', function() {
       })
   })*/
 
+self.on('csv_export_month_wise', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_export_month_wise',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_month_wise_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+//============== daily fees export =========
+self.on('csv_export_daily_fees', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_export_daily_fees',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_daily_collection_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+
+self.on('csv_assigned_scheme', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_assigned_scheme',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_assigned_scheme_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+//========== fees register ===========
+
+self.on('csv_fees_register', function(obj){
+  console.log("---inside-----")
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_fees_register',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_register_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+
+self.on('csv_bankwise_collection', function(obj){
+  
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_bankwise_collection',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_bank_collection_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+self.on('csv_datewise_fees', function(obj){
+  
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_datewise_fees',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_datewise_fees_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+
+self.on('csv_headwise_summary', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_headwise_summary',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_headwise_summary_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+
+self.on('csv_headwise_fees', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_headwise_fees',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_headwise_fees_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+
+self.on('csv_outstanding_fees', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_outstanding_fees',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_outstanding_fees_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+self.on('csv_outstanding_by_class', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_outstanding_by_class',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_outstanding_byclass_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+
+self.on('csv_dueby_class', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_dueby_class',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_due_byclass_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+self.on('csv_fees_collection', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_fees_collection',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_fees_collection_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+
+self.on('csv_estimated_fees', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_estimated_fees',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_estimated_fees_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+
+self.on('csv_advance_fees', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_advance_fees',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_advance_fees_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+self.on('csv_scholarship_list', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_scholarship_list',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_scholarshiplist_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+self.on('csv_issued_letter', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_issued_letter',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_issued_letter_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+self.on('csv_fees_scheme', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_fees_scheme',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_fees_scheme_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+self.on('csv_scheme_unassigned', function(obj){
+  let req = {}
+  req.data=obj
+  $.ajax({
+    url:'/fees_report/csv_scheme_unassigned',
+      contentType: "application/json",
+      dataType:"json",
+      type:'POST',
+      data: JSON.stringify(req),
+      headers: {"Authorization": getCookie('token')},
+      success: function(data){
+        console.log(data)
+        if(data.status == 's'){
+          self.trigger('csv_export_fees_scheme_unassigned_changed', data.url)
+        }else if(data.status == 'e'){}
+      },
+      error: function(data){
+        //showToast("", data)
+    }
+  })
+})
+
+
+
+
 
 
 }

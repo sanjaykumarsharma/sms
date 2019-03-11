@@ -213,6 +213,7 @@
       disciplinedetailStore.off('read_for_edit_discipline_changed',ReadDisciplineForEditChanged)
       disciplinedetailStore.off('edit_discipline_detail_changed',EditDisciplineChanged)
       disciplinedetailStore.off('delete_discipline_detail_changed',DeleteDisciplineDetailsChanged)
+      disciplinedetailStore.off('csv_export_discipline_changed',csvDisciplineChanged)
     })
 
     self.readCategories = () =>{
@@ -235,7 +236,7 @@
     }
 
     self.downloadCSV = () =>{
-      disciplinedetailStore.trigger('csv_export_discipline', self.refs.category_id.value)
+      disciplinedetailStore.trigger('csv_export_discipline', self.disciplines)
     }
 
     self.add_new_discipline = () =>{
@@ -392,6 +393,13 @@
       self.getDisciplineData()
 
       self.update()
-     }
+    }
+    disciplinedetailStore.on('csv_export_discipline_changed',csvDisciplineChanged)
+    function csvDisciplineChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 </script>
 </discipline-detail>

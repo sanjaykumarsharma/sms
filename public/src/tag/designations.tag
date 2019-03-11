@@ -15,14 +15,21 @@
         <button disabled={loading} class="button is-danger has-text-weight-bold"
         onclick={add}>{title}
         </button>
-        <button class="button is-warning is-rounded is-pulled-right" onclick={readDesignations} style="margin-left:5px;margin-right:5px">
+
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+        <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readDesignations} style="margin-left:5px;margin-right:5px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
         </button>
-        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+        <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"style="margin-left:5px">
           <span class="icon"> <i class="fas fa-print"></i></span>
         </button>
+          <input class="input is-pulled-right" ref="searchDesignation" onkeyup={filterDesignation} type="text" style="width:200px" placeholder="Search">
       </div>
     </div>
   </div>  
@@ -35,7 +42,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={d, i in designations}>
+        <tr each={d, i in filteredDesignations}>
           <td>{i + 1}</td>
           <td>{d.designation}</td>
           <td class="has-text-right no-print">
@@ -64,8 +71,21 @@
 
      self.on("unmount", function(){
       designationStore.off('designations_changed', DesignationsChanged)
+      designationStore.off('csv_export_Designation_changed',csv_export_DesignationChanged)
     })
+     // filer Designation
 
+
+    self.downloadCSV = () =>{
+          designationStore.trigger('csv_export_Designation')
+        //  console.log(obj)
+    }
+
+    self.filterDesignation = ()=>{
+      self.filteredDesignations = self.designations.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchDesignation.value.toLowerCase())>=0
+      })
+    } 
     //read courses
     self.readDesignations = () => {
         self.loading = true;
@@ -143,9 +163,18 @@
       self.designations = designations
       self.designations = []
       self.designations = designations
+      self.filteredDesignations = designations
       self.update()
       console.log(self.designations)
       console.log('self.designations')
+    }
+
+    designationStore.on('csv_export_Designation_changed',csv_export_DesignationChanged)
+    function csv_export_DesignationChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

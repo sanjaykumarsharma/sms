@@ -393,7 +393,7 @@ router.post('/delete_attendance', function(req, res, next) {
 
 
 //=========== read monthly attendance data ========
-router.post('/read_monthly_attendance_data', function(req, res, next) {
+/*router.post('/read_monthly_attendance_data', function(req, res, next) {
     var obj = JSON.parse(JSON.stringify(req.body));
     var section_id =  obj.section_id;
     var standard_id =  obj.standard_id;
@@ -407,7 +407,6 @@ router.post('/read_monthly_attendance_data', function(req, res, next) {
     var arr = [];
     var student = []
     var data = {}
-    // var user = req.cookies.user
   req.getConnection(function(err,connection){
       connection.beginTransaction(function(err) {
         if (err) { throw err; }
@@ -441,7 +440,7 @@ router.post('/read_monthly_attendance_data', function(req, res, next) {
           var last_date_of_month = year + "-" + month_id + "-" + c_month;
           var first_date_of_month = year + "-" + month_id + "-" + arr[0];
 
-  /*Second Query*/
+  
           var get_month_array_sh = '';
           var attendance='';
 
@@ -449,16 +448,17 @@ router.post('/read_monthly_attendance_data', function(req, res, next) {
             for(var i=1; i<=days; i++){
               var attendance=year +"-"+ month_id +"-" +i ;
               if(get_month_array_sh == ''){
-                get_month_array_sh =`select holiday from new_event 
+                get_month_array_sh =`select '${attendance}' as date, holiday from new_event 
                           where start_date between "${attendance}" and "${attendance}"
                           or end_date  between "${attendance}" and "${attendance}"`;
               }else{
-                get_month_array_sh = get_month_array_sh+';'+`select holiday from new_event 
+                get_month_array_sh = get_month_array_sh+` union select '${attendance}' as date, holiday from new_event 
                           where start_date  between "${attendance}" and "${attendance}"
                           or end_date  between "${attendance}" and "${attendance}"`;
               }
             }
-          /*get_month_array_sh = get_month_array_sh+';';*/
+          get_month_array_sh = get_month_array_sh+';';
+          console.log(get_month_array_sh);
           connection.query(get_month_array_sh, function(error, rows)
           {
             if (error) {
@@ -469,8 +469,6 @@ router.post('/read_monthly_attendance_data', function(req, res, next) {
             data.get_month_array_sh=rows;
           });
 
-
-/*Third Query*/
         var get_month_array_ch = '';
           var attendance='';
           var days = new Date(year, month_id, 0).getDate();
@@ -508,114 +506,399 @@ router.post('/read_monthly_attendance_data', function(req, res, next) {
 
           });
 
-          //read total attendance values for month and session end 
-
-        /*  var read_total_attendance_session =`select total_attendance_session, total_attendance_month from
-                                              (select count(distinct attendance_date) as total_attendance_session 
-                                              from student_attendance a 
-                                              JOIN student_current_standing b
-                                              where a.session_id=(select session_id from session_master where session_id = ${session_id}) 
-                                              and a.student_id = b.student_id
-                                              and a.session_id=b.session_id and b.section_id = ${section_id }
-                                              and attendance_date <= ${last_date_of_month }
-                                              and a.student_id=${student_id}) a,
-
-                                              (select count(distinct attendance_date) as total_attendance_month 
-                                              from student_attendance a
-                                              JOIN student_current_standing b 
-                                              where month(attendance_date) = ${month}
-                                              and a.session_id=(select session_id from session_master where session_id = ${session_id})
-                                              and a.student_id = b.student_id
-                                              and a.session_id=b.session_id and b.section_id = ${section_id }
-                                              and a.student_id= ${student_id}) b`;
-
-          connection.query(read_total_attendance_session, function(error, rows)
-          {
-            if (error) {
-              return connection.rollback(function() {
-                throw error;
-              });
-            }
-            data.total_attendance = rows;
-          });*/
-
-          //read total attendance values for month and session end 
-          var std_id = 0;
-
-         /* var read_total_attendance =`select pr, ab from
-                                      (select count(attendance_date) as pr 
-                                      from student_attendance 
-                                      where attendance = '1' and student_id = ${std_id}
-                                      and session_id=${session_id}
-                                      and attendance_date <= ${last_date_of_month}) a,
-                                      (select count(attendance_date) as ab 
-                                      from student_attendance 
-                                      where attendance = '0' and student_id = ${student_id}
-                                      and session_id=${session_id}
-                                      and month(attendance_date)= ${month_id}) b`;
-
-          connection.query(read_total_attendance, function(error, rows)
-          {
-            if (error) {
-              return connection.rollback(function() {
-                throw error;
-              });
-            }
-            data.read_total_attendance = rows;
-          });*/
-
-          //read student details 
-         /* var read_student_details=`select a.student_id, enroll_number, roll_number, 
-                                    concat(first_name, ' ', middle_name, ' ', last_name) as name,
-                                    day(attendance_date) as day, attendance 
-                                    from student_attendance a
-                                    JOIN student_master b on (a.student_id = b.student_id and b.current_session_id =${session_id})
-                                    JOIN student_current_standing c on (a.student_id = c.student_id and b.current_session_id=c.session_id)
-                                    JOIN section_master d on c.section_id = d.section_id
-                                    where  month(attendance_date) = ${month_id}
-                                    and standard_id =${standard_id}
-                                    and d.section_id=${section_id}
-                                    and a.session_id= ${session_id}
-                                    order by 3,enroll_number`;
-          connection.query(read_student_details, function(error, rows)
-          {
-            if (error) {
-              return connection.rollback(function() {
-                throw error;
-              });
-            }
-            var error = 1;
-            var prev_student_id = "";
-            var total_p = array();
-            var t_p=0;
-            var total_present = 0;
-
-            for(var i = 0; i < rows.length; i++){
-              if(prev_student_id != rows[i].student_id){
-                if(prev_student_id == ""){
-
-                  student["student_id"] = rows[i].student_id;
-                  student["roll_number"] = rows[i].roll_number;
-                  student["enroll_number"] = rows[i].enroll_number;
-                  student["name"] = rows[i].name;
-                  prev_student_id = rows[i].student_id;
-                }else{
-                  
-                }
-              }
-            }
-
-
-
-            data.read_student_details = 's';
-            data.read_student_details = rows;
-            res.send(data)
-            
-          });*/
-        });//end of ection con
+        });
       });
     });
 
+});*/
+
+//========== read Year =====================
+
+router.get('/read_year/:month_id', function(req, res, next) {
+  var session_id = req.cookies.session_id
+  var month_id = req.params.month_id;
+  var year =0;
+  req.getConnection(function(err,connection){
+       
+     var data = {}
+     var session_id = req.cookies.session_id;
+     var qry=`select year(session_start_date)as syear, year(session_end_date) as eyear
+              from session_master where session_id = ${session_id}`;
+    
+
+     connection.query(qry,function(err,result)     {
+            
+        if(err){
+           console.log("Error reading plans : %s ",err );
+           data.status = 'e';
+
+        }else{
+          data.status = 's';
+          var sdate=result[0].syear; 
+          var edate=result[0].eyear;
+          if(month_id<=12 && month_id>=4){
+            year=sdate;
+          }else if(month_id<=3 && month_id>=1){
+            year=edate;
+          }
+          console.log(year)
+          data.year = year;
+          res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});
+
+//=========== read monthly attendance data ========
+router.post('/read_monthly_attendance_data', function(req, res, next) {
+  var obj = JSON.parse(JSON.stringify(req.body));
+  var section_id =  obj.section_id;
+  var standard_id =  obj.standard_id;
+  var month_id = obj.month_id;
+  var year = obj.year;
+  var session_id = req.cookies.session_id
+  var sdate;
+  var edate;
+  var school_holiday="";
+  var c_month;
+  var arr = [];
+  var student = []
+  var data = {}
+  var attendance_date='';
+
+  req.getConnection(function(err,connection){
+
+
+    var headers = [];
+    function getMonthArray(month_id,year){
+      var days = new Date(year, month_id, 0).getDate();
+      for(var i=1; i<=days; i++){
+        headers.push(i);
+      }
+    }
+
+    getMonthArray(month_id,year);
+
+  
+
+    var last_date_of_month = year + "-" + month_id + "-" + headers[(headers.length-1)];
+    //var first_date_of_month = year + "-" + month_id + "-" + arr[0];
+    
+
+    var data = {}
+
+    var student_details  = `select a.student_id, enroll_number, roll_number, 
+                            concat(first_name, ' ', middle_name, ' ', last_name) as name,
+                            day(attendance_date) as day, 
+                            IF(attendance='1', 'P', 'Ab') as attendance
+                            from student_attendance a
+                            JOIN student_master b on (a.student_id = b.student_id and b.current_session_id = ${session_id})
+                            JOIN student_current_standing c on (a.student_id = c.student_id and b.current_session_id=c.session_id)
+                            JOIN section_master d on c.section_id = d.section_id
+                            where  month(attendance_date) = ${month_id}
+                            and standard_id =${standard_id}
+                            and d.section_id=${section_id}
+                            and a.session_id= ${session_id}
+                            order by roll_number+0, enroll_number`;
+
+    var get_month_array_ch = '';
+    var get_month_array_sh = '';
+    var attendance='';
+    var days = new Date(year, month_id, 0).getDate();
+      for(var i=1; i<=days; i++){
+        attendance=year +"-"+ month_id +"-" +i ;
+        
+        if(get_month_array_ch == ''){
+          get_month_array_ch =`select '${i}' as day,  holiday 
+                      from class_holiday 
+                      where (start_date between "${attendance}" and "${attendance}"
+                      or end_date  between "${attendance}" and "${attendance}")
+                      and section_id = ${section_id}
+                      and holiday='Y'`;
+        }else{
+          get_month_array_ch = get_month_array_ch+` union  select '${i}' as day, holiday 
+                      from class_holiday 
+                      where (start_date between "${attendance}" and "${attendance}"
+                      or end_date  between "${attendance}" and "${attendance}")
+                      and section_id = ${section_id}
+                      and holiday='Y'`;
+        }
+
+        if(get_month_array_sh == ''){
+          get_month_array_sh =`select '${i}' as day, holiday from new_event 
+                    where (start_date between "${attendance}" and "${attendance}"
+                    or end_date  between "${attendance}" and "${attendance}")
+                    and holiday='Y'`;
+        }else{
+          get_month_array_sh = get_month_array_sh+` union select '${i}' as day, holiday from new_event 
+                    where (start_date  between "${attendance}" and "${attendance}"
+                    or end_date  between "${attendance}" and "${attendance}")
+                    and holiday='Y'`;
+        }
+
+      }
+    
+
+    var total_attendance = `select total_attendance_session, total_attendance_month from
+                            (select count(distinct attendance_date) as total_attendance_session 
+                            from student_attendance a 
+                            JOIN student_current_standing b
+                            where a.session_id=(select session_id from session_master where session_id = ${session_id}) 
+                            and a.student_id = b.student_id
+                            and a.session_id=b.session_id and b.section_id = ${section_id} 
+                            and attendance_date <=${last_date_of_month }
+                            and a.student_id=:student_id) a,
+                            (select count(distinct attendance_date) as total_attendance_month 
+                            from student_attendance a
+                            JOIN student_current_standing b 
+                            where month(attendance_date) = ${month_id}
+                            and a.session_id=(select session_id from session_master where session_id = ${session_id})
+                            and a.student_id = b.student_id
+                            and a.session_id=b.session_id and b.section_id = ${section_id}
+                            and a.student_id=:student_id) b `;
+
+
+    var total_attendance = `select p.student_id, total_attendance_session, total_attendance_month,
+                            total_pr_session, total_pr_month, 
+                            (total_attendance_month-total_pr_month) as total_ab_month, 
+                            concat( concat((total_attendance_month-(total_attendance_month-total_pr_month)),'/'), total_attendance_month ) as attn,
+                            FORMAT((((total_attendance_month-(total_attendance_month-total_pr_month))*100)/total_attendance_month),2) as mnth,
+                            concat( concat((total_pr_session),'/'), total_attendance_session ) as total_attn,
+                            FORMAT((((total_pr_session)*100)/total_attendance_session),2) as total_percentage
+                            from
+
+                            (select a.student_id,count(attendance_date) as total_attendance_session 
+                            from student_attendance a 
+                            join student_current_standing b on (a.student_id=b.student_id and b.session_id = ${session_id})
+                            where a.session_id = ${session_id}
+                            and section_id = ${section_id}
+                            and attendance_date <='${last_date_of_month}'
+                            group by a.student_id) p
+
+                            left join 
+
+                            (select a.student_id,count(attendance_date) as total_attendance_month 
+                            from student_attendance a 
+                            join student_current_standing b on (a.student_id=b.student_id and b.session_id = ${session_id})
+                            where month(attendance_date) = ${month_id}
+                            and a.session_id = ${session_id}
+                            and section_id = ${section_id}
+                            group by a.student_id) q on p.student_id=q.student_id
+
+                            left join                            
+
+                            (select a.student_id,count(attendance_date) as total_pr_session 
+                            from student_attendance a
+                            join student_current_standing b on (a.student_id=b.student_id and b.session_id = ${session_id})
+                            where attendance = '1' 
+                            and a.session_id= ${session_id}
+                            and attendance_date <='${last_date_of_month}'
+                            and section_id = ${section_id}
+                            group by a.student_id) r on p.student_id=r.student_id
+
+                            left join
+
+                            (select a.student_id, count(attendance_date) as total_pr_month
+                            from student_attendance a
+                            join student_current_standing b on (a.student_id=b.student_id and b.session_id = ${session_id})
+                            where attendance = '1' 
+                            and a.session_id= ${session_id}
+                            and month(attendance_date)=${month_id}
+                            and section_id = ${section_id}
+                            group by a.student_id) s on p.student_id=s.student_id`;                            
+    
+
+    var qry = student_details+';'+get_month_array_ch+';'+get_month_array_sh+';'+total_attendance;    
+
+    console.log(total_attendance)
+
+    connection.query(qry,function(err,results){
+            
+        if(err){
+           console.log("Error reading report : %s ",err );
+           data.status = 'e';
+
+        }else{
+            data.status = 's';
+            data.headers = headers;
+            
+            //converting data student wise
+            var prev_student_id = ''
+            var studentData = []
+            var studentObj = {}
+            var attendance = {}
+
+            results[0].map(r=>{
+               
+               if(prev_student_id == ''){ //loop runs first time
+                  prev_student_id = r.student_id
+                  studentObj['student_id'] = r.student_id
+                  studentObj['enroll_number'] = r.enroll_number
+                  studentObj['roll_number'] = r.roll_number
+                  studentObj['student_name'] = r.name
+                  attendance[r.day] = r.attendance
+               }else if(prev_student_id == r.student_id){
+                  attendance[r.day] = r.attendance
+               }else{
+                studentObj['attendance'] = attendance
+                studentData.push(studentObj)
+
+                studentObj = {}
+                attendance = {}
+                prev_student_id = r.student_id
+                studentObj['student_id'] = r.student_id
+                studentObj['enroll_number'] = r.enroll_number
+                studentObj['roll_number'] = r.roll_number
+                studentObj['student_name'] = r.name
+                attendance[r.day] = r.attendance
+                attendance[r.day] = r.attendance
+               }
+
+            }) 
+
+            studentObj['attendance'] = attendance
+            studentData.push(studentObj)
+
+
+            //arranging attendance according to header
+            studentData.map(r=>{
+
+               //applying student_wise total_attendance
+               r['total_attendance_session']='tere'
+               
+                results[3].map(s=>{
+
+                  if(Number(r.student_id)==Number(s.student_id)){
+                    r['total_attendance_session'] = s.total_attendance_session
+                    r['total_attendance_month'] = s.total_attendance_month
+                    r['total_pr_session'] = s.total_pr_session
+                    r['total_ab_month'] = s.total_ab_month
+                    r['attn'] = s.attn
+                    r['mnth'] = s.mnth+ '%'
+                    r['total_attn'] = s.total_attn
+                    r['total_percentage'] = s.total_percentage+ '%'
+                  }
+
+                })
+               
+               var orderedAttendance={}
+               var absent =0
+
+               headers.map(h=>{
+
+                  var flag = true;
+                  Object.keys(r.attendance).map(a=>{
+                      if(Number(h)==Number(a)){
+                        orderedAttendance[Number(h)]=r.attendance[Number(h)]
+                        flag = false;
+                      }
+                  })
+
+                  if(flag == true){
+                    orderedAttendance[h]= ''
+                  }
+
+
+                  //assigning school holiday
+                  results[2].map(sh=>{
+                      if(Number(h)==Number(sh.day)){
+                        orderedAttendance[h]= 'SH'
+                      }
+                  })
+
+                  //assigning class holiday
+                  results[1].map(ch=>{
+                      if(Number(h)==Number(ch.day)){
+                        orderedAttendance[h]= 'CH'
+                      }
+                  })
+
+                  //checking for sat and sunday
+                  var d = new Date(year, month_id, h);
+                  
+                  if(d.getDay()==0){//sunday
+                    orderedAttendance[h]= 'X'
+                  }
+
+                  if(d.getDay()==6){//sat
+                    if(orderedAttendance[h]==''){
+                      orderedAttendance[h]= 'SH'
+                    }
+                  }
+
+               })
+               
+               r['orderedAttendance'] = orderedAttendance;
+
+            })
+
+
+            //count total columnwies
+
+
+            var row_one = {'student_name':'Total No. of Students','bold':'X'}
+            var row_one_obj = {}
+
+            var row_pr = {'student_name':'Total No. of Students Persent','bold':'X'}
+            var row_pr_obj = {}
+
+            var row_ab = {'student_name':'Total No. of Students Absent','bold':'X'}
+            var row_ab_obj = {}
+
+
+            headers.map(h=>{
+              
+              var total_no_of_students = 0
+              var total_no_of_students_pr = 0
+              var total_no_of_students_ab = 0
+
+              studentData.map(r=>{
+                total_no_of_students = Number(total_no_of_students) + 1
+
+                if(r.orderedAttendance[h]=='P'){
+                  total_no_of_students_pr = Number(total_no_of_students_pr) + 1
+                }else if(r.orderedAttendance[h]=='Ab'){
+                  total_no_of_students_ab = Number(total_no_of_students_ab) + 1
+                }
+
+
+
+              })
+              
+
+              if(studentData[0].orderedAttendance[h]=='SH' || studentData[0].orderedAttendance[h] == 'CH' || studentData[0].orderedAttendance[h] =='X'){
+                row_one_obj[h] = ''
+                row_pr_obj[h] = ''
+                row_ab_obj[h] = ''
+              }else{
+                row_one_obj[h] = total_no_of_students
+                row_pr_obj[h] = total_no_of_students_pr
+                row_ab_obj[h] = total_no_of_students_ab
+              } 
+            })
+            
+            //console.log(r.orderedAttendance[h])
+            row_one['orderedAttendance']=row_one_obj
+            row_pr['orderedAttendance']=row_pr_obj
+            row_ab['orderedAttendance']=row_ab_obj
+            studentData.push(row_one)
+            studentData.push(row_pr)
+            studentData.push(row_ab)
+            
+            data.student_list = studentData;
+            data.ch = results[1];
+            data.sh = results[2];
+            data.student_list = studentData;
+
+            res.send(JSON.stringify(data))
+        }
+     
+     }); 
+       
+  });
 });
 
 

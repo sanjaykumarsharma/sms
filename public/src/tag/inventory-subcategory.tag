@@ -52,19 +52,25 @@
           </div>
         </div>
 				<div class="column">
-					<button class="button is-danger has-text-weight-bold"
+					<button class="button is-danger has-text-weight-bold ml5"
 					onclick={add} >{title}
 					</button>
-          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+            <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+          <button class="button is-primary has-text-weight-bold is-pulled-right ml5" onclick="window.print()" title="Print">
                     <span class="icon">
                        <i class="fas fa-print"></i>
                    </span>
           </button>
-           <button class="button is-warning is-rounded is-pulled-right" onclick={readInventorySubcategory} style="margin-right:5px;margin-left:5px">
+           <button class="button is-warning is-rounded is-pulled-right ml5" onclick={readInventorySubcategory} style="margin-right:5px;margin-left:5px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
         </button>
+          <input class="input is-pulled-right" ref="searchInventorySubcategory" onkeyup={filteredInventorySubcategory} type="text" style="width:210px;margin-right:5px;" placeholder="Search" >
 				</div>
 			</div>
 		</div>
@@ -79,7 +85,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventorySubcategories}>
+				<tr each={ev, i in filteredInventorySubcategories}>
 					<td>{ i+1 }</td>
 					<td>{ ev.department}</td>
           <td>{ ev.category_name}</td>
@@ -109,19 +115,24 @@
       self.readInventoryCategory()
       self.readInventorySubcategory()
     })
-self.on("unmount", function(){
-  inventoryCategoryStore.off('read_inventory_category_changed', ReadInventoryCategoryChanged)
-  inventorydepartmentStore.off('read_inventorydepartment_changed', ReadInventoryDepartmentChanged)
-  
-  inventorySubcategoryStore.off('add_inventory_subcategory_changed', AddInventorySubcategoryChanged)
-          
-inventorySubcategoryStore.off('read_inventory_subcategory_changed',ReadInventorySubcategoryChanged)
-          
-  inventorySubcategoryStore.off('edit_inventory_subcategory_changed',EditInventorySubcategoryChanged)    
-  
-  inventorySubcategoryStore.off('delete_inventory_subcategory_changed',DeleteInventorySubcategoryChanged)
-})
+      self.on("unmount", function(){
+        inventoryCategoryStore.off('read_inventory_category_changed', ReadInventoryCategoryChanged)
+        inventorydepartmentStore.off('read_inventorydepartment_changed', ReadInventoryDepartmentChanged)
+        inventorySubcategoryStore.off('add_inventory_subcategory_changed', AddInventorySubcategoryChanged)       
+        inventorySubcategoryStore.off('read_inventory_subcategory_changed',ReadInventorySubcategoryChanged)      
+        inventorySubcategoryStore.off('edit_inventory_subcategory_changed',EditInventorySubcategoryChanged)
+        inventorySubcategoryStore.off('delete_inventory_subcategory_changed',DeleteInventorySubcategoryChanged)
+        inventorySubcategoryStore.off('csv_export_inventory_subcategory_changed',csvInventorySubCategoryChanged)
+      })
 
+
+      self.filteredInventorySubcategory = ()=>{
+        self.filteredInventorySubcategories = self.inventorySubcategories.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventorySubcategory.value.toLowerCase())>=0
+        })
+      } 
+
+  
     //read courses
     self.readInventoryDepartment = () => {
        inventorydepartmentStore.trigger('read_inventorydepartment')
@@ -135,6 +146,10 @@ inventorySubcategoryStore.off('read_inventory_subcategory_changed',ReadInventory
     self.readInventorySubcategory = () => {
       self.loading=true
        inventorySubcategoryStore.trigger('read_inventory_subcategory')
+    }
+
+    self.downloadCSV = () => {
+      inventorySubcategoryStore.trigger('csv_export_inventory_subcategory',self.inventorySubcategories)
     }
 
      self.add = () => {
@@ -207,6 +222,7 @@ inventorySubcategoryStore.off('read_inventory_subcategory_changed',ReadInventory
       self.refs.sub_category.value = ''
       self.loading = false
       self.inventorySubcategories = inventorySubcategories
+      self.filteredInventorySubcategories = inventorySubcategories
       self.update()
       //self.readInventoryCategory()
       console.log(self.inventorySubcategories)
@@ -221,6 +237,7 @@ inventorySubcategoryStore.off('read_inventory_subcategory_changed',ReadInventory
       self.refs.sub_category.value = ''
       self.loading = false
       self.inventorySubcategories = inventorySubcategories
+      self.filteredInventorySubcategories = inventorySubcategories
       self.update()
      // self.readInventoryCategory()
       //console.log(self.empinventoryCategoriesloye_roles)
@@ -235,6 +252,7 @@ inventorySubcategoryStore.off('read_inventory_subcategory_changed',ReadInventory
       self.refs.category_id.value = ''
       self.loading = false
       self.inventorySubcategories = inventorySubcategories
+      self.filteredInventorySubcategories = inventorySubcategories
       self.update()
       self.readInventorySubcategory()
       console.log(self.inventorySubcategories)
@@ -258,6 +276,7 @@ inventorySubcategoryStore.off('read_inventory_subcategory_changed',ReadInventory
       self.title='Create'
       self.loading = false
       self.inventorySubcategories = inventorySubcategories
+      self.filteredInventorySubcategories = inventorySubcategories
       self.refs.sub_category.value = ''
       self.refs.department.value = ''
       self.refs.category_id.value = ''
@@ -273,6 +292,13 @@ inventorySubcategoryStore.off('read_inventory_subcategory_changed',ReadInventory
       self.loading=false
       self.update()
       console.log(self.inventoryDepartments)
+    }
+    inventorySubcategoryStore.on('csv_export_inventory_subcategory_changed',csvInventorySubCategoryChanged)
+    function csvInventorySubCategoryChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

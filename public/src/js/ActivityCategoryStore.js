@@ -14,7 +14,7 @@ function ActivityCategoryStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_export_activity_category_changed', data.url)
           }else if(data.status == 'e'){}
         },
         error: function(data){

@@ -19,21 +19,27 @@
           </div>
         </div>
         <div class="column">
-         <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+         <button class="button is-primary has-text-weight-bold is-pulled-right ml5 " onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
-        <button class="button is-warning is-rounded is-pulled-right" onclick={readInventorySale} style="margin-left:3px;margin-right:3px">
+        <button class="button is-warning is-rounded is-pulled-right ml5" onclick={readInventorySale} style="margin-left:3px;margin-right:3px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
         </button>
-          <button class="button is-info is-rounded is-pulled-right" onclick={show_inventory_sale}>
+          <button class="button is-info is-rounded is-pulled-right ml5" onclick={show_inventory_sale}>
           <span class="icon">
             <span class="fas fa-plus"></span>
           </span>
         </button>
+         <input class="input is-pulled-right" ref="searchInventorySale" onkeyup={filteredInventorySale} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
         </div>
 			</div>
 		</div>
@@ -56,7 +62,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventorySales}>
+				<tr each={ev, i in filteredInventorySales}>
 					<td>{ i+1 }</td>
 					<td>{ ev.sa_date}</td>
           <td>{ ev.category_name}</td>
@@ -192,9 +198,14 @@
       inventorySaleStore.off('add_inventory_sale_changed', AddInventorySaleChanged) 
       inventorySaleStore.off('edit_inventory_sale_changed', EditInventorySaleChanged)    
       inventorySaleStore.off('delete_inventory_sale_changed', DeleteInventorySaleChanged)
+      inventorySaleStore.off('csv_export_inventory_sale_changed',csvInventorySaleChanged)
   })
 
-    
+     self.filteredInventorySale = ()=>{
+        self.filteredInventorySales = self.inventorySales.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventorySale.value.toLowerCase())>=0
+        })
+      } 
     /*self.showSaleType=()=>{
         console.log(self.refs.sale_type.value)
         if(self.refs.sale_type.value=='Staff'){
@@ -278,7 +289,9 @@
         staffinfirmaryStore.trigger('read_employee')
      }*/
 
-
+     self.downloadCSV = () => {
+      inventorySaleStore.trigger('csv_export_inventory_sale',self.inventorySales)
+    }
 
     self.add = () => {
 
@@ -412,6 +425,7 @@
        //self.refs.purpose.value=''
       self.loading = false
       self.inventorySales = inventorySales
+      self.filteredInventorySales = inventorySales
       self.readInventorySale()
       self.update()
      // self.readInventoryCategory()
@@ -424,6 +438,7 @@
       self.title='Create'
       self.loading = false
       self.inventorySales = inventorySales
+      self.filteredInventorySales = inventorySales
       self.update()
       //self.readInventoryItem()
       console.log(self.inventorySales)
@@ -495,6 +510,7 @@ inventoryIssueStore.on('read_inventory_available_quantity_changed',ReadInventory
       self.title='Create'
       self.loading = false
       self.inventorySales = inventorySales
+      self.filteredInventorySales = inventorySales
       self.update()
       console.log(self.inventorySales)
     }  
@@ -506,6 +522,14 @@ inventoryIssueStore.on('read_inventory_available_quantity_changed',ReadInventory
        self.update()
        console.log(self.employees)
      }*/
+
+    inventorySaleStore.on('csv_export_inventory_sale_changed',csvInventorySaleChanged)
+    function csvInventorySaleChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
 </script>
 </inventory-sale>

@@ -48,19 +48,20 @@ function MentorDetailStore() {
       })
   })
 
-  self.on('csv_export_mentor', function(read_category_id) {
-    console.log(read_category_id)
+  self.on('csv_export_mentor', function(obj) {
     let req = {}
-    req.read_category_id=read_category_id
+    req.data=obj
     $.ajax({
-      url:'/mentor_detail/csv_export_mentor/'+read_category_id,
+      url:'/mentor_detail/csv_export_mentor',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_export_mentor_changed', data.url)
           }else if(data.status == 'e'){
             
           }
@@ -144,21 +145,20 @@ function MentorDetailStore() {
       })
   })
 
-  self.on('read_mentor_case_csv', function(id,enroll_number) {
-    console.log(id)
-    console.log(enroll_number)
+  self.on('read_mentor_case_csv', function(obj) {
     let req = {}
-    req.id=id
-    req.enroll_number=enroll_number
+    req.data=obj
     $.ajax({
-      url:'/mentor_detail/read_mentor_case_csv/'+id+'/'+enroll_number,
+      url:'/mentor_detail/read_mentor_case_csv',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-
+            self.trigger('read_mentor_case_csv_changed', data.url)
           }else if(data.status == 'e'){
             
           }

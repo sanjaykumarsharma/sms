@@ -3,40 +3,47 @@ var router = express.Router();
 const Json2csvParser = require('json2csv').Parser;
 const fs = require('fs');
 var http = require('http');
-var download = require('download-file')
+var async = require("async");
 
-router.get('/csv_export_discipline_category', function(req, res, next) {
-
+router.post('/csv_export_discipline_category', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
   req.getConnection(function(err,connection){
 
     var data = {}
-    var qry = `select category_id,category_name from discipline_category_master order by 2`;
+    var std = Array();
+    var result = input.data;
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
 
-      connection.query(qry,function(err,result)     {    
-        if(err){
-          console.log("Error reading Category : %s ",err );
-          data.status = 'e';
-        }else{
-          data.status = 's';
-          data.categories = result;
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Category Name'] = result[i].category_name;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Category Name'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/DisciplineCategory.csv'; 
+      data.url = '/csv/DisciplineCategory.csv';
 
-          const fields = ['Category Name'];
-          const json2csvParser = new Json2csvParser({ fields });
-          const csv = json2csvParser.parse(result);
-
-          var path='./public/csv/DisciplineCategory.csv'; 
-          fs.writeFile(path, csv, function(err,data) {
-            if (err) {throw err;}
-            else{ 
-              res.send(data)
-              var url='http://localhost:4000/csv/DisciplineCategory.csv';
-              var open = require("open","");
-              open(url);  
-            }
-          });    
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
         }
-     });      
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
     });
+  });
 });
 
 /* Read discipline listing. */

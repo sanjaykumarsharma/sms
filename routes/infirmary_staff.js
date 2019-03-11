@@ -1,6 +1,163 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
 
+/* Read Staff Infirmary for CSV */
+router.post('/csv_export_infirmary_staff', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Name'] = result[i].name;
+        obj['Employee ID'] = result[i].employee_id;
+        obj['Case'] = result[i].case_name;
+        obj['Date'] = result[i].t_date;
+        obj['Time In'] = result[i].time_in;
+        obj['Time Out'] = result[i].time_out;
+        obj['Treatment'] = result[i].treatment;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Name', 'Employee ID','Case','Date','Time In','Time Out','Treatment'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StaffInfirmary.csv'; 
+      data.url = '/csv/StaffInfirmary.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
+
+
+/* Read Staff Date Wise Case Report for CSV */
+router.post('/csv_export_staff_date_wise_case_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Name'] = result[i].name;
+        obj['Employee ID'] = result[i].employee_id;
+        obj['Case'] = result[i].case_name;
+        obj['Date'] = result[i].t_date;
+        obj['Time In'] = result[i].time_in;
+        obj['Time Out'] = result[i].time_out;
+        obj['Treatment'] = result[i].treatment;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Name', 'Employee ID','Case','Date','Time In','Time Out','Treatment'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StaffDateWiseCase.xls.csv'; 
+      data.url = '/csv/StaffDateWiseCase.xls.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
+
+/* Read Staff Monthly Case Wise Report for CSV */
+router.post('/csv_export_staff_monthly_case_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Category'] = result[i].category_name;
+        obj['Name'] = result[i].staff_name;
+        obj['Date'] = result[i].treatment_date;
+        obj['Total'] = result[i].total;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Category','Name','Date','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StaffMonthlyCaseReport.xls.csv'; 
+      data.url = '/csv/StaffMonthlyCaseReport.xls.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
 /* Read Course listing. */
 router.get('/readInfirmaryCategory', function(req, res, next) {
 

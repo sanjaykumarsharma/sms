@@ -35,21 +35,27 @@
           </div>
         </div>
         <div class="column">
-         <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+         <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
-        <button class="button is-warning is-rounded  is-pulled-right" onclick={readInventoryIssue} style="margin-left:3px; margin-right:3px">
+        <button class="button is-warning is-rounded  is-pulled-right is-small ml5" onclick={readInventoryIssue} style="margin-left:3px; margin-right:3px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
         </button>
-          <button class="button is-info is-rounded  is-pulled-right" onclick={show_inventory_issue}>
+          <button class="button is-info is-rounded  is-pulled-right is-small ml5" onclick={show_inventory_issue}>
           <span class="icon">
             <span class="fas fa-plus"></span>
           </span>
         </button>
+         <input class="input is-pulled-right" ref="searchInventoryIssue" onkeyup={filteredInventoryIssue} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
         </div>
 			</div>
 		</div>
@@ -70,7 +76,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventoryIssues}>
+				<tr each={ev, i in filteredInventoryIssues}>
 					<td>{ i+1 }</td>
 					<td>{ ev.issue_date}</td>
           <td>{ ev.category_name}</td>
@@ -239,9 +245,18 @@
       inventoryIssueStore.off('edit_inventory_issue_changed', EditInventoryIssueChanged)    
       inventoryIssueStore.off('delete_inventory_issue_changed', DeleteInventoryIssueChanged)
       inventoryIssueStore.off('read_inventory_available_quantity_changed', ReadInventoryAvailableQuantityChanged)
+      inventoryIssueStore.off('csv_export_inventory_issue_changed',csvInventoryIssueChanged)
   })
 
-    
+      self.filteredInventoryIssue = ()=>{
+        self.filteredInventoryIssues = self.inventoryIssues.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventoryIssue.value.toLowerCase())>=0
+        })
+      } 
+    self.downloadCSV = () => {
+      inventoryIssueStore.trigger('csv_export_inventory_issue',self.inventoryIssues)
+    }
+
     self.showIssueType=()=>{
         console.log(self.refs.issue_type.value)
         if(self.refs.issue_type.value=='Staff'){
@@ -434,6 +449,7 @@
        self.refs.staff_id.value=''
        self.refs.purpose.value=''
       self.loading = false
+      self.readInventoryIssue()
       self.update()
       //self.readInventoryCategory()
       console.log(self.inventoryIssues)
@@ -457,6 +473,8 @@
        self.refs.purpose.value=''
       self.loading = false
       self.inventoryIssues = inventoryIssues
+      self.filteredInventoryIssues = inventoryIssues
+      self.readInventoryIssue()
       self.update()
      // self.readInventoryCategory()
       //console.log(self.empinventoryCategoriesloye_roles)
@@ -468,6 +486,7 @@
       self.title='Create'
       self.loading = false
       self.inventoryIssues = inventoryIssues
+      self.filteredInventoryIssues = inventoryIssues
       self.update()
       //self.readInventoryItem()
       console.log(self.inventoryIssues)
@@ -540,17 +559,25 @@ inventoryIssueStore.on('read_inventory_available_quantity_changed',ReadInventory
       self.title='Create'
       self.loading = false
       self.inventoryIssues = inventoryIssues
+      self.filteredInventoryIssues = inventoryIssues
       self.update()
       console.log(self.inventoryIssues)
     }  
 
-  staffinfirmaryStore.on('read_employee_changed',EmployeeChanged)
-     function EmployeeChanged(employees){
-       console.log(employees) 
-       self.employees = employees
-       self.update()
-       console.log(self.employees)
-     }
+    staffinfirmaryStore.on('read_employee_changed',EmployeeChanged)
+    function EmployeeChanged(employees){
+      console.log(employees) 
+      self.employees = employees
+      self.update()
+      console.log(self.employees)
+    }
+    inventoryIssueStore.on('csv_export_inventory_issue_changed',csvInventoryIssueChanged)
+    function csvInventoryIssueChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
 </script>
 </inventory-issue>

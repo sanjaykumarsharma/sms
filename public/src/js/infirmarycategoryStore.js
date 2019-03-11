@@ -4,6 +4,31 @@ function InfirmaryCategoryStore() {
 
   self.infirmaryCategories = []
 
+
+  self.on('csv_export_infirmary_category', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/infirmary_category/csv_export_infirmary_category',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_infirmary_category_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
+
   self.on('read_categories', function() {
     console.log('i am in read_courses api call from ajax')
     let req = {}

@@ -21,16 +21,22 @@
 					</div>
 				</div>
 				<div class="column">
-				 <button class="button is-primary has-text-weight-bold is-pulled-right is-small" onclick="window.print()" title="Print">
+					<button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+		              <span class="icon">
+		                  <i class="far fa-file-excel"></i>
+		              </span>
+		           </button>
+				 <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                     <span class="icon">
                        <i class="fas fa-print"></i>
                    </span>
 		          </button>
-		          <button class="button is-warning is-rounded is-pulled-right is-small" onclick={ReadExStaff} style="margin-left:5px;margin-right:5px">
+		          <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={ReadExStaff} style="margin-left:5px;margin-right:5px">
 		          <span class="icon">
 		            <span class="fas fa-sync-alt"></span>
 		          </span>
 		          </button>
+		           <input class="input is-pulled-right" ref="searchExStaff" onkeyup={filteredExStaff} type="text" style="width:200px;margin-right:5px;" placeholder="Search">  
 			</div>
 			</div>
 		</div>
@@ -48,7 +54,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in exStaffs}>
+				<tr each={st, i in filteredExStaffs}>
 					<td>{i+1}</td>
 					<td>{st.employee_id}</td>
 					<td>{st.first_name} {st.middle_name} {st.last_name}</td>
@@ -81,7 +87,11 @@
       staffStore.off('read_ex_staff_changed',ReadExStaffChanged)
       employeeTypeStore.off('employeeTypes_changed',EmployeeTypesChanged)
     })
-
+    self.filteredExStaff = ()=>{
+        self.filteredExStaffs = self.exStaffs.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchExStaff.value.toLowerCase())>=0
+        })
+      } 
     self.ReadExStaff = () =>{
     	self.loading=true
        staffStore.trigger('read_ex_staff', self.refs.emp_type_id.value)
@@ -105,6 +115,7 @@
       self.title='Create'
       self.loading = false
       self.exStaffs = exStaffs
+      self.filteredExStaffs = exStaffs
       self.update()
       //console.log(self.employeeTypes)
     }

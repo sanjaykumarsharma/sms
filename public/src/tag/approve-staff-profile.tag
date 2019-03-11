@@ -1,3 +1,4 @@
+
 <approve-staff-profile>
 	<loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid" show={staff_view =='show_staff'}>
@@ -65,6 +66,7 @@
 					<button class="button  is-danger has-text-weight-bold"
 					onclick={getStaffData}>GO
 					</button>
+					  <input class="input is-pulled-right" ref="searchApproveStaff" onkeyup={filteredApproveStaff} type="text" style="width:200px;margin-right:5px;" placeholder="Search">  
 				</div>
 			</div>
 		</div>
@@ -82,7 +84,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in staffs}>
+				<tr each={st, i in filteredApproveStaffs}>
 					<td><input type="checkbox" class="id_check_box"  id="{ 'EmpId' + st.emp_id }" onclick={ selectStaff.bind(this,st) } > </td>
 					<td>{st.photo}</td>
 					<td>{st.first_name} {st.middle_name} {st.last_name}</td>
@@ -2274,6 +2276,11 @@
       staffStore.off('update_staff_fast_edit_changed',readStaffFastEditChanged)
     })
 
+     self.filteredApproveStaff = ()=>{
+        self.filteredApproveStaffs = self.staffs.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchApproveStaff.value.toLowerCase())>=0
+        })
+      } 	
 
      self.add_more_work_exp=()=>{
 	    let obj = {}
@@ -2359,8 +2366,8 @@
 
     self.fastUpdateStaff=()=>{
     	var editValues = []
-	    console.log(self.staffs)
-	   	self.staffs.map( q => {
+	    console.log(self.filteredApproveStaffs)
+	   	self.filteredApproveStaffs.map( q => {
 	   	var obj={}
 	     	obj['emp_id'] = q.emp_id
 		    if(self.refs.fast_edit_value.value=='gender'){
@@ -2505,7 +2512,7 @@
 
     self.closeStatusUpdateModal = () => {
       $("#statusModal").removeClass("is-active");
-       self.staffs.map(i=>{
+       self.filteredApproveStaffs.map(i=>{
           i.done = false;
           $('EmpId'+i.emp_id).prop('checked', false); 
        })
@@ -2517,14 +2524,14 @@
     }
 
     self.cancelOperation = (e) => {
-      self.staffs.map(ev => {
+      self.filteredApproveStaffs.map(ev => {
           ev.confirmDelete = false
           ev.confirmEdit = false
       })
     }
 
     self.confirmDelete = (e) => {
-      self.staffs.map(ev => {
+      self.filteredApproveStaffs.map(ev => {
         if(ev.emp_id != e.item.st.emp_id){
           ev.confirmDelete = false
         }else{
@@ -3380,8 +3387,9 @@
     function StaffChanged(staffs){
       console.log(staffs) 
       self.staffs = staffs
+      self.filteredApproveStaffs = staffs
       self.loading=false
-        self.staffs.map(i=>{
+        self.filteredApproveStaffs.map(i=>{
          if(i.emp_id==null){
               i.done = false; //RoleId1
                self.emp_id=i.emp_id
@@ -3397,6 +3405,7 @@
     function AddStaffChanged(staffs,staff_id){
       console.log(staffs) 
       self.staffs = staffs
+      self.filteredApproveStaffs = staffs
       self.uploadStaffImage(staff_id)
       self.update()
     }
@@ -3405,6 +3414,7 @@
     function EditStaffChanged(staffs){
       console.log(staffs) 
       self.staffs = staffs
+      self.filteredApproveStaffs = staffs
       console.log(self.emp_id)
       self.uploadStaffImage(self.emp_id)
       self.clearForm()

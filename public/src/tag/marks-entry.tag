@@ -528,9 +528,9 @@
         self.roll_number = students[0].roll_number
         self.enroll_number = students[0].enroll_number
         self.name = students[0].name
-        self.refs.roll_number.value = self.roll_number
+        /*self.refs.roll_number.value = self.roll_number
         self.refs.enroll_number.value = self.enroll_number
-        self.refs.name.value = self.name
+        self.refs.name.value = self.name*/
       }
       
       self.update()

@@ -18,17 +18,23 @@
           <button disabled={loading} class="button is-danger has-text-weight-bold"
           onclick={add} >{title}
           </button>
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readStandard} style="margin-left:5px;margin-right:5px">
+          <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readStandard} style="margin-left:5px;margin-right:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
-
+           <input class="input is-pulled-right" ref="searchStandard" onkeyup={filteredStandard} type="text" style="width:200px;margin-right:5px" placeholder="Search">
         </div>
       </div>
     </div>
@@ -62,7 +68,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={d, i in standards}>
+        <tr each={d, i in filteredStandards}>
           <td>{i + 1}</td>
           <td>{d.standard}</td>
           <td class="has-text-right no-print">
@@ -90,7 +96,19 @@
 
      self.on("unmount", function(){
       standardStore.off('standard_changed', StandardChanged)
+      standardStore.off('csv_export_standard_changed',csv_export_standardChanged)
     })
+
+     self.downloadCSV = () =>{
+          standardStore.trigger('csv_export_standard')
+        //  console.log(obj)
+    }
+
+    self.filteredStandard = ()=>{
+      self.filteredStandards = self.standards.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchStandard.value.toLowerCase())>=0
+      })
+    } 
 
     //read courses
     self.readStandard = () => {
@@ -165,6 +183,15 @@
       self.refs.addStandardInput.value = ''
       self.loading = false
       self.standards = standards
+      self.filteredStandards = standards
+      self.update()
+    }
+
+    standardStore.on('csv_export_standard_changed',csv_export_standardChanged)
+    function csv_export_standardChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 

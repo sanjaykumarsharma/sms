@@ -7,22 +7,29 @@
       <h2 class="title" style="color: #ff3860;">Class Holiday</h2>
     </div>
     <div class="level-right">
-      <button class="button is-warning is-rounded" onclick={add_class_holiday}>
+        <input class="input" ref="searchClassHoliday" onkeyup={filteredClassHoliday} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
+      <button class="button is-warning is-rounded  is-small ml5" onclick={add_class_holiday}>
       <span class="icon">
         <span class="fas fa-plus"></span>
       </span>
       </button>
-      <button class="button is-info is-rounded is-pulled-right" onclick={readClassHoliday} style="margin-right:5px;margin-left:5px">
+      <button class="button is-info is-rounded is-pulled-right  is-small ml5" onclick={readClassHoliday} style="margin-right:5px;margin-left:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
 
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-primary has-text-weight-bold is-pulled-right  is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+         
     </div>
   </div>
 
@@ -40,7 +47,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={st, i in classHolidays}>
+        <tr each={st, i in filteredClassHolidays}>
           <td>{i+1}</td>
           <td>{st.event_name}</td>
           <td>{st.class}</td>
@@ -139,7 +146,19 @@
        classholidayStore.off('read_standard_changed',standardChanged)
        classholidayStore.off('edit_class_holiday_changed',EditClassHolidayChanged)
        classholidayStore.off('delete_class_holiday_changed',DeleteClassHolidayChanged)
+       classholidayStore.off('csv_export_class_holiday_changed',csv_export_class_holidayChanged)
      })
+
+     self.downloadCSV = () =>{
+          classholidayStore.trigger('csv_export_class_holiday')
+        //  console.log(obj)
+    }
+
+      self.filteredClassHoliday = ()=>{
+        self.filteredClassHolidays = self.classHolidays.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchClassHoliday.value.toLowerCase())>=0
+        })
+      } 
 
      //read courses
      self.readNewEvent = () => {
@@ -308,6 +327,7 @@
        self.refs.section_id.value =''
        self.loading = false
        self.classHolidays = classHolidays
+       self.filteredClassHolidays = classHolidays
        self.update()
        console.log(self.classHolidays)
      }
@@ -326,6 +346,14 @@
        self.update()
        console.log(self.standards)
      }
+
+     classholidayStore.on('csv_export_class_holiday_changed',csv_export_class_holidayChanged)
+    function csv_export_class_holidayChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
 </script>
 </class-holiday>

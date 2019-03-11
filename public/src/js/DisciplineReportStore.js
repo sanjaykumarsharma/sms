@@ -2,19 +2,19 @@ function DisciplineReportStore() {
   riot.observable(this) // Riot provides our event emitter.
   var self = this
 
-   self.on('csv_export_read_case_wise_report', function(obj) {
+   self.on('csv_discipline_case_wise_report', function(obj) {
     let req = {}
     req.start_date=obj.start_date
     req.end_date=obj.end_date
     $.ajax({
-      url:'/discipline_report/csv_export_read_case_wise_report/'+obj.start_date+'/'+obj.end_date,
+      url:'/discipline_report/csv_discipline_case_wise_report/'+obj.start_date+'/'+obj.end_date,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_discipline_case_wise_report_changed', data.url)
           }else if(data.status == 'e'){
             
           }
@@ -50,21 +50,21 @@ function DisciplineReportStore() {
       })
   })
 
-  self.on('csv_export_read_date_wise_case_report', function(obj,category_id) {
+  self.on('csv_export_read_date_wise_case_report', function(obj) {
     console.log('i am in read_categories api call from ajax')
     let req = {}
-    req.start_date=obj.start_date
-    req.end_date=obj.end_date
-    req.category_id=category_id
+    req.data=obj
     $.ajax({
-      url:'/discipline_report/csv_export_read_date_wise_case_report/'+obj.start_date+'/'+obj.end_date+'/'+category_id,
+      url:'/discipline_report/csv_export_read_date_wise_case_report/csv_export',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_export_read_date_wise_case_report_changed', data.url)
           }else if(data.status == 'e'){
             
           }
@@ -171,20 +171,45 @@ function DisciplineReportStore() {
   })
 
 
-  self.on('csv_export_read_class_wise_report', function(standard_id,section_id,session_id) {
+  self.on('csv_export_read_class_wise_report', function(obj) {
     let req = {}
-    req.standard_id=standard_id
-    req.section_id=section_id
-    req.session_id=session_id
+    req.data=obj
     $.ajax({
-      url:'/discipline_report/csv_export_read_class_wise_report/'+standard_id+'/'+section_id+'/'+session_id,
+      url:'/discipline_report/csv_export_read_class_wise_report/',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
+            self.trigger('csv_export_read_class_wise_report_changed', data.url)
+          }else if(data.status == 'e'){
             
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
+
+  self.on('csv_export_read_date_wise_case_report', function(obj) {
+    console.log('i am in read_categories api call from ajax')
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/discipline_report/csv_export_read_date_wise_case_report/csv_export',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_read_date_wise_case_report_changed', data.url)
           }else if(data.status == 'e'){
             
           }
@@ -221,6 +246,8 @@ function DisciplineReportStore() {
         }
       })
   })
+
+
 
 
 

@@ -86,6 +86,31 @@ function MarksReportStore() {
       })
   })
 
+  self.on('consolidate_tabulation_sheet_csv', function(headers,reports) {
+    let req = {}
+    req.headers=headers
+    req.reports=reports
+    $.ajax({
+      url:'/marks-report/consolidate_tabulation_sheet_csv',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('consolidate_tabulation_sheet_csv_changed', data.url)
+          }else if(data.status == 'e'){
+            showToast("Marks Entries Read Error. Please try again.", data.message)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
   self.on('read_merit_list', function(exam_type_id,section_id) {
     $.ajax({
       url:'/marks-report/merit-list/'+exam_type_id+'/'+section_id,

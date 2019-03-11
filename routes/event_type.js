@@ -1,5 +1,10 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
+
 
 /* Read Item listing. */
 router.get('/', function(req, res, next) {
@@ -27,6 +32,50 @@ router.get('/', function(req, res, next) {
   });
 
 });
+
+router.get('/csv_export_event_type', function(req, res, next) {
+  req.getConnection(function(err,connection){
+
+     var data = {}
+     var qry = `select event_type as 'Event Type'
+      from event_type_master`;
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+      connection.query(qry,function(err,result)     {
+            
+        if(err){
+          console.log("Error reading Event Type : %s ",err );
+          data.status = 'e';
+
+        }else{
+          const fields = ['Event Type']; 
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(result);
+          var path='./public/csv/Event Type.csv'; 
+          data.url = '/csv/Event Type.csv';
+
+          fs.writeFile(path, csv, function(err,data) {
+            if (err) {
+              throw err;
+            }else{ 
+              callback() 
+            }
+          });
+        }
+      });  
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });//end of async loop  
+
+  });// get connection
+});
+
 
 /* Add Item listing. */
 router.post('/add', function(req, res, next) {

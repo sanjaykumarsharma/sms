@@ -228,6 +228,9 @@ RiotControl.addStore(careerStore)
 var alumniStore = new AlumniStore()
 RiotControl.addStore(alumniStore)
 
+var analysisReportStore = new AnalysisReportStore()
+RiotControl.addStore(analysisReportStore)
+
 //tarique
 var roleStore = new RoleStore() 
 RiotControl.addStore(roleStore) 
@@ -391,7 +394,9 @@ let activityRoute = (path1, path2, path3) => {
     case 'student-browser':
           riot.mount("div#view", 'student-browser')
     break;
-    
+     case 'staff-profile':
+          riot.mount("div#view", 'staff-profile')
+    break;
     case 'activity-detail':
       currentPage = riot.mount('div#view', 'activity-detail')[0];
     break;
@@ -446,6 +451,9 @@ let careerRoute = (path1, path2, path3) => {
     /*case 'login':
       currentPage = riot.mount('div#view', 'login')[0];
     break;*/
+     case 'staff-profile':
+        riot.mount("div#view", 'staff-profile')
+    break;
     case 'career-setting':
      currentPage = riot.mount('div#view', 'career-setting', {selected_master: path2})[0];
      switch(path2){
@@ -481,6 +489,9 @@ let admissionRoute = (path1, path2, path3) => {
    case 'student-browser':
          riot.mount("div#view", 'student-browser')
    break;
+    case 'staff-profile':
+      riot.mount("div#view", 'staff-profile')
+    break;
    case 'student':
      currentPage = riot.mount('div#view', 'student')[0];
    break;
@@ -499,9 +510,11 @@ let mentorRoute = (path1, path2, path3) => {
      currentPage = riot.mount('div#view', 'login')[0];
    break;*/
    case 'student-browser':
-         riot.mount("div#view", 'student-browser')
+      riot.mount("div#view", 'student-browser')
    break;
-   
+    case 'staff-profile':
+      riot.mount("div#view", 'staff-profile')
+    break;
    case 'mentor-detail':
      currentPage = riot.mount('div#view', 'mentor-detail')[0];
    break;
@@ -547,8 +560,11 @@ let disciplineRoute = (path1, path2, path3) => {
    /*case 'login':
      currentPage = riot.mount('div#view', 'login')[0];
    break;*/
+    case 'staff-profile':
+      riot.mount("div#view", 'staff-profile')
+    break;
    case 'student-browser':
-         riot.mount("div#view", 'student-browser')
+      riot.mount("div#view", 'student-browser')
    break;
    case 'student':
      currentPage = riot.mount('div#view', 'student')[0];
@@ -623,8 +639,8 @@ let classTeacherRoute = (path1, path2, path3) => {
     case 'attendance-entry':
       currentPage = riot.mount('div#view', 'attendance-entry')[0];
     break;
-    case 'daily-attendance':
-          riot.mount("div#view", 'daily-attendance')[0];
+    case 'monthly-attendance':
+          riot.mount("div#view", 'monthly-attendance')[0];
     break;  
     case 'class-holiday':
           riot.mount("div#view", 'class-holiday')[0];
@@ -666,6 +682,9 @@ let teacherRoute = (path1, path2, path3) => {
     /*case 'login':
       currentPage = riot.mount('div#view', 'login')[0];
     break;*/
+     case 'staff-profile':
+          riot.mount("div#view", 'staff-profile')
+    break;
     case 'student-browser':
           riot.mount("div#view", 'student-browser')
     break;
@@ -1276,6 +1295,19 @@ case 'receive-fees':
           riot.mount("div#discipline-report-view", 'discipline-case-wise-report')
       }
     break;
+    case 'analysis-report':
+     currentPage = riot.mount('div#view', 'analysis-report', {selected_master: path2})[0];
+     switch(path2){
+       case 'assessment-report':
+         riot.mount("div#analysis-report-view", 'assessment-report')
+       break;
+       case 'yearly-section-wise-comparison':
+         riot.mount("div#analysis-report-view", 'yearly-section-wise-comparison')
+       break;
+       default:
+         riot.mount("div#analysis-report-view", 'assessment-report')
+     }
+      break;
     //tarique
     case 'staff':
           riot.mount("div#view", 'staff')
@@ -1699,6 +1731,12 @@ if(getCookie('role')=='ADMIN'){
 }else if(getCookie('role')=='Discipline'){
  console.log("Discipline route")
  route(disciplineRoute);  
+}else if(getCookie('role')=='Store'){
+ console.log("showInventoryNavItems route")
+ route(inventoryRoute);  
+}else if(getCookie('role')=='Infirmary'){
+ console.log("showInfirmaryNavItems route")
+ route(infirmaryRoute);  
 }else {
   console.log("unable to access")
   route(loginRoute);

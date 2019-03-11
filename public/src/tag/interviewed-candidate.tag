@@ -525,6 +525,7 @@
       careerStore.off('read_interviewed_candidate_changed',ReadInterviewedCandidateChanged)
       careerStore.off('read_applicant_profile_changed',ReadApplicantProfileChanged)
       careerStore.on('update_interviewed_candidate_changed',UpdateInterviewedCandidateChanged)
+      careerStore.off('csv_export_interviewed_candidate_changed',csvInterviewedCandidateChanged)
     })
 
     self.getData = () => {
@@ -620,6 +621,14 @@
       console.log(self.st.address_line1)
       self.loading = false;
       self.update();
+    }
+
+    careerStore.on('csv_export_interviewed_candidate_changed',csvInterviewedCandidateChanged)
+    function csvInterviewedCandidateChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 </script>
 </interviewed-candidate>

@@ -913,6 +913,8 @@ hr{
           display: block;
           font-size: 8px;
         }
+  .class-teacher-table { page-break-inside:auto }
+  .class-teacher-tr    { page-break-inside:avoid; page-break-after:auto }
 
 }
 
@@ -1016,3 +1018,66 @@ hr{
     border-bottom: 2px solid #000 !important;
   }
   /*report card css end*/
+
+  /*attendance*/
+  .P{
+    color: green;
+    font-weight: bold;
+  }
+  .Ab{
+    color:red;
+    font-weight: bold;
+  }
+  .SH{
+    color:blue;
+    font-weight: bold;
+  }
+  .CH{
+    color:blue;
+    font-weight: bold;
+  }
+  .X{
+    color:#000;
+    font-weight: bold;
+  }
+
+  /* Start Class Teacher Image View*/
+  .class-teacher-table{
+    width:860px;
+    border-collapse:collapse;
+    border:solid #000000 1px;
+  }
+  .class-teacher-caption{
+    background-color:#DED;
+    font-family:Sans-serif;
+    font-weight:bold;
+    text-align:center;
+    text-transform:uppercase;
+    font-size:1.2em;
+    padding-top:3px;
+    padding-bottom:3px;
+    color:black;  
+    -webkit-print-color-adjust: exact;
+  }
+  .class-teacher-table td{
+    padding:3px 5px;
+    border:solid #000000 1px;
+    color:#000000; 
+    height:25px;
+    font-size: 15px;
+  }
+  .class-teacher-table th{
+     font-family : Arial;
+     font-size : 1.05em;
+     text-align : left;
+     padding : 5px 5px;
+     border :solid #000000 1px;
+     font-weight: bold;
+   }
+   .divider-class-teacher{
+    text-align: center;
+    width: 860;
+    font-size: 1.5em;-webkit-print-color-adjust: exact;
+   }
+  
+  /* End Class Teacher Image View*/

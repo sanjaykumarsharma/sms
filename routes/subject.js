@@ -1,5 +1,10 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
+
 
 /* Read Course listing. */
 router.get('/read_subject', function(req, res, next) {
@@ -29,6 +34,51 @@ router.get('/read_subject', function(req, res, next) {
        
   });
 
+});
+
+router.get('/csv_export_Subject', function(req, res, next) {
+  req.getConnection(function(err,connection){
+
+     var data = {}
+     var qry = `select subject_name as 'Subject Name', subject_short_name as 'Subject Short Name',
+        order_no as 'Order No', department_name as 'Department Name'
+        from subject_master a
+        LEFT JOIN department_master b on a.department_id=b.department_id order by 2`;
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+      connection.query(qry,function(err,result)     {
+            
+        if(err){
+          console.log("Error reading Subject : %s ",err );
+          data.status = 'e';
+
+        }else{
+          const fields = ['Subject Name','Subject Short Name','Order No','Department Name']; 
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(result);
+          var path='./public/csv/Subject.csv'; 
+          data.url = '/csv/Subject.csv';
+
+          fs.writeFile(path, csv, function(err,data) {
+            if (err) {
+              throw err;
+            }else{ 
+              callback() 
+            }
+          });
+        }
+      });  
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });//end of async loop  
+
+  });// get connection
 });
 
 /* Add Course listing. */

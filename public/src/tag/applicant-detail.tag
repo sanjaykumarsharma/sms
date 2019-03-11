@@ -25,7 +25,7 @@
       </div>
       <div class="level-right">
         <div class="control">
-          <input class="input" ref="searchApplicantDetail" onkeyup={filterApplicantDetail} type="text" placeholder="Search By Enroll No or Name">
+          <input class="input" ref="searchApplicantDetail" onkeyup={filterApplicantDetail} type="text" placeholder="Search By Applicant No or Name">
         </div>
         <button class="button is-primary has-text-weight-bold ml5" onclick={showStaffField} title="Setting">
           <i class="fa fa-wrench" aria-hidden="true"></i>
@@ -66,7 +66,7 @@
           <th show={view_mobile=='show_mobile'}>Marital Status</th>
           <th show={view_email=='show_email'}>Email </th>
           <th show={view_phone_office=='show_phone_office'}>Phone Office </th>
-          <th show={view_phone_residence=='show_phone_residence'}>Phone Residence </th>
+          <th show={view_phone_residence=='show_phone_residence'}>Residence Phone</th>
           <th show={view_p_address=='show_p_address'}> Permanent Address </th>
           <th show={view_address=='show_address'}> Correspondence Address </th>
           <th show={view_bed_institution=='show_bed_institution'}>B.Ed Institution</th>
@@ -146,7 +146,7 @@
           <th show={view_salary_drawn3=='show_salary_drawn3'}>Salary 3</th>
           <th show={view_creation_date=='show_creation_date'}>Submission Date</th>
 			    <th show={view_interview_call=='show_interview_call'}>Interview Call</th>
-			    <th class="has-text-right no-print" style="width:130px;"></th>
+			    <th class="has-text-right no-print" style="min-width:130px;"></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -739,7 +739,7 @@
       {field_name : "Mobile", array_name: "mobile"},
       {field_name : "Email", array_name: "email"},
       {field_name : "Phone Office", array_name: "phone_office"},
-      {field_name : "Phone Residence", array_name: "phone_residence"},
+      {field_name : "Residence Phone", array_name: "phone_residence"},
       {field_name : "Permanent Address", array_name: "p_address"},
       {field_name : "Correspondence Address", array_name: "address"},
       {field_name : "B.Ed Institution", array_name: "bed_institution"},
@@ -877,6 +877,7 @@
       careerStore.off('read_applicant_profile_changed',ReadApplicantProfileChanged)
       careerStore.off('create_interview_call_changed',CreateInterviewCallChanged)
       careerStore.off('delete_applicant_detail_changed',DeleteApplicantDetailChanged)
+      careerStore.off('csv_export_applicant_detail_changed',csvApplicantDetailChanged)
     })
 
     self.showStaffField = () =>{
@@ -1553,13 +1554,19 @@ self.fieldList.map( q => {
     }
 
     self.CreateInterviewCall = () =>{
-    	var obj={}
-    	var interview_detail={};
-    	interview_detail['interview_date']=convertDate(self.refs.interview_date.value)
-    	interview_detail['interview_time']=self.refs.interview_time.value 
-    	obj['interview_detail']=interview_detail;
-    	
-    	careerStore.trigger('create_interview_call',obj,self.career_id)	
+      if(!self.refs.interview_date.value){
+        toastr.info("Please enter Interview Date and try again")
+      }else if(!self.refs.interview_time.value){
+        toastr.info("Please enter Interview Time and try again")
+      }else{
+      	var obj={}
+      	var interview_detail={};
+      	interview_detail['interview_date']=convertDate(self.refs.interview_date.value)
+      	interview_detail['interview_time']=self.refs.interview_time.value 
+      	obj['interview_detail']=interview_detail;
+      	
+      	careerStore.trigger('create_interview_call',obj,self.career_id)
+      }
     }
 
     self.view_profile = (c,a) => {
@@ -1638,6 +1645,14 @@ self.fieldList.map( q => {
       console.log(self.st.address_line1)
       self.loading = false;
       self.update();
+    }
+
+    careerStore.on('csv_export_applicant_detail_changed',csvApplicantDetailChanged)
+    function csvApplicantDetailChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 </script>
 </applicant-detail>

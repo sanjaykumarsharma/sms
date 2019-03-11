@@ -2523,8 +2523,34 @@
     		toastr.error("Please enter Mother Name and try again")
     		return;
     	}else{*/
-    		self.staff_view='add_extra_activity_information'
-    		self.update()
+    	self.staff_view='add_extra_activity_information'
+    	console.log("add_extra_activity_information");
+    	console.log(self.workExperienceArray);
+    	if(self.workExperienceArray.length==0){
+   		console.log("inside")
+ 	   	self.workExperienceArray =[]
+        let obj = {}
+        obj.work_institution=''
+       	self.workExperienceArray.push(obj)  
+       	}
+   	
+   	    let work_doj_id='#work_doj'+ (self.workExperienceArray.length-1).toString()
+        let work_dol_id='#work_dol'+ (self.workExperienceArray.length-1).toString()
+      
+  		console.log(work_dol_id)
+ 	  	setTimeout(function(){        
+       	flatpickr(work_doj_id, {
+	   		allowInput: true,
+	       	dateFormat: "d/m/Y",
+	 	})
+	      
+	    flatpickr(work_dol_id, {
+	   		allowInput: true,
+	       	dateFormat: "d/m/Y",
+	 	})
+
+		}, 1000);
+    	self.update()
     		//document.getElementById("guardian").focus()
       	//}
     }

@@ -50,14 +50,19 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={getBankWiseFees} > GO
 					</button>
-
-          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-                   <span class="icon">
-                     <i class="fas fa-print"></i>
-                 </span>
-             </button>
-					
 				</div> 
+        <div class="level-right no-print" >
+          <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+                <span class="icon">
+                  <i class="far fa-file-excel"></i>
+                </span>
+              </button>
+          <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+               </button>
+        </div>
 			</div>
 		</div>
 
@@ -122,7 +127,22 @@
       feesReportStore.off('read_bank_changed',BankChanged)
       feesReportStore.off('read_mode_changed',ModeChanged)
       feesReportStore.off('read_bank_wise_changed',BankWiseChanged)
+      feesReportStore.off('csv_export_bank_collection_changed',bankCSVChanged)
     })
+
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_bankwise_collection',self.bankWiseFees)
+    }
+
+    feesReportStore.on('csv_export_bank_collection_changed',bankCSVChanged)
+    function bankCSVChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
+
     self.getBankWiseFees = () => {
       var startDate = document.getElementById("start_date").value
       var endDate = document.getElementById("end_date").value

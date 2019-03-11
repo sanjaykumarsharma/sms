@@ -4,6 +4,30 @@ function ExamSchemeStore() {
 
   self.examSchemes = []
 
+   self.on('read_exam_csv', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/exam-scheme/read_exam_csv',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_exam_csv_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
   self.on('read_exam_schemes', function() {
     let req = {}
     $.ajax({

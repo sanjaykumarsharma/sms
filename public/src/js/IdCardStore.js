@@ -74,6 +74,30 @@ function IdCardStore() {
       })
   })
 
+  self.on('csv_export_id_card', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/id_card/csv_export_id_card',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_id_card_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
   self.on('read_id_card', function(student_id) {
     console.log(student_id)
     let req = {}

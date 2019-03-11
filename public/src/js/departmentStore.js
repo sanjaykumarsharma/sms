@@ -27,6 +27,26 @@ function DepartmentStore() {
       })
   })
 
+  self.on('csv_export_Department', function() {
+    console.log('i am in csv_export_Department api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/department/csv_export_Department',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_Department_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.employees = []
 
   self.on('read_hod', function() {

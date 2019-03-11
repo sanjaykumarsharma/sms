@@ -27,6 +27,30 @@ function StudentInfirmaryStore() {
         }
       })
   })
+
+  self.on('csv_export_infirmary', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/infirmary_student/csv_export_infirmary',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_infirmary_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
  
 self.on('read_student_date_wise_case_report', function(category_id,start_date,end_date) {
     let req = {}
@@ -53,6 +77,30 @@ self.on('read_student_date_wise_case_report', function(category_id,start_date,en
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+self.on('csv_export_date_wise_case_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/infirmary_student/csv_export_date_wise_case_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_date_wise_case_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
         }
       })
   })
@@ -88,6 +136,30 @@ self.on('read_class_wise_report', function(standard_id,section_id) {
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+  self.on('csv_export_infirmary_class_wise_case_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/infirmary_student/csv_export_infirmary_class_wise_case_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_infirmary_class_wise_case_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
         }
       })
   })
@@ -128,7 +200,29 @@ self.on('read_case_wise_report', function(obj) {
       })
   })
 
-
+  self.on('csv_export_infirmary_case_wise_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/infirmary_student/csv_export_infirmary_case_wise_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_infirmary_case_wise_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
 
   self.on('read_infirmary_case', function() {
     console.log('i am in read_section api call from ajax')

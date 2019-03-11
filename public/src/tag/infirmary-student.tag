@@ -25,23 +25,30 @@
           </button>
         </div>
         <div class="column">
-          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+           
+          <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
            </button>
         
-            <button class="button is-warning is-rounded is-pulled-right" onclick={readStudentInfirmary} style="margin-left:5px;margin-right:5px">
+            <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readStudentInfirmary} style="margin-left:5px;margin-right:5px">
               <span class="icon">
                 <span class="fas fa-sync-alt"></span>
               </span>
           </button>
 
-          <button class="button is-info is-rounded is-pulled-right" onclick={add_student_infirmary}>
+          <button class="button is-info is-rounded is-pulled-right is-small ml5" onclick={add_student_infirmary}>
               <span class="icon">
             <span class="fas fa-plus"></span>
             </span>
           </button>
+          <input class="input is-pulled-right" ref="searchInfirmaryStudent" onkeyup={filteredInfirmaryStudent} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >     
         </div>
       </div>
     </div>
@@ -62,7 +69,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={st, i in studentInfirmarys}>
+        <tr each={st, i in filteredInfirmaryStudents}>
           <td>{i+1}</td>
           <td>{st.student_name}</td>
           <td>{st.enroll_number}</td>
@@ -178,8 +185,13 @@
        studentinfirmaryStore.off('read_infirmary_case_changed',InfirmaryCaseChanged)
        studentinfirmaryStore.off('edit_student_infirmary_changed',EditStudentInfirmaryChanged)
        studentinfirmaryStore.off('delete_student_infirmary_changed',DeleteStudentInfirmaryChanged)
+       studentinfirmaryStore.off('csv_export_infirmary_changed',csvStudentInfirmaryChanged)
      })
-
+      self.filteredInfirmaryStudent = ()=>{
+        self.filteredInfirmaryStudents = self.studentInfirmarys.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryStudent.value.toLowerCase())>=0
+        })
+      } 
      //read courses
      self.readStudentInfirmary = () => {
          self.loading=true
@@ -316,8 +328,12 @@
        }
        self.edit_id = ev.infirmary_id
      }
-    
-     studentinfirmaryStore.on('add_student_infirmary_changed',AddStudentInfirmaryChanged)
+
+    self.downloadCSV = () =>{
+      studentinfirmaryStore.trigger('csv_export_infirmary', self.studentInfirmarys)
+    }
+
+    studentinfirmaryStore.on('add_student_infirmary_changed',AddStudentInfirmaryChanged)
      function AddStudentInfirmaryChanged(studentInfirmarys){
        console.log(studentInfirmarys) 
        self.title='Create'
@@ -330,13 +346,14 @@
        self.refs.treatment.value=''
        self.loading = false
        self.studentInfirmarys = studentInfirmarys
+       self.filteredInfirmaryStudents = studentInfirmarys
        self.update()
        self.refs.read_category_id.value=self.category_id
        self.readStudentInfirmary ();
        console.log(self.studentInfirmarys)
      }
 
-     studentinfirmaryStore.on('edit_student_infirmary_changed',EditStudentInfirmaryChanged)
+    studentinfirmaryStore.on('edit_student_infirmary_changed',EditStudentInfirmaryChanged)
      function EditStudentInfirmaryChanged(studentInfirmarys){
        console.log(studentInfirmarys) 
        self.title='Create'
@@ -349,12 +366,13 @@
        self.refs.treatment.value=''
        self.loading = false
        self.studentInfirmarys = studentInfirmarys
+       self.filteredInfirmaryStudents = studentInfirmarys
        self.update()
        self.readStudentInfirmary()
       // console.log(self.empsectionsloye_roles)
-     }
+    }
 
-     studentinfirmaryStore.on('delete_student_infirmary_changed',DeleteStudentInfirmaryChanged)
+    studentinfirmaryStore.on('delete_student_infirmary_changed',DeleteStudentInfirmaryChanged)
      function DeleteStudentInfirmaryChanged(studentInfirmarys){
        console.log(studentInfirmarys) 
        self.title='Create'
@@ -367,41 +385,51 @@
        self.refs.treatment.value=''
        self.loading = false
        self.studentInfirmarys = studentInfirmarys
+       self.filteredInfirmaryStudents = studentInfirmarys
        self.update()
        self.readStudentInfirmary()
        console.log(self.studentInfirmarys)
      }
 
-     studentinfirmaryStore.on('read_student_infirmary_changed',ReadStudentInfirmaryChanged)
-     function ReadStudentInfirmaryChanged(studentInfirmarys){
+    studentinfirmaryStore.on('read_student_infirmary_changed',ReadStudentInfirmaryChanged)
+      function ReadStudentInfirmaryChanged(studentInfirmarys){
        console.log(studentInfirmarys) 
-       self.title='Create'
-      self.refs.enroll_number.value=''
-       self.refs.category_id.value=''
-       self.refs.case_id.value=''
-       self.refs.treatment_date.value=''
-       self.refs.time_in.value=''
-       self.refs.time_out.value=''
-       self.refs.treatment.value=''
-       self.loading = false
-       self.studentInfirmarys = studentInfirmarys
-       self.update()
-       console.log(self.studentInfirmarys)
-     }
+        self.title='Create'
+        self.refs.enroll_number.value=''
+        self.refs.category_id.value=''
+        self.refs.case_id.value=''
+        self.refs.treatment_date.value=''
+        self.refs.time_in.value=''
+        self.refs.time_out.value=''
+        self.refs.treatment.value=''
+        self.loading = false
+        self.studentInfirmarys = studentInfirmarys
+        self.filteredInfirmaryStudents = studentInfirmarys
+        self.update()
+        console.log(self.studentInfirmarys)
+    }
 
-     studentinfirmaryStore.on('read_infirmary_category_changed',InfirmaryCategoryChanged)
+    studentinfirmaryStore.on('read_infirmary_category_changed',InfirmaryCategoryChanged)
      function InfirmaryCategoryChanged(infirmaryCategories){
        console.log(infirmaryCategories) 
        self.infirmaryCategories = infirmaryCategories
        self.update()
        console.log(self.infirmaryCategories)
      }
-      studentinfirmaryStore.on('read_infirmary_case_changed',InfirmaryCaseChanged)
+    studentinfirmaryStore.on('read_infirmary_case_changed',InfirmaryCaseChanged)
      function InfirmaryCaseChanged(infirmaryCases){
        console.log(infirmaryCases) 
        self.infirmaryCases = infirmaryCases
        self.update()
        console.log(self.infirmaryCases)
+     }
+
+    studentinfirmaryStore.on('csv_export_infirmary_changed',csvStudentInfirmaryChanged)
+    function csvStudentInfirmaryChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
      }
 
 </script>

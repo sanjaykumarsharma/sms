@@ -341,6 +341,7 @@
 	      alumniStore.off('read_approved_alumni_changed',ReadApprovedAlumniChanged)
 	      alumniStore.off('delete_alumni_changed',DeleteAlumniChanged)
 	      alumniStore.off('read_alumni_profile_changed',AlumniProfileChanged)
+	      alumniStore.off('read_approved_alumni_csv_changed',csvApprovedAlumniChanged)
 	    })
 
 	    self.showAlumniField = () =>{
@@ -450,6 +451,9 @@
           self.loading = true
           alumniStore.trigger('read_approved_alumni')
         }
+        self.downloadCSV = () =>{
+      		alumniStore.trigger('read_approved_alumni_csv', self.ApprovedAlumniData)
+    	}
 
     	self.cancelOperation = (c) => {
       		self.ApprovedAlumniData.map(a => {
@@ -503,7 +507,13 @@
     	function AlumniProfileChanged(alumni_profile_details){
 	    	self.al=alumni_profile_details[0]
 	    	self.alumni_profile_details = alumni_profile_details
-
+	      	self.update()
+    	}
+    	alumniStore.on('read_approved_alumni_csv_changed',csvApprovedAlumniChanged)
+    	function csvApprovedAlumniChanged(url){
+	    	var open_url = window.location.origin+url 
+	      	window.open(open_url);
+	      	self.loading = false
 	      	self.update()
     	}
 

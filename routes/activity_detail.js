@@ -3,7 +3,7 @@ var router = express.Router();
 const Json2csvParser = require('json2csv').Parser;
 const fs = require('fs');
 var http = require('http');
-var download = require('download-file')
+var async = require("async");
 
 
 /* Read Standard */
@@ -408,6 +408,8 @@ router.get('/read_print_event_detail/:activity_id', function(req, res, next) {
 router.get('/csv_export_activity/:category_id', function(req, res, next) {
   var category_id = req.params.category_id;
   console.log("HERE")
+  var user= req.cookies.user;
+  var session_id=req.cookies.session_id 
   console.log(category_id)
 
   req.getConnection(function(err,connection){
@@ -420,115 +422,131 @@ router.get('/csv_export_activity/:category_id', function(req, res, next) {
      var category_condition=""; 
      if(category_id !=-1){
 
-        var category_condition = " where a.category_id = "+ category_id ;
+        var category_condition = " and a.category_id = "+ category_id ;
         var condition = "";
-          if(req.cookies.role != 'ADMIN')
-          condition = " and a.created_by = "+ req.cookies.role; 
-
-           var qry = `select a.activity_id, activity_type,
-                      date_format(activity_date,"%d/%m/%Y") as activity_date,
-                      d.event_name, organised_by, venue, concat(first_name," ",middle_name," ",last_name)as name,
-                      item_taken,result
-                      from school_activity a 
-                      join session_master b on a.session_id=b.session_id 
-                      join activity_event_master d on a.event_id = d.event_id 
-                      left join activity_teacher_map e on a.activity_id=e.activity_id 
-                      left join employee c on e.teacher_id = c.emp_id
-                      ${category_condition}
-                      order by a.activity_id `;
-            console.log(qry) 
-          }else if(category_id ==-1){
-            var condition = "";
-          if(req.cookies.role != 'ADMIN') 
-          condition = " where a.created_by = "+ req.cookies.role;
-          var qry = `select a.activity_id, activity_type,
-                     date_format(activity_date,"%d/%m/%Y") as activity_date,
-                     d.event_name, organised_by, venue, concat(first_name," ",middle_name," ",last_name)as name,
-                     item_taken,result
-                     from school_activity a 
-                     join session_master b on a.session_id=b.session_id 
-                     join activity_event_master d on a.event_id = d.event_id 
-                     left join activity_teacher_map e on a.activity_id=e.activity_id
-                     left join employee c on e.teacher_id = c.emp_id
-                     ${condition}
-                     order by a.activity_id `;
-          }
-
-          connection.query(qry, function(err, result)     
-          {
-            
-            if(err){
-               console.log("Error reading activities : %s ",err );
-               data.status = 'e';
-
-            }else{
-                data.status = 's';
-                var prev_activity_id="";
-                var obj_name="";
-                var prev_name="";
-                var std = Array();
-            for (var i = 0; i < result.length; i++) {
-            if(result[i].activity_id !=prev_activity_id){//check for different activity_id
-                 if(prev_activity_id == ""){// first time only
-                    var obj = {};
-                    obj['activity_id']=result[i].activity_id;
-                    obj['Activity Type']=result[i].activity_type;
-                    obj['Activity Date']=result[i].activity_date;             
-                    obj['Event']=result[i].event_name;
-                    obj['Organised By']=result[i].organised_by;
-                    obj['Venue']=result[i].venue;
-                    obj['Item Taken']=result[i].item_taken;
-                    obj['Result']=result[i].result;
-                    prev_activity_id =result[i].activity_id;
-                    prev_name = result[i].name;
-                    // console.log(obj)
-                 }else{
-                    obj['Teacher Name'] = prev_name;
-                    std.push(obj);
-                    var obj = {};
-                    obj['activity_id']=result[i].activity_id;
-                    obj['Activity Type']=result[i].activity_type;
-                    obj['Activity Date']=result[i].activity_date;             
-                    obj['Event']=result[i].event_name;
-                    obj['Organised By']=result[i].organised_by;
-                    obj['Venue']=result[i].venue;
-                    obj['Item Taken']=result[i].item_taken;
-                    obj['Result']=result[i].result;
-                    prev_activity_id =result[i].activity_id;
-                    prev_name = result[i].name;
-                    // console.log(obj)
-                 }
-                 
-                }else{
-                 prev_name = prev_name + " ," + result[i].name;
-                 prev_activity_id =result[i].activity_id;
-                }
+        var user_condition = "";
         
-              }
-                obj['Teacher Name'] = prev_name; 
+        /*if(req.cookies.role != 'ADMIN') 
+        condition = " where a.created_by = "+ req.cookies.role;*/
+        if(req.cookies.role != 'ADMIN')
+        var user_condition =` and a.created_by =  '${user}' `;
+
+        var qry =`select a.activity_id,session_name, activity_type, 
+                  date_format(activity_date,"%d/%m/%Y") as activity_date, activity_date as a_date, 
+                  d.event_name, organised_by, venue,  result, concat(first_name," ",middle_name," ",last_name)as name, 
+                  item_taken,result 
+                  from school_activity a 
+                  join session_master b on a.session_id=b.session_id 
+                  join activity_event_master d on a.event_id = d.event_id 
+                  left join activity_teacher_map e on a.activity_id=e.activity_id 
+                  left join employee c on e.teacher_id = c.emp_id 
+                  where a.session_id= ${session_id}
+                  ${category_condition} ${user_condition}
+                  order by a.activity_id `;
+          
+        }else if(category_id ==-1){
+          var condition = "";
+          var user_condition = "";
+          /*if(req.cookies.role != 'ADMIN') 
+          condition = " where a.created_by = "+ req.cookies.role;*/
+          if(req.cookies.role != 'ADMIN')
+          var user_condition =` and a.created_by =  '${user}' `;
+
+          var qry =`select a.activity_id, session_name, activity_type,
+                    date_format(activity_date,"%d/%m/%Y") as activity_date, activity_date as a_date, 
+                    d.event_name, organised_by, venue,  result, concat(first_name," ",middle_name," ",last_name)as name, 
+                    item_taken,result
+                    from school_activity a 
+                    join session_master b on a.session_id=b.session_id 
+                    join activity_event_master d on a.event_id = d.event_id 
+                    left join activity_teacher_map e on a.activity_id=e.activity_id 
+                    left join employee c on e.teacher_id = c.emp_id 
+                    where a.session_id= ${session_id}
+                    ${user_condition}
+                    order by a.activity_id `;
+        }
+        console.log(qry)
+
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+      connection.query(qry,function(err,result)     {
+            
+        if(err){
+          console.log("Error reading Activity Event : %s ",err );
+          data.status = 'e';
+
+        }else{
+          var prev_activity_id="";
+          var obj_name="";
+          var prev_name="";
+          var std = Array();
+          for (var i = 0; i < result.length; i++) {
+            if(result[i].activity_id !=prev_activity_id){//check for different activity_id
+             if(prev_activity_id == ""){// first time only
+                var obj = {};
+                obj['activity_id']=result[i].activity_id;
+                obj['Activity Type']=result[i].activity_type;
+                obj['Activity Date']=result[i].activity_date;             
+                obj['Event']=result[i].event_name;
+                obj['Organised By']=result[i].organised_by;
+                obj['Venue']=result[i].venue;
+                obj['Item Taken']=result[i].item_taken;
+                obj['Result']=result[i].result;
+                prev_activity_id =result[i].activity_id;
+                prev_name = result[i].name;
+                // console.log(obj)
+             }else{
+                obj['Teacher Name'] = prev_name;
                 std.push(obj);
-                console.log(std)
-                data.activities = std;
+                var obj = {};
+                obj['activity_id']=result[i].activity_id;
+                obj['Activity Type']=result[i].activity_type;
+                obj['Activity Date']=result[i].activity_date;             
+                obj['Event']=result[i].event_name;
+                obj['Organised By']=result[i].organised_by;
+                obj['Venue']=result[i].venue;
+                obj['Item Taken']=result[i].item_taken;
+                obj['Result']=result[i].result;
+                prev_activity_id =result[i].activity_id;
+                prev_name = result[i].name;
+                // console.log(obj)
+             }
+             
+            }else{
+             prev_name = prev_name + " ," + result[i].name;
+             prev_activity_id =result[i].activity_id;
+            }
+          }
+          obj['Teacher Name'] = prev_name; 
+          std.push(obj);
+          console.log(std)
+          const fields = ['Activity Date','Event', 'Activity Type','Organised By','Venue','Teacher Name','Result'];
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(std);
+          var path='./public/csv/Activity.csv'; 
+          data.url = '/csv/Activity.csv';
 
-                const fields = ['Activity Date','Event', 'Activity Type','Organised By','Venue','Teacher Name','Result'];
-                const json2csvParser = new Json2csvParser({ fields });
-                const csv = json2csvParser.parse(std);
-
-                var path='./public/csv/Activity.csv'; 
-                fs.writeFile(path, csv, function(err,data) {
-                  if (err) {throw err;}
-                  else{ 
-                    res.send(data)
-                    var url='http://localhost:4000/csv/Activity.csv';
-                    var open = require("open","");
-                    open(url);  
-                    //res.download(url); 
-                  }
-                });
-              }    
-            });    
+          fs.writeFile(path, csv, function(err,data) {
+            if (err) {
+              throw err;
+            }else{ 
+              callback() 
+            }
           });
-        });
+        }
+      });  
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });//end of async loop  
+
+  });// get connection
+});
 
 /* read update Data  */
 router.get('/read_update_activity/:activity_id', function(req, res, next) {

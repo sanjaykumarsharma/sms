@@ -26,11 +26,18 @@
         <button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
         onclick={getSaleGoodsReport} >GO
         </button>
-         <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+         <button class="button is-primary has-text-weight-bold is-pulled-right  is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
           </button>
+
+            <input class="input is-pulled-right" ref="searchInventorySaleGoodsReport" onkeyup={filteredInventorySaleGoodsReport} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
       </div>
 			</div>
 		</div>
@@ -48,7 +55,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventorySaleGoodsReports}>
+				<tr each={ev, i in filteredInventorySaleGoodsReports}>
 					<td>{ i+1 }</td>
 					<td>{ ev.sale_date}</td>
           <td>{ ev.category_name}</td>
@@ -78,6 +85,12 @@
   })
 
 
+      self.filteredInventorySaleGoodsReport = ()=>{
+        self.filteredInventorySaleGoodsReports = self.inventorySaleGoodsReports.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventorySaleGoodsReport.value.toLowerCase())>=0
+        })
+      } 
+
     self.getSaleGoodsReport = () => {
       self.start_date=self.refs.start_date.value,
       self.end_date=self.refs.end_date.value
@@ -87,7 +100,10 @@
       self.loading=true
        inventoryReportStore.trigger('read_inventory_sale_goods_report', self.s_date,self.e_date)
     }
-    
+
+    self.downloadCSV = () => {
+      inventoryReportStore.trigger('csv_export_inventory_sale_goods_report',self.inventorySaleGoodsReports)
+    }
     
     self.addEnter = (e) => {
       if(e.which == 13){
@@ -101,16 +117,23 @@
       }  
     }
 
-    
-
     inventoryReportStore.on('read_inventory_sale_goods_report_changed',ReadInventorySaleGoodsReportChanged)
     function ReadInventorySaleGoodsReportChanged(inventorySaleGoodsReports){
       console.log(inventorySaleGoodsReports) 
       self.title='Create'
       self.loading = false
       self.inventorySaleGoodsReports = inventorySaleGoodsReports
+      self.filteredInventorySaleGoodsReports = inventorySaleGoodsReports
       self.update()
       console.log(self.inventorySaleGoodsReports)
+    }
+
+    inventoryReportStore.on('csv_export_inventory_sale_goods_report_changed',csvInventorySaleGoodsReportChanged)
+    function csvInventorySaleGoodsReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
      
 </script>

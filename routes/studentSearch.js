@@ -383,5 +383,41 @@ router.get('/read_occupation_report/:occupation', function(req, res, next) {
 
 });
 
+router.post('/view_image_list', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  var standard_id = input.standard_id;
+  var section_id = input.section_id;
+  var session_id = req.cookies.session_id
+ 
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var qry =`select a.student_id,
+              concat (first_name, ' ', middle_name, ' ', last_name) as name,
+              enroll_number,roll_number, reg_number,date_format(dob,'%d/%m/%Y') as dob
+              from student_master a
+              LEFT JOIN student_current_standing b on (a.student_id = b.student_id and a.current_session_id = ${session_id})
+              where b.section_id = ${section_id}
+              and b.session_id= ${session_id}  
+              order by first_name,middle_name,last_name`;
+    connection.query(qry,function(err,result)     {
+         console.log(qry)   
+      if(err){
+        console.log("Error reading Student : %s ",err );
+        data.status = 'e';
+
+      }else{
+        data.status = 's';
+        data.image_list = result;
+        res.send(JSON.stringify(data))
+        }
+     
+     });
+       
+  });
+
+});
+
 
 module.exports = router;

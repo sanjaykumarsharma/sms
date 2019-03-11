@@ -77,6 +77,7 @@
     })
     self.on("unmount", function(){
       disciplinecategoryStore.off('discipline_category_changed',DisciplineCategoryChanged)
+      disciplinecategoryStore.off('csv_export_discipline_category_changed',csvDisciplineCategoryChanged)
     })
 
     //read Category
@@ -89,8 +90,8 @@
       disciplinecategoryStore.trigger('read_discipline_category')
     }
 
-    self.csvExport = () => {
-      disciplinecategoryStore.trigger('csv_export_discipline_category')
+    self.downloadCSV = () => {
+      disciplinecategoryStore.trigger('csv_export_discipline_category',self.discipline_categories)
     }
 
      self.add = () => {
@@ -163,6 +164,14 @@
       self.loading = false
       self.discipline_categories = discipline_categories
       self.filteredDisciplineCategory = discipline_categories
+      self.update()
+    }
+
+    disciplinecategoryStore.on('csv_export_discipline_category_changed',csvDisciplineCategoryChanged)
+    function csvDisciplineCategoryChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 

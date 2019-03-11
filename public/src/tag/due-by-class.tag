@@ -22,12 +22,20 @@
 				<button disabled={loading} class="button is-danger has-text-weight-bold"
 				onclick={getDueByClassMonth} > GO
 				</button>
-				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-		               <span class="icon">
-		                 <i class="fas fa-print"></i>
-		             </span>
-		         </button>
+				
 			</div>
+			<div class="level-right" >
+	          <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+	                <span class="icon">
+	                  <i class="far fa-file-excel"></i>
+	                </span>
+	              </button>
+	          <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+	                  <span class="icon">
+	                     <i class="fas fa-print"></i>
+	                 </span>
+	             </button>
+	        </div>
 		</div>
 	</div>
 	<p class="has-text-centered" style="color: #ff3860;font-weight:bold">Class Wise Due Detail</p>
@@ -74,7 +82,20 @@
     self.on("unmount", function(){
       applyPlanStore.off('read_standard_changed',StandardChanged)
       feesReportStore.off('read_due_classwise_changed',ReadDueClasswiseChanged)
+      feesReportStore.off('csv_export_due_byclass_changed',duebyClassChanged)
     })
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_dueby_class',self.classWiseDueFees)
+    }
+
+    feesReportStore.on('csv_export_due_byclass_changed',duebyClassChanged)
+    function duebyClassChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
    //read standard 
    self.readStandard = () => {
        applyPlanStore.trigger('read_standards')

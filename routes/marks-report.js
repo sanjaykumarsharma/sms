@@ -38,6 +38,55 @@ router.get('/exam-type/:standard_id', function(req, res, next) {
 
 });
 
+router.post('/consolidate_tabulation_sheet_csv', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  var session_name = req.cookies.session_name
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var headers = input.headers;
+    var reports = input.reports;
+    console.log(headers)
+    console.log(reports)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < reports.length; i++){
+        var obj = {};
+        obj['Roll No'] = reports[i].roll_number;
+        obj['Enroll No'] = reports[i].enroll_number;
+        obj['Student Name'] = reports[i].student_name;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Roll No','Enroll No','Student Name'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/consolidatedReport.csv'; 
+      data.url = '/csv/consolidatedReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });   
+  });
+
+});
+
 
 // reade marks entries
 router.get('/marks-entries/:exam_type_id/:section_id', function(req, res, next) {

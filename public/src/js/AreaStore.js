@@ -27,6 +27,26 @@ function AreaStore() {
       })
   })
 
+   self.on('csv_export_area', function() {
+    console.log('i am in csv_export_area api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/area/csv_export_area',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_area_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('delete_area', function(id) {
     $.ajax({
       url:'/area/delete/'+id,

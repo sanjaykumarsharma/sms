@@ -61,7 +61,7 @@ function ActivityStore() {
           console.log(data)
           if(data.status == 's'){
             self.activities = data.activities
-            self.trigger('read_activity_by_category_changed', data.activities)
+            self.trigger('read_activity_by_category_changed', data.activities,getCookie('session_name'))
           }else if(data.status == 'e'){
             showToast("Activities Read Error. Please try again.", data)
           }
@@ -84,7 +84,7 @@ function ActivityStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_export_activity_changed', data.url)
           }else if(data.status == 'e'){
             
           }

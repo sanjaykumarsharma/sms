@@ -96,6 +96,7 @@
     self.on("unmount", function(){
       mentorReportStore.off('read_date_wise_case_report_changed',ReadDateWiseCaseReportChanged)
       mentordetailStore.off('read_mentor_categories_changed',CategoriesChanged)
+      mentorReportStore.off('csv_date_wise_case_report_changed',csvMentorDateCaseReportChanged)
     })
 
     self.readCategories = () => {
@@ -121,22 +122,8 @@
         }
     }
     self.csvExport = () => {
-    	var startDate = document.getElementById("start_date").value;
-    	var endDate = document.getElementById("end_date").value;
-
-    	if(!self.refs.start_date.value){
-        	toastr.info("Please enter Start Date and try again")
-      	}else if(!self.refs.end_date.value){
-      		toastr.info("Please enter End Date and try again")
-      	}else if((Date.parse(startDate) >= Date.parse(endDate))){
-       		toastr.info("Please enter To Date Grater Than From Date")
-      	}else{
-    	var obj={}
-          obj['start_date']=convertDate(self.refs.start_date.value)
-          obj['end_date']=convertDate(self.refs.end_date.value)
-          mentorReportStore.trigger('csv_date_wise_case_report', obj,self.refs.category_id.value)
+        mentorReportStore.trigger('csv_date_wise_case_report',self.date_wise_case_report)
         }
-    }
 
     mentordetailStore.on('read_mentor_categories_changed',CategoriesChanged)
     function CategoriesChanged(categories){
@@ -156,6 +143,14 @@
       self.categoryName = $("#CategoryName option:selected").text();
       self.update()
     }
+
+    mentorReportStore.on('csv_date_wise_case_report_changed',csvMentorDateCaseReportChanged)
+    function csvMentorDateCaseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 </script>
 
 </mentor-date-wise-case-report>

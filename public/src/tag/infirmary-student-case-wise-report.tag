@@ -23,9 +23,14 @@
 				<button class="button is-danger has-text-weight-bold"
 				onclick={getData} > GO
 				</button>
+				 <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
 				<input type="checkbox" id="checkTable" checked={e.done} 
 				onclick={viewTable}  style="margin-top: 12px;"> Table
-				 <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+				 <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
@@ -95,6 +100,7 @@
 
     self.on("unmount", function(){
       studentinfirmaryStore.off('read_case_wise_report_changed',ReadCaseChanged)
+      studentinfirmaryStore.off('csv_export_infirmary_case_wise_report_changed',csvInfirmaryCaseWiseReportChanged)
     })
 
     self.viewTable = () => {
@@ -112,6 +118,10 @@
           studentinfirmaryStore.trigger('read_case_wise_report', obj)
           self.report_view = 'show_graph'
           console.log(obj)
+    }
+
+    self.downloadCSV = () =>{
+      studentinfirmaryStore.trigger('csv_export_infirmary_case_wise_report', self.case_wise_reports)
     }
 
     studentinfirmaryStore.on('read_case_wise_report_changed',ReadCaseChanged)
@@ -186,5 +196,13 @@
       self.update()
       console.log(self.case_wise_reports)
     }
+
+    studentinfirmaryStore.on('csv_export_infirmary_case_wise_report_changed',csvInfirmaryCaseWiseReportChanged)
+    function csvInfirmaryCaseWiseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 </script>
 </infirmary-student-case-wise-report>

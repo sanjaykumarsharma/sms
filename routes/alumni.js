@@ -3,7 +3,7 @@ var router = express.Router();
 const Json2csvParser = require('json2csv').Parser;
 const fs = require('fs');
 var http = require('http');
-var download = require('download-file')
+var async = require("async");
 
 
 /* Read Approved Alumni. */
@@ -91,6 +91,156 @@ router.get('/read_alumni', function(req, res, next) {
      
      });
        
+  });
+
+});
+
+router.post('/read_approved_alumni_csv', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  var session_name = req.cookies.session_name
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Name'] = result[i].name;
+        obj['Email'] = result[i].email;
+        obj['Address'] = result[i].address;
+        obj['City'] = result[i].residence_city;
+        obj['State'] = result[i].residence_state;
+        obj['Country'] = result[i].residence_country;
+        obj['Zip'] = result[i].residence_zip;
+        obj['Batch Year'] = result[i].batch_year;
+        obj['Mobile'] = result[i].mobile;
+        obj['Fax'] = result[i].fax;
+        obj['Approved'] = result[i].approved;
+        obj['Approval Date'] = result[i].approval_date;
+        obj['Fees'] = result[i].fees;
+        obj['Submission Date'] = result[i].creation_date;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Name','Email','Address','City','State','Country','Zip','Batch Year','Mobile','Fax','Approved','Approval Date','Fees','Submission Date'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/Alumni.csv'; 
+      data.url = '/csv/Alumni.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });   
+  });
+
+});
+
+router.post('/read_alumni_csv', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  var session_name = req.cookies.session_name
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Name'] = result[i].name;
+        obj['Enroll No'] = result[i].enroll_no;
+        obj['Email'] = result[i].email;
+        obj['City'] = result[i].residence_city;
+        obj['State'] = result[i].residence_state;
+        obj['Country'] = result[i].residence_country;
+        obj['Zip'] = result[i].residence_zip;
+        obj['Batch Year'] = result[i].batch_year;
+        obj['Mobile'] = result[i].mobile;
+        obj['Approved'] = result[i].approved;
+        obj['Fees'] = result[i].fees;
+        obj['Submission Date'] = result[i].creation_date;
+        obj['Icse School'] = result[i].icse_school;
+        obj['Icse Board'] = result[i].icse_board;
+        obj['Icse City'] = result[i].icse_city;
+        obj['Icse Division'] = result[i].icse_division;
+        obj['Isc School'] = result[i].isc_school;
+        obj['Isc Board'] = result[i].isc_board;
+        obj['Isc City'] = result[i].isc_city;
+        obj['Isc Division'] = result[i].isc_division;
+        obj['Bachlor School'] = result[i].bachlor_school;
+        obj['Bachlor Board'] = result[i].bachlor_board;
+        obj['Bachlor City'] = result[i].bachlor_city;
+        obj['Bachlor Division'] = result[i].bachlor_division;
+        obj['Master School'] = result[i].master_school;
+        obj['Master Board'] = result[i].master_board;
+        obj['Master City'] = result[i].master_city;
+        obj['Master Division'] = result[i].master_division;
+        obj['Other School'] = result[i].other_school;
+        obj['Other Board'] = result[i].other_board;
+        obj['Other City'] = result[i].other_city;
+        obj['Other Division'] = result[i].other_division;
+        obj['Current Institute'] = result[i].c_institute;
+        obj['Current Course'] = result[i].c_course;
+        obj['Current Year'] = result[i].c_year;
+        obj['Current Degree'] = result[i].c_degree;
+        obj['Office Name'] = result[i].company_name;
+        obj['Nature of Job'] = result[i].nature_of_job;
+        obj['Designation'] = result[i].designation;
+        obj['Office Add Line1'] = result[i].office_addl1;
+        obj['Office Add Line2'] = result[i].office_addl2;
+        obj['Office City'] = result[i].office_city;
+        obj['Office Zip'] = result[i].office_zip;
+        obj['Office State'] = result[i].office_state;
+        obj['Office Country'] = result[i].office_country;
+        obj['Office Mobile'] = result[i].office_mobile;
+        obj['Office Telephone'] = result[i].otelephone;
+        obj['Office Email'] = result[i].office_email;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Name','Enroll No','Email','City','State','Country','Zip','Batch Year','Mobile','Approved','Fees','Submission Date','Icse School','Icse Board','Icse City','Icse Division','Isc School','Isc Board','Isc City','Isc Division','Bachlor School','Bachlor Board','Bachlor City','Bachlor Division','Master School','Master Board','Master City','Master Division','Other School','Other Board','Other City','Other Division','Current Institute','Current Course','Current Year','Current Degree','Office Name','Nature of Job','Designation','Office Add Line1','Office Add Line2','Office City','Office Zip','Office State','Office Country','Office Mobile','Office Telephone','Office Email'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/UnappovedAlumni.csv'; 
+      data.url = '/csv/UnappovedAlumni.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });   
   });
 
 });

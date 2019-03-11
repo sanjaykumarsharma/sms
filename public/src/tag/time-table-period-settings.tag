@@ -109,12 +109,16 @@
 
      self.on("unmount", function(){
       timeTablePeriodSettingsStore.off('period_changed', PeriodChanged)
+      timeTablePeriodSettingsStore.off('csv_export_period_changed',csvPeriodChanged)
     })
 
     //read courses
     self.readPeriod = () => {
       self.loading=true
-       timeTablePeriodSettingsStore.trigger('read_period')
+      timeTablePeriodSettingsStore.trigger('read_period')
+    }
+    self.downloadCSV = () =>{
+      timeTablePeriodSettingsStore.trigger('csv_export_period', self.periods)
     }
 
      self.add = () => {
@@ -192,6 +196,14 @@
       self.refs.addRemarksInput.value = ''
       self.loading = false
       self.periods = periods
+      self.update()
+    }
+
+    timeTablePeriodSettingsStore.on('csv_export_period_changed',csvPeriodChanged)
+    function csvPeriodChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 

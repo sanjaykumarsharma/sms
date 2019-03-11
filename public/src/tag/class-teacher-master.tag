@@ -72,13 +72,19 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
+
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
          
-        <button class="button is-primary is-small has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+        <button class="button is-primary is-small ml5 has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
               <span class="icon">
                  <i class="fas fa-print"></i>
              </span>
         </button>
-        <button class="button is-warning is-small is-rounded is-pulled-right" onclick={readClassTeacher} style="margin-right:5px">
+        <button class="button is-warning is-small ml5 is-rounded is-pulled-right" onclick={readClassTeacher} style="margin-right:5px">
            <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
@@ -86,7 +92,12 @@
 				</div>
 			</div>
 		</div>
-		<table class="table is-fullwidth is-striped is-hoverable">
+     <div class="columns">
+       <div class="column">
+       <input class="input is-pulled-right" ref="searchClassTeacher" onkeyup={filteredClassTeacher} type="text" style="width:200px;margin-right:5px;margin-top:-15px" placeholder="Search" >
+     </div>
+   </div>
+		<table class="table is-fullwidth is-striped is-hoverable" style="margin-top:-31px">
 			<thead>
 				<tr>
 					<th>SL</th>
@@ -99,7 +110,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in classTeachers}>
+				<tr each={ev, i in filteredClassTeachers}>
 					<td>{ i+1 }</td>
 					<td>{ ev.standard}</td>
           <td>{ ev.section}</td>
@@ -140,7 +151,19 @@
       classTeacherStore.off('add_class_teacher_changed', AddClassTeacherChanged)
       classTeacherStore.off('edit_class_teacher_changed',EditClassTeacherChanged)
       classTeacherStore.off('delete_class_teacher_changed',DeleteClassTeacherChanged)
+      classTeacherStore.off('csv_export_class_teacher_changed',csv_export_class_teacherChanged)
     })
+
+    self.downloadCSV = () =>{
+          classTeacherStore.trigger('csv_export_class_teacher')
+        //  console.log(obj)
+    }
+
+     self.filteredClassTeacher = ()=>{
+      self.filteredClassTeachers = self.classTeachers.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchClassTeacher.value.toLowerCase())>=0
+      })
+    } 
 
     self.readStandard = () => {
       self.loading=true
@@ -304,9 +327,18 @@
     function ReadClassTeacherChanged(classTeachers){
       console.log(classTeachers) 
       self.classTeachers = classTeachers
+      self.filteredClassTeachers = classTeachers
       self.loading = false
       self.update()
       console.log(self.classTeachers)
+    }
+
+    classTeacherStore.on('csv_export_class_teacher_changed',csv_export_class_teacherChanged)
+    function csv_export_class_teacherChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

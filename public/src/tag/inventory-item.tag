@@ -55,12 +55,14 @@
         </div>
 				<div class="column">
 					<button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
-					onclick={add} >{title}
-					</button>
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-            <span class="icon"><i class="fas fa-print"></i></span>
-           </button>
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readInventoryItem} style="margin-left:5px;margin-right:5px">
+					onclick={add} >{title}</button>
+
+          <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+            <span class="icon">
+              <i class="far fa-file-excel"></i>
+            </span>
+          </button>
+          <button class="button is-warning is-pulled-right" onclick={readInventoryItem} style="margin-left:5px;margin-right:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
@@ -122,6 +124,7 @@ self.on("unmount", function(){
   inventoryItemStore.off('add_inventory_item_changed', AddInventoryItemChanged) 
   inventoryItemStore.off('edit_inventory_item_changed',EditInventoryItemChanged)    
   inventoryItemStore.off('delete_inventory_item_changed',DeleteInventoryItemChanged)
+  inventoryItemStore.off('csv_export_inventory_item_changed',csvInventoryItemChanged)
 })
     //filter subcategory and category
 
@@ -162,7 +165,10 @@ self.on("unmount", function(){
 
     self.readInventoryItem = () => {
       self.loading=true
-       inventoryItemStore.trigger('read_inventory_item')
+      inventoryItemStore.trigger('read_inventory_item')
+    }
+    self.downloadCSV = () => {
+      inventoryItemStore.trigger('csv_export_inventory_item',self.inventoryItems)
     }
 
      self.add = () => {
@@ -336,6 +342,13 @@ self.on("unmount", function(){
       self.inventoryDepartments = inventoryDepartments
       self.update()
       console.log(self.inventoryDepartments)
+    }
+    inventoryItemStore.on('csv_export_inventory_item_changed',csvInventoryItemChanged)
+    function csvInventoryItemChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

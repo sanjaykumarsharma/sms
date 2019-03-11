@@ -30,14 +30,20 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readInventoryItem} style="margin-left:5px;margin-right:5px">
+          <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+          <button class="button is-warning is-rounded is-pulled-right  ml5" onclick={readInventoryCategory} style="margin-left:5px;margin-right:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-primary has-text-weight-bold is-pulled-right  ml5" onclick="window.print()" title="Print">
             <span class="icon"><i class="fas fa-print"></i></span>
            </button>
+            <input class="input is-pulled-right" ref="searchInventoryCategory" onkeyup={filteredInventoryCategory} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
 				</div>
 			</div>
 		</div>
@@ -51,7 +57,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventoryCategories}>
+				<tr each={ev, i in filteredInventoryCategories}>
 					<td>{ i+1 }</td>
 					<td>{ ev.department}</td>
 					<td>{ ev.category_name}</td>
@@ -85,11 +91,24 @@
       inventorydepartmentStore.off('read_inventorydepartment_changed', ReadInventoryDepartmentChanged)
       inventoryCategoryStore.off('edit_inventory_category_changed',EditInventoryCategoryChanged)
       inventoryCategoryStore.off('delete_inventory_category_changed',DeleteInventoryCategoryChanged)
+      inventoryCategoryStore.off('csv_export_inventory_category_changed',csvInventoryCategoryChanged)
     })
+    
+
+
+      self.filteredInventoryCategory = ()=>{
+        self.filteredInventoryCategories = self.inventoryCategories.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventoryCategory.value.toLowerCase())>=0
+        })
+      } 
 
     //read courses
     self.readInventoryDepartment = () => {
-       inventorydepartmentStore.trigger('read_inventorydepartment')
+      self.loading=true
+      inventorydepartmentStore.trigger('read_inventorydepartment')
+    }
+    self.downloadCSV = () => {
+      inventoryCategoryStore.trigger('csv_export_inventory_category',self.inventoryCategories)
     }
 
     //read employe_roles
@@ -166,6 +185,7 @@
       self.refs.department.value = ''
       self.loading = false
       self.inventoryCategories = inventoryCategories
+      self.filteredInventoryCategories = inventoryCategories
       self.update()
       //self.readInventoryCategory()
       console.log(self.inventoryCategories)
@@ -179,6 +199,7 @@
       self.refs.department.value = ''
       self.loading = false
       self.inventoryCategories = inventoryCategories
+      self.filteredInventoryCategories = inventoryCategories
       self.update()
      // self.readInventoryCategory()
       //console.log(self.empinventoryCategoriesloye_roles)
@@ -192,6 +213,7 @@
       self.refs.department.value = ''
       self.loading = false
       self.inventoryCategories = inventoryCategories
+      self.filteredInventoryCategories = inventoryCategories
       self.update()
       self.readInventoryCategory()
       console.log(self.inventoryCategories)
@@ -205,6 +227,7 @@
       self.refs.department.value = ''
       self.loading = false
       self.inventoryCategories = inventoryCategories
+      self.filteredInventoryCategories = inventoryCategories
       self.update()
       console.log(self.inventoryCategories)
     }
@@ -216,6 +239,13 @@
       self.loading=true
       self.update()
       console.log(self.inventoryDepartments)
+    }
+    inventoryCategoryStore.on('csv_export_inventory_category_changed',csvInventoryCategoryChanged)
+    function csvInventoryCategoryChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

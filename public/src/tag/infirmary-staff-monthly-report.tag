@@ -32,7 +32,12 @@
           <button class="button is-danger has-text-weight-bold"
           onclick={readStaffMonthlyCaseReport} >Go
           </button>
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
@@ -85,6 +90,7 @@
       // staffinfirmaryStore.off('read_staff_date_wise_case_report_changed', ReadStaffDateWiseCaseReportChanged)
        //  staffinfirmaryStore.off('read_infirmary_category_changed',InfirmaryCategoryChanged)
       staffinfirmaryStore.off('read_staff_monthly_report_changed',ReadStaffMonthlyCaseReportChanged)
+      staffinfirmaryStore.off('csv_export_staff_monthly_case_report_changed',csvStaffMonthlyCaseReportChanged)
      })
 
      //read courses
@@ -114,6 +120,10 @@
        }  
      }
 
+     self.downloadCSV = () =>{
+      staffinfirmaryStore.trigger('csv_export_staff_monthly_case_report', self.staffMonthlyReport)
+    }
+
     
 /*     staffinfirmaryStore.on('read_staff_date_wise_case_report_changed',ReadStaffDateWiseCaseReportChanged)
      function ReadStaffDateWiseCaseReportChanged(staffDateWiseCaseReports){
@@ -137,6 +147,14 @@
        self.staffMonthlyCaseReports = staffMonthlyCaseReports
        self.update()
        console.log(self.staffMonthlyCaseReports)
+     }
+
+    staffinfirmaryStore.on('csv_export_staff_monthly_case_report_changed',csvStaffMonthlyCaseReportChanged)
+    function csvStaffMonthlyCaseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
      }
 
 </script>

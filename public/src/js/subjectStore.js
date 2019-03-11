@@ -27,6 +27,26 @@ function SubjectStore() {
       })
   })
 
+  self.on('csv_export_Subject', function() {
+    console.log('i am in csv_export_Subject api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/subject/csv_export_Subject',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_subject_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('delete_subject', function(id) {
     $.ajax({
       url:'/subject/delete/'+id,

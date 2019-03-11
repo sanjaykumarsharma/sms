@@ -22,13 +22,19 @@
           <button disabled={loading} class="button is-danger has-text-weight-bold"
           onclick={getAssignedStudents} > GO
           </button>
-            <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-                  <span class="icon">
-                     <i class="fas fa-print"></i>
-                 </span>
-             </button>
-					
 				</div> 
+        <div class="level-right" >
+          <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+                <span class="icon">
+                  <i class="far fa-file-excel"></i>
+                </span>
+              </button>
+          <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+               </button>
+          </div>
 			</div>
 		</div>
   <p class="has-text-centered" style="color: #ff3860;font-weight:bold">Fee Scheme Assigned Student</p>
@@ -77,6 +83,7 @@
     self.on("unmount", function(){
       feePlanStore.off('fee_plan_changed', PlansChanged)
       feesReportStore.off('read_assigned_student_changed',AssignedStudentChanged)
+      feesReportStore.off('csv_export_assigned_scheme_changed',assignedSchemeChanged)
     })
     
     self.readFeePlans = () => {
@@ -87,6 +94,20 @@
       console.log(self.refs.fee_plan_id.value)
       feesReportStore.trigger('read_assigned_students', self.refs.fee_plan_id.value)
     }
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_assigned_scheme',self.assignedStudents)
+    }
+
+    feesReportStore.on('csv_export_assigned_scheme_changed',assignedSchemeChanged)
+    function assignedSchemeChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
+
+
     feePlanStore.on('fee_plan_changed',PlansChanged)
     function PlansChanged(feePlans){
       

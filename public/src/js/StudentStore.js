@@ -193,21 +193,20 @@ function StudentStore() {
       })
   })
 
-  self.on('read_student_csv', function(read_standard_id,read_section_id,read_enroll_number) {
-    
+  self.on('read_student_csv', function(obj) {
     let req = {}
-    req.read_standard_id=read_standard_id
-    req.read_section_id=read_section_id
-    req.read_enroll_number=read_enroll_number
+    req.data=obj
     $.ajax({
-      url:'/student/read_student_csv/'+read_standard_id+'/'+read_section_id+'/'+read_enroll_number,
+      url:'/student/read_student_csv',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('read_student_csv_changed', data.url)
           }else if(data.status == 'e'){
             
           }

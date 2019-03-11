@@ -23,12 +23,17 @@
           <button class="button is-danger has-text-weight-bold"
           onclick={add} >{title}
           </button>
-          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+          <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
           </button>
-         <button class="button is-warning is-rounded is-pulled-right" onclick={readReligion} style="margin-left :5px;margin-right:5px">
+         <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readReligion} style="margin-left :5px;margin-right:5px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
@@ -95,7 +100,13 @@
 
      self.on("unmount", function(){
       religionStore.off('religion_changed', ReligionChanged)
+      religionStore.off('csv_export_religion_changed',csv_export_religionChanged)
     })
+
+     self.downloadCSV = () =>{
+          religionStore.trigger('csv_export_religion')
+        //  console.log(obj)
+    }
 
     //read courses
     self.readReligion = () => {
@@ -171,6 +182,14 @@
       self.refs.ReligionInput.value = ''
       self.loading = false
       self.religions = religions
+      self.update()
+    }
+
+     religionStore.on('csv_export_religion_changed',csv_export_religionChanged)
+    function csv_export_religionChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 

@@ -21,12 +21,20 @@
 				<button disabled={loading} class="button is-danger has-text-weight-bold"
 				onclick={getMonthlyFees} > GO
 				</button>
-				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+			
+			</div>
+			<div class="level-right" >
+				<button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+		          <span class="icon">
+		            <i class="far fa-file-excel"></i>
+		          </span>
+		        </button>
+				<button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
 		              <span class="icon">
 		                 <i class="fas fa-print"></i>
 		             </span>
 		         </button>
-			</div>
+		    </div>
 		</div>
 	</div>	
 	<p class="has-text-centered" style="color: #ff3860;font-weight:bold">Month Wise Fees Report</p>
@@ -77,7 +85,20 @@
 
     self.on("unmount", function(){
       feesReportStore.off('read_monthly_fees_changed',ReadMonthlyFeesChanged)
+      feesReportStore.off('csv_export_month_wise_changed',monthFeesChanged)
     })
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_export_month_wise',self.monthlyData)
+    }
+
+    feesReportStore.on('csv_export_month_wise_changed',monthFeesChanged)
+    function monthFeesChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
     self.getMonthlyFees = () => {
     	var startDate = document.getElementById("start_date").value
@@ -112,6 +133,13 @@
           self.totalScholarship +=Number(c.scholarship)
           self.totalGrandTotal +=Number(c.total)
       })
+        /*var obj = {};
+        obj['totalFees'] = self.totalFees;
+        obj['totalFine'] = self.totalFine;
+        obj['totalScholarship'] = self.totalScholarship;
+        obj['totalGrandTotal'] = self.totalGrandTotal;
+        self.monthlyData.push(obj);*/
+        console.log(self.monthlyData);
        self.sessionName = session_name
        self.fromSelectedDate = self.refs.start_date.value
        self.toSelectedDate = self.refs.end_date.value

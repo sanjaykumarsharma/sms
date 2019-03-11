@@ -41,14 +41,18 @@
           <button class="button is-danger has-text-weight-bold"
           onclick={readStaffInfirmaryDateWiseCaseReport} >Go
           </button>
-
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+            <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
             </button>
 
-            <button class="button is-info is-rounded is-pulled-right" onclick={readStaffInfirmary} style="margin-left:5px;margin-right:5px">
+            <button class="button is-info is-rounded is-pulled-right is-small ml5" onclick={readStaffInfirmary} style="margin-left:5px;margin-right:5px">
                 <span class="icon">
                   <span class="fas fa-sync-alt"></span>
                 </span>
@@ -181,9 +185,10 @@
         self.update()
      })
      self.on("unmount", function(){
-       staffinfirmaryStore.off('read_staff_date_wise_case_report_changed', ReadStaffDateWiseCaseReportChanged)
-         staffinfirmaryStore.off('read_infirmary_category_changed',InfirmaryCategoryChanged)
+      staffinfirmaryStore.off('read_staff_date_wise_case_report_changed', ReadStaffDateWiseCaseReportChanged)
+      staffinfirmaryStore.off('read_infirmary_category_changed',InfirmaryCategoryChanged)
         // staffinfirmaryStore.off('read_staff_monthly_report_changed',ReadStaffMonthlyCaseReportChanged)
+      staffinfirmaryStore.off('csv_export_staff_date_wise_case_report_changed',csvStaffDateWiseCaseReportChanged)
      })
 
      //read courses
@@ -202,8 +207,11 @@
       self.readInfirmaryCategory = () => {
         staffinfirmaryStore.trigger('read_infirmary_category')
      }
-    
 
+    self.downloadCSV = () =>{
+      staffinfirmaryStore.trigger('csv_export_staff_date_wise_case_report', self.staffDateWiseCaseReports)
+    }
+    
      self.addEnter = (e) => {
        if(e.which == 13){
          self.add()
@@ -241,6 +249,14 @@
        self.update()
        console.log(self.staffMonthlyCaseReports)
      }*/
+
+    staffinfirmaryStore.on('csv_export_staff_date_wise_case_report_changed',csvStaffDateWiseCaseReportChanged)
+    function csvStaffDateWiseCaseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
 </script>
 </infirmary-staff-date-wise-case-report>

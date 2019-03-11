@@ -1,5 +1,9 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
 
 /* Read Course listing. */
 /*router.get('/readEmployee', function(req, res, next) {
@@ -67,7 +71,7 @@ router.get('/:id', function(req, res, next) {
           condition = `where a.category_id = ${category_id}`;
          }
         var user_condition = "";
-        if(req.cookies.user != 'ADMIN') user_condition =` and a.created_by = '${user}' `;
+        if(req.cookies.user != 'admin') user_condition =` and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select received_id,date_format(received_date,'%d/%m/%Y') as received_date, date_format(received_date,'%Y-%m-%d') as r_date,
                 item_name,category_name, concat('',a.quantity,' ',unit) as quantity, a.rate,(a.quantity*a.rate)as amount,
@@ -227,6 +231,58 @@ router.get('/delete/:id', function(req, res, next) {
         });
    });
 
+});
+
+router.post('/csv_export_inventory_stock', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Date'] = result[i].received_date;
+        obj['Category'] = result[i].category_name;
+        obj['Item Name'] = result[i].item_name;
+        obj['Quantity'] = result[i].quantity;
+        obj['Rate'] = result[i].rate;
+        obj['Amount'] = result[i].amount;
+        obj['Received From'] = result[i].received_from;
+        obj['Rack No'] = result[i].rack_name;
+        obj['Remarks'] = result[i].remark;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Date','Category','Item Name','Quantity','Rate','Amount','Received From','Rack No','Remarks'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/receivedGoods.csv'; 
+      data.url = '/csv/receivedGoods.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+
+    });
 });
 
 module.exports = router;

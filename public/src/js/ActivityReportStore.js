@@ -43,7 +43,7 @@ function ActivityReportStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_activity_date_wise_report_changed', data.url)
           }else if(data.status == 'e'){
             
           }
@@ -92,7 +92,7 @@ function ActivityReportStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-
+            self.trigger('csv_activity_session_wise_report_changed', data.url)
           }else if(data.status == 'e'){
            
           }
@@ -141,7 +141,7 @@ function ActivityReportStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-
+            self.trigger('csv_activity_event_wise_report_changed', data.url)
           }else if(data.status == 'e'){
 
           }
@@ -188,7 +188,7 @@ function ActivityReportStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-
+            self.trigger('csv_activity_event_wise_graph_report_changed', data.url)
           }else if(data.status == 'e'){
 
           }
@@ -236,7 +236,7 @@ function ActivityReportStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-
+            self.trigger('csv_student_event_report_changed', data.url)
           }else if(data.status == 'e'){
 
           }

@@ -37,14 +37,17 @@
           </div>
         </div>
         <div class="column">
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readInventoryReturnableItem} style="margin-left:5px;margin-right:5px">
+            <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+          <button class="button is-warning is-rounded is-pulled-right ml5" onclick={readInventoryReturnableItem} style="margin-left:5px;margin-right:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
-          <!--  <button class="button is-info is-rounded is-pulled-right" onclick={show_inventory_returnable_modal}>
-         <span class="icon"><span class="fas fa-plus"></span></span>
-          </button> -->
+        <input class="input is-pulled-right" ref="searchInventoryReturnable" onkeyup={filteredInventoryReturnable} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
 			</div>
     </div>
 		</div>
@@ -63,7 +66,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventoryReturnableGoods}>
+				<tr each={ev, i in filteredInventoryReturnableGoods}>
 					<td>{ i+1 }</td>
           <td><input type="checkbox" class="id_check_box" checked={ev.done} id="{ 'IssueId' + ev.issue_id }" onclick={selectReturnableGoods.bind(this,ev)} > </td>
 					<td>{ ev.issued_date}</td>
@@ -169,10 +172,19 @@
         inventoryCategoryStore.off('read_inventory_category_changed', ReadInventoryCategoryChanged)
         inventoryIssueStore.off('read_inventory_returnable_changed', ReadInventoryReturnableChanged) 
         inventoryIssueStore.off('add_inventory_return_goods_changed', AddInventoryReturnGoodsChanged) 
+        inventoryIssueStore.off('csv_export_returnable_item_changed',csvInventoryReturnableChanged)
         /*inventoryIssueStore.off('edit_inventory_issue_changed', EditInventoryIssueChanged)    
         inventoryIssueStore.off('delete_inventory_issue_changed', DeleteInventoryIssueChanged)
         inventoryIssueStore.off('read_inventory_available_quantity_changed', ReadInventoryAvailableQuantityChanged)*/
     })
+
+
+     self.filteredInventoryReturnable = ()=>{
+        self.filteredInventoryReturnableGoods = self.inventoryReturnableGoods.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventoryReturnable.value.toLowerCase())>=0
+        })
+      } 
+
     self.selectReturnableGoods = (item,event) => {
       item.done=!event.item.ev.done
       console.log(item.done)
@@ -228,6 +240,9 @@
     self.readInventoryReturnableItem = () => {
       self.loading=true
        inventoryIssueStore.trigger('read_inventory_returnable_item', self.refs.r_category_id.value,self.refs.r_returnable_type.value,)
+    }
+    self.downloadCSV = () => {
+      inventoryIssueStore.trigger('csv_export_returnable_item',self.inventoryReturnableGoods)
     }
     
 
@@ -293,6 +308,7 @@
       console.log(inventoryReturnableGoods) 
       self.loading=false
       self.inventoryReturnableGoods = inventoryReturnableGoods
+      self.filteredInventoryReturnableGoods = inventoryReturnableGoods
       self.inventoryReturnableGoods.map(i=>{
          if(i.issue_id==null){
               i.done = false; //RoleId1
@@ -305,6 +321,14 @@
      // self.loading = false
       self.update()
       console.log(self.inventoryReturnableGoods)
+    }
+
+    inventoryIssueStore.on('csv_export_returnable_item_changed',csvInventoryReturnableChanged)
+    function csvInventoryReturnableChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
   
    

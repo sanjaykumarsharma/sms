@@ -1,5 +1,9 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
 
 /* Read Course listing. */
 router.get('/read_hod', function(req, res, next) {
@@ -53,6 +57,52 @@ router.get('/read_department', function(req, res, next) {
        
   });
 
+});
+
+router.get('/csv_export_Department', function(req, res, next) {
+
+  req.getConnection(function(err,connection){
+
+     var data = {}
+     var qry = `select department_name as 'Department Name', hod as 'HOD'
+               from department_master a 
+               LEFT JOIN employee b on a.hod= b.emp_id
+                order by department_name`;
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+      connection.query(qry,function(err,result)     {
+            
+        if(err){
+          console.log("Error reading Department : %s ",err );
+          data.status = 'e';
+
+        }else{
+          const fields = ['Department Name','HOD']; 
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(result);
+          var path='./public/csv/Department.csv'; 
+          data.url = '/csv/Department.csv';
+
+          fs.writeFile(path, csv, function(err,data) {
+            if (err) {
+              throw err;
+            }else{ 
+              callback() 
+            }
+          });
+        }
+      });  
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });//end of async loop  
+
+  });// get connection
 });
 
 /* Add Course listing. */

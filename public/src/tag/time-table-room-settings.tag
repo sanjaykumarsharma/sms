@@ -88,6 +88,7 @@
 
      self.on("unmount", function(){
       timeTableRoomSettingsStore.off('room_changed', RoomChanged)
+      timeTableRoomSettingsStore.off('csv_export_room_changed',csvRoomChanged)
     })
 
     //read courses
@@ -101,7 +102,11 @@
       })
     }
 
-     self.add = () => {
+    self.downloadCSV = () =>{
+      timeTableRoomSettingsStore.trigger('csv_export_room', self.rooms)
+    }
+
+    self.add = () => {
       if(!self.refs.addRoomInput.value){
         toastr.info("Please enter Room and try again")
       }else{
@@ -172,6 +177,14 @@
       self.loading = false
       self.rooms = rooms
       self.filteredRoomSetting = rooms
+      self.update()
+    }
+
+    timeTableRoomSettingsStore.on('csv_export_room_changed',csvRoomChanged)
+    function csvRoomChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 

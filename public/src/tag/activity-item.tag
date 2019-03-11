@@ -77,6 +77,7 @@
     })
     self.on("unmount", function(){
       activityitemStore.off('items_changed', ItemsChanged)
+      activityitemStore.off('csv_export_activity_item_changed',csvItemsChanged)
     })
 
     //read courses
@@ -90,7 +91,7 @@
       activityitemStore.trigger('read_items')
     }
 
-    self.csvExport = () => {
+    self.downloadCSV = () => {
       activityitemStore.trigger('csv_export_activity_item')
     } 
 
@@ -168,6 +169,12 @@
       self.filteredActivityItem = items
       console.log(items) 
       self.update()
+    }
+
+    activityitemStore.on('csv_export_activity_item_changed',csvItemsChanged)
+    function csvItemsChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
     }
 
 </script>

@@ -32,12 +32,19 @@
 					<button disabled={loading} class="button is-danger has-text-weight-bold"
 					onclick={getLetterStudent} > GO
 					</button>
-					<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-                <span class="icon">
-                   <i class="fas fa-print"></i>
-               </span>
-           </button>
 				</div> 
+        <div class="level-right" >
+            <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+                  <span class="icon">
+                    <i class="far fa-file-excel"></i>
+                  </span>
+                </button>
+            <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+                    <span class="icon">
+                       <i class="fas fa-print"></i>
+                   </span>
+               </button>
+          </div>
 			</div>
 		</div>
   <p class="has-text-centered" style="color: #ff3860;font-weight:bold">Issued Letter Report</p>
@@ -81,7 +88,20 @@
     })
     self.on("unmount", function(){
       feesReportStore.off('read_fees_letter_changed',IssuedLetterChanged)
+      feesReportStore.off('csv_export_issued_letter_changed',issuedLetterChanged)
     })
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_issued_letter',self.letter_students)
+    }
+
+    feesReportStore.on('csv_export_issued_letter_changed',issuedLetterChanged)
+    function issuedLetterChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
     
  
     self.getLetterStudent = () =>{

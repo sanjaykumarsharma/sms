@@ -20,15 +20,19 @@
 				<button disabled={loading} class="button is-danger has-text-weight-bold"
 				onclick={getOutstandingFees} > GO
 				</button>
-
-				
-				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-		               <span class="icon">
-		                 <i class="fas fa-print"></i>
-		             </span>
-		         </button>
-				
 			</div>
+			<div class="level-right" >
+	          <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+	                <span class="icon">
+	                  <i class="far fa-file-excel"></i>
+	                </span>
+	              </button>
+	          <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+	                  <span class="icon">
+	                     <i class="fas fa-print"></i>
+	                 </span>
+	             </button>
+	        </div>
 		</div>
 	</div>
     <p class="has-text-centered" style="color: #ff3860;font-weight:bold">Month Wise Fees Report</p>
@@ -73,7 +77,20 @@
 
     self.on("unmount", function(){
       feesReportStore.off('read_outstanding_fees_changed',ReadOutstandingFeesChanged)
+      feesReportStore.off('csv_export_outstanding_fees_changed',outstandingFeesChanged)
     })
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_outstanding_fees',self.outstandingData)
+    }
+
+    feesReportStore.on('csv_export_outstanding_fees_changed',outstandingFeesChanged)
+    function outstandingFeesChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
     self.getOutstandingFees = () => {
     	var startDate = document.getElementById("start_date").value

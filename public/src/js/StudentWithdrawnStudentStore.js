@@ -77,6 +77,30 @@ function StudentWithdrawnStudentStore() {
       })
   })
 
+  self.on('csv_export_withdraw_student', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/student-withdrawn-student/csv_export_withdraw_student',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_withdraw_student_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
   self.on('cancle_withdraw_students', function(student_id) {
     var obj = {}
     obj['student_id'] = student_id

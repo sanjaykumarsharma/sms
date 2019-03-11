@@ -112,6 +112,31 @@ function StudentSearchStore() {
       })
   })
 
+ self.on('view_image_list', function(standard_id,section_id) {
+     let req = {}
+     req.standard_id=standard_id
+     req.section_id=section_id
+    $.ajax({
+      url:'/studentSearch/view_image_list',
+        type:"POST",
+        data: JSON.stringify(req),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('view_image_list_changed', data.image_list,getCookie('session_name'),getCookie('session_id'))
+          }else if(data.status == 'e'){
+            showToast("Error search Student. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
 
 
 

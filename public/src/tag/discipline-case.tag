@@ -99,6 +99,7 @@
       disciplinecaseStore.off('read_discipline_case_changed', ReadCaseChanged)
       disciplinecaseStore.off('edit_discipline_case_changed',EditCaseChanged)
       disciplinecaseStore.off('delete_discipline_case_changed',DeleteCaseChanged)
+      disciplinecaseStore.off('csv_export_discipline_case_changed',csvDisciplineCaseChanged)
     })
 
     //read Category
@@ -115,8 +116,8 @@
       disciplinecaseStore.trigger('read_discipline_case')
     }
 
-    self.csvExport = () => {
-      disciplinecaseStore.trigger('csv_export_discipline_case')
+    self.downloadCSV = () => {
+      disciplinecaseStore.trigger('csv_export_discipline_case',self.discipline_case)
     }
 
      self.add = () => {
@@ -239,6 +240,14 @@
       self.loading = false
       self.update()
       console.log(self.categories)
+    }
+
+    disciplinecaseStore.on('csv_export_discipline_case_changed',csvDisciplineCaseChanged)
+    function csvDisciplineCaseChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

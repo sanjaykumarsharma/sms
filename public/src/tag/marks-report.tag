@@ -15,20 +15,24 @@
 		      <span>Top Five</span>
 		    </a>
 	  	</p>
-	  	<p class="control">
+	  	<p class="control" show={role=='ADMIN'}>
 		    <a class="button {is-active: selected_marks_report == 'first-assessment-report-card'}" href="#/marks-report/first-assessment-report-card">
 		      <span>First Assessment Report Card</span>
 		    </a>
 	  	</p>
-	  	<p class="control">
+	  	<p class="control"  show={role=='ADMIN'}>
 		    <a class="button {is-active: selected_marks_report == 'final-assessment-report-card'}" href="#/marks-report/final-assessment-report-card">
 		      <span>Final Assessment Report Card</span>
 		    </a>
 	  	</p>
-</div>
+	</div>
 <div id="marks-report-view"></div>
  <script>
     var self = this
+ 	 self.on("mount", function(){
+    	self.role = getCookie('role')
+    	self.update();
+    })
     console.log('opts.selected_marks_report')
     console.log(opts.selected_marks_report)
     if(!opts.selected_marks_report){

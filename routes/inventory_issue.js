@@ -1,6 +1,109 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
 
+
+router.post('/csv_export_returnable_item', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Date'] = result[i].issued_date;
+        obj['Category'] = result[i].category_name;
+        obj['Item Name'] = result[i].item_name;
+        obj['Issue To'] = result[i].staff_name;
+        obj['Issued Quantity'] = result[i].issued_quantity;
+        obj['Availble Quantity'] = result[i].available_qty;
+        obj['Purpose'] = result[i].purpose;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Date','Category','Item Name','Issue To','Issued Quantity','Availble Quantity','Purpose'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/returnableGoods.csv'; 
+      data.url = '/csv/returnableGoods.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+
+    });
+});
+
+router.post('/csv_export_inventory_issue', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Date'] = result[i].issue_date;
+        obj['Category'] = result[i].category_name;
+        obj['Item Name'] = result[i].item_name;
+        obj['Issue To'] = result[i].staff_name;
+        obj['Quantity'] = result[i].i_quantity;
+        obj['Purpose'] = result[i].purpose;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Date','Category','Item Name','Issue To','Quantity','Purpose'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/issueGoods.csv'; 
+      data.url = '/csv/issueGoods.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+
+    });
+});
 
 //read AVialble Quantity
 
@@ -145,7 +248,7 @@ router.get('/:id/:type', function(req, res, next) {
           condition = `and a.issue_category_id = ${category_id}`;
          }
         var user_condition = "";
-        if(req.cookies.user != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
+        if(req.cookies.user != 'admin') user_condition =`and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select issue_id,  c.category_id, a.issue_sub_category_id as sub_category_id, return_type,
                 a.issue_item_id as item_id, date_format(issue_date,'%d/%m/%Y') as issue_date, date_format(issue_date,'%Y-%m-%d') as iss_date,
@@ -200,7 +303,7 @@ router.get('/read_returnable/:id/:type', function(req, res, next) {
         var data = {}
         var user='';
         var session_id=req.cookies.session_id
-        //var category_id=req.params.id
+        var category_id=req.params.id
         var issue_type=req.params.type
         var start_date=''
         var end_date=''
@@ -227,12 +330,12 @@ router.get('/read_returnable/:id/:type', function(req, res, next) {
        
          var user=req.cookies.user
         var condition = "";
-        var category_id=-1;
+      //  var category_id=-1;
         if(category_id !=-1){
           condition = `and a.issue_category_id = ${category_id}`;
          }
         var user_condition = "";
-        if(req.cookies.user != 'ADMIN') user_condition =`and a.created_by = '${user}' `;
+        if(req.cookies.user != 'admin') user_condition =`and a.created_by = '${user}' `;
        // and received_date between :dtf and :dto
         var qry = `select issue_id, date_format(issue_date,'%d/%m/%Y') as issued_date, issue_date as r_date,
                 item_name,category_name, concat(first_name,' ',middle_name,' ',last_name ) as staff_name,

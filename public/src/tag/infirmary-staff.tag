@@ -22,24 +22,28 @@
           <button class="button is-danger has-text-weight-bold"
           onclick={readStaffInfirmary} >Go
           </button>
-
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+            <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                 <span class="icon">
                    <i class="fas fa-print"></i>
                </span>
            </button>
 
-           <button class="button is-info is-rounded  is-pulled-right" onclick={readStaffInfirmary} style="margin-left:5px;margin-right:5px">
+           <button class="button is-info is-rounded  is-pulled-right is-small ml5" onclick={readStaffInfirmary} style="margin-left:5px;margin-right:5px">
             <span class="icon">
               <span class="fas fa-sync-alt"></span>
             </span>
           </button>
-         <button class="button is-warning is-rounded is-pulled-right" onclick={add_staff_infirmary}>
+         <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={add_staff_infirmary}>
           <span class="icon">
             <span class="fas fa-plus"></span>
           </span>
          </button>
-
+           <input class="input is-pulled-right" ref="searchInfirmaryStaff" onkeyup={filteredInfirmaryStaff} type="text" style="width:200px;margin-right:5px;" placeholder="Search">    
         </div>
       </div>
     </div>
@@ -59,7 +63,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={st, i in staffInfirmarys}>
+        <tr each={st, i in filteredInfirmaryStaffs}>
           <td>{i+1}</td>
           <td>{st.name}</td>
           <td>{st.employee_id}</td>
@@ -177,7 +181,14 @@
        staffinfirmaryStore.off('edit_staff_infirmary_changed',EditStaffInfirmaryChanged)
      //  staffinfirmaryStore.off('read_new_event_changed',NewEventChanged)
        staffinfirmaryStore.off('delete_staff_infirmary_changed',DeleteStaffInfirmaryChanged)
+       staffinfirmaryStore.off('csv_export_infirmary_staff_changed',csvStaffInfirmaryChanged)
      })
+
+      self.filteredInfirmaryStaff = ()=>{
+        self.filteredInfirmaryStaffs = self.staffInfirmarys.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryStaff.value.toLowerCase())>=0
+        })
+      } 
 
      //read courses
      self.readStaffInfirmary = () => {
@@ -286,6 +297,10 @@
        console.log(ev.staff_infirmary_id)
        self.edit_id=ev.staff_infirmary_id
      }
+
+    self.downloadCSV = () =>{
+      staffinfirmaryStore.trigger('csv_export_infirmary_staff', self.staffInfirmarys)
+    }
     
      staffinfirmaryStore.on('add_staff_infirmary_changed',AddStaffInfirmaryChanged)
      function AddStaffInfirmaryChanged(staffInfirmarys){
@@ -300,6 +315,7 @@
        self.refs.treatment.value=''
        self.loading = false
        self.staffInfirmarys = staffInfirmarys
+       self.filteredInfirmaryStaffs = staffInfirmarys
        self.update()
        self.readStaffInfirmary()
        console.log(self.staffInfirmarys)
@@ -318,6 +334,7 @@
        self.refs.treatment.value=''
        self.loading = false
        self.staffInfirmarys = staffInfirmarys
+       self.filteredInfirmaryStaffs = staffInfirmarys
        self.update()
        self.readStaffInfirmary()
       // console.log(self.empsectionsloye_roles)
@@ -336,6 +353,7 @@
        self.refs.treatment.value=''
        self.loading = false
        self.staffInfirmarys = staffInfirmarys
+       self.filteredInfirmaryStaffs = staffInfirmarys
        self.update()
        self.readStaffInfirmary()
        console.log(self.staffInfirmarys)
@@ -354,6 +372,7 @@
        self.refs.treatment.value=''
        self.loading = false
        self.staffInfirmarys = staffInfirmarys
+       self.filteredInfirmaryStaffs = staffInfirmarys
        self.update()
        console.log(self.staffInfirmarys)
      }
@@ -378,6 +397,14 @@
        self.employees = employees
        self.update()
        console.log(self.employees)
+     }
+
+    staffinfirmaryStore.on('csv_export_infirmary_staff_changed',csvStaffInfirmaryChanged)
+    function csvStaffInfirmaryChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
      }
 
 </script>

@@ -65,7 +65,15 @@
             <span class="icon">
               <i class="fas fa-print"></i>
             </span>
-        </button>
+          </button>
+        </div>
+        <div class="column is-narrow">
+          <button class="button is-success has-text-weight-bold  ml5" style="margin-bottom:12px;"
+          onclick={downloadCSV}>
+            <span class="icon">
+              <i class="far fa-file-excel"></i>
+            </span>
+          </button>
         </div>
 
         
@@ -144,6 +152,7 @@
 
       studentWithdrawnStudentStore.off('read_students_changed',ReadSectionsChanged)
       studentWithdrawnStudentStore.off('cancle_withdraw_students_changed',CancleWithdrawStudentChanged)
+      studentWithdrawnStudentStore.off('csv_export_withdraw_student_changed',csvWithdrawStudentChanged)
     })
 
     self.readClass = () => {
@@ -198,7 +207,9 @@
       }
       
     }
-
+    self.downloadCSV = () =>{
+      studentWithdrawnStudentStore.trigger('csv_export_withdraw_student', self.students)
+    }
 
     self.cancleWithdraw = (c,e) =>{
       self.student_id = c.student_id
@@ -253,7 +264,15 @@
       self.closecancelWithdrawModal()
       self.refreshStudents()
       
-    } 
+    }
+
+    studentWithdrawnStudentStore.on('csv_export_withdraw_student_changed',csvWithdrawStudentChanged)
+    function csvWithdrawStudentChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
 
 </script>

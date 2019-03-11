@@ -15,8 +15,8 @@ router.post('/', function(req, res, next) {
   //var password = 'tin357';
   var type = input.type;
   //var mobile_nos = '8820260073';
-  var emails = 'bodhisattwabarua@gmail.com';
-  //var emails = input.email;
+  //var emails = 'bodhisattwabarua@gmail.com';
+  var emails = input.email;
   var subject = input.subject;
   var message = input.message;
   //var url = ' http://103.16.101.52:8080/bulksms/bulksms?username='+username+'&password='+password+'&type=0&dlr=1&destination='+mobile_nos+'&source=MITTIN&message='+message;
@@ -24,14 +24,15 @@ router.post('/', function(req, res, next) {
   var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'bodhisattwabarua@gmail.com',
-    pass: '8820260073$@'
+    user: 'sms@mckv.edu.in',
+    pass: 'pass243word'
     }
   });
 
   var mailOptions = {
-    from: 'saanjaakumar@gmail.com',
-    to: 'bodhisattwabarua@gmail.com,saanjaaykumaar@gmail.com',
+    from: 'sms@mckv.edu.in',
+    //to: 'bodhisattwabarua@gmail.com,saanjaaykumaar@gmail.com,',
+    to: emails,
     subject: subject,
     text: message
   };

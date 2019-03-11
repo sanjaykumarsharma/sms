@@ -31,17 +31,23 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
-             <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+             <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                     <span class="icon">
                        <i class="fas fa-print"></i>
                    </span>
           </button>
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readInfirmaryCase} style="margin-left:5px;margin-right:5px">
+          <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readInfirmaryCase} style="margin-left:5px;margin-right:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
-
+          </button>
+          <input class="input is-pulled-right" ref="searchInfirmaryCase" onkeyup={filteredInfirmaryCase} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >     
 				</div>
 			</div>
 		</div>
@@ -55,7 +61,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in infirmaryCases}>
+				<tr each={ev, i in filteredInfirmaryCases}>
 					<td>{ i+1 }</td>
 					<td>{ ev.category_name}</td>
 					<td>{ ev.case_name}</td>
@@ -88,7 +94,14 @@
       infirmarycaseStore.off('read_infirmary_category_changed',InfirmaryCategoryChanged)
       infirmarycaseStore.off('edit_infirmary_case_changed',EditInfirmaryCaseChanged)
       infirmarycaseStore.off('delete_infirmary_case_changed',DeleteInfirmaryCaseChanged)
+      infirmarycaseStore.off('csv_export_infirmary_case_changed',csvInfirmaryCaseChanged)
     })
+
+      self.filteredInfirmaryCase = ()=>{
+        self.filteredInfirmaryCases = self.infirmaryCases.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryCase.value.toLowerCase())>=0
+        })
+      } 
 
     //read courses
     self.readInfirmaryCategory = () => {
@@ -99,6 +112,10 @@
     self.readInfirmaryCase = () => {
       self.loading=true
        infirmarycaseStore.trigger('read_infirmary_case')
+    }
+
+    self.downloadCSV = () =>{
+      infirmarycaseStore.trigger('csv_export_infirmary_case', self.infirmaryCases)
     }
 
      self.add = () => {
@@ -169,6 +186,7 @@
       self.refs.category_id.value = ''
       self.loading = false
       self.infirmaryCases = infirmaryCases
+      self.filteredInfirmaryCases = infirmaryCases
       self.update()
       self.readInfirmaryCase()
       console.log(self.infirmaryCases)
@@ -182,6 +200,7 @@
       self.refs.category_id.value = ''
       self.loading = false
       self.infiramryCases = infiramryCases
+      self.filteredInfirmaryCases = infiramryCases
       self.update()
       self.readInfirmaryCase()
       //console.log(self.empinfiramryCasesloye_roles)
@@ -195,6 +214,7 @@
       self.refs.category_id.value = ''
       self.loading = false
       self.infiramryCases = infiramryCases
+      self.filteredInfirmaryCases = infiramryCases
       self.update()
       self.readInfirmaryCase()
       console.log(self.infiramryCases)
@@ -207,6 +227,7 @@
       self.refs.infirmary_case.value = ''
       self.loading = false
       self.infirmaryCases = infirmaryCases
+      self.filteredInfirmaryCases = infirmaryCases
       self.update()
       console.log(self.infirmaryCases)
     }
@@ -218,6 +239,13 @@
       self.update()
       console.log(self.infirmaryCategories)
     }
+    infirmarycaseStore.on('csv_export_infirmary_case_changed',csvInfirmaryCaseChanged)
+    function csvInfirmaryCaseChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
 </script>
 </infirmary-case>

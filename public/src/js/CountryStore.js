@@ -27,6 +27,26 @@ function CountryStore() {
       })
   })
 
+   self.on('csv_export_country', function() {
+    console.log('i am in csv_export_country api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/country/csv_export_country',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_country_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('delete_country', function(id) {
     $.ajax({
       url:'/country/delete/'+id,

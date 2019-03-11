@@ -390,6 +390,8 @@
       mentordetailStore.off('read_for_edit_case_changed',ReadCaseDetailsForEditChanged)
       mentordetailStore.off('edit_case_detail_changed',EditCaseDetailsChanged)
       mentordetailStore.off('delete_case_details_changed',DeleteCaseDetailsChanged)
+      mentordetailStore.off('csv_export_mentor_changed',csvMentorDetailsChanged)
+      mentordetailStore.off('read_mentor_case_csv_changed',csvMentorCaseDetailsChanged)
     })
 
     self.readCategories = () =>{
@@ -412,7 +414,7 @@
     }
 
     self.downloadCSV = () =>{
-      mentordetailStore.trigger('csv_export_mentor', self.refs.category_id.value)
+      mentordetailStore.trigger('csv_export_mentor', self.mentors)
     }
 
     self.add_new_mentor = () =>{
@@ -563,7 +565,7 @@
     }
 
     self.downloadCaseCSV = () => {
-    	mentordetailStore.trigger('read_mentor_case_csv', self.case_id,self.enroll_number)
+    	mentordetailStore.trigger('read_mentor_case_csv', self.mentor_case_details)
     }
     self.close_case_detail_view = ()=>{
     	self.mentor_view = 'show_mentor'
@@ -617,7 +619,7 @@
       self.mentor_view='show_mentor'
       self.clearForm()
       self.getMentorData()
-      self.filteredMentorDetail = mentors
+      self.filteredMentorDetail =self. mentors
       self.update()
     }
 
@@ -626,7 +628,7 @@
       console.log(case_details) 
       self.case_details = case_details
       self.refress_case_detail();
-      self.filteredMentorDetail = mentors
+      self.filteredMentorDetail = self.mentors
       self.update()
     }
 
@@ -635,7 +637,7 @@
       console.log(mentors)
       self.loading = false;
       self.mentors = mentors
-      self.filteredMentorDetail = mentors
+      self.filteredMentorDetail = self.mentors
       self.categoryName = $("#CategoryName option:selected").text();
       if(self.mentors.length==0){
       	toastr.info("No Data Found")
@@ -672,7 +674,7 @@
       self.mentor_view='show_mentor'
       self.clearForm()
       self.getMentorData()
-      self.filteredMentorDetail = mentors
+      self.filteredMentorDetail = self.mentors
       self.update()
     }
 
@@ -725,6 +727,22 @@
       console.log(delete_mentor_details) 
       self.getMentorData()
       
+      self.update()
+     }
+
+    mentordetailStore.on('csv_export_mentor_changed',csvMentorDetailsChanged)
+    function csvMentorDetailsChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
+
+    mentordetailStore.on('read_mentor_case_csv_changed',csvMentorCaseDetailsChanged)
+    function csvMentorCaseDetailsChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
      }
 </script>

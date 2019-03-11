@@ -38,7 +38,8 @@
 			<div class="column is-narrow">
 				<div class="control">
 					<div class="select">
-						<select ref="monthList" id="monthList">
+						<select ref="monthList" id="monthList" onchange={readYear}>
+							<option>Choose Year</option>
 							<option value="1">January</option>
 							<option value="2">February</option>
 							<option value="3">March</option>
@@ -67,34 +68,38 @@
 			</div>
 		</div>
 	</div>
-		<table class="table is-fullwidth is-striped is-hoverable is-narrow">
+	<div style=" overflow-x: scroll;" class="table-border-hide">
+		<table class="table is-fullwidth is-striped is-hoverable">
 			<thead>
 				<tr>
-					<th>#</th>
-					<th>Teacher</th>
-					<th>Standard</th>
-					<th>Section</th>
-					<th>Present</th>
-					<th>Absent</th>
-					<th>Time</th>
-					
-			    </th>
+					<th>Roll No</th>
+	  				<th>Enroll No</th>
+	  				<th style="min-width: 210px;">Student Name</th>
+	      			<th each={c, i in headers}>{c}</th>
+	      			<th>Ab</th>
+	      			<th>Attn</th>
+	      			<th>mnth%</th>
+	      			<th style="min-width: 90px;">Toatl Attn</th>
+	      			<th style="min-width: 50px;">Toatl %</th>
 					
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in dailyAttendanceData}>
-					<td>{i+1}</td>
-					<td>{st.teacher_name}</td>
-					<td>{st.standard} </td>
-					<td>{st.section} </td>
-					<td>{st.pr} </td>
-					<td>{st.ab} </td>
-					<td>{st.time} </td>
-					
+				<tr each={c, i in student_list}>
+					<td>{c.roll_number}</td>
+			    	<td>{c.enroll_number}</td>
+	      			<td>{c.student_name}</td>
+	      			<td each={a, j in c.orderedAttendance} class="{a} {c.bold}" >{a}</td>
+	      			<td>{c.total_ab_month}</td>
+	      			<td>{c.attn}</td>
+	      			<td>{c.mnth}</td>
+	      			<td>{c.total_attn}</td>
+	      			<td>{c.total_percentage}</td>
 				</tr>
 			</tbody>
 		</table>
+	</div>
+
 	</section>
 	
 <!-- End Other Information -->
@@ -110,15 +115,20 @@
   		})
   		self.readSection()
 	    self.readStandard()
+	    self.readYear()
 	    self.update();
     })
 
     self.on("unmount", function(){
        applyPlanStore.off('read_standard_changed',StandardChanged)
        applyPlanStore.off('read_section_changed',SectionChanged)	
-
+       attendanceStore.off('read_year_changed',ReadYearChanged)
        attendanceStore.off('read_monthly_attendance_data_changed',ReadMonthlyAttendanceDataChanged)
     })
+
+    self.readYear = () => {
+       attendanceStore.trigger('read_year',self.refs.monthList.value)
+    }
 
     //read standard 
    self.readStandard = () => {
@@ -164,15 +174,24 @@
 	  obj.standard_id = self.refs.standard_id.value
 	  obj.section_id = self.refs.section_id.value
       obj.month_id = self.refs.monthList.value
+      obj.year = self.year
      // self.loading = true
       attendanceStore.trigger('read_monthly_attendance_data', obj)
     }
 
+    attendanceStore.on('read_year_changed',ReadYearChanged)
+    function ReadYearChanged(year){
+      self.year = year
+      self.update()
+    }
+
     attendanceStore.on('read_monthly_attendance_data_changed',ReadMonthlyAttendanceDataChanged)
-    function ReadMonthlyAttendanceDataChanged(monthlyAttendanceData){
+    function ReadMonthlyAttendanceDataChanged(headers,student_list){
       //console.log(monthlyAttendanceData) 
       self.loading = false
-      self.monthlyAttendanceData = monthlyAttendanceData
+      
+      self.headers = headers
+      self.student_list = student_list
       self.update()
     }
 

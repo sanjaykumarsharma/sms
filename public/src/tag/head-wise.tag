@@ -21,14 +21,19 @@
 				<button class="button is-danger has-text-weight-bold"
 				onclick={getHeadWise} > GO
 				</button>
-
-				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-		               <span class="icon">
-		                 <i class="fas fa-print"></i>
-		             </span>
-		         </button>
-				
 			</div>
+      <div class="level-right" >
+          <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+                <span class="icon">
+                  <i class="far fa-file-excel"></i>
+                </span>
+              </button>
+          <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+                  <span class="icon">
+                     <i class="fas fa-print"></i>
+                 </span>
+             </button>
+        </div>
 		</div>
 	</div>
 
@@ -57,7 +62,20 @@
 
     self.on("unmount", function(){
       feesReportStore.off('read_head_category_wise_changed',ReadHeadCategoryWiseChanged)
+      feesReportStore.off('csv_export_headwise_fees_changed',headwiseFeesChanged)
     })
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_headwise_fees',self.headCategoryWiseData)
+    }
+
+    feesReportStore.on('csv_export_headwise_fees_changed',headwiseFeesChanged)
+    function headwiseFeesChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
     self.getHeadWise = () => {
     	var startDate = document.getElementById("start_date").value

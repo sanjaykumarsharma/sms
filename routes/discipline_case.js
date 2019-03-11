@@ -3,13 +3,50 @@ var router = express.Router();
 const Json2csvParser = require('json2csv').Parser;
 const fs = require('fs');
 var http = require('http');
-var download = require('download-file')
+var async = require("async");
 
-router.get('/csv_export_discipline_case', function(req, res, next) {
-
+router.post('/csv_export_discipline_case', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
   req.getConnection(function(err,connection){
 
-     var data = {}
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Category Name'] = result[i].category_name;
+        obj['Case Name'] = result[i].case_name;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Category Name','Case Name'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/DisciplineCase.csv'; 
+      data.url = '/csv/DisciplineCase.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });//end of async loop   
+
+     /*var data = {}
      var qry=`SELECT case_id, a.category_id, case_name as 'Case Name', category_name as 'Category Name' 
               FROM discipline_case_master a
               JOIN discipline_category_master b ON a.category_id = b.category_id 
@@ -47,7 +84,7 @@ router.get('/csv_export_discipline_case', function(req, res, next) {
             //console.log(csv);
         }
      
-     });
+     });*/
        
   });
 

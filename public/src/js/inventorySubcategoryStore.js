@@ -4,6 +4,28 @@ function InventorySubCategoryStore() {
 
   self.inventorySubcategories = []
   
+  self.on('csv_export_inventory_subcategory', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/inventory_subcategory/csv_export_inventory_subcategory',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_inventory_subcategory_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('read_inventory_subcategory', function() {
     console.log('i am in subcategory api call from ajax')
     let req = {}

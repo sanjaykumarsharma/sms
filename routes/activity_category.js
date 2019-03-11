@@ -3,7 +3,7 @@ var router = express.Router();
 const Json2csvParser = require('json2csv').Parser;
 const fs = require('fs');
 var http = require('http');
-var download = require('download-file')
+var async = require("async");
 
 router.get('/csv_export_activity_category', function(req, res, next) {
 
@@ -13,32 +13,41 @@ router.get('/csv_export_activity_category', function(req, res, next) {
     var qry = `select category_name as 'Category Name'
                from activity_category_master`;
 
-      connection.query(qry,function(err,result)     {    
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+      connection.query(qry,function(err,result)     {
+            
         if(err){
-          console.log("Error reading Category : %s ",err );
+          console.log("Error reading ActivityCategory : %s ",err );
           data.status = 'e';
-        }else{
-          data.status = 's';
-          data.categories = result;
 
+        }else{
           const fields = ['Category Name'];
           const json2csvParser = new Json2csvParser({ fields });
           const csv = json2csvParser.parse(result);
-
           var path='./public/csv/ActivityCategory.csv'; 
+          data.url = '/csv/ActivityCategory.csv';
+
           fs.writeFile(path, csv, function(err,data) {
-            if (err) {throw err;}
-            else{ 
-              // res.download(path); // This is what you need
-              res.send(data)
-              var url='http://localhost:4000/csv/ActivityCategory.csv';
-              var open = require("open","");
-              open(url);  
+            if (err) {
+              throw err;
+            }else{ 
+              callback() 
             }
-          });    
+          });
         }
-     });      
-    });
+      });  
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });//end of async loop  
+
+  });// get connection
 });
 
 

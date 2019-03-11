@@ -4,17 +4,20 @@ function MentorCategoryStore() {
 
   self.mentor_categories = []
 
-  self.on('csv_export_mentor_category', function() {
+  self.on('csv_export_mentor_category', function(obj) {
     let req = {}
+    req.data=obj
     $.ajax({
       url:'/mentor_category/csv_export_mentor_category',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_export_mentor_category_changed', data.url)
           }else if(data.status == 'e'){}
         },
         error: function(data){

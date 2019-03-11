@@ -4,18 +4,20 @@ function MentorCaseStore() {
 
   self.mentor_case = []
 
-  self.on('csv_export_mentor_case', function() {
-    console.log('i am in csv_export_department api call from ajax')
+  self.on('csv_export_mentor_case', function(obj) {
     let req = {}
+    req.data=obj
     $.ajax({
       url:'/mentor_case/csv_export_mentor_case',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_export_mentor_case_changed', data.url)
           }else if(data.status == 'e'){}
         },
         error: function(data){

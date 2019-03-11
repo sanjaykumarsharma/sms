@@ -26,14 +26,20 @@
         <button class="button is-danger has-text-weight-bold" style="margin-left:-20px"
         onclick={getInventorySummaryReport} >GO
         </button>
-          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
+          <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
             <span class="icon"><i class="fas fa-print"></i></span>
           </button>
-         <button class="button is-warning is-rounded is-pulled-right" onclick={getInventorySummaryReport} style="margin-left:5px;margin-right:5px">
+         <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={getInventorySummaryReport} style="margin-left:5px;margin-right:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
+         <input class="input is-pulled-right" ref="searchInventorySummaryReport" onkeyup={filteredInventorySummaryReport} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
       </div>
 			</div>
 		</div>
@@ -51,7 +57,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventorySummaryReports}>
+				<tr each={ev, i in filteredInventorySummaryReports}>
 					<td>{ i+1 }</td>
           <td>{ ev.item_name}</td>
           <td>{ ev.opening_balance}</td>
@@ -80,6 +86,11 @@
         inventoryReportStore.off('read_inventory_summary_report_changed',ReadInventorySummaryReportChanged)
   })
 
+     self.filteredInventorySummaryReport = ()=>{
+        self.filteredInventorySummaryReports = self.inventorySummaryReports.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventorySummaryReport.value.toLowerCase())>=0
+        })
+      } 
 
   self.getInventorySummaryReport = () => {
        self.start_date=self.refs.start_date.value,
@@ -109,6 +120,7 @@
       self.title='Create'
       self.loading = false
       self.inventorySummaryReports = inventorySummaryReports
+      self.filteredInventorySummaryReports = inventorySummaryReports
       self.update()
       console.log(self.inventorySummaryReports)
     }

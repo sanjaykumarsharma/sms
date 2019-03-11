@@ -41,7 +41,7 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text">
+             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text" style="width:120px">
           </div>
         </div>
           <div class="column is-narrow">
@@ -49,7 +49,7 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text">
+              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text" style="width:120px">
           </div>
         </div>
 			  <div class="column">
@@ -57,11 +57,18 @@
         onclick={getIssuedGoodsReport} >GO
         </button>
 
-         <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+
+         <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
+           <input class="input is-pulled-right" ref="searchInventoryPersonWiseIssuedGoodsReport" onkeyup={filteredInventoryPersonWiseIssuedGoodsReport} type="text" style="width:160px;margin-right:5px;" placeholder="Search" >
        
       </div>
 			</div>
@@ -78,7 +85,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in inventoryPersonWiseIssuedGoodsReports}>
+				<tr each={ev, i in filteredInventoryPersonWiseIssuedGoodsReports}>
 					<td>{ i+1 }</td>
 					<td>{ ev.issue_date}</td>
           <td>{ ev.item_name}</td>
@@ -101,12 +108,22 @@
        self.getIssueTo()
       self.update()
     })
-  self.on("unmount", function(){
-       inventoryReportStore.off('read_inventory_issue_to_changed', ReadInventoryIssueToChanged)
-        inventoryReportStore.off('read_inventory_person_wise_issued_goods_report_changed',ReadInventoryPersonWiseIssuedGoodsReportChanged)
-  })
+    self.on("unmount", function(){
+      inventoryReportStore.off('read_inventory_issue_to_changed', ReadInventoryIssueToChanged)
+      inventoryReportStore.off('read_inventory_person_wise_issued_goods_report_changed',ReadInventoryPersonWiseIssuedGoodsReportChanged)
+      inventoryReportStore.off('csv_export_inventory_person_wise_issued_goods_report_changed',csvPersonWiseIssuedGoodsReportChanged)
+    })
 
 
+      self.filteredInventoryPersonWiseIssuedGoodsReport = ()=>{
+        self.filteredInventoryPersonWiseIssuedGoodsReports = self.inventoryPersonWiseIssuedGoodsReports.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInventoryPersonWiseIssuedGoodsReport.value.toLowerCase())>=0
+        })
+      }
+
+    self.downloadCSV = () => {
+      inventoryReportStore.trigger('csv_export_inventory_person_wise_issued_goods_report',self.inventoryPersonWiseIssuedGoodsReports)
+    }
     self.getIssuedGoodsReport = () => {
       self.loading=true
       self.issue_type=self.refs.issue_type.value,
@@ -152,8 +169,17 @@
       self.title='Create'
       self.loading = false
       self.inventoryPersonWiseIssuedGoodsReports = inventoryPersonWiseIssuedGoodsReports
+      self.filteredInventoryPersonWiseIssuedGoodsReports = inventoryPersonWiseIssuedGoodsReports
       self.update()
       console.log(self.inventoryPersonWiseIssuedGoodsReports)
+    }
+
+    inventoryReportStore.on('csv_export_inventory_person_wise_issued_goods_report_changed',csvPersonWiseIssuedGoodsReportChanged)
+    function csvPersonWiseIssuedGoodsReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
      
 </script>

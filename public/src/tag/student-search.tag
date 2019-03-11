@@ -22,17 +22,24 @@
 				<button class="button is-info has-text-weight-bold"
 				onclick={showSearchBox}><b>>></b>
 				</button>
+				
+				<button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+		              <span class="icon">
+		                  <i class="far fa-file-excel"></i>
+		              </span>
+		           </button>
 
-				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print" style="margin-left:5px">
+				<button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print" style="margin-left:5px">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
                 </button>
 				
-				<button class="button is-warning has-text-weight-bold is-pulled-right"
+				<button class="button is-warning has-text-weight-bold is-pulled-right is-small ml5"
 				onclick={showStudentField}>Setting
 				</button>
-
+				 
+				 <input class="input is-pulled-right" ref="searchStudent" onkeyup={filteredSearchStudent} type="text" style="width:200px;margin-right:5px;" placeholder="Search">  	
 			   </div>
 			</div>
 		</div>
@@ -70,10 +77,11 @@
 				<button class="button is-danger has-text-weight-bold"
 				onclick={searchByField}>Search
 				</button>
+
 			   </div>
 			</div>
 		</div>
-		<div style="height:450px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;">
+		<div style="overflow-x: scroll;border:solid #000 1px;">
 		    <table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 			<thead>
 				<tr>
@@ -180,7 +188,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in searchStudents}>
+				<tr each={st, i in filteredSearchStudents}>
 					<td>{i+1}</td>
 					<td show={title_view =='show_title'}>{st.title}</td>
 					<td show={first_name_view =='show_first_name'}>{st.first_name}</td>
@@ -457,6 +465,12 @@
      // studentSearchStore.off('read_by_roll_change',ReadByRollChange)
       studentSearchStore.off('read_by_field_change',ReadByFieldChanged)
     })
+
+    self.filteredSearchStudent = ()=>{
+        self.filteredSearchStudents = self.searchStudents.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchStudent.value.toLowerCase())>=0
+        })
+      } 
 
     self.closeCheckBoxModal=()=>{
     	 $("#columnSetting").removeClass("is-active");
@@ -1179,6 +1193,7 @@
       self.title='Create'
       self.loading = false
       self.searchStudents = searchStudents
+      self.filteredSearchStudents = searchStudents
       self.update()
       //console.log(self.employeeTypes)
     }

@@ -26,6 +26,25 @@ function ClassHolidayStore() {
         }
       })
   })
+  self.on('csv_export_class_holiday', function() {
+    console.log('i am in csv_export_class_holiday api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/class_holiday/csv_export_class_holiday',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_class_holiday_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
 
   self.on('read_class_holiday', function() {
     console.log('i am in read_class_holiday api call from ajax')

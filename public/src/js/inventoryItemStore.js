@@ -4,6 +4,28 @@ function InventoryItemStore() {
 
   self.inventoryItems=[];
 
+  self.on('csv_export_inventory_item', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/inventory_item/csv_export_inventory_item',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_inventory_item_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   //read Inventory Item
 
   self.on('read_inventory_item', function() {

@@ -31,16 +31,22 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={add} >{title}
 					</button>
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+            <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readSection} style="margin-left:5px;margin-right:5px">
+          <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readSection} style="margin-left:5px;margin-right:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
+            <input class="input is-pulled-right" ref="searchSection" onkeyup={filteredSection} type="text" style="width:200px;margin-right:5px" placeholder="Search">
 				</div>
 			</div>
 		</div>
@@ -54,7 +60,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in sections}>
+				<tr each={ev, i in filteredSections}>
 					<td>{ i+1 }</td>
 					<td>{ ev.standard}</td>
 					<td>{ ev.section}</td>
@@ -87,8 +93,19 @@
       sectionStore.off('read_standard_changed',StandardChanged)
       sectionStore.off('edit_section_changed',EditSectionChanged)
       sectionStore.off('delete_section_changed',DeleteSectionChanged)
+      sectionStore.off('csv_export_section_changed',csv_export_sectionChanged)
     })
 
+    self.downloadCSV = () =>{
+          sectionStore.trigger('csv_export_section')
+        //  console.log(obj)
+    }
+
+    self.filteredSection = ()=>{
+      self.filteredSections = self.sections.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchSection.value.toLowerCase())>=0
+      })
+    } 
     //read courses
     self.readStandard = () => {
        sectionStore.trigger('read_standard')
@@ -205,6 +222,7 @@
       self.refs.addSectionInput.value = ''
       self.loading = false
       self.sections = sections
+      self.filteredSections = sections
       self.update()
       console.log(self.sections)
     }
@@ -215,6 +233,13 @@
       self.standards = standards
       self.update()
       console.log(self.standards)
+    }
+    sectionStore.on('csv_export_section_changed',csv_export_sectionChanged)
+    function csv_export_sectionChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

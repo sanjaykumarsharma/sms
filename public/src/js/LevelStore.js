@@ -27,6 +27,26 @@ function LevelStore() {
       })
   })
 
+  self.on('csv_export_Level', function() {
+    console.log('i am in csv_export_Level api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/level/csv_export_Level',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_Level_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('delete_level', function(id) {
     $.ajax({
       url:'/level/delete/'+id,

@@ -100,6 +100,7 @@
       activityeventStore.off('read_categories_changed',CategoriesChanged)
       activityeventStore.off('edit_event_changed',EditEventsChanged)
       activityeventStore.off('delete_event_changed',DeleteEventsChanged)
+      activityeventStore.off('csv_export_activity_event_changed',csvActivityEventChanged)
     })
 
     //read courses
@@ -117,7 +118,8 @@
       activityeventStore.trigger('read_events')
     }
 
-    self.csvExport = () => {
+    self.downloadCSV = () => {
+      self.loading = true
       activityeventStore.trigger('csv_export_activity_event')
     }
 
@@ -236,6 +238,14 @@
     function CategoriesChanged(categories){
       console.log(categories) 
       self.categories = categories
+      self.loading = false
+      self.update()
+    }
+
+    activityeventStore.on('csv_export_activity_event_changed',csvActivityEventChanged)
+    function csvActivityEventChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
       self.loading = false
       self.update()
     }

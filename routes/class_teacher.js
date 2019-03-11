@@ -1,5 +1,10 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
+
 
 /* Read Course listing. */
 router.get('/read_teaching_staff', function(req, res, next) {
@@ -71,6 +76,59 @@ router.get('/read_class_teacher', function(req, res, next) {
        
   });
 
+});
+
+router.get('/csv_export_class_teacher', function(req, res, next) {
+  req.getConnection(function(err,connection){
+     var session_id=req.cookies.session_id
+     var data = {}
+     var qry = `select  room as 'Room',
+                standard as 'Standard', section as 'Section', 
+                concat(b.first_name,' ',b.middle_name,' ',b.last_name) as 'Class Teacher',
+                concat(c.first_name,' ',c.middle_name,' ',c.last_name) as 'Assistant Teacher'
+                from class_teacher_section  a
+                LEFT JOIN employee b on a.class_teacher = b.emp_id 
+                LEFT JOIN employee c on a.assistant_teacher = c.emp_id
+                
+                LEFT JOIN section_master d on a.section_id = d.section_id
+                LEFT JOIN standard_master e on d.standard_id = e.standard_id
+                where a.session_id=${session_id}
+                order by d.section_id`;
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+      connection.query(qry,function(err,result)     {
+            
+        if(err){
+          console.log("Error reading Class Teacher : %s ",err );
+          data.status = 'e';
+
+        }else{
+          const fields = ['Standard','Section','Room','Class Teacher','Assistant Teacher']; 
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(result);
+          var path='./public/csv/Class Teacher.csv'; 
+          data.url = '/csv/Class Teacher.csv';
+
+          fs.writeFile(path, csv, function(err,data) {
+            if (err) {
+              throw err;
+            }else{ 
+              callback() 
+            }
+          });
+        }
+      });  
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });//end of async loop  
+
+  });// get connection
 });
 
 /* Add Course listing. */

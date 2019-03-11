@@ -4,6 +4,117 @@ function InventoryReportStore() {
 
   self.receivedFromArray = []
 
+
+  self.on('csv_export_issued_goods_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/inventory_report/csv_export_issued_goods_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_issued_goods_report_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
+  self.on('csv_export_inventory_person_wise_issued_goods_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/inventory_report/csv_export_inventory_person_wise_issued_goods_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_inventory_person_wise_issued_goods_report_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
+  self.on('csv_export_inventory_sale_goods_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/inventory_report/csv_export_inventory_sale_goods_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_inventory_sale_goods_report_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
+  self.on('csv_export_inventory_return_goods_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/inventory_report/csv_export_inventory_return_goods_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_inventory_return_goods_report_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
+  self.on('csv_export_inventory_received_goods_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/inventory_report/csv_export_inventory_received_goods_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_inventory_received_goods_report_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('read_inventory_received_from', function() {
     console.log('i am in recievd Form api call from ajax')
     let req = {}
@@ -27,14 +138,18 @@ function InventoryReportStore() {
       })
   })
 //read received goods
-  self.on('read_inventory_received_goods_report', function(received_from,start_date,end_date) {
+  self.on('read_inventory_received_goods_report', function(obj) {
     console.log('i am in recievd Form api call from ajax')
     let req = {}
+    req.start_date=obj.start_date
+    req.end_date=obj.end_date
+    req.received_from=obj.received_from
     $.ajax({
-      
-      url:'/inventory_report/read_inventory_received_goods_report/'+received_from+'/'+start_date+'/'+end_date,
+      url:'/inventory_report/read_inventory_received_goods_report',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)

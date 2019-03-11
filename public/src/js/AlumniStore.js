@@ -24,6 +24,54 @@ function AlumniStore() {
       })
   })
 
+  self.on('read_approved_alumni_csv', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/alumni/read_approved_alumni_csv',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_approved_alumni_csv_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
+  self.on('read_alumni_csv', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/alumni/read_alumni_csv',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_alumni_csv_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
   self.on('read_approved_alumni', function() {
     console.log('i am in read_courses api call from ajax')
     let req = {}

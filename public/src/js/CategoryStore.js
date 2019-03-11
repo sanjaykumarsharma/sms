@@ -26,7 +26,26 @@ function CategoryStore() {
         }
       })
   })
-
+  
+  self.on('csv_export_category', function() {
+    console.log('i am in csv_export_category api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/category/csv_export_category',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_category_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
   self.on('delete_category', function(category_id) {
     $.ajax({
       url:'/category/delete/'+category_id,

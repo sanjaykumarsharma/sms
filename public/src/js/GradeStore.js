@@ -45,6 +45,30 @@ function GradeStore() {
       })
   })
 
+  self.on('read_grade_csv', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/grade/read_grade_csv/',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_grade_csv_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
   self.on('read_grades', function(scheme_id,exam_type_id) {
     $.ajax({
       url:'/grade/exam-type/'+scheme_id+'/'+exam_type_id,

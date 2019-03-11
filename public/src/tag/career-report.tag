@@ -488,6 +488,7 @@
     self.on("unmount", function(){
       careerStore.off('read_career_feedback_report_changed',ReadCareerFeedbackReportChanged)
       careerStore.off('read_applicant_profile_changed',ReadApplicantProfileChanged)
+      careerStore.off('csv_export_career_feedback_report_changed',csvCareerFeedbackReportChanged)
     })
 
     self.getData = () => {
@@ -559,6 +560,13 @@
       console.log(self.st.address_line1)
       self.loading = false;
       self.update();
+    }
+    careerStore.on('csv_export_career_feedback_report_changed',csvCareerFeedbackReportChanged)
+    function csvCareerFeedbackReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 </script>
 </career-report>

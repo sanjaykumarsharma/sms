@@ -27,6 +27,26 @@ function StandardStore() {
       })
   })
 
+  self.on('csv_export_standard', function() {
+    console.log('i am in csv_export_standard api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/standard/csv_export_standard',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_standard_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('delete_standard', function(id) {
     $.ajax({
       url:'/standard/delete/'+id,

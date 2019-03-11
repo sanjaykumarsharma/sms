@@ -40,7 +40,7 @@ function CareerStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-
+            self.trigger('csv_export_career_interview_changed', data.url)
           }else if(data.status == 'e'){
           }
         },
@@ -182,7 +182,7 @@ function CareerStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_export_interviewed_candidate_changed', data.url)
           }else if(data.status == 'e'){
            
           }
@@ -256,7 +256,7 @@ function CareerStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_export_career_feedback_report_changed', data.url)
           }else if(data.status == 'e'){
             
           }
@@ -292,7 +292,7 @@ function CareerStore() {
       })
   })
 
-  /*self.on('csv_export_applicant_detail', function(obj) {
+  self.on('csv_export_applicant_detail', function(obj) {
     console.log('i am in csv_export_applicant_detail api call from ajax')
     let req = {}
     req.start_date=obj.start_date
@@ -305,7 +305,7 @@ function CareerStore() {
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_export_applicant_detail_changed', data.url)
           }else if(data.status == 'e'){
             
           }
@@ -314,7 +314,7 @@ function CareerStore() {
           //showToast("", data)
         }
       })
-  })*/
+  })
 
   self.on('create_interview_call', function(obj,career_id) {
    

@@ -32,19 +32,20 @@ function MentorReportStore() {
       })
   })
 
-  self.on('csv_case_wise_report', function(obj) {
+  self.on('csv_mentor_case_wise_report', function(obj) {
     let req = {}
-    req.start_date=obj.start_date
-    req.end_date=obj.end_date
+    req.data=obj
     $.ajax({
-      url:'/mentor_report/csv_case_wise_report/'+obj.start_date+'/'+obj.end_date,
+      url:'/mentor_report/csv_mentor_case_wise_report',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-
+            self.trigger('csv_mentor_case_wise_report_changed', data.url)
           }else if(data.status == 'e'){
 
           }
@@ -83,20 +84,20 @@ function MentorReportStore() {
       })
   })
 
-  self.on('csv_date_wise_case_report', function(obj,category_id) {
+  self.on('csv_date_wise_case_report', function(obj) {
     let req = {}
-    req.start_date=obj.start_date
-    req.end_date=obj.end_date
-    req.category_id=category_id
+    req.data=obj
     $.ajax({
-      url:'/mentor_report/csv_date_wise_case_report/'+obj.start_date+'/'+obj.end_date+'/'+category_id,
+      url:'/mentor_report/csv_date_wise_case_report',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-
+            self.trigger('csv_date_wise_case_report_changed', data.url)
           }else if(data.status == 'e'){
 
           }
@@ -206,20 +207,20 @@ function MentorReportStore() {
       })
   })
 
-  self.on('csv_class_wise_report', function(standard_id,section_id,session_id) {
+  self.on('csv_class_wise_report', function(obj) {
     let req = {}
-    req.standard_id=standard_id
-    req.section_id=section_id
-    req.session_id=session_id
+    req.data=obj
     $.ajax({
-      url:'/mentor_report/csv_class_wise_report/'+standard_id+'/'+section_id+'/'+session_id,
+      url:'/mentor_report/csv_class_wise_report',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-
+            self.trigger('csv_class_wise_report_changed', data.url)
           }else if(data.status == 'e'){
 
           }

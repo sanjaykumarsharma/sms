@@ -27,6 +27,26 @@ function SectionStore() {
       })
   })
 
+  self.on('csv_export_section', function() {
+    console.log('i am in csv_export_section api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/section/csv_export_section',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_section_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('read_section', function() {
     console.log('i am in read_section api call from ajax')
     let req = {}

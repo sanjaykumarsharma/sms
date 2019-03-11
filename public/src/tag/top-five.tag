@@ -1,21 +1,27 @@
 <top-five>
+  <print-header></print-header>
 <loading-bar if={loading}></loading-bar>  
 	<section class=" is-fluid">
 
-    <div class="level">
+    <div class="level no-print">
       <div class="level-left">
         <h2 class="title" style="color: #ff3860;">Top Five</h2>
       </div>
       <div class="level-right">
-        <button class="button is-warning is-rounded ml5" onclick={readReport}>
+        <button class="button is-warning ml5" onclick={readReport}>
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
+        <button class="button is-primary ml5" onclick="window.print()">
+        <span class="icon">
+          <i class="fas fa-print"></i>
         </span>
         </button>
       </div>
     </div>
 
-    <div class="box">
+    <div class="box no-print">
       <div class="columns">
 
         <div class="column is-narrow"><label class="label">Standard</label></div>  

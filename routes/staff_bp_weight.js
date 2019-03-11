@@ -1,5 +1,110 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
+
+/* Read Staff Wise Report for CSV */
+router.post('/csv_export_staff_wise_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Checkip Date'] = result[i].checkup_date;
+        obj['Weight (kg)'] = result[i].weight;
+        obj['Height (cm)'] = result[i].height;
+        obj['B.P'] = result[i].blood_pressure;
+        obj['B.M.I'] = result[i].bmi;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Checkip Date','Weight (kg)','B.P','B.M.I'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StaffWiseWeightBP.xls.csv'; 
+      data.url = '/csv/StaffWiseWeightBP.xls.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
+
+router.post('/csv_export_staff_bp_weight', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Name'] = result[i].name;
+        obj['Emp ID'] = result[i].employee_id;
+        obj['Checkup Date'] = result[i].checkup_date;
+        obj['Time In'] = result[i].time_in;
+        obj['Time Out'] = result[i].time_out;
+        obj['B.P'] = result[i].blood_pressure;
+        obj['Height (cm)'] = result[i].height;
+        obj['Weight (kg)'] = result[i].weight;
+        obj['B.M.I'] = result[i].bmi;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Name','Emp ID','Checkup Date','Time In','Time Out','Weight (kg)','B.P','B.M.I'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StaffBPWeight.xls.csv'; 
+      data.url = '/csv/StaffBPWeight.xls.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
 
 /* Read Course listing. */
 
@@ -344,9 +449,8 @@ router.get('/read_staff_bp_weight', function(req, res, next) {
 
 /* Add Event listing. */
 router.post('/add', function(req, res, next) {
-
   var input = JSON.parse(JSON.stringify(req.body));
-
+    console.log("hello BP");
    var now = new Date();
    var jsonDate = now.toJSON();
    var formatted = new Date(jsonDate);
@@ -363,11 +467,13 @@ router.post('/add', function(req, res, next) {
             time_in : input.time_in,
             time_out : input.time_out,
             bmi : input.bmi,
+            session_id : req.cookies.session_id,
             creation_date    : formatted,
             created_by    : req.cookies.user,
             modification_date    : formatted,
             modified_by    : req.cookies.user,
         };
+        console.log(values);
         
         var query = connection.query("INSERT INTO staff_health set ? ",values, function(err, rows)
         {

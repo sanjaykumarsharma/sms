@@ -80,11 +80,19 @@ router.get('/readPlanByStandard/:id', function(req, res, next) {
 router.get('/readStandards', function(req, res, next) {
 
   req.getConnection(function(err,connection){
+    var user=req.cookies.user 
+    var data = {}
+
+    var condition="";
+      if(req.cookies.role== "TEACHER" || req.cookies.role=="Class Teacher"){
+          condition =`where standard_id=(select standard_id from section_master 
+                      where teacher_id=(select emp_id from employee where employee_id='${user}')) `;
+      }
        
      var data = {}
-     var qry = `select standard, standard_id 
+     var qry = `select standard_id,standard 
                 from standard_master 
-                order by standard_order`; 
+                ${condition}`; 
 
      connection.query(qry,function(err,result)     {
             
@@ -111,11 +119,22 @@ router.get('/readStandards', function(req, res, next) {
 router.get('/readSections', function(req, res, next) {
 
   req.getConnection(function(err,connection){
-       
-     var data = {}
-     var qry = `select standard_id, section_id, section 
-                from section_master 
-                order by section_id`; 
+    var user=req.cookies.user 
+    var session_id=req.cookies.session_id 
+    var data = {}
+    var condition="";
+      if(req.cookies.role== "TEACHER" || req.cookies.role=="Class Teacher"){
+           condition =` where d.section_id=(select section_id from section_master 
+           where teacher_id=(select emp_id from employee where employee_id='${user}')) `;
+      }
+    var qry =`select  a.section_id, section, b.standard_id, b.standard, d.room as room_no,
+              concat(first_name,' ',middle_name,' ',last_name) as class_teacher
+              from section_master  a
+              LEFT JOIN class_teacher_section d on (a.section_id=d.section_id and d.session_id = ${session_id})
+              LEFT JOIN standard_master b on a.standard_id = b.standard_id
+              LEFT JOIN employee c on d.class_teacher = c.emp_id
+              ${condition} 
+              order by b.standard_id, section_id`; 
 
      connection.query(qry,function(err,result)     {
             

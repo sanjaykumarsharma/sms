@@ -38,18 +38,24 @@
 					onclick={add} >{title}
 					</button>
 
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+          
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
-        </button>
+          </button>
 
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readClub} style="margin-right:5px">
+          <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readClub} style="margin-right:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button>
-
+           <input class="input is-pulled-right" ref="searchClub" onkeyup={filteredClub} type="text" style="width:180px;margin-right:5px" placeholder="Search" >
 				</div>
 			</div>
 		</div>
@@ -64,7 +70,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={ev, i in clubs}>
+				<tr each={ev, i in filteredClubs}>
 					<td>{ i+1 }</td>
 					<td>{ ev.club_name}</td>
           <td>{ ev.captain}</td>
@@ -97,7 +103,11 @@
       clubStore.off('edit_club_changed',EditClubChanged)
       clubStore.off('delete_club_changed',DeleteClubChanged)
     })
-
+      self.filteredClub = ()=>{
+      self.filteredClubs = self.clubs.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchClub.value.toLowerCase())>=0
+      })
+    } 
     //read employe_roles
     self.readClub = () => {
       self.loading=true
@@ -215,6 +225,7 @@
       self.refs.addDetailInput.value =""
       self.loading = false
       self.clubs = clubs
+      self.filteredClubs = clubs
       self.update()
       console.log(self.clubs)
     }

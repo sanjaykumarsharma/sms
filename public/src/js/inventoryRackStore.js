@@ -4,6 +4,28 @@ function InventoryRackStore() {
 
   self.inventoryRacks = []
 
+  self.on('csv_export_inventory_rack', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/inventory_rack/csv_export_inventory_rack',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_inventory_rack_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('read_inventory_rack', function() {
     console.log('i am in Rack Master api call from ajax')
     let req = {}

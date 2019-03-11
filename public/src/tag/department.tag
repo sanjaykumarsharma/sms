@@ -31,16 +31,22 @@
           <button class="button is-danger has-text-weight-bold"
           onclick={add} >{title}
           </button>
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+             <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
             </button>
-           <button class="button is-warning is-rounded is-pulled-right" onclick={readDepartment} style="margin-right:2px">
+           <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readDepartment} style="margin-right:5px">
             <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>
           </button> 
+              <input class="input is-pulled-right" ref="searchDepartment" onkeyup={filteredDepartment} type="text" style="width:200px;margin-right:5px" placeholder="Search">
         </div>
       </div>
     </div>
@@ -54,7 +60,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={d, i in departments}>
+        <tr each={d, i in filteredDepartments}>
           <td>{i + 1}</td>
           <td>{d.department_name}</td>
           <td>{d.hod}</td>
@@ -85,7 +91,21 @@
      self.on("unmount", function(){
       departmentStore.off('departments_changed', DepartmentChanged)
       departmentStore.off('read_hod_changed', ReadHodChanged)
+      departmentStore.off('csv_export_Department_changed',csv_export_DepartmentChanged)
     })
+
+    self.downloadCSV = () =>{
+          departmentStore.trigger('csv_export_Department')
+        //  console.log(obj)
+    }
+
+
+
+    self.filteredDepartment = ()=>{
+      self.filteredDepartments = self.departments.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchDepartment.value.toLowerCase())>=0
+      })
+    } 
 
     //read Department
     self.readDepartment = () => {
@@ -165,8 +185,17 @@
     function DepartmentChanged(departments){
       self.title='Create'
       self.departments = departments
+      self.filteredDepartments = departments
       self.refs.department_name.value = ''
       self.refs.emp_name.value = ''
+      self.loading = false
+      self.update()
+    }
+
+    departmentStore.on('csv_export_Department_changed',csv_export_DepartmentChanged)
+    function csv_export_DepartmentChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
       self.loading = false
       self.update()
     }

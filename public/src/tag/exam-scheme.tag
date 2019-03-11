@@ -7,15 +7,20 @@
         <h2 class="title" style="color: #ff3860;">Exam Scheme</h2>
       </div>
       <div class="level-right">
-        <button class="button is-warning is-rounded" onclick={openExamSchemeModal}>
+        <button class="button is-warning" onclick={openExamSchemeModal}>
         <span class="icon">
           <span class="fas fa-plus"></span>
         </span>
         </button>
 
-        <button class="button is-warning is-rounded" onclick={readExamSchemes} style="margin-left:2px">
+        <button class="button is-link ml5" onclick={readExamSchemes} style="">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
+        </span>
+        </button>
+        <button class="button is-success ml5" onclick={downloadCSV} style="">
+        <span class="icon">
+          <i class="far fa-file-excel"></i>
         </span>
         </button>
       </div>
@@ -335,6 +340,7 @@
     })
     self.on("unmount", function(){
         examSchemeStore.off('exam_scheme_changed', ExamSchemesChanged)
+        examSchemeStore.off('read_exam_csv_changed',csvExamSchemesChanged)
         examSchemeStore.off('add_exam_scheme_changed',AddExamSchemesChanged)
         examSchemeStore.off('delete_exam_scheme_changed',DeleteExamSchemesChanged)
         examSchemeStore.off('read_exams_changed',ExamSChanged)
@@ -346,8 +352,11 @@
 
     //read courses
     self.readExamSchemes = () => {
-       self.loading = true;
-       examSchemeStore.trigger('read_exam_schemes')
+      self.loading = true;
+      examSchemeStore.trigger('read_exam_schemes')
+    }
+    self.downloadCSV = () =>{
+      examSchemeStore.trigger('read_exam_csv', self.examSchemes)
     }
 
     self.openExamSchemeModal = () => {
@@ -584,6 +593,14 @@
     }
 
     // ****************************************** all change metods *************************************
+
+    examSchemeStore.on('read_exam_csv_changed',csvExamSchemesChanged)
+    function csvExamSchemesChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
     examSchemeStore.on('exam_scheme_changed',ExamSchemesChanged)
     function ExamSchemesChanged(examSchemes){

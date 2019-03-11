@@ -27,6 +27,26 @@ function DesignationStore() {
       })
   })
 
+  self.on('csv_export_Designation', function() {
+    console.log('i am in csv_export_Designation api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/designations/csv_export_Designation',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_Designation_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('delete_designation', function(id) {
     $.ajax({
       url:'/designations/delete/'+id,

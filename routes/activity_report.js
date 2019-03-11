@@ -3,7 +3,7 @@ var router = express.Router();
 const Json2csvParser = require('json2csv').Parser;
 const fs = require('fs');
 var http = require('http');
-var download = require('download-file')
+var async = require("async");
 
 /* Read Session */
 
@@ -124,62 +124,64 @@ router.get('/csv_activity_event_wise_graph_report/:activity_type/:session_id', f
 
   req.getConnection(function(err,connection){
        
-     var data = {}
-     var condition = "";
-     var created_by = req.cookies.user
-     var condition = "";
-     var activityCondition="";
-     /*if(category_id !=-1){
-        category_condition = ` and a.category_id =  ${category_id} ` ;
-      }*/
-      if(activity_type=='Both') activityCondition = "";
+    var data = {}
+    var condition = "";
+    var created_by = req.cookies.user
+    var condition = "";
+    var activityCondition="";
+    
+    if(activity_type=='Both') activityCondition = "";
 
-      if(activity_type=='Intra-School') activityCondition = `and activity_type = '${activity_type}'`;
+    if(activity_type=='Intra-School') activityCondition = `and activity_type = '${activity_type}'`;
 
-      if(activity_type=='Inter-School') activityCondition = `and activity_type= '${activity_type}'`;
+    if(activity_type=='Inter-School') activityCondition = `and activity_type= '${activity_type}'`;
 
-      if(req.cookies.role != 'ADMIN') condition = `and a.created_by = '${created_by}'`;
-     var qry = `select a.category_id, category_name as 'Category', count(*) as total
+    if(req.cookies.role != 'ADMIN') condition = `and a.created_by = '${created_by}'`;
+     var qry = `select a.category_id, category_name as 'Category Name', count(*) as Total
                 from school_activity a
                 join activity_category_master b on a.category_id = b.category_id
                 where session_id=${session_id}
                 ${activityCondition} ${condition}
                 group by category_name `;
-
-     connection.query(qry, function(err, result)     
-     {     
-        if(err){
-           console.log("Error reading event : %s ",err );
-           data.status = 'e';
-        }else{
-          // res.render('customers',{page_title:"Customers - Node.js",data:rows});
-            data.status = 's';
-            data.activity_event_wise_graph_report = result;
-           //connection.end()
-           var grand_total=0;
-            for (var i = result.length - 1; i >= 0; i--) {
-              grand_total = grand_total+result[i].total;
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+    connection.query(qry, function(err, result)     
+    {     
+      if(err){
+        console.log("Error reading event : %s ",err );
+        data.status = 'e';
+      }else{
+        data.status = 's';
+        var grand_total=0;
+          for (var i = result.length - 1; i >= 0; i--) {
+            grand_total = grand_total+result[i].total;
+          }
+          //data.grand_total = grand_total;
+            
+          const fields = ['Category Name','Total'];
+          const json2csvParser = new Json2csvParser({ fields });
+          const csv = json2csvParser.parse(result);
+          var path='./public/csv/EventGraphReport.csv'; 
+          data.url = '/csv/EventGraphReport.csv';
+          fs.writeFile(path, csv, function(err,data) {
+            if (err) {
+              throw err;
+            }else{ 
+              callback() 
             }
-              data.grand_total = grand_total;
-             
-              const fields = ['Category','total'];
-              const json2csvParser = new Json2csvParser({ fields });
-              const csv = json2csvParser.parse(result);
-                var path='./public/csv/EventGraphReport.csv'; 
-                fs.writeFile(path, csv, function(err,data) {
-                  if (err) {throw err;}
-                  else{ 
-                    res.send(data)
-                    var url='http://localhost:4000/csv/EventGraphReport.csv';
-                    var open = require("open","");
-                    open(url);  
-                  }
-                });
+          });
         } 
      });
-       
+     },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });//end of async loop     
   });
-
 });
 
 /* Read Activity Date Wise */
@@ -384,15 +386,15 @@ router.get('/csv_activity_date_wise_report/:start_date/:end_date/:activity_type'
   console.log("HERE")
 
   req.getConnection(function(err,connection){
-    var data = []
-     var created_by = req.cookies.user
-     var session_id = req.cookies.session_id
-     console.log(session_id)
-     var condition = "";
-     var activityCondition="";
-     var obj = {};
-
-
+    var data = {}
+    var created_by = req.cookies.user
+    var session_id = req.cookies.session_id
+    console.log(session_id)
+    var condition = "";
+    var activityCondition="";
+    var obj = {};
+      var slips = [1];
+      async.forEachOf(slips, function (value, key, callback) {
       connection.beginTransaction(function(err) {
         if (err) { throw err; }
         if(activity_type=='Both') activityCondition = "";
@@ -415,7 +417,6 @@ router.get('/csv_activity_date_wise_report/:start_date/:end_date/:activity_type'
                    where activity_date between '${start_date}' and '${end_date}'
                    ${activityCondition} ${condition}
                    order by a.activity_id,b.student_id `;
-        console.log(qry);
 
         var qry_one = `select activity_id,GROUP_CONCAT(teacher_name1) as teacher_name from 
                       (select a.activity_id,a.session_id,
@@ -428,7 +429,7 @@ router.get('/csv_activity_date_wise_report/:start_date/:end_date/:activity_type'
 
         var teacher_name = '';
         var participant_name = '';
-
+        
         connection.query(qry_one, function (error, result) {
           if (error) {
             return connection.rollback(function() {
@@ -436,7 +437,7 @@ router.get('/csv_activity_date_wise_report/:start_date/:end_date/:activity_type'
             });
           }
           teacher_name = result;           
-          console.log(teacher_name);
+          /*console.log(teacher_name);*/
 
         connection.query(qry, function(error, result)
           {
@@ -462,8 +463,8 @@ router.get('/csv_activity_date_wise_report/:start_date/:end_date/:activity_type'
 
             var activity_id = 0;
             var error = 1;
-
-            console.log(result)
+            var std = Array();
+            /*console.log(result)*/
 
             for(var i = 0; i < result.length; i++){
               var error = 0;
@@ -509,7 +510,7 @@ router.get('/csv_activity_date_wise_report/:start_date/:end_date/:activity_type'
 
                   obj['Teacher Incharge'] = prev_teacher_name;
 
-                  data.push(obj);
+                  std.push(obj);
 
                   var obj = {};              
 
@@ -552,20 +553,19 @@ router.get('/csv_activity_date_wise_report/:start_date/:end_date/:activity_type'
                 obj['Participant'] = prev_participant_name;
 
                 obj['Teacher Incharge'] = prev_teacher_name;
-                data.push(obj);
+                std.push(obj);
               }
-              const fields = ['Date','Type','Event','Organised By','Venue','Participant','Teacher Name','Result'];
+                console.log(std)
+                const fields = ['Date','Type','Event','Organised By','Venue','Participant','Teacher Incharge','Result'];
                 const json2csvParser = new Json2csvParser({ fields });
-                const csv = json2csvParser.parse(data);
-
-                var path='./public/csv/Month Wise Activity.csv'; 
+                const csv = json2csvParser.parse(std);
+                var path='./public/csv/Month Wise Activity.csv'
+                data.url = '/csv/Month Wise Activity.csv';
                 fs.writeFile(path, csv, function(err,data) {
-                  if (err) {throw err;}
-                  else{ 
-                    res.send(data)
-                    var url='http://localhost:4000/csv/Month Wise Activity.csv';
-                    var open = require("open","");
-                    open(url);  
+                  if (err) {
+                    throw err;
+                  }else{ 
+                    callback() 
                   }
                 });
 
@@ -573,10 +573,20 @@ router.get('/csv_activity_date_wise_report/:start_date/:end_date/:activity_type'
           
             });
 
-          });//end of ection con
+            });//end of ection con
+          });
+        },function (err) {
+            if (err) {
+              console.error(err.message);
+              data.status = 'e';
+              res.send(data)
+            }
+            data.status = 's';
+            res.send(data)
+          });//end of async loop  
         });
       });
-    });
+    
 
 
 /* Read Activity Session Wise */
@@ -788,14 +798,15 @@ router.get('/csv_activity_session_wise_report/:activity_type/:session_id', funct
   console.log("HERE")
 
   req.getConnection(function(err,connection){
-    var data = []
+    var data = {}
     var created_by = req.cookies.user
     var session_id = req.cookies.session_id
     console.log(session_id)
     var condition = "";
     var activityCondition="";
     var obj = {};
-
+      var slips = [1];
+      async.forEachOf(slips, function (value, key, callback) {
       connection.beginTransaction(function(err) {
         if (err) { throw err; }
         if(activity_type=='Both') activityCondition = "";
@@ -858,7 +869,7 @@ router.get('/csv_activity_session_wise_report/:activity_type/:session_id', funct
               var prev_participant_id=0;
               var activity_id = 0;
               var error = 1;
-              console.log(result)
+              var std = Array();
 
             for(var i = 0; i < result.length; i++){
               var error = 0;
@@ -869,21 +880,13 @@ router.get('/csv_activity_session_wise_report/:activity_type/:session_id', funct
                     var obj = {};
 
                     obj['Date'] = result[i].activity_date;
-
                     obj['Event'] =  result[i].event_name;
-
                     obj['Type'] =  result[i].activity_type;
-
                     obj['Organised By'] = result[i].organised_by;
-
                     obj['Venue'] = result[i].venue;
-
                     obj['Result'] = result[i].result;
-
                     prev_activity_id= result[i].activity_id;
-
                     prev_participant_name = result[i].participant_name;
-
                     console.log("Comming")
                     var temp_prev_teacher_name = teacher_name.filter(c=>{
                       return result[i].activity_id==c.activity_id
@@ -900,25 +903,15 @@ router.get('/csv_activity_session_wise_report/:activity_type/:session_id', funct
                 }else{
 
                   obj['Participant'] = result[i].participant_name;
-
                   obj['Teacher Incharge'] = prev_teacher_name;
-
-                  data.push(obj);
-
+                  std.push(obj);
                   var obj = {};              
-
                   obj['Date'] = result[i].activity_date;
-
                   obj['Event'] =  result[i].event_name;
-
                   obj['Type'] =  result[i].activity_type;
-
                   obj['Organised By'] = result[i].organised_by;
-
                   obj['Venue'] = result[i].venue;             
-
                   obj['Result'] = result[i].result;
-
                   prev_activity_id=result[i].activity_id;
 
                   prev_participant_name = result[i].participant_name;
@@ -944,20 +937,18 @@ router.get('/csv_activity_session_wise_report/:activity_type/:session_id', funct
 
                   obj['Participant'] = prev_participant_name;
                   obj['Teacher Incharge'] = prev_teacher_name;
-                  data.push(obj);
+                  std.push(obj);
                 }
                 const fields = ['Date','Type','Event','Organised By','Venue','Participant','Teacher Incharge','Result'];
                 const json2csvParser = new Json2csvParser({ fields });
-                const csv = json2csvParser.parse(data);
-
-                var path='./public/csv/SessionWiseActivity.csv'; 
+                const csv = json2csvParser.parse(std);
+                var path='./public/csv/SessionWiseActivity.csv'
+                data.url = '/csv/SessionWiseActivity.csv';
                 fs.writeFile(path, csv, function(err,data) {
-                  if (err) {throw err;}
-                  else{ 
-                    res.send(data)
-                    var url='http://localhost:4000/csv/SessionWiseActivity.csv';
-                    var open = require("open","");
-                    open(url);  
+                  if (err) {
+                    throw err;
+                  }else{ 
+                    callback() 
                   }
                 });
 
@@ -967,6 +958,15 @@ router.get('/csv_activity_session_wise_report/:activity_type/:session_id', funct
 
         });//end of ection con
       });
+    },function (err) {
+            if (err) {
+              console.error(err.message);
+              data.status = 'e';
+              res.send(data)
+            }
+            data.status = 's';
+            res.send(data)
+          });//end of async loop 
     });
 });
 
@@ -1196,7 +1196,7 @@ router.get('/csv_activity_event_wise_report/:activity_type/:event_id', function(
   console.log("HERE")
 
   req.getConnection(function(err,connection){
-    var data = []
+    var data = {}
      var created_by = req.cookies.user
      var session_id = req.cookies.session_id
      console.log(session_id)
@@ -1205,7 +1205,8 @@ router.get('/csv_activity_event_wise_report/:activity_type/:event_id', function(
      var participant_name = "";
      var obj = {};
 
-
+      var slips = [1];
+      async.forEachOf(slips, function (value, key, callback) {
       connection.beginTransaction(function(err) {
         if (err) { throw err; }
         if(activity_type=='Both') activityCondition = "";
@@ -1292,7 +1293,7 @@ router.get('/csv_activity_event_wise_report/:activity_type/:event_id', function(
             var activity_id = 0;
 
             var error = 1;
-            console.log(result)
+            var std = Array();
 
             for(var i = 0; i < result.length; i++){
               error = 0;
@@ -1327,7 +1328,7 @@ router.get('/csv_activity_event_wise_report/:activity_type/:event_id', function(
 
                   obj['Participant'] = result[i].participant_name;
                   obj['Teacher Incharge'] = prev_teacher_name;
-                  data.push(obj);
+                  std.push(obj);
                   var obj = {};              
                   obj['Date'] = result[i].activity_date;
                   obj['Type'] =  result[i].activity_type;
@@ -1363,20 +1364,18 @@ router.get('/csv_activity_event_wise_report/:activity_type/:event_id', function(
 
                 obj['Participant'] = prev_participant_name;
                 obj['Teacher Incharge'] = prev_teacher_name;
-                data.push(obj);
+                std.push(obj);
               }
                 const fields = ['Date','Type','Organised By','Venue','Participant','Teacher Incharge','Result'];
                 const json2csvParser = new Json2csvParser({ fields });
-                const csv = json2csvParser.parse(data);
-
-                var path='./public/csv/EventWiseActivity .csv'; 
+                const csv = json2csvParser.parse(std);
+                var path='./public/csv/EventWiseActivity.csv'
+                data.url = '/csv/EventWiseActivity.csv';
                 fs.writeFile(path, csv, function(err,data) {
-                  if (err) {throw err;}
-                  else{ 
-                    res.send(data)
-                    var url='http://localhost:4000/csv/EventWiseActivity .csv';
-                    var open = require("open","");
-                    open(url);  
+                  if (err) {
+                    throw err;
+                  }else{ 
+                    callback() 
                   }
                 });
 
@@ -1386,6 +1385,15 @@ router.get('/csv_activity_event_wise_report/:activity_type/:event_id', function(
 
         });//end of ection con
       });
+    },function (err) {
+        if (err) {
+          console.error(err.message);
+          data.status = 'e';
+          res.send(data)
+        }
+        data.status = 's';
+        res.send(data)
+      });//end of async loop 
     });
 });
 
@@ -1399,12 +1407,13 @@ router.get('/csv_student_event_report/:start_date/:end_date', function(req, res,
   var end_date = req.params.end_date;
 
   req.getConnection(function(err,connection){
-    var data = []
+    var data = {}
     var created_by = req.cookies.user
     var session_id = req.cookies.session_id
     var condition = "";
     var obj = {}; 
-
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
     if(req.cookies.role != 'ADMIN') condition = `and b.created_by = '${created_by}'`;
        
     var qry =`select a.student_id, concat(first_name,' ',middle_name,' ',last_name)as student_name,
@@ -1428,6 +1437,7 @@ router.get('/csv_student_event_report/:start_date/:end_date', function(req, res,
           var prev_student_id = "";
           var prev_event_name="";
           var error = 1;
+          var std = Array();
 
             for(var i = 0; i < result.length; i++){
               var error = 0;
@@ -1441,8 +1451,8 @@ router.get('/csv_student_event_report/:start_date/:end_date', function(req, res,
                   prev_student_id= result[i].student_id;
                   prev_event_name = result[i].event_name;
                 }else{
-                  obj['event_name'] = prev_event_name;
-                  data.push(obj);
+                  obj['Event'] = prev_event_name;
+                  std.push(obj);
                   var obj = {};              
                   obj['Participant Name'] = result[i].student_name;
                   obj['Enroll No'] =  result[i].enroll_number;
@@ -1457,26 +1467,33 @@ router.get('/csv_student_event_report/:start_date/:end_date', function(req, res,
             }
               if(error ==0){
                 obj['Event'] = prev_event_name;
-                data.push(obj);
+                std.push(obj);
               }
-               const fields = ['Participant Name','Enroll No','Standard','Event'];
+                console.log(std)
+                const fields = ['Participant Name','Enroll No','Standard','Event'];
                 const json2csvParser = new Json2csvParser({ fields });
-                const csv = json2csvParser.parse(data);
-
-                var path='./public/csv/StudentEvent.csv'; 
+                const csv = json2csvParser.parse(std);
+                var path='./public/csv/StudentEvent.csv'
+                data.url = '/csv/StudentEvent.csv';
                 fs.writeFile(path, csv, function(err,data) {
-                  if (err) {throw err;}
-                  else{ 
-                    res.send(data)
-                    var url='http://localhost:4000/csv/StudentEvent.csv';
-                    var open = require("open","");
-                    open(url);  
+                  if (err) {
+                    throw err;
+                  }else{ 
+                    callback() 
                   }
                 });
             }
-        }); 
+        });
+    },function (err) {
+        if (err) {
+          console.error(err.message);
+          data.status = 'e';
+          res.send(data)
+        }
+        data.status = 's';
+        res.send(data)
+      });//end of async loop 
     });
-
 });
 
 /* Read Student Event Report */

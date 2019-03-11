@@ -26,12 +26,20 @@
 				<input type="checkbox" id="checkTable" checked={e.done} 
 				onclick={viewTable}  style="margin-top: 12px;"> Table
 
-				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-		              <span class="icon">
-		                 <i class="fas fa-print"></i>
-		             </span>
-		         </button>
+				
 			</div>
+			<div class="level-right" >
+		            <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+		                  <span class="icon">
+		                    <i class="far fa-file-excel"></i>
+		                  </span>
+		                </button>
+		            <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+		                    <span class="icon">
+		                       <i class="fas fa-print"></i>
+		                   </span>
+		               </button>
+		        </div>
 		</div>
 	</div>
 
@@ -72,7 +80,20 @@
     self.on("unmount", function(){
       sessionStore.off('read_session_changed', ReadSessionChanged)
       feesReportStore.off('read_session_scheme_changed',ReadSessionSchemeChanged)
+      feesReportStore.off('csv_export_fees_scheme_changed',feesSchememChanged)
     })
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_fees_scheme',self.schemes)
+    }
+
+    feesReportStore.on('csv_export_fees_scheme_changed',feesSchememChanged)
+    function feesSchememChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
     
     //read events
     self.readSession = () => {

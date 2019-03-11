@@ -96,6 +96,7 @@
     self.on("unmount", function(){
       activityReportStore.off('read_activity_session_wise_report_changed',ReadActivitySessionWiseReportChanged)
       activityReportStore.off('read_session_changed',SessionChanged)
+      activityReportStore.off('csv_activity_session_wise_report_changed',csvActivitySessionWiseReportChanged)
     })
 
     self.readSession = () => {
@@ -130,6 +131,14 @@
       self.activityType = self.refs.activity_type.value, 
       self.Session = $("#SessionName option:selected").text();
       self.loading = false;
+      self.update()
+    }
+
+    activityReportStore.on('csv_activity_session_wise_report_changed',csvActivitySessionWiseReportChanged)
+    function csvActivitySessionWiseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 </script>

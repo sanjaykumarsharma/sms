@@ -27,6 +27,30 @@ function TimeTableRoomSettingsStore() {
       })
   })
 
+  self.on('csv_export_room', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/time-table-room-settings/csv_export_room',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_room_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
   self.on('delete_room', function(id) {
     $.ajax({
       url:'/time-table-room-settings/delete/'+id,

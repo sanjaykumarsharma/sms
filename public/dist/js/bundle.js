@@ -223,6 +223,9 @@ RiotControl.addStore(careerStore);
 var alumniStore = new AlumniStore();
 RiotControl.addStore(alumniStore);
 
+var analysisReportStore = new AnalysisReportStore();
+RiotControl.addStore(analysisReportStore);
+
 //tarique
 var roleStore = new RoleStore();
 RiotControl.addStore(roleStore);
@@ -385,7 +388,9 @@ let activityRoute = (path1, path2, path3) => {
     case 'student-browser':
       riot.mount("div#view", 'student-browser');
       break;
-
+    case 'staff-profile':
+      riot.mount("div#view", 'staff-profile');
+      break;
     case 'activity-detail':
       currentPage = riot.mount('div#view', 'activity-detail')[0];
       break;
@@ -440,6 +445,9 @@ let careerRoute = (path1, path2, path3) => {
     /*case 'login':
       currentPage = riot.mount('div#view', 'login')[0];
     break;*/
+    case 'staff-profile':
+      riot.mount("div#view", 'staff-profile');
+      break;
     case 'career-setting':
       currentPage = riot.mount('div#view', 'career-setting', { selected_master: path2 })[0];
       switch (path2) {
@@ -475,6 +483,9 @@ let admissionRoute = (path1, path2, path3) => {
     case 'student-browser':
       riot.mount("div#view", 'student-browser');
       break;
+    case 'staff-profile':
+      riot.mount("div#view", 'staff-profile');
+      break;
     case 'student':
       currentPage = riot.mount('div#view', 'student')[0];
       break;
@@ -495,7 +506,9 @@ let mentorRoute = (path1, path2, path3) => {
     case 'student-browser':
       riot.mount("div#view", 'student-browser');
       break;
-
+    case 'staff-profile':
+      riot.mount("div#view", 'staff-profile');
+      break;
     case 'mentor-detail':
       currentPage = riot.mount('div#view', 'mentor-detail')[0];
       break;
@@ -541,6 +554,9 @@ let disciplineRoute = (path1, path2, path3) => {
     /*case 'login':
       currentPage = riot.mount('div#view', 'login')[0];
     break;*/
+    case 'staff-profile':
+      riot.mount("div#view", 'staff-profile');
+      break;
     case 'student-browser':
       riot.mount("div#view", 'student-browser');
       break;
@@ -616,8 +632,8 @@ let classTeacherRoute = (path1, path2, path3) => {
     case 'attendance-entry':
       currentPage = riot.mount('div#view', 'attendance-entry')[0];
       break;
-    case 'daily-attendance':
-      riot.mount("div#view", 'daily-attendance')[0];
+    case 'monthly-attendance':
+      riot.mount("div#view", 'monthly-attendance')[0];
       break;
     case 'class-holiday':
       riot.mount("div#view", 'class-holiday')[0];
@@ -659,6 +675,9 @@ let teacherRoute = (path1, path2, path3) => {
     /*case 'login':
       currentPage = riot.mount('div#view', 'login')[0];
     break;*/
+    case 'staff-profile':
+      riot.mount("div#view", 'staff-profile');
+      break;
     case 'student-browser':
       riot.mount("div#view", 'student-browser');
       break;
@@ -1263,6 +1282,19 @@ let adminRoute = (path1, path2, path3) => {
           riot.mount("div#discipline-report-view", 'discipline-case-wise-report');
       }
       break;
+    case 'analysis-report':
+      currentPage = riot.mount('div#view', 'analysis-report', { selected_master: path2 })[0];
+      switch (path2) {
+        case 'assessment-report':
+          riot.mount("div#analysis-report-view", 'assessment-report');
+          break;
+        case 'yearly-section-wise-comparison':
+          riot.mount("div#analysis-report-view", 'yearly-section-wise-comparison');
+          break;
+        default:
+          riot.mount("div#analysis-report-view", 'assessment-report');
+      }
+      break;
     //tarique
     case 'staff':
       riot.mount("div#view", 'staff');
@@ -1684,6 +1716,12 @@ if (getCookie('role') == 'ADMIN') {
 } else if (getCookie('role') == 'Discipline') {
   console.log("Discipline route");
   route(disciplineRoute);
+} else if (getCookie('role') == 'Store') {
+  console.log("showInventoryNavItems route");
+  route(inventoryRoute);
+} else if (getCookie('role') == 'Infirmary') {
+  console.log("showInfirmaryNavItems route");
+  route(infirmaryRoute);
 } else {
   console.log("unable to access");
   route(loginRoute);
@@ -1759,7 +1797,9 @@ function ActivityCategoryStore() {
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_activity_category_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -1894,8 +1934,7 @@ function ActivityEventStore() {
       success: function (data) {
         console.log(data);
         if (data.status == 's') {
-
-          // self.trigger('departments_changed', data.departments)
+          self.trigger('csv_export_activity_event_changed', data.url);
         } else if (data.status == 'e') {}
       },
       error: function (data) {
@@ -2059,7 +2098,7 @@ function ActivityItemStore() {
         console.log(data);
         if (data.status == 's') {
 
-          // self.trigger('departments_changed', data.departments)
+          self.trigger('csv_export_activity_item_changed', data.url);
         } else if (data.status == 'e') {}
       },
       error: function (data) {
@@ -2222,7 +2261,9 @@ function ActivityReportStore() {
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_activity_date_wise_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -2267,7 +2308,9 @@ function ActivityReportStore() {
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_activity_session_wise_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -2310,7 +2353,9 @@ function ActivityReportStore() {
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_activity_event_wise_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -2351,7 +2396,9 @@ function ActivityReportStore() {
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_activity_event_wise_graph_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -2393,7 +2440,9 @@ function ActivityReportStore() {
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_student_event_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -2508,7 +2557,7 @@ function ActivityStore() {
         console.log(data);
         if (data.status == 's') {
           self.activities = data.activities;
-          self.trigger('read_activity_by_category_changed', data.activities);
+          self.trigger('read_activity_by_category_changed', data.activities, getCookie('session_name'));
         } else if (data.status == 'e') {
           showToast("Activities Read Error. Please try again.", data);
         }
@@ -2530,7 +2579,9 @@ function ActivityStore() {
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_activity_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -3334,6 +3385,46 @@ function AlumniStore() {
     });
   });
 
+  self.on('read_approved_alumni_csv', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/alumni/read_approved_alumni_csv',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_approved_alumni_csv_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
+
+  self.on('read_alumni_csv', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/alumni/read_alumni_csv',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_alumni_csv_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
+
   self.on('read_approved_alumni', function () {
     console.log('i am in read_courses api call from ajax');
     let req = {};
@@ -3467,6 +3558,52 @@ function AlumniStore() {
           self.trigger('read_alumni_profile_changed', data.alumni_profile_details);
         } else if (data.status == 'e') {
           showToast("Student Read Error. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+}
+function AnalysisReportStore() {
+  riot.observable(this); // Riot provides our event emitter.
+  var self = this;
+
+  self.on('read_standard', function () {
+    let req = {};
+    $.ajax({
+      url: '/student/read_standard/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.standards = data.standards;
+          self.trigger('read_standard_changed', data.standards);
+        } else if (data.status == 'e') {
+          showToast("Standard Read Error. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_exam_types', function (standard_id) {
+    $.ajax({
+      url: '/assessment_report/exam-type/' + standard_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('exam_types_changed', data.examTypes);
+        } else if (data.status == 'e') {
+          showToast("Exam Type Read Error. Please try again.", data);
         }
       },
       error: function (data) {
@@ -3721,6 +3858,26 @@ function AreaStore() {
     });
   });
 
+  self.on('csv_export_area', function () {
+    console.log('i am in csv_export_area api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/area/csv_export_area',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_area_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('delete_area', function (id) {
     $.ajax({
       url: '/area/delete/' + id,
@@ -3914,7 +4071,7 @@ function AttendanceStore() {
         console.log(data);
         if (data.status == 's') {
           self.monthlyAttendanceData = data.monthlyAttendanceData;
-          self.trigger('read_monthly_attendance_data_changed', data.monthlyAttendanceData, getCookie('session_name'));
+          self.trigger('read_monthly_attendance_data_changed', data.headers, data.student_list);
         } else if (data.status == 'e') {
           showToast("Error in reading data. Please try again.", data);
         }
@@ -3977,6 +4134,29 @@ function AttendanceStore() {
       },
       error: function (data) {
         showToast("", data.err);
+      }
+    });
+  });
+
+  self.on('read_year', function (month_id) {
+    console.log('i am in read Student Plan api call from ajax');
+    let req = {};
+    req.month_id = month_id;
+    $.ajax({
+      url: '/attendance/read_year/' + month_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_year_changed', data.year);
+        } else if (data.status == 'e') {
+          showToast("No data found Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
       }
     });
   });
@@ -4233,7 +4413,9 @@ function CareerStore() {
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_career_interview_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -4370,7 +4552,9 @@ function CareerStore() {
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_interviewed_candidate_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -4440,7 +4624,9 @@ function CareerStore() {
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_career_feedback_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -4473,29 +4659,27 @@ function CareerStore() {
     });
   });
 
-  /*self.on('csv_export_applicant_detail', function(obj) {
-    console.log('i am in csv_export_applicant_detail api call from ajax')
-    let req = {}
-    req.start_date=obj.start_date
-    req.end_date=obj.end_date
+  self.on('csv_export_applicant_detail', function (obj) {
+    console.log('i am in csv_export_applicant_detail api call from ajax');
+    let req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
     $.ajax({
-      url:'/career/csv_export_applicant_detail/'+obj.start_date+'/'+obj.end_date,
-        contentType: "application/json",
-        dataType:"json",
-        headers: {"Authorization": getCookie('token')},
-        success: function(data){
-          console.log(data)
-          if(data.status == 's'){
-            
-          }else if(data.status == 'e'){
-            
-          }
-        },
-        error: function(data){
-          //showToast("", data)
-        }
-      })
-  })*/
+      url: '/career/csv_export_applicant_detail/' + obj.start_date + '/' + obj.end_date,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_applicant_detail_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
 
   self.on('create_interview_call', function (obj, career_id) {
 
@@ -4574,6 +4758,25 @@ function CategoryStore() {
     });
   });
 
+  self.on('csv_export_category', function () {
+    console.log('i am in csv_export_category api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/category/csv_export_category',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_category_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
   self.on('delete_category', function (category_id) {
     $.ajax({
       url: '/category/delete/' + category_id,
@@ -4860,6 +5063,26 @@ function CityStore() {
     });
   });
 
+  self.on('csv_export_city', function () {
+    console.log('i am in csv_export_city api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/city/csv_export_city',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_city_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('delete_city', function (id) {
     $.ajax({
       url: '/city/delete/' + id,
@@ -4972,6 +5195,25 @@ function ClassHolidayStore() {
       },
       error: function (data) {
         showToast("", data);
+      }
+    });
+  });
+  self.on('csv_export_class_holiday', function () {
+    console.log('i am in csv_export_class_holiday api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/class_holiday/csv_export_class_holiday',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_class_holiday_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
       }
     });
   });
@@ -5121,6 +5363,26 @@ function ClassTeacherStore() {
       },
       error: function (data) {
         showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_class_teacher', function () {
+    console.log('i am in csv_export_class_teacher api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/class_teacher/csv_export_class_teacher',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_class_teacher_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
       }
     });
   });
@@ -5407,6 +5669,26 @@ function CountryStore() {
     });
   });
 
+  self.on('csv_export_country', function () {
+    console.log('i am in csv_export_country api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/country/csv_export_country',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_country_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('delete_country', function (id) {
     $.ajax({
       url: '/country/delete/' + id,
@@ -5643,6 +5925,26 @@ function DepartmentStore() {
     });
   });
 
+  self.on('csv_export_Department', function () {
+    console.log('i am in csv_export_Department api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/department/csv_export_Department',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_Department_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.employees = [];
 
   self.on('read_hod', function () {
@@ -5785,6 +6087,26 @@ function DesignationStore() {
     });
   });
 
+  self.on('csv_export_Designation', function () {
+    console.log('i am in csv_export_Designation api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/designations/csv_export_Designation',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_Designation_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('delete_designation', function (id) {
     $.ajax({
       url: '/designations/delete/' + id,
@@ -5875,19 +6197,20 @@ function DisciplineCaseStore() {
 
   self.discipline_case = [];
 
-  self.on('csv_export_discipline_case', function () {
-    console.log('i am in csv_export_department api call from ajax');
+  self.on('csv_export_discipline_case', function (obj) {
     let req = {};
+    req.data = obj;
     $.ajax({
       url: '/discipline_case/csv_export_discipline_case',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
         if (data.status == 's') {
-
-          // self.trigger('departments_changed', data.departments)
+          self.trigger('csv_export_discipline_case_changed', data.url);
         } else if (data.status == 'e') {}
       },
       error: function (data) {
@@ -6038,16 +6361,21 @@ function DisciplineCategoryStore() {
 
   self.discipline_categories = [];
 
-  self.on('csv_export_discipline_category', function () {
+  self.on('csv_export_discipline_category', function (obj) {
     let req = {};
+    req.data = obj;
     $.ajax({
       url: '/discipline_category/csv_export_discipline_category',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_discipline_category_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -6215,18 +6543,21 @@ function DisciplineDetailStore() {
     });
   });
 
-  self.on('csv_export_discipline', function (read_category_id) {
-    console.log(read_category_id);
+  self.on('csv_export_discipline', function (obj) {
     let req = {};
-    req.read_category_id = read_category_id;
+    req.data = obj;
     $.ajax({
-      url: '/discipline_detail/csv_export_discipline/' + read_category_id,
+      url: '/discipline_detail/csv_export_discipline',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_discipline_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -6383,18 +6714,20 @@ function DisciplineReportStore() {
   riot.observable(this); // Riot provides our event emitter.
   var self = this;
 
-  self.on('csv_export_read_case_wise_report', function (obj) {
+  self.on('csv_discipline_case_wise_report', function (obj) {
     let req = {};
     req.start_date = obj.start_date;
     req.end_date = obj.end_date;
     $.ajax({
-      url: '/discipline_report/csv_export_read_case_wise_report/' + obj.start_date + '/' + obj.end_date,
+      url: '/discipline_report/csv_discipline_case_wise_report/' + obj.start_date + '/' + obj.end_date,
       contentType: "application/json",
       dataType: "json",
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_discipline_case_wise_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -6427,20 +6760,22 @@ function DisciplineReportStore() {
     });
   });
 
-  self.on('csv_export_read_date_wise_case_report', function (obj, category_id) {
+  self.on('csv_export_read_date_wise_case_report', function (obj) {
     console.log('i am in read_categories api call from ajax');
     let req = {};
-    req.start_date = obj.start_date;
-    req.end_date = obj.end_date;
-    req.category_id = category_id;
+    req.data = obj;
     $.ajax({
-      url: '/discipline_report/csv_export_read_date_wise_case_report/' + obj.start_date + '/' + obj.end_date + '/' + category_id,
+      url: '/discipline_report/csv_export_read_date_wise_case_report/csv_export',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_read_date_wise_case_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -6543,19 +6878,44 @@ function DisciplineReportStore() {
     });
   });
 
-  self.on('csv_export_read_class_wise_report', function (standard_id, section_id, session_id) {
+  self.on('csv_export_read_class_wise_report', function (obj) {
     let req = {};
-    req.standard_id = standard_id;
-    req.section_id = section_id;
-    req.session_id = session_id;
+    req.data = obj;
     $.ajax({
-      url: '/discipline_report/csv_export_read_class_wise_report/' + standard_id + '/' + section_id + '/' + session_id,
+      url: '/discipline_report/csv_export_read_class_wise_report/',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_read_class_wise_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_export_read_date_wise_case_report', function (obj) {
+    console.log('i am in read_categories api call from ajax');
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/discipline_report/csv_export_read_date_wise_case_report/csv_export',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_read_date_wise_case_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -6725,6 +7085,26 @@ function EmployeeRoleStore() {
     });
   });
 
+  self.on('csv_export_Role', function () {
+    console.log('i am in csv_export_Role api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/role/csv_export_Role',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_role_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_employee_roles', function () {
     console.log('i am in read_events api call from ajax');
     let req = {};
@@ -6845,6 +7225,26 @@ function employeeTypeStore() {
   var self = this;
 
   self.employeeTypes = [];
+
+  self.on('csv_export_EmployeeType', function () {
+    console.log('i am in csv_export_department api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/employee_type/csv_export_EmployeeType',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_EmployeeType_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
 
   self.on('read_employeeTypes', function () {
     console.log('i am in read_employee Types api call from ajax');
@@ -6982,6 +7382,26 @@ function EmploymentStatusStore() {
       },
       error: function (data) {
         showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_employmentStatus', function () {
+    console.log('i am in csv_export_employmentStatus api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/employment_status/csv_export_employmentStatus',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_employment_status_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
       }
     });
   });
@@ -7241,6 +7661,25 @@ function EventTypeStore() {
       }
     });
   });
+  self.on('csv_export_event_type', function () {
+    console.log('i am in csv_export_event_type api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/event_type/csv_export_event_type',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_event_type_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
 
   self.on('delete_eventType', function (id) {
     $.ajax({
@@ -7334,6 +7773,26 @@ function ExamSchemeStore() {
   var self = this;
 
   self.examSchemes = [];
+
+  self.on('read_exam_csv', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/exam-scheme/read_exam_csv',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_exam_csv_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
 
   self.on('read_exam_schemes', function () {
     let req = {};
@@ -9226,6 +9685,406 @@ function FeesReportStore() {
         }
       })
   })*/
+
+  self.on('csv_export_month_wise', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_export_month_wise',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_month_wise_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  //============== daily fees export =========
+  self.on('csv_export_daily_fees', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_export_daily_fees',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_daily_collection_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_assigned_scheme', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_assigned_scheme',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_assigned_scheme_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  //========== fees register ===========
+
+  self.on('csv_fees_register', function (obj) {
+    console.log("---inside-----");
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_fees_register',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_register_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_bankwise_collection', function (obj) {
+
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_bankwise_collection',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_bank_collection_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_datewise_fees', function (obj) {
+
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_datewise_fees',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_datewise_fees_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_headwise_summary', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_headwise_summary',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_headwise_summary_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_headwise_fees', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_headwise_fees',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_headwise_fees_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_outstanding_fees', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_outstanding_fees',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_outstanding_fees_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_outstanding_by_class', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_outstanding_by_class',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_outstanding_byclass_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_dueby_class', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_dueby_class',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_due_byclass_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_fees_collection', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_fees_collection',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_fees_collection_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_estimated_fees', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_estimated_fees',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_estimated_fees_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_advance_fees', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_advance_fees',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_advance_fees_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_scholarship_list', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_scholarship_list',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_scholarshiplist_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+  self.on('csv_issued_letter', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_issued_letter',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_issued_letter_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_fees_scheme', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_fees_scheme',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_fees_scheme_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+  self.on('csv_scheme_unassigned', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/fees_report/csv_scheme_unassigned',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_fees_scheme_unassigned_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
 }
 function FeeWithdrawStore() {
   riot.observable(this); // Riot provides our event emitter.
@@ -9746,6 +10605,26 @@ function GradeStore() {
     });
   });
 
+  self.on('read_grade_csv', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/grade/read_grade_csv/',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_grade_csv_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
+
   self.on('read_grades', function (scheme_id, exam_type_id) {
     $.ajax({
       url: '/grade/exam-type/' + scheme_id + '/' + exam_type_id,
@@ -9925,6 +10804,26 @@ function IdCardStore() {
       error: function (data) {
         showToast("", data);
       }
+    });
+  });
+
+  self.on('csv_export_id_card', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/id_card/csv_export_id_card',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_id_card_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
     });
   });
 
@@ -10133,6 +11032,29 @@ function InfirmaryCaseStore() {
 
   self.infirmaryCases = [];
   self.infirmaryCategories = [];
+
+  self.on('csv_export_infirmary_case', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/infirmary_case/csv_export_infirmary_case',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_infirmary_case_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_infirmary_category', function () {
     console.log('i am in read_sections api call from ajax');
     let req = {};
@@ -10278,6 +11200,28 @@ function InfirmaryCategoryStore() {
 
   self.infirmaryCategories = [];
 
+  self.on('csv_export_infirmary_category', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/infirmary_category/csv_export_infirmary_category',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_infirmary_category_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_categories', function () {
     console.log('i am in read_courses api call from ajax');
     let req = {};
@@ -10416,6 +11360,28 @@ function InventoryCategoryStore() {
        }
      })
   })*/
+
+  self.on('csv_export_inventory_category', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_category/csv_export_inventory_category',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_category_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
 
   self.on('read_inventory_category', function () {
     console.log('i am in category api call from ajax');
@@ -10749,6 +11715,49 @@ function InventoryIssueStore() {
 
   self.inventoryIssues = [];
 
+  self.on('csv_export_returnable_item', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_issue/csv_export_returnable_item',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_returnable_item_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_export_inventory_issue', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_issue/csv_export_inventory_issue',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_issue_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
   //read Inventory Isseu
 
   self.on('read_inventory_issue', function (id, type) {
@@ -10837,6 +11846,7 @@ function InventoryIssueStore() {
       url: '/inventory_issue/delete/' + id,
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         if (data.status == 's') {
@@ -10993,6 +12003,28 @@ function InventoryItemStore() {
 
   self.inventoryItems = [];
 
+  self.on('csv_export_inventory_item', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_item/csv_export_inventory_item',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_item_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   //read Inventory Item
 
   self.on('read_inventory_item', function () {
@@ -11127,6 +12159,28 @@ function InventoryRackStore() {
 
   self.inventoryRacks = [];
 
+  self.on('csv_export_inventory_rack', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_rack/csv_export_inventory_rack',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_rack_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_inventory_rack', function () {
     console.log('i am in Rack Master api call from ajax');
     let req = {};
@@ -11243,6 +12297,116 @@ function InventoryReportStore() {
 
   self.receivedFromArray = [];
 
+  self.on('csv_export_issued_goods_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_report/csv_export_issued_goods_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_issued_goods_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_export_inventory_person_wise_issued_goods_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_report/csv_export_inventory_person_wise_issued_goods_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_person_wise_issued_goods_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_export_inventory_sale_goods_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_report/csv_export_inventory_sale_goods_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_sale_goods_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_export_inventory_return_goods_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_report/csv_export_inventory_return_goods_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_return_goods_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_export_inventory_received_goods_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_report/csv_export_inventory_received_goods_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_received_goods_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_inventory_received_from', function () {
     console.log('i am in recievd Form api call from ajax');
     let req = {};
@@ -11266,14 +12430,18 @@ function InventoryReportStore() {
     });
   });
   //read received goods
-  self.on('read_inventory_received_goods_report', function (received_from, start_date, end_date) {
+  self.on('read_inventory_received_goods_report', function (obj) {
     console.log('i am in recievd Form api call from ajax');
     let req = {};
+    req.start_date = obj.start_date;
+    req.end_date = obj.end_date;
+    req.received_from = obj.received_from;
     $.ajax({
-
-      url: '/inventory_report/read_inventory_received_goods_report/' + received_from + '/' + start_date + '/' + end_date,
+      url: '/inventory_report/read_inventory_received_goods_report',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
@@ -11504,6 +12672,28 @@ function InventorySaleStore() {
 
   self.inventorySales = [];
 
+  self.on('csv_export_inventory_sale', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_sale/csv_export_inventory_sale',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_sale_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   //read Inventory Isseu
 
   self.on('read_inventory_sale', function (id) {
@@ -11648,6 +12838,28 @@ function InventoryStockStore() {
   var self = this;
 
   self.inventoryStocks = [];
+
+  self.on('csv_export_inventory_stock', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_stock/csv_export_inventory_stock',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_stock_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
 
   //read Inventory Item
 
@@ -11813,6 +13025,28 @@ function InventorySubCategoryStore() {
 
   self.inventorySubcategories = [];
 
+  self.on('csv_export_inventory_subcategory', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_subcategory/csv_export_inventory_subcategory',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_subcategory_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_inventory_subcategory', function () {
     console.log('i am in subcategory api call from ajax');
     let req = {};
@@ -11939,6 +13173,28 @@ function InventoryUnitStore() {
   var self = this;
 
   self.inventoryUnits = [];
+
+  self.on('csv_export_inventory_unit', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/inventory_unit/csv_export_inventory_unit',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_inventory_unit_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
 
   self.on('read_inventory_unit', function () {
     console.log('i am in Unit Master api call from ajax');
@@ -12191,6 +13447,26 @@ function LevelStore() {
       },
       error: function (data) {
         showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_Level', function () {
+    console.log('i am in csv_export_Level api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/level/csv_export_Level',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_Level_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
       }
     });
   });
@@ -12840,6 +14116,31 @@ function MarksReportStore() {
     });
   });
 
+  self.on('consolidate_tabulation_sheet_csv', function (headers, reports) {
+    let req = {};
+    req.headers = headers;
+    req.reports = reports;
+    $.ajax({
+      url: '/marks-report/consolidate_tabulation_sheet_csv',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('consolidate_tabulation_sheet_csv_changed', data.url);
+        } else if (data.status == 'e') {
+          showToast("Marks Entries Read Error. Please try again.", data.message);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+
   self.on('read_merit_list', function (exam_type_id, section_id) {
     $.ajax({
       url: '/marks-report/merit-list/' + exam_type_id + '/' + section_id,
@@ -13080,17 +14381,21 @@ function MentorCaseStore() {
 
   self.mentor_case = [];
 
-  self.on('csv_export_mentor_case', function () {
-    console.log('i am in csv_export_department api call from ajax');
+  self.on('csv_export_mentor_case', function (obj) {
     let req = {};
+    req.data = obj;
     $.ajax({
       url: '/mentor_case/csv_export_mentor_case',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_mentor_case_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -13240,16 +14545,21 @@ function MentorCategoryStore() {
 
   self.mentor_categories = [];
 
-  self.on('csv_export_mentor_category', function () {
+  self.on('csv_export_mentor_category', function (obj) {
     let req = {};
+    req.data = obj;
     $.ajax({
       url: '/mentor_category/csv_export_mentor_category',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_mentor_category_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {
         //showToast("", data)
@@ -13417,18 +14727,21 @@ function MentorDetailStore() {
     });
   });
 
-  self.on('csv_export_mentor', function (read_category_id) {
-    console.log(read_category_id);
+  self.on('csv_export_mentor', function (obj) {
     let req = {};
-    req.read_category_id = read_category_id;
+    req.data = obj;
     $.ajax({
-      url: '/mentor_detail/csv_export_mentor/' + read_category_id,
+      url: '/mentor_detail/csv_export_mentor',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_export_mentor_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -13507,20 +14820,21 @@ function MentorDetailStore() {
     });
   });
 
-  self.on('read_mentor_case_csv', function (id, enroll_number) {
-    console.log(id);
-    console.log(enroll_number);
+  self.on('read_mentor_case_csv', function (obj) {
     let req = {};
-    req.id = id;
-    req.enroll_number = enroll_number;
+    req.data = obj;
     $.ajax({
-      url: '/mentor_detail/read_mentor_case_csv/' + id + '/' + enroll_number,
+      url: '/mentor_detail/read_mentor_case_csv',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('read_mentor_case_csv_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -13766,18 +15080,21 @@ function MentorReportStore() {
     });
   });
 
-  self.on('csv_case_wise_report', function (obj) {
+  self.on('csv_mentor_case_wise_report', function (obj) {
     let req = {};
-    req.start_date = obj.start_date;
-    req.end_date = obj.end_date;
+    req.data = obj;
     $.ajax({
-      url: '/mentor_report/csv_case_wise_report/' + obj.start_date + '/' + obj.end_date,
+      url: '/mentor_report/csv_mentor_case_wise_report',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_mentor_case_wise_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -13811,19 +15128,21 @@ function MentorReportStore() {
     });
   });
 
-  self.on('csv_date_wise_case_report', function (obj, category_id) {
+  self.on('csv_date_wise_case_report', function (obj) {
     let req = {};
-    req.start_date = obj.start_date;
-    req.end_date = obj.end_date;
-    req.category_id = category_id;
+    req.data = obj;
     $.ajax({
-      url: '/mentor_report/csv_date_wise_case_report/' + obj.start_date + '/' + obj.end_date + '/' + category_id,
+      url: '/mentor_report/csv_date_wise_case_report',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_date_wise_case_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -13926,19 +15245,21 @@ function MentorReportStore() {
     });
   });
 
-  self.on('csv_class_wise_report', function (standard_id, section_id, session_id) {
+  self.on('csv_class_wise_report', function (obj) {
     let req = {};
-    req.standard_id = standard_id;
-    req.section_id = section_id;
-    req.session_id = session_id;
+    req.data = obj;
     $.ajax({
-      url: '/mentor_report/csv_class_wise_report/' + standard_id + '/' + section_id + '/' + session_id,
+      url: '/mentor_report/csv_class_wise_report',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('csv_class_wise_report_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -13969,6 +15290,26 @@ function NewEventStore() {
       },
       error: function (data) {
         showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_new_event', function () {
+    console.log('i am in csv_export_new_event api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/new_event/csv_export_new_event',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_new_event_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
       }
     });
   });
@@ -14542,6 +15883,26 @@ function ReligionStore() {
     });
   });
 
+  self.on('csv_export_religion', function () {
+    console.log('i am in csv_export_religion api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/religion/csv_export_religion',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_religion_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('delete_religion', function (id) {
     $.ajax({
       url: '/religion/delete/' + id,
@@ -15106,6 +16467,26 @@ function SectionStore() {
     });
   });
 
+  self.on('csv_export_section', function () {
+    console.log('i am in csv_export_section api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/section/csv_export_section',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_section_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_section', function () {
     console.log('i am in read_section api call from ajax');
     let req = {};
@@ -15377,6 +16758,28 @@ function StaffBPWeightStore() {
   self.staffWiseReports = [];
   self.employees = [];
 
+  self.on('csv_export_staff_bp_weight', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/staff_bp_weight/csv_export_staff_bp_weight',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_staff_bp_weight_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_employee', function () {
     console.log('i am in employee  api call from ajax');
     let req = {};
@@ -15603,6 +17006,28 @@ function StaffBPWeightStore() {
       }
     });
   });
+
+  self.on('csv_export_staff_wise_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/staff_bp_weight/csv_export_staff_wise_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_staff_wise_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
 }
 function StaffInfirmaryStore() {
   riot.observable(this); // Riot provides our event emitter.
@@ -15635,6 +17060,73 @@ function StaffInfirmaryStore() {
       }
     });
   });
+
+  self.on('csv_export_infirmary_staff', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/infirmary_staff/csv_export_infirmary_staff',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_infirmary_staff_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_export_staff_date_wise_case_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/infirmary_staff/csv_export_staff_date_wise_case_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_staff_date_wise_case_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
+  self.on('csv_export_staff_monthly_case_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/infirmary_staff/csv_export_staff_monthly_case_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_staff_monthly_case_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_infirmary_category', function () {
     console.log('i am in read_sections api call from ajax');
     let req = {};
@@ -16870,6 +18362,26 @@ function StandardStore() {
     });
   });
 
+  self.on('csv_export_standard', function () {
+    console.log('i am in csv_export_standard api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/standard/csv_export_standard',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_standard_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('delete_standard', function (id) {
     $.ajax({
       url: '/standard/delete/' + id,
@@ -18070,6 +19582,28 @@ function StudentInfirmaryStore() {
     });
   });
 
+  self.on('csv_export_infirmary', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/infirmary_student/csv_export_infirmary',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_infirmary_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   self.on('read_student_date_wise_case_report', function (category_id, start_date, end_date) {
     let req = {};
     req.category_id = category_id;
@@ -18095,6 +19629,28 @@ function StudentInfirmaryStore() {
       },
       error: function (data) {
         showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_date_wise_case_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/infirmary_student/csv_export_date_wise_case_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_date_wise_case_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
       }
     });
   });
@@ -18134,6 +19690,28 @@ function StudentInfirmaryStore() {
     });
   });
 
+  self.on('csv_export_infirmary_class_wise_case_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/infirmary_student/csv_export_infirmary_class_wise_case_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_infirmary_class_wise_case_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
+      }
+    });
+  });
+
   // infiramry student case wise report
 
   self.on('read_case_wise_report', function (obj) {
@@ -18165,6 +19743,28 @@ function StudentInfirmaryStore() {
       },
       error: function (data) {
         showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_infirmary_case_wise_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/infirmary_student/csv_export_infirmary_case_wise_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_infirmary_case_wise_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
       }
     });
   });
@@ -19131,6 +20731,31 @@ function StudentSearchStore() {
       }
     });
   });
+
+  self.on('view_image_list', function (standard_id, section_id) {
+    let req = {};
+    req.standard_id = standard_id;
+    req.section_id = section_id;
+    $.ajax({
+      url: '/studentSearch/view_image_list',
+      type: "POST",
+      data: JSON.stringify(req),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('view_image_list_changed', data.image_list, getCookie('session_name'), getCookie('session_id'));
+        } else if (data.status == 'e') {
+          showToast("Error search Student. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
 }
 function StudentStore() {
   riot.observable(this); // Riot provides our event emitter.
@@ -19327,20 +20952,21 @@ function StudentStore() {
     });
   });
 
-  self.on('read_student_csv', function (read_standard_id, read_section_id, read_enroll_number) {
-
+  self.on('read_student_csv', function (obj) {
     let req = {};
-    req.read_standard_id = read_standard_id;
-    req.read_section_id = read_section_id;
-    req.read_enroll_number = read_enroll_number;
+    req.data = obj;
     $.ajax({
-      url: '/student/read_student_csv/' + read_standard_id + '/' + read_section_id + '/' + read_enroll_number,
+      url: '/student/read_student_csv',
       contentType: "application/json",
       dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
       headers: { "Authorization": getCookie('token') },
       success: function (data) {
         console.log(data);
-        if (data.status == 's') {} else if (data.status == 'e') {}
+        if (data.status == 's') {
+          self.trigger('read_student_csv_changed', data.url);
+        } else if (data.status == 'e') {}
       },
       error: function (data) {}
     });
@@ -19853,6 +21479,26 @@ function StudentWithdrawnStudentStore() {
     });
   });
 
+  self.on('csv_export_withdraw_student', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/student-withdrawn-student/csv_export_withdraw_student',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_withdraw_student_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
+
   self.on('cancle_withdraw_students', function (student_id) {
     var obj = {};
     obj['student_id'] = student_id;
@@ -19903,6 +21549,26 @@ function SubjectStore() {
       },
       error: function (data) {
         showToast("", data);
+      }
+    });
+  });
+
+  self.on('csv_export_Subject', function () {
+    console.log('i am in csv_export_Subject api call from ajax');
+    let req = {};
+    $.ajax({
+      url: '/subject/csv_export_Subject',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_subject_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {
+        //showToast("", data)
       }
     });
   });
@@ -20344,6 +22010,26 @@ function TimeTableDaySettingsStore() {
     });
   });
 
+  self.on('csv_export_day', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/time-table-day-settings/csv_export_day',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_day_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
+
   self.on('delete_day', function (id) {
     $.ajax({
       url: '/time-table-day-settings/delete/' + id,
@@ -20453,6 +22139,26 @@ function TimeTablePeriodSettingsStore() {
       error: function (data) {
         showToast("", data);
       }
+    });
+  });
+
+  self.on('csv_export_period', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/time-table-period-settings/csv_export_period',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_period_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
     });
   });
 
@@ -20629,6 +22335,26 @@ function TimeTableRoomSettingsStore() {
       error: function (data) {
         showToast("", data);
       }
+    });
+  });
+
+  self.on('csv_export_room', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/time-table-room-settings/csv_export_room',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_room_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
     });
   });
 

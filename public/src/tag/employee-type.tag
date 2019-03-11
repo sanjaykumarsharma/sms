@@ -12,20 +12,28 @@
       <div class="column is-narrow">
         <input class="input  form-control input" id="addEmployeeTypeInput" ref="addEmployeeTypeInput" tabindex="0" type="text"  onkeyup={addEnter}>
       </div>
+
       <div class="column">
         <button disabled={loading} class="button is-danger has-text-weight-bold"
         onclick={add}>{title}
         </button>
-        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-                  <span class="icon">
-                     <i class="fas fa-print"></i>
-                 </span>
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+        <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
+          <span class="icon"><i class="fas fa-print"></i></span>
        </button>
-        <button class="button is-warning is-rounded is-pulled-right" onclick={readEmployeeTypes} style="margin-right:2px">
+        <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readEmployeeTypes} style="margin-right:2px;margin-left:5px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
-        </button>     
+        </button> 
+          <input class="input is-pulled-right" ref="searchEmployeeType" onkeyup={filterEmployeeType} type="text" style="width:200px" placeholder="Search">
+       <!--    <div class="column">
+        
+      </div> -->
       </div>
     </div>
   </div>  
@@ -38,7 +46,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={r, i in employeeTypes}>
+				<tr each={r, i in filteredEmployeeTypes}>
 					<td>{ i+1 }</td>
 					<td>{ r.emp_type}</td>
 		          	<td class="has-text-right">
@@ -65,8 +73,19 @@
     })
     self.on("unmount", function(){
       employeeTypeStore.off('employeeTypes_changed', EmployeeTypesChanged)
+      employeeTypeStore.off('csv_export_EmployeeType_changed',csv_export_EmployeeTypeChanged)
     })
+   
+    self.downloadCSV = () =>{
+          employeeTypeStore.trigger('csv_export_EmployeeType')
+    }
+     // filter Employee Type
 
+     self.filterEmployeeType = ()=>{
+      self.filteredEmployeeTypes = self.employeeTypes.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchEmployeeType.value.toLowerCase())>=0
+      })
+    } 
     //read courses
     self.readEmployeeTypes = () => {
       self.loading=true
@@ -139,8 +158,16 @@
       self.loading = false
       self.emp_id=emp_id
       self.employeeTypes = employeeTypes
+       self.filteredEmployeeTypes=employeeTypes
       self.update()
       console.log(self.employeeTypes)
+    }
+    employeeTypeStore.on('csv_export_EmployeeType_changed',csv_export_EmployeeTypeChanged)
+    function csv_export_EmployeeTypeChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

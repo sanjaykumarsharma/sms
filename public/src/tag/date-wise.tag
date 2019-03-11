@@ -21,14 +21,19 @@
 				<button class="button is-danger has-text-weight-bold"
 				onclick={getDateWiseFees} > GO
 				</button>
-
-				<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
-		               <span class="icon">
-		                 <i class="fas fa-print"></i>
-		             </span>
-		         </button>
-				
 			</div>
+			<div class="level-right no-print" >
+	          <button class="button is-success has-text-weight-bold  ml5" onclick={downloadCSV}>
+	                <span class="icon">
+	                  <i class="far fa-file-excel"></i>
+	                </span>
+	              </button>
+	          <button class="button is-primary has-text-weight-bold ml5" onclick="window.print()" title="Print">
+	                    <span class="icon">
+	                       <i class="fas fa-print"></i>
+	                   </span>
+	               </button>
+	          </div>
 		</div>
 	</div>
     <p class="has-text-centered" style="color: #ff3860;font-weight:bold">Date Wise Fees Received</p>
@@ -79,7 +84,20 @@
 
     self.on("unmount", function(){
       feesReportStore.off('read_date_fees_changed',ReadDateFeesChanged)
+      feesReportStore.off('csv_export_datewise_fees_changed',datewiseFeesChanged)
     })
+
+    self.downloadCSV = () => {
+      feesReportStore.trigger('csv_datewise_fees',self.dateWiseData)
+    }
+
+    feesReportStore.on('csv_export_datewise_fees_changed',datewiseFeesChanged)
+    function datewiseFeesChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
     self.getDateWiseFees = () => {
     	var startDate = document.getElementById("start_date").value

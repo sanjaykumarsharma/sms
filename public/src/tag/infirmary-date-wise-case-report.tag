@@ -14,7 +14,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="read_category_id" id="category_id">
+              <select ref="read_category_id" id="category_id" style="width:200px">
                 <option each={infirmaryCategories} value={category_id}>{category_name}
                               </option>
               </select>
@@ -26,7 +26,7 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text" style="width:130px">
+             <input class="input date flatpickr-input form-control input"  ref="start_date" placeholder="" tabindex="0"  type="text" style="width:100px">
           </div>
         </div>
           <div class="column is-narrow">
@@ -34,29 +34,31 @@
         </div>
         <div class="column is-narrow">
           <div class="control">
-              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text" style="width:130px">
+              <input class="input date flatpickr-input form-control input"  ref="end_date" placeholder="" tabindex="0"  type="text" style="width:100px">
           </div>
         </div>
         <div class="column">
           <button class="button is-danger has-text-weight-bold"
                onclick={readStudentInfirmaryDateWiseCaseReport} >Go
           </button>
+          
+          <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+           </button>
 
-          <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+          <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
            </button>
-          <button class="button is-warning is-rounded is-pulled-right" onclick={readStudentInfirmaryDateWiseCaseReport} style="margin-left:34;margin-right:4px">
+          <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readStudentInfirmaryDateWiseCaseReport} style="margin-left:34;margin-right:4px">
               <span class="icon">
                 <span class="fas fa-sync-alt"></span>
               </span>
           </button>
-        <!--   <button class="button is-info is-rounded is-pulled-right" onclick={add_student_infirmary}>
-              <span class="icon">
-                <span class="fas fa-plus"></span>
-              </span>
-          </button> -->
+        <input class="input is-pulled-right" ref="searchInfirmaryStudentDateWiseCaseReport" onkeyup={filteredInfirmaryStudentDateWiseCaseReport} type="text" style="width:200px;margin-right:5px;" placeholder="Search" >
 
          
         </div>
@@ -87,7 +89,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={st, i in studentDateWiseCaseReports}>
+        <tr each={st, i in filteredInfirmaryStudentDateWiseCaseReports}>
           <td>{i+1}</td>
           <td>{st.student_name}</td>
           <td>{st.enroll_number}</td>
@@ -131,8 +133,13 @@
      self.on("unmount", function(){
        studentinfirmaryStore.off('read_student_date_wise_case_report_changed', ReadStudentDateWiseCaseReportChanged)
        studentinfirmaryStore.off('read_infirmary_category_changed',InfirmaryCategoryChanged)
+       studentinfirmaryStore.off('csv_export_date_wise_case_report_changed',csvDateWiseCaseReportChanged)
      })
-
+     self.filteredInfirmaryStudentDateWiseCaseReport = ()=>{
+        self.filteredInfirmaryStudentDateWiseCaseReports = self.studentDateWiseCaseReports.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryStudentDateWiseCaseReport.value.toLowerCase())>=0
+        })
+      } 
      //read courses
      self.readStudentInfirmaryDateWiseCaseReport = () => {
             self.loading=true
@@ -148,8 +155,10 @@
      }
       self.readInfirmaryCategory = () => {
         studentinfirmaryStore.trigger('read_infirmary_category')
-     }
-    
+      }
+      self.downloadCSV = () =>{
+        studentinfirmaryStore.trigger('csv_export_date_wise_case_report', self.studentDateWiseCaseReports)
+      }
 
      self.addEnter = (e) => {
        if(e.which == 13){
@@ -164,23 +173,32 @@
      }
 
     
-     studentinfirmaryStore.on('read_student_date_wise_case_report_changed',ReadStudentDateWiseCaseReportChanged)
-     function ReadStudentDateWiseCaseReportChanged(studentDateWiseCaseReports,session_name){
+    studentinfirmaryStore.on('read_student_date_wise_case_report_changed',ReadStudentDateWiseCaseReportChanged)
+    function ReadStudentDateWiseCaseReportChanged(studentDateWiseCaseReports,session_name){
        console.log(studentDateWiseCaseReports) 
        self.loading = false
        self.studentDateWiseCaseReports = studentDateWiseCaseReports
+       self.filteredInfirmaryStudentDateWiseCaseReports = studentDateWiseCaseReports
        self.session_name=session_name
        self.update()
        console.log(self.studentDateWiseCaseReports)
      }
 
-     studentinfirmaryStore.on('read_infirmary_category_changed',InfirmaryCategoryChanged)
-     function InfirmaryCategoryChanged(infirmaryCategories){
+    studentinfirmaryStore.on('read_infirmary_category_changed',InfirmaryCategoryChanged)
+    function InfirmaryCategoryChanged(infirmaryCategories){
        console.log(infirmaryCategories) 
        self.infirmaryCategories = infirmaryCategories
        self.loading=false
        self.update()
        console.log(self.infirmaryCategories)
+     }
+
+    studentinfirmaryStore.on('csv_export_date_wise_case_report_changed',csvDateWiseCaseReportChanged)
+    function csvDateWiseCaseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
      }
 
 </script>

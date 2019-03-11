@@ -1,5 +1,934 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
+
+/*=========== download csv start=============*/
+router.post('/csv_dueby_class', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Class'] = result[i].Class;
+        obj['Apr'] = result[i].Apr;
+        obj['May'] = result[i].May;
+        obj['Jun'] = result[i].Jun;
+        obj['Jul'] = result[i].Jul;
+        obj['Aug'] = result[i].Aug;
+        obj['Sep'] = result[i].Sep;
+        obj['Oct'] = result[i].Oct;
+        obj['Nov'] = result[i].Nov;
+        obj['Dec'] = result[i].Dec;
+        obj['Jan'] = result[i].Jan;
+        obj['FebMar'] = result[i].FebMar;
+        obj['Total'] = result[i].Total;
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Class','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','FebMar','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/duebyclass.csv'; 
+      data.url = '/csv/duebyclass.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+/*========= fees scheme un-assigend ==*/
+
+router.post('/csv_scheme_unassigned', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Enrol No.'] = result[i].enroll_number;
+        obj['Student Name'] = result[i].name;
+        obj['Father Name'] = result[i].f_name;
+        obj['Class'] = result[i].standard;
+        
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Enrol No.','Student Name','Father Name','Class'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/schemenotassigned.csv'; 
+      data.url = '/csv/schemenotassigned.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+/*======== fees scheme ==========*/
+router.post('/csv_fees_scheme', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Fee Schme'] = result[i].fee_plan_name;
+        obj['Total'] = result[i].total;
+        
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Fee Schme','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/feesScheme.csv'; 
+      data.url = '/csv/feesScheme.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+/*====== issued letters csv ========*/
+router.post('/csv_issued_letter', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Enrol No.'] = result[i].enroll_number;
+        obj['Students Name'] = result[i].name;
+        obj['Class'] = result[i].standard;
+        obj['Issued Date'] = result[i].issue_date;
+        obj['Letter Key'] = result[i].letter_key;
+        obj['Letter'] = result[i].letter_name;
+        obj['Issued by'] = result[i].modified_by;
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Enrol No.','Students Name','Class','Issued Date','Letter Key','Letter','Issued by'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/issuedLetter.csv'; 
+      data.url = '/csv/issuedLetter.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+/*====== scholarship list =========*/
+router.post('/csv_scholarship_list', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Enrol No.'] = result[i].enroll_number;
+        obj['Students Name'] = result[i].name;
+        obj['Class'] = result[i].standard;
+        obj['Fee Slip Name'] = result[i].fee_slip_name;
+        obj['Scholarship'] = result[i].scholorship_amount;
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Enrol No.','Students Name','Class','Fee Slip Name','Scholarship'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/scholarshiplist.csv'; 
+      data.url = '/csv/scholarshiplist.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+//======== advance fees ==========
+router.post('/csv_advance_fees', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Enrol No.'] = result[i].enroll_number;
+        obj['Students Name'] = result[i].name;
+        obj['Class'] = result[i].standard;
+        obj['Month'] = result[i].fee_slip_name;
+        obj['Fee'] = result[i].amount_due;
+        obj['Scholarship'] = result[i].scholorship_amount;
+        obj['Amount'] = result[i].total;
+
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Enrol No.','Students Name','Class','Month','Fee','Scholarship','Amount'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/advanceFees.csv'; 
+      data.url = '/csv/advanceFees.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+//=========feees collection summary csv =====
+router.post('/csv_fees_collection', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Bank'] = result[i].bank;
+        obj['Cash'] = result[i].cash;
+        obj['Cheque'] = result[i].cheque;
+        obj['Online'] = result[i].online;
+        obj['Total'] = result[i].total;
+
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Bank','Cash','Cheque','Online','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/feescollectionsummary.csv'; 
+      data.url = '/csv/feescollectionsummary.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+//========== estimated fees ==========*/
+router.post('/csv_estimated_fees', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Header'] = result[i].total;
+        obj['Amount'] = result[i].total_fees;
+
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Header','Amount'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/estimatedfees.csv'; 
+      data.url = '/csv/estimatedfees.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+/*===== outstanding fees by class ======*/
+router.post('/csv_outstanding_by_class', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Enrol No'] = result[i].enroll_number;
+        obj['Students Name'] = result[i].student_name;
+        obj['Class'] = result[i].standard;
+        obj['Father Name'] = result[i].f_name;
+        obj['Mobile'] = result[i].f_mobile;
+        obj['SMS No'] = result[i].sms;
+        obj['Fees'] = result[i].fees;
+
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Enrol No','Students Name','Class','Father Name','Mobile','SMS No','Fees'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/outstandingfeesbyclass.csv'; 
+      data.url = '/csv/outstandingfeesbyclass.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+/*=========== outstanding fees download =======*/
+router.post('/csv_outstanding_fees', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+  
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['SlNo'] = result[i].slNo;
+        obj['Enrol No'] = result[i].enroll_number;
+        obj['Class/students Name'] = result[i].student_name;
+        obj['Mobile (F)'] = result[i].f_mobile;
+        obj['SMS No.'] = result[i].mobile;
+        obj['Month'] = result[i].fee_slip_name;
+        obj['Fees'] = result[i].fees;
+
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['SlNo','Enrol No','Class/students Name','Mobile (F)','SMS No.','Month','Fees'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/outstandingfees.csv'; 
+      data.url = '/csv/outstandingfees.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+
+router.post('/csv_fees_register', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+  
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+    
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj[''] = result[i].slNo;
+        obj[''] = result[i].receipt_date;
+        obj[''] = result[i].receipt_id;
+        obj[''] = result[i].enroll_number;
+        obj[''] = result[i].name;
+        obj[''] = result[i].fee_slip_name;
+
+        obj[''] = result[i].class;
+        obj[''] = result[i].bank_name;
+        obj[''] = result[i].item_no;
+        obj[''] = result[i].mode;
+        obj[''] = result[i].amount_due;
+        obj[''] = result[i].fine;
+        obj[''] = result[i].scholorship_amount;
+        obj[''] = result[i].total;
+        std.push(obj);
+      }
+
+      data.status = 's';
+      /*const fields = ['','','','','','','','','','','','','',''];
+      const json2csvParser = new Json2csvParser({ fields });*/
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/feesRegister.csv'; 
+      data.url = '/csv/feesRegister.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+//========= head wise csv ========
+
+router.post('/csv_headwise_fees', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+  
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['SlNo'] = result[i].slNo;
+        obj['Head'] = result[i].head;
+        obj['Amount'] = result[i].cash;
+
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['SlNo','Head','Amount'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/headwisefees.csv'; 
+      data.url = '/csv/headwisefees.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+//========= head wise summary fees ======
+router.post('/csv_headwise_summary', function(req, res, next){
+  var input = JSON.parse(JSON.stringify(req.body));
+  
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Head'] = result[i].head;
+        obj['Bank'] = result[i].bank;
+        obj['School'] = result[i].cash;
+        obj['Total'] = result[i].total;
+
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Head','Bank','School','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/headwiseSummaryCollection.csv'; 
+      data.url = '/csv/headwiseSummaryCollection.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+
+//======== date wise fees csv  ========
+
+router.post('/csv_datewise_fees', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Receipt Date'] = result[i].receipt_date;
+        obj['Fees'] = result[i].fees;
+        obj['Fine'] = result[i].fine;
+        obj['Scholarship'] = result[i].scholarship;
+        obj['Total'] = result[i].total;
+
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Receipt Date','Fees','Fine','Scholarship','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/datewiseCollection.csv'; 
+      data.url = '/csv/datewiseCollection.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+//=========bank wise collection csv ======
+
+router.post('/csv_bankwise_collection', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Recpt Dt'] = result[i].receipt_date;
+        obj['Recpt No'] = result[i].receipt_id;
+        obj['Enro No'] = result[i].enroll_number;
+        obj['Student Name'] = result[i].student_name;
+        obj['Class'] = result[i].class;
+        obj['Month'] = result[i].fee_slip_name;
+        obj['Fees'] = result[i].fees;
+        obj['Fine'] = result[i].fine;
+        obj['Schl'] = result[i].scholarship;
+        obj['Total'] = result[i].total;
+
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Recpt Dt','Recpt No','Enro No','Student Name','Class','Month','Fees','Fine','Schl','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/bankwiseCollection.csv'; 
+      data.url = '/csv/bankwiseCollection.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+
+router.post('/csv_assigned_scheme', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Enrol No.'] = result[i].enroll_number;
+        obj['Student Name'] = result[i].name;
+        obj['Class'] = result[i].standard;
+        obj['Mobile'] = result[i].f_mobile;
+        obj['SMS'] = result[i].mobile;
+        obj['Phone'] = result[i].f_phone;
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Enrol No.','Student Name','Class','Mobile','SMS','Phone'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/schemeAssigned.csv'; 
+      data.url = '/csv/schemeAssigned.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+router.post('/csv_export_month_wise', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var month_fees = [1];
+    async.forEachOf(month_fees, function (value, key, callback) {
+
+
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Month'] = result[i].month;
+        obj['Fees'] = result[i].fees;
+        obj['Fine'] = result[i].fine;
+        obj['Scholarship'] = result[i].scholarship;
+        obj['Total'] = result[i].total;
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['Month','Fees','Fine','Scholarship','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/MonthWiseFees.csv'; 
+      data.url = '/csv/MonthWiseFees.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+
+
+router.post('/csv_export_daily_fees', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var daily_fees = [1];
+    async.forEachOf(daily_fees, function (value, key, callback) {
+                                                                                                                                                                                                 
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['SlNo'] = result[i].slNo;
+        obj['Date'] = result[i].receipt_date;
+        obj['Recpt No'] = result[i].receipt_id;
+        obj['Enrol No'] = result[i].enroll_number;
+        obj['Name'] = result[i].name;
+        obj['Month'] = result[i].fee_slip_name;
+        obj['Class'] = result[i].class;
+        obj['Bank Name'] = result[i].bank_name;
+        obj['Cheq No'] = result[i].item_no;
+        obj['Mode'] = result[i].mode;
+        obj['Fee'] = result[i].amount_due;
+        obj['Fine'] = result[i].fine;
+        obj['Scholorship'] = result[i].scholorship_amount;
+        obj['Total'] = result[i].total;
+        std.push(obj);
+      }
+
+      data.status = 's';
+      const fields = ['SlNo','Date','Recpt No','Enrol No','Name','Month','Class','Bank Name','Cheq No','Mode','Fee','Fine','Scholorship','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/DailyFees.csv'; 
+      data.url = '/csv/DailyFees.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+    });
+});
+/*=========== download csv end ==============*/
+
+
+
 
 //===========read_head_wise_fees==============
 router.get('/read_head_wise_fees/:start_date/:end_date', function(req, res, next) {
@@ -960,8 +1889,9 @@ router.get('/read_outstanding_fees/:start_date/:end_date', function(req, res, ne
      var data = {}
      var condition = "";
      var session_id = req.cookies.session_id
-     
-     var qry = `select distinct e.student_id, gender, fee_slip_name,b.fee_slip_id, enroll_number,roll_number, 
+     //SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
+     var qry = `select  e.student_id, gender, fee_slip_name,b.fee_slip_id, enroll_number,roll_number, 
         concat(first_name, ' ', middle_name, ' ', last_name)as student_name,e.last_fee_slip_id,
         concat(standard, ' ', section) as standard, f_name, concat(f_mobile,' (F)') as f_mobile, f_phone, mobile, total_amount as fees,
         f_add_l1, f_add_l2, concat(f_city,' - ',f_zip) as f_city, f_state
@@ -2663,8 +3593,8 @@ router.post('/read_estimated_fees', function(req, res, next) {
      var session_id = req.cookies.session_id
 
      if(standard_id == -1 && section_id== -1) condition = ``;
-      else if(standard_id != -1 && section_id==-1) condition = `and f.standard_id=${standard_id}`;
-      else if(standard_id==-1 && section_id!=-1)condition = `and f.standard_id=${standard_id} and f.section_id=${section_id}`;
+      else if(standard_id != -1 && section_id==-1) condition = `and g.standard_id=${standard_id}`;
+      else if(standard_id==-1 && section_id!=-1)condition = `and g.standard_id=${standard_id} and f.section_id=${section_id}`;
       //else "Invalid class section combination selected";
       
      var qry = `select '' as total, '' as fees , '' as scholarship,

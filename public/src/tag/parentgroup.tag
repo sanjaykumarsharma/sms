@@ -30,12 +30,12 @@
 					onclick={add} >{title}
 					</button>
 
-           <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+           <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
-           <button class="button is-warning is-rounded is-pulled-right" onclick={readParentGroup} style="margin-right:5px">
+           <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readParentGroup} style="margin-right:5px">
           <span class="icon">
             <span class="fas fa-sync-alt"></span>
           </span>

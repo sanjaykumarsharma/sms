@@ -543,6 +543,7 @@
       careerStore.off('update_interview_changed',UpdateInterviewChanged)
       careerStore.off('read_applicant_profile_changed',ReadApplicantProfileChanged)
       careerStore.off('delete_candidate_changed',DeleteCandidateChanged)
+      careerStore.off('csv_export_career_interview_changed',csvCareerInterviewChanged)
     })
 
     self.getData = () => {
@@ -657,15 +658,15 @@
     careerStore.on('update_interview_changed',UpdateInterviewChanged)
     function UpdateInterviewChanged(){
       self.closeinterviwfeedbackModal()
-      self.getData()
       self.update();
+      self.getData()
     }
 
     careerStore.on('delete_candidate_changed',DeleteCandidateChanged)
     function DeleteCandidateChanged(){
     	self.loading=false;
-     	self.getData()
       self.update();
+     	self.getData()
     }
 
     careerStore.on('read_applicant_profile_changed',ReadApplicantProfileChanged)
@@ -675,6 +676,13 @@
       console.log(self.st.address_line1)
       self.loading = false;
       self.update();
+    }
+    careerStore.on('csv_export_career_interview_changed',csvCareerInterviewChanged)
+    function csvCareerInterviewChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 </script>
 </career-interview>

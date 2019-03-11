@@ -4,7 +4,7 @@ var multer = require('multer')
 const Json2csvParser = require('json2csv').Parser;
 const fs = require('fs');
 var http = require('http');
-var download = require('download-file')
+var async = require("async");
 const copyFile = require('fs-copy-file');
 
 /* Read Standard */
@@ -436,6 +436,7 @@ router.get('/read_student/:read_standard_id/:read_section_id/:read_enroll_number
   var enroll_number = req.params.read_enroll_number;
   var session_id = req.cookies.session_id
   var Role=req.cookies.role;
+  console.log(Role)
   //var admission_session_id = 8;
   console.log("hiiii");
 
@@ -544,78 +545,52 @@ router.get('/read_student/:read_standard_id/:read_section_id/:read_enroll_number
 
 /* Read Student CSV */
 
-router.get('/read_student_csv/:read_standard_id/:read_section_id/:read_enroll_number', function(req, res, next) {
+router.post('/read_student_csv', function(req, res, next) {
 
-  var standard_id = req.params.read_standard_id;
-  var section_id = req.params.read_section_id;
-  var enroll_number = req.params.read_enroll_number;
-  var session_id = req.cookies.session_id
-  console.log("hiiii");
+  var input = JSON.parse(JSON.stringify(req.body));
 
   req.getConnection(function(err,connection){
-       
+
     var data = {}
-    if(enroll_number!="0"){
-      var qry =` select a.student_id, b.standard, c.standard_id, c.section_id, c.section, title, first_name,middle_name, last_name,
-                 concat(first_name,' ',middle_name, ' ' ,last_name)as 'Student Name',
-                 enroll_number,enroll_number as 'Enrolment Number',roll_number as 'Roll Number', reg_number as 'Registration Number', mobile as 'Mobile', 
-                 f_title, f_name as 'Father Name',house_name as house
-                 from student_master a
-                 JOIN student_current_standing d on (a.student_id = d.student_id and a.current_session_id= ${session_id} )
-                 JOIN section_master c  on d.section_id = c.section_id
-                 JOIN standard_master b on c.standard_id = b.standard_id
-                 JOIN parent_master f  on (a.student_id = f.student_id  and f.current_session_id= ${session_id} )
-                 LEFT JOIN house_master g  on  d.house_id=g.house_id
-                 where a.enroll_number in (${enroll_number})
-                 and (a.withdraw='N' || a.withdraw_session > ${session_id} )
-                 and d.session_id= ${session_id}
-                 order by first_name,middle_name,last_name `;
-    }else{
-      var qry =` select a.student_id, b.standard, c.standard_id, c.section_id, c.section, title, first_name,middle_name, last_name,
-                 concat(first_name,' ',middle_name, ' ' ,last_name)as 'Student Name',
-                 enroll_number,enroll_number as 'Enrolment Number', roll_number as 'Roll Number', reg_number as 'Registration Number', mobile as 'Mobile', 
-                 f_title, f_name as 'Father Name',house_name as house
-                 from student_master a
-                 JOIN student_current_standing d on (a.student_id = d.student_id and a.current_session_id= ${session_id} )
-                 JOIN section_master c  on d.section_id = c.section_id
-                 JOIN standard_master b on c.standard_id = b.standard_id
-                 JOIN parent_master f  on (a.student_id = f.student_id and f.current_session_id= ${session_id} )
-                 LEFT JOIN house_master g  on  d.house_id=g.house_id
-                 where c.standard_id= ${standard_id} and c.section_id= ${section_id}
-                 and (a.withdraw='N' || a.withdraw_session > ${session_id} )
-                 and d.session_id= ${session_id}
-                 order by first_name,middle_name,last_name,enroll_number `;
-    }
-    connection.query(qry,function(err,result)     {
-            
-      if(err){
-        console.log("Error reading Student : %s ",err );
-        data.status = 'e';
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
 
-      }else{
-        // res.render('customers',{page_title:"Customers - Node.js",data:rows});
-        data.status = 's';
-        data.students = result;
-        const fields = ['Roll Number','Student Name','Enrolment Number','Registration Number','Mobile','Father Name'];
-          const json2csvParser = new Json2csvParser({ fields });
-          const csv = json2csvParser.parse(result);
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Roll Number'] = result[i].roll_number;
+        obj['Student Name'] = result[i].name;
+        obj['Enrolment Number'] = result[i].enroll_number;
+        obj['Registration Number'] = result[i].reg_number;
+        obj['Mobile'] = result[i].mobile;
+        obj['Father Name'] = result[i].f_name;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Roll Number','Student Name','Enrolment Number','Registration Number','Mobile','Father Name'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/Student.csv'; 
+      data.url = '/csv/Student.csv';
 
-          var path='./public/csv/Student.csv'; 
-          fs.writeFile(path, csv, function(err,data) {
-            if (err) {throw err;}
-            else{ 
-              // res.download(path); // This is what you need
-              res.send(data)
-              var url='http://localhost:4000/csv/Student.csv';
-              var open = require("open","");
-              open(url);  
-            }
-          });   
-        
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
         }
-     
-     });
-       
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });   
   });
 
 });

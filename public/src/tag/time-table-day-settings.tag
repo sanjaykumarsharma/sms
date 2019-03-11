@@ -75,12 +75,17 @@
 
      self.on("unmount", function(){
       timeTableDaySettingsStore.off('day_changed', DayChanged)
+      timeTableDaySettingsStore.off('csv_export_day_changed',csvDayChanged)
     })
 
     //read courses
     self.readDay = () => {
       self.loading=true
-       timeTableDaySettingsStore.trigger('read_day')
+      timeTableDaySettingsStore.trigger('read_day')
+    }
+
+    self.downloadCSV = () =>{
+      timeTableDaySettingsStore.trigger('csv_export_day', self.days)
     }
 
      self.add = () => {
@@ -150,6 +155,14 @@
       self.refs.addDayInput.value = ''
       self.loading = false
       self.days = days
+      self.update()
+    }
+
+    timeTableDaySettingsStore.on('csv_export_day_changed',csvDayChanged)
+    function csvDayChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 

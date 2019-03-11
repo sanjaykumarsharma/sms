@@ -1,7 +1,7 @@
 <student-browser>
- <print-header></print-header> 
-	 <loading-bar if={loading}></loading-bar>  
-	<section class=" is-fluid">
+ 	<print-header></print-header> 
+	<loading-bar if={loading}></loading-bar>  
+	<section class=" is-fluid" show={student_view =='student_list'}>
 				<h4 class="title has-text-centered" style="color: #ff3860;">Students Details <span class="printOnly_t"><br> Session: <span style="color:#000">{session_name}</span></span></h4>
 		<div class="box no-print">
 			<div class="columns">
@@ -35,20 +35,35 @@
 					<button class="button is-danger has-text-weight-bold"
 					onclick={readStudentBrowserData} >GO
 					</button>
-
-					<button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print" style="margin-left:5px">
+					<button if={role=='Class Teacher'} class="button ml5 is-pulled-right" onclick={view_images} title="View Images">
+		              <span class="icon">
+		                  <i class="fa fa-address-book" aria-hidden="true"></i>
+		              </span>
+		           </button>
+		           <button if={role=='Class Teacher'} class="button is-link has-text-weight-bold ml5 is-pulled-right" onclick={print_list} title="Print List">
+		              <span class="icon">
+		                  <i class="far fa-eye"></i>
+		              </span>
+		           </button>
+		           <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+		              <span class="icon">
+		                  <i class="far fa-file-excel"></i>
+		              </span>
+		           </button>
+					<button class="button is-primary has-text-weight-bold is-pulled-right ml5" onclick="window.print()" title="Print" style="margin-left:5px">
 	                  <span class="icon">
 	                     <i class="fas fa-print"></i>
 	                 </span>
 	                </button>
 
-					<button class="button is-warning has-text-weight-bold is-pulled-right"
+					<button class="button is-warning has-text-weight-bold is-pulled-right ml5"
 				      onclick={showStudentField}>Setting
 				    </button>
+				    <input class="input is-pulled-right" ref="searchBrowseStudent" onkeyup={filteredBrowseStudent} type="text" style="width:200px;margin-right:5px;" placeholder="Search">  	
 				</div>
 			</div>
 		</div>
-		<div style="height:450px; overflow-x: scroll; overflow-y:scroll ;border:solid #000 3px;">
+		<div style="overflow-x: scroll; border:solid #000 1px;">
 		    <table class="table is-fullwidth is-bordered is-hoverable is-narrow">
 			<thead>
 				<tr>
@@ -157,7 +172,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr each={st, i in browseStudents}>
+				<tr each={st, i in filteredBrowseStudents}>
 					<td>{i+1}</td>
 					<td show={roll_no_view =='show_roll_no'}>{st.roll_number}</td>
 					<td show={enroll_no_view =='show_enroll_no'}>{st.enroll_number}</td>
@@ -291,13 +306,138 @@
 		    </div>
 		  </div>
 	</section>
+
+	<section class=" is-fluid" show={student_view =='print_list'}>
+		<div class="level no-print">
+			<div class="level-left">
+			</div>
+			<div class="level-right">
+				<div class="control no-print">
+	        		<div class="select is-fullwidth is-small">
+						<select id="add_column" ref="add_column" onchange={AddColumn}>
+							<option value="0">Select Column</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+						</select>
+					</div>
+	      		</div>
+				<input type="checkbox" id="checkHouse" checked={e.done} 
+				onclick={viewHouse}  class="no-print ml5"> <b class="ml5">House</b>
+
+				<!-- <a class="button no-print ml10" onclick={}>Back</a> -->
+				<button class="button is-primary has-text-weight-bold ml5 is-small" onclick="window.print()">
+		            <span class="icon">
+		              <i class="fas fa-print"></i>
+		            </span>
+		        </button>
+				<button class="button is-warning has-text-weight-bold ml5 is-small " onclick={close_print_list}>
+		    		<span class="icon">
+          				<span class="fas fa-arrow-left"></span>
+        			</span>
+		    	</button>
+
+			</div>
+		</div>
+		<center>			
+
+	      	<div style="text-align:left;">
+		      	<table class="table is-fullwidth is-bordered" >
+		      		<caption class="caption">Students List {pl.standard} - {pl.section} ({pl.session_name})  </caption>
+			        <tr>
+			        	<th style="">Roll No</th>
+	          			<th style="">Enrol No</th>
+	          			<th style="">Name</th>
+	          			<th style="" show={house_column}>House</th>
+	          			<th show={column_one}></th>
+	          			<th show={column_two}></th>
+	          			<th show={column_three}></th>
+	          			<th show={column_four}></th>
+	          			<th show={column_five}></th>
+	          			<th show={column_six}></th>
+	          			<th show={column_seven}></th>
+	          			<th show={column_eight}></th>
+	          			<th show={column_nine}></th>
+			        </tr>     	
+					<tr each={pl, i in print_list}>
+						
+		           		<td >{pl.roll_number}</td> 
+		           		<td >{pl.enroll_number}</td> 
+		            	<td >{pl.name}</td>
+		            	<td show={house_column}>{pl.house}</td>
+		            	<td show={column_one}></td>
+		            	<td show={column_two}></td>
+		            	<td show={column_three}></td>
+		            	<td show={column_four}></td>
+		            	<td show={column_five}></td>
+		            	<td show={column_six}></td>
+		            	<td show={column_seven}></td>
+		            	<td show={column_eight}></td>
+		            	<td show={column_nine}></td>
+		           	</tr>
+		        </table>
+	    	</div>
+    	</center>
+	</section>
+
+	<section class=" is-fluid" show={student_view =='image_list_view'}>
+		<div class="level no-print">
+			<div class="level-left">
+				<h2 class="title has-text-danger is-size-5"></h2>
+			</div>
+			<div class="level-right">
+				<!-- <a class="button no-print" onclick={}>Back</a> -->
+				<button class="button is-primary has-text-weight-bold " onclick="window.print()">
+		    		<span class="icon">
+          				<span class="fas fa-print"></span>
+        			</span>
+		    	</button>
+		    	<button class="button is-warning has-text-weight-bold ml5" onclick={close_image_list}>
+		    		<span class="icon">
+          				<span class="fas fa-arrow-left"></span>
+        			</span>
+		    	</button>
+			</div>
+		</div>
+		<center>
+			<table class="table class-teacher-table"><caption class="class-teacher-caption"> Student\'s Image Varification </caption></table>
+	      		<table class="table class-teacher-table" each={c, i in image_list} style="margin-top:-25px;">
+	      			<tr class="class-teacher-tr">
+   						<td rowspan="3" style="width:100px;" class="">
+      						<img src="images/{session_id}/studentImages/{c.student_id}.jpg" height="75" >
+   						</td>
+   						<th > Name </th>
+   						<td >{c.name}</td>
+   						<th style="width:160px;">Enroll No</th>
+   						<td > {c.enroll_number}</td>
+					</tr>
+					<tr class="class-teacher-tr">
+          				<th >Date of Birth </th>
+          				<td >{c.dob}</td>
+          				<th >Reg. No</th>
+          				<td style='width:150px' > {c.reg_number}</td>
+     				</tr>
+					<tr class="class-teacher-tr"> 
+          				<th style='width:115px;' > standard </th>
+          				<td colSpan='3' ></td>
+      				</tr>
+	      		</table>
+    	</center>
+	</section>
 <!-- End Other Information -->
 <script>
 	
 	var self = this
     self.on("mount", function(){
     	self.title='Add'
-    	    	self.fieldList =[
+    	self.pl={}
+    	self.fieldList =[
 			{ field_name : "Group", array_name : "Group"},
 			{ field_name : "House", array_name : "House"},
 			{ field_name : "Title", array_name : "Title"},
@@ -414,7 +554,17 @@
 		//self.gender_view ='show_gender'
     	self.readStandard()
     	self.readSection()
-    	self.role = getCookie('role') 
+    	self.role = getCookie('role')
+    	self.column_one = false
+    	self.column_two = false 
+    	self.column_three = false
+		self.column_four = false   		
+		self.column_five = false  		
+		self.column_six = false  		
+		self.column_seven = false  		
+		self.column_eight = false   		
+		self.column_nine = false
+		self.student_view = 'student_list'
         self.update()
         flatpickr(".date", {
 	    	allowInput: true,
@@ -426,9 +576,150 @@
       studentStore.off('read_standard_changed',StandardChanged)
       studentStore.off('read_section_changed',SectionChanged)
       studentSearchStore.off('read_student_browser_change',ReadStudentBrowserChanged)
+      studentStore.off('print_list_changed',PrintListChanged)
+      studentSearchStore.off('view_image_list_changed',ImageListChanged)
     })
 
-    
+    self.print_list = () =>{
+    	var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0!
+
+		var yyyy = today.getFullYear();
+		if(dd<10){
+    		dd='0'+dd;
+		} 
+		if(mm<10){
+    		mm='0'+mm;
+		} 
+		var today = dd+'/'+mm+'/'+yyyy;
+		self.print_date = today
+    	self.student_view = 'print_list'
+    	studentStore.trigger('print_list', self.refs.standard_id.value,self.refs.section_id.value)
+    }
+
+    self.close_print_list = () => {
+    	self.student_view = 'student_list'	
+    }
+
+    self.AddColumn = () =>{
+
+    	if(self.refs.add_column.value == "0"){
+    		self.column_one = false
+    		self.column_two = false 
+    		self.column_three = false
+    		self.column_four = false   		
+    		self.column_five = false  		
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false 
+    	}else if(self.refs.add_column.value == "1"){
+    		self.column_one = true
+    		self.column_two = false
+    		self.column_three = false
+    		self.column_four = false   		
+    		self.column_five = false  		
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false 
+    	}else if(self.refs.add_column.value == "2"){
+			self.column_one = true
+    		self.column_two = true  
+    		self.column_three = false
+    		self.column_four = false   		
+    		self.column_five = false  		
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false   		
+    	}else if(self.refs.add_column.value == "3"){
+			self.column_one = true
+    		self.column_two = true    		
+    		self.column_three = true 
+    		self.column_four = false   		
+    		self.column_five = false  		
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false   		
+    	}else if(self.refs.add_column.value == "4"){
+			self.column_one = true
+    		self.column_two = true
+    		self.column_three = true
+    		self.column_four = true  
+    		self.column_five = false  		
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false		
+    	}else if(self.refs.add_column.value == "5"){
+			self.column_one = true
+    		self.column_two = true 
+    		self.column_three = true
+    		self.column_four = true   		
+    		self.column_five = true 
+    		self.column_six = false  		
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false 		
+    	}else if(self.refs.add_column.value == "6"){
+			self.column_one = true
+    		self.column_two = true  
+    		self.column_three = true
+    		self.column_four = true   		
+    		self.column_five = true  		
+    		self.column_six = true 
+    		self.column_seven = false  		
+    		self.column_eight = false   		
+    		self.column_nine = false  		
+    	}else if(self.refs.add_column.value == "7"){
+			self.column_one = true
+    		self.column_two = true  
+    		self.column_three = true
+    		self.column_four = true   		
+    		self.column_five = true  		
+    		self.column_six = true  		
+    		self.column_seven = true 
+    		self.column_eight = false   		
+    		self.column_nine = false  		
+    	}else if(self.refs.add_column.value == "8"){
+			self.column_one = true
+    		self.column_two = true  
+    		self.column_three = true
+    		self.column_four = true   		
+    		self.column_five = true  		
+    		self.column_six = true  		
+    		self.column_seven = true  		
+    		self.column_eight = true  
+    		self.column_nine = false 		
+    	}else if(self.refs.add_column.value == "9"){
+			self.column_one = true
+    		self.column_two = true 
+    		self.column_three = true
+    		self.column_four = true   		
+    		self.column_five = true  		
+    		self.column_six = true  		
+    		self.column_seven = true  		
+    		self.column_eight = true   		
+    		self.column_nine = true   		
+    	}
+    }
+
+    self.view_images = () =>{
+    	self.student_view = 'image_list_view'
+    	studentSearchStore.trigger('view_image_list', self.refs.standard_id.value,self.refs.section_id.value)
+    }
+    self.close_image_list = () => {
+    	self.student_view = 'student_list'	
+    }
+    self.filteredBrowseStudent = ()=>{
+        self.filteredBrowseStudents = self.browseStudents.filter(c => {
+          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchBrowseStudent.value.toLowerCase())>=0
+        })
+      } 
+
 	self.readStandard = () => {
        studentStore.trigger('read_standard')
     }
@@ -455,6 +746,21 @@
        studentSearchStore.trigger('read_student_browser',self.refs.standard_id.value,self.refs.section_id.value)
     }
     
+    studentSearchStore.on('view_image_list_changed',ImageListChanged)
+    function ImageListChanged(image_list,session_name,session_id){
+      self.image_list = image_list
+      self.session_name = session_name
+      self.session_id = session_id
+      self.update()
+    }
+
+    studentStore.on('print_list_changed',PrintListChanged)
+    function PrintListChanged(print_list){
+      console.log(print_list)
+      self.print_list = print_list
+      self.pl=print_list[0]
+      self.update()
+    }
    studentStore.on('read_standard_changed',StandardChanged)
     function StandardChanged(standards){
       console.log(standards) 
@@ -475,6 +781,7 @@
       self.title='Create'
       self.loading = false
       self.browseStudents = browseStudents
+      self.filteredBrowseStudents = browseStudents
       self.session_name=session_name
       self.update()
       //console.log(self.employeeTypes)

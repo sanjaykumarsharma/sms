@@ -48,19 +48,20 @@ function DisciplineDetailStore() {
       })
   })
 
-  self.on('csv_export_discipline', function(read_category_id) {
-    console.log(read_category_id)
+  self.on('csv_export_discipline', function(obj) {
     let req = {}
-    req.read_category_id=read_category_id
+    req.data=obj
     $.ajax({
-      url:'/discipline_detail/csv_export_discipline/'+read_category_id,
+      url:'/discipline_detail/csv_export_discipline',
         contentType: "application/json",
         dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
         headers: {"Authorization": getCookie('token')},
         success: function(data){
           console.log(data)
           if(data.status == 's'){
-            
+            self.trigger('csv_export_discipline_changed', data.url)
           }else if(data.status == 'e'){
             
           }

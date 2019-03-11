@@ -5,6 +5,30 @@ function StaffBPWeightStore() {
   self.staffWiseReports=[];
   self.employees=[];
 
+  self.on('csv_export_staff_bp_weight', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/staff_bp_weight/csv_export_staff_bp_weight',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_staff_bp_weight_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
+        }
+      })
+  })
+
   self.on('read_employee', function() {
     console.log('i am in employee  api call from ajax')
     let req = {}
@@ -228,6 +252,30 @@ function StaffBPWeightStore() {
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+  self.on('csv_export_staff_wise_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/staff_bp_weight/csv_export_staff_wise_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_staff_wise_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          //showToast("", data)
         }
       })
   })

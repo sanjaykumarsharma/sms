@@ -15,16 +15,22 @@
         <button disabled={loading} class="button is-danger has-text-weight-bold"
         onclick={add}>{title}
         </button>
-        <button class="button is-primary has-text-weight-bold is-pulled-right" onclick="window.print()" title="Print">
+        <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick={downloadCSV} title="Excel Down Load">
+              <span class="icon">
+                  <i class="far fa-file-excel"></i>
+              </span>
+          </button>
+        <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print">
                   <span class="icon">
                      <i class="fas fa-print"></i>
                  </span>
         </button>
-         <button class="button is-warning is-rounded is-pulled-right" onclick={readEmploymentStatus} style="margin-right:2px">
+         <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick={readEmploymentStatus} style="margin-right:2px">
         <span class="icon">
           <span class="fas fa-sync-alt"></span>
         </span>
         </button>
+            <input class="input is-pulled-right" ref="searchEmploymentStatus" onkeyup={filteredEmploymentStatus} type="text" style="width:200px;margin-right:5px" placeholder="Search">
 
       </div>
     </div>
@@ -38,7 +44,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr each={d, i in employmentStatus}>
+        <tr each={d, i in filteredEmploymentStatus}>
           <td>{i + 1}</td>
           <td>{d.employment_status}</td>
           <td class="has-text-right no-print ">
@@ -66,7 +72,19 @@
 
      self.on("unmount", function(){
       employmentStatusStore.off('employment_status_changed', EmploymentStatusChanged)
+      employmentStatusStore.off('csv_export_employment_status_changed',csv_export_employment_statusChanged)
     })
+
+    self.downloadCSV = () =>{
+          employmentStatusStore.trigger('csv_export_employmentStatus')
+        //  console.log(obj)
+    }
+     
+    self.filteredEmploymentStatus = ()=>{
+      self.filteredEmploymentStatus = self.employmentStatus.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchEmploymentStatus.value.toLowerCase())>=0
+      })
+    } 
 
     //read courses
     self.readEmploymentStatus = () => {
@@ -140,8 +158,17 @@
       self.refs.addEmploymentStatusInput.value = ''
       self.loading = false
       self.employmentStatus = employmentStatus
+      self.filteredEmploymentStatus = employmentStatus
       self.update()
       console.log('self.employmentStatus')
+    }
+
+    employmentStatusStore.on('csv_export_employment_status_changed',csv_export_employment_statusChanged)
+    function csv_export_employment_statusChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 </script>

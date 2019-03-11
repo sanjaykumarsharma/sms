@@ -79,6 +79,7 @@
     })
     self.on("unmount", function(){
       activitycategoryStore.off('categories_changed', CategoriesChanged)
+      activitycategoryStore.off('csv_export_activity_category_changed',csvActivityCategoryChanged)
     })
 
     self.readCategories = () => {
@@ -164,6 +165,14 @@
       self.loading = false
       self.categories = categories
       self.filteredActivityCategory = categories
+      self.update()
+    }
+
+    activitycategoryStore.on('csv_export_activity_category_changed',csvActivityCategoryChanged)
+    function csvActivityCategoryChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 

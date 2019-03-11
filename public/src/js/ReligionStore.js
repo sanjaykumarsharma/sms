@@ -27,6 +27,26 @@ function ReligionStore() {
       })
   })
 
+  self.on('csv_export_religion', function() {
+    console.log('i am in csv_export_religion api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/religion/csv_export_religion',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_religion_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('delete_religion', function(id) {
     $.ajax({
       url:'/religion/delete/'+id,

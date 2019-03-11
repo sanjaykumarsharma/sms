@@ -3,7 +3,7 @@ var router = express.Router();
 const Json2csvParser = require('json2csv').Parser;
 const fs = require('fs');
 var http = require('http');
-var download = require('download-file')
+var async = require("async");
 
 /* Read Category listing. */
 router.get('/', function(req, res, next) {
@@ -138,93 +138,56 @@ router.get('/read_mentor/:read_category_id', function(req, res, next) {
 });
 
 /* Read Mentor listing for CSV */
-router.get('/csv_export_mentor/:read_category_id', function(req, res, next) {
-  var category_id = req.params.read_category_id;
-  console.log("HERE")
-  console.log(category_id)
+router.post('/csv_export_mentor', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
 
   req.getConnection(function(err,connection){
        
-     var data = {}
-     /*var values={
-        category_id : req.params.read_category_id,
-     };*/
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
 
-     var category_condition="";
-     var session_id = req.cookies.session_id
-     var created_by = req.cookies.user
-     var category_condition="";
-
-      if(category_id !=-1){
-        category_condition = ` and a.category_id =  ${category_id} ` ;
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Referred by'] = result[i].referred_by;
+        obj['Name'] = result[i].student_name;
+        obj['Enroll No'] = result[i].enroll_number;
+        obj['Class'] = result[i].standard;
+        obj['Case'] = result[i].case_name;
+        obj['Date'] = result[i].c_date;
+        obj['Time In'] = result[i].time_in;
+        obj['Time Out'] = result[i].time_out;
+        obj['Diagnosis'] = result[i].diagnosis;
+        obj['Suggestion'] = result[i].suggestion;
+        std.push(obj);
       }
+      data.status = 's';
+      const fields = ['Referred by','Name', 'Enroll No','Class','Case','Date','Time In','Time Out','Diagnosis','Suggestion'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/MentorDetail.csv'; 
+      data.url = '/csv/MentorDetail.csv';
 
-        var condition = "";
-
-        if(req.cookies.role != 'ADMIN') condition = ` and a.created_by = '${created_by}' `;
-     var qry =`select * from
-              (select id,c.section_id,a.category_id, a.case_id, referred_by as 'Referred by', a.enroll_number as 'Enroll No', 
-              concat(first_name,' ',middle_name,'',last_name) as Name,
-              concat(standard,' ',section)as Class, category_name, date_format(consult_date,'%d/%m/%Y')as Date,
-              time_format(time_in, '%H:%i') as 'Time In', time_format(time_out,'%H:%i') as 'Time Out',
-              diagnosis as 'Diagnosis', suggestion as 'Suggestion',g.case_name as 'Case'
-              from mentor a
-              left join student_master b on (a.enroll_number=b.enroll_number and b.current_session_id =  ${session_id} )
-              left join student_current_standing c on (b.student_id=c.student_id and b.current_session_id =  ${session_id} )
-              left join section_master d on c.section_id = d.section_id
-              left join standard_master e on d.standard_id = e.standard_id
-              left join mentor_category_master f on a.category_id = f.category_id
-              join mentor_case_master g on a.case_id = g.case_id
-              where (b.withdraw='N' || b.withdraw_session >  ${session_id} ) and 
-              c.session_id=(select session_id from session_master where session_id =  ${session_id} ) 
-              ${category_condition}  ${condition}
-
-              UNION
-
-              select id,c.section_id, a.category_id, a.case_id, referred_by as 'Referred by', a.enroll_number as 'Enroll No', 
-              concat(first_name,' ',middle_name,'',last_name)as Name,
-              concat(standard,' ',section)as Class, category_name, date_format(consult_date,'%d/%m/%Y')as Date,
-              time_format(time_in, '%H:%i') as 'Time In', time_format(time_out,'%H:%i') as 'Time Out',
-              diagnosis as 'Diagnosis', suggestion as 'Suggestion',g.case_name as 'Case'
-              from mentor a
-              left join student_master b on (a.enroll_number=b.enroll_number and b.current_session_id =  ${session_id} )
-              left join student_current_standing c on (b.student_id=c.student_id and a.session_id = c.session_id and b.current_session_id = " ${session_id} ")
-              left join section_master d on c.section_id = d.section_id
-              left join standard_master e on d.standard_id = e.standard_id
-              left join mentor_category_master f on a.category_id = f.category_id
-              join mentor_case_master g on a.case_id = g.case_id
-              where b.withdraw='Y'  ${category_condition}  ${condition} ) z
-              order by z.section_id, z.Name `;
-
-      connection.query(qry,[category_id], function(err, result)     
-     {
-            
-        if(err){
-           console.log("Error reading Mentor : %s ",err );
-           data.status = 'e';
-
-        }else{
-            data.status = 's';
-            data.mentors = result;
-
-            const fields = ['Referred by','Name', 'Enroll No','Class','Case','Date','Time In','Time Out','Diagnosis','Suggestion'];
-            const json2csvParser = new Json2csvParser({ fields });
-            const csv = json2csvParser.parse(result);
-
-            var path='./public/csv/MentorDetail.csv'; 
-            fs.writeFile(path, csv, function(err,data) {
-              if (err) {throw err;}
-              else{ 
-                res.send(data)
-                var url='http://localhost:4000/csv/MentorDetail.csv';
-                var open = require("open","");
-                open(url);  
-              }
-            });
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
         }
-     
-     });
-    
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
   });
        
 });
@@ -405,51 +368,52 @@ router.get('/read_mentor_case/:id/:enroll_number', function(req, res, next) {
 });
 
 /* Read Case Details CSV */
-router.get('/read_mentor_case_csv/:id/:enroll_number', function(req, res, next) {
-  var id = req.params.id;
-  var enroll_number = req.params.enroll_number;
-  console.log("HERE")
-  console.log(id)
-  console.log(enroll_number)
+router.post('/read_mentor_case_csv', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
 
   req.getConnection(function(err,connection){
        
-     var data = {}
-     var qry = `select id, visitor as 'Visitor', date_format(visit_date,'%d/%m/%Y')as 'Visit Date',visit_date as v_date,
-                time_format(time_in, '%H:%i') as 'Time In', time_format(time_out,'%H:%i') as 'Time Out', 
-                suggestion as 'Suggestion',status as 'Status'
-                from mentor_case 
-                where case_id = ?
-                and enroll_number = ?
-                order by v_date `;
-    connection.query(qry,[id,enroll_number], function(err, result)     
-     {
-            
-        if(err){
-           console.log("Error reading case : %s ",err );
-           data.status = 'e';
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
 
-        }else{
+      for(var i = 0; i < result.length; i++){
+        console.log(result[i].referred_by)
+        var obj = {};
+        obj['Visitor'] = result[i].visitor;
+        obj['Visit Date'] = result[i].visit_date;
+        obj['Time In'] = result[i].time_in;
+        obj['Time Out'] = result[i].time_out;
+        obj['Suggestion'] = result[i].suggestion;
+        obj['Status'] = result[i].status;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Visitor','Visit Date','Time In','Time Out','Suggestion','Status'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/CaseDetails.csv'; 
+      data.url = '/csv/CaseDetails.csv';
 
-            data.status = 's';
-            data.mentor_case_details = result;
-            const fields = ['Visitor', 'Visit Date','Time In','Time Out','Suggestion','Status'];
-            const json2csvParser = new Json2csvParser({ fields });
-            const csv = json2csvParser.parse(result);
-
-            var path='./public/csv/CaseDetails.csv'; 
-            fs.writeFile(path, csv, function(err,data) {
-              if (err) {throw err;}
-              else{ 
-                res.send(data)
-                var url='http://localhost:4000/csv/CaseDetails.csv';
-                var open = require("open","");
-                open(url);  
-              }
-            });
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
         }
-     
-     });
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
        
   });
 

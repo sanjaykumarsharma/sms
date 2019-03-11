@@ -27,6 +27,26 @@ function EmployeeRoleStore() {
       })
   })
 
+  self.on('csv_export_Role', function() {
+    console.log('i am in csv_export_Role api call from ajax')
+    let req = {}
+    $.ajax({
+      url:'/role/csv_export_Role',
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_role_changed', data.url)
+          }else if(data.status == 'e'){}
+        },
+        error: function(data){
+          //showToast("", data)
+      }
+    })
+  })
+
   self.on('read_employee_roles', function() {
     console.log('i am in read_events api call from ajax')
     let req = {}

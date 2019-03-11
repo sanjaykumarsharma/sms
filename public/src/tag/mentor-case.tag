@@ -101,6 +101,7 @@
       mentorcaseStore.off('read_categories_changed',CategoriesChanged)
       mentorcaseStore.off('edit_case_changed',EditCaseChanged)
       mentorcaseStore.off('delete_case_changed',DeleteCaseChanged)
+      mentorcaseStore.off('csv_export_mentor_case_changed',csvMentorCaseChanged)
     })
 
     //read courses
@@ -116,8 +117,8 @@
       mentorcaseStore.trigger('read_case')
     }
 
-    self.csvExport = () => {
-      mentorcaseStore.trigger('csv_export_mentor_case')
+    self.downloadCSV = () => {
+      mentorcaseStore.trigger('csv_export_mentor_case',self.mentor_case)
     }
      self.add = () => {
       if(!self.refs.addCaseInput.value){
@@ -234,6 +235,14 @@
       self.update()
       console.log(self.categories)
     }
+
+    mentorcaseStore.on('csv_export_mentor_case_changed',csvMentorCaseChanged)
+    function csvMentorCaseChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+     }
 
 </script>
 </mentor-case>

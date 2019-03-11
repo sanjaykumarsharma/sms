@@ -1,5 +1,9 @@
 var express = require('express');
 var router = express.Router();
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
 
 /* Read Course listing. */
 router.get('/', function(req, res, next) {
@@ -26,6 +30,53 @@ router.get('/', function(req, res, next) {
        
   });
 
+});
+
+/* Read Room  for CSV */
+router.post('/csv_export_room', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Room Name'] = result[i].room_name;
+        obj['Details'] = result[i].room_details;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Room Name','Details'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/Room.csv'; 
+      data.url = '/csv/Room.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });//end of async loop     
+    
+  });
+       
 });
 
 /* Add Course listing. */

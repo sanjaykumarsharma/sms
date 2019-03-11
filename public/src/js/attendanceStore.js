@@ -110,7 +110,7 @@ function AttendanceStore() {
           console.log(data)
           if(data.status == 's'){
             self.monthlyAttendanceData = data.monthlyAttendanceData
-            self.trigger('read_monthly_attendance_data_changed', data.monthlyAttendanceData, getCookie('session_name'))
+            self.trigger('read_monthly_attendance_data_changed', data.headers,data.student_list)
           }else if(data.status == 'e'){
             showToast("Error in reading data. Please try again.", data)
           }
@@ -178,6 +178,29 @@ function AttendanceStore() {
         }
       })
   })
+
+  self.on('read_year', function(month_id) {
+    console.log('i am in read Student Plan api call from ajax')
+    let req = {}
+    req.month_id=month_id
+    $.ajax({
+      url:'/attendance/read_year/'+month_id,
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_year_changed', data.year)
+          }else if(data.status == 'e'){
+            showToast("No data found Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+     })
 
 
   

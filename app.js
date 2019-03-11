@@ -68,6 +68,7 @@ var idcardRouter = require('./routes/id_card');
 var activityReport = require('./routes/activity_report');
 var Career = require('./routes/career');
 var Alumni = require('./routes/alumni');
+var AssessmentReport = require('./routes/assessment_report');
 
 
 //Tarique
@@ -150,7 +151,7 @@ app.use(
         multipleStatements: true,
     },'request')
 )
-app.use(express.json());
+app.use(express.json({limit:'20mb'}));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -232,6 +233,7 @@ app.use('/id_card', verifyToken, idcardRouter);
 app.use('/activity_report', verifyToken, activityReport);
 app.use('/career', verifyToken, Career);
 app.use('/alumni', verifyToken, Alumni);
+app.use('/assessment_report', verifyToken, AssessmentReport);
 
 //Tarique
 app.use('/admin_report', verifyToken, adminReportRouter);
