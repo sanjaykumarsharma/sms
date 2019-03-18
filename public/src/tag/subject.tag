@@ -32,7 +32,7 @@
         <div class="column is-narrow">
           <div class="control">
             <input class=" input"
-              ref="subject_short_name" type="text" style="width:150px">
+              ref="subject_short_name" type="text" style="width:150px" id='subject_short_name'>
           </div>
         </div>
          <div class="column is-narrow">
@@ -198,6 +198,7 @@
     self.edit = (ev,e) => {
       console.log(ev)
       self.title='Update'
+       document.getElementById("subject_short_name").focus()
       self.refs.subject_name.value = ev.subject_name
       self.refs.subject_short_name.value = ev.subject_short_name
       self.refs.department_id.value = ev.department_id

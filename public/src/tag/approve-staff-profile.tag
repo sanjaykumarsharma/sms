@@ -2623,15 +2623,40 @@
     }
 
     self.addExtraActivityInformation = () =>{
-    	/*if(!self.refs.m_name.value){
-    		toastr.error("Please enter Mother Name and try again")
-    		return;
-    	}else{*/
-    		self.staff_view='add_extra_activity_information'
-    		self.update()
-    		//document.getElementById("guardian").focus()
-      	//}
+
+    	self.staff_view='add_extra_activity_information'		
+    	if(self.workExperienceArray.length==0){
+    			console.log("inside")
+		  	    self.workExperienceArray =[]
+		         let obj = {}
+		             obj.work_institution=''
+		        self.workExperienceArray.push(obj)  
+	        }
+    	
+    	    let work_doj_id='#work_doj'+ (self.workExperienceArray.length-1).toString()
+            let work_dol_id='#work_dol'+ (self.workExperienceArray.length-1).toString()
+	       
+			   console.log(work_dol_id)
+		  	   setTimeout(function(){
+			  
+               
+		        flatpickr(work_doj_id, {
+			    	allowInput: true,
+		        	dateFormat: "d/m/Y",
+		  		})
+		       
+		        flatpickr(work_dol_id, {
+			    	allowInput: true,
+		        	dateFormat: "d/m/Y",
+			  	})
+
+
+			}, 1000);
+
+
+	      self.update()		
     }
+
     self.closeExtraActivityInformation = () =>{
     	self.staff_view = 'add_professional_master_course_information'
     }
@@ -3627,6 +3652,20 @@
     	self.refs.details_publication.value=staff_details[0].details_publication
     	self.refs.details_curricular_activities.value=staff_details[0].details_curricular_activities
     	self.refs.details_sport.value=staff_details[0].details_sport
+    	self.refs.organization_of_previous_job.value=staff_details[0].organization_of_previous_job
+	    self.refs.add_l1_of_previous_job.value=staff_details[0].add_l1_of_previous_job
+	    self.refs.add_l2_of_previous_job.value=staff_details[0].add_l2_of_previous_job
+	    self.refs.city_of_previous_job.value=staff_details[0].city_of_previous_job
+	    self.refs.zip_of_previous_job.value=staff_details[0].zip_of_previous_job
+	    self.refs.state_of_previous_job.value=staff_details[0].state_of_previous_job
+	    self.refs.country_of_previous_job.value=staff_details[0].country_of_previous_job
+	    self.refs.designation_of_previous_job.value=staff_details[0].designation_of_previous_job
+	    self.refs.doj_of_previous_job.value=staff_details[0].doj_of_previous_job
+	    self.refs.salary_of_previous_job.value=staff_details[0].salary_of_previous_job
+	    self.refs.basic_of_previous_job.value=staff_details[0].basic_of_previous_job
+	    self.refs.allowances_of_previous_job.value=staff_details[0].allowances_of_previous_job
+	    self.refs.other_benefits_of_previous_job.value=staff_details[0].other_benefits_of_previous_job
+	    self.refs.bond_details_of_previous_job.value=staff_details[0].bond_details_of_previous_job
     	self.update()
     	 flatpickr(".date", {
 	    	allowInput: true,
@@ -3799,6 +3838,20 @@
     	self.details_publication=staff_details[0].details_publication
     	self.details_curricular_activities=staff_details[0].details_curricular_activities
     	self.details_sport=staff_details[0].details_sport
+    	self.refs.organization_of_previous_job.value=staff_details[0].organization_of_previous_job
+	    self.refs.add_l1_of_previous_job.value=staff_details[0].add_l1_of_previous_job
+	    self.refs.add_l2_of_previous_job.value=staff_details[0].add_l2_of_previous_job
+	    self.refs.city_of_previous_job.value=staff_details[0].city_of_previous_job
+	    self.refs.zip_of_previous_job.value=staff_details[0].zip_of_previous_job
+	    self.refs.state_of_previous_job.value=staff_details[0].state_of_previous_job
+	    self.refs.country_of_previous_job.value=staff_details[0].country_of_previous_job
+	    self.refs.designation_of_previous_job.value=staff_details[0].designation_of_previous_job
+	        self.refs.doj_of_previous_job.value=staff_details[0].doj_of_previous_job
+	    self.refs.salary_of_previous_job.value=staff_details[0].salary_of_previous_job
+	    self.refs.basic_of_previous_job.value=staff_details[0].basic_of_previous_job
+	    self.refs.allowances_of_previous_job.value=staff_details[0].allowances_of_previous_job
+	    self.refs.other_benefits_of_previous_job.value=staff_details[0].other_benefits_of_previous_job
+	    self.refs.bond_details_of_previous_job.value=staff_details[0].bond_details_of_previous_job
     	self.update()
     		self.update()
     	 flatpickr(".date", {

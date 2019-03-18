@@ -1288,8 +1288,23 @@ let adminRoute = (path1, path2, path3) => {
         case 'assessment-report':
           riot.mount("div#analysis-report-view", 'assessment-report');
           break;
-        case 'yearly-section-wise-comparison':
-          riot.mount("div#analysis-report-view", 'yearly-section-wise-comparison');
+        case 'yearly-section-wise-comparison-report':
+          riot.mount("div#analysis-report-view", 'yearly-section-wise-comparison-report');
+          break;
+        case 'yearly-class-wise-comparison-report':
+          riot.mount("div#analysis-report-view", 'yearly-class-wise-comparison-report');
+          break;
+        case 'yearly-class-wise-subject-avg-report':
+          riot.mount("div#analysis-report-view", 'yearly-class-wise-subject-avg-report');
+          break;
+        case 'consolidate-tabulation-sheet-report':
+          riot.mount("div#analysis-report-view", 'consolidate-tabulation-sheet-report');
+          break;
+        case 'subject-wise-failure-report':
+          riot.mount("div#analysis-report-view", 'subject-wise-failure-report');
+          break;
+        case 'student-wise-subject-failure-report':
+          riot.mount("div#analysis-report-view", 'student-wise-subject-failure-report');
           break;
         default:
           riot.mount("div#analysis-report-view", 'assessment-report');
@@ -2979,6 +2994,25 @@ function AdminReportStore() {
       }
     });
   });
+  self.on('csv_export_student_summary_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/admin_report/csv_export_student_summary_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_student_summary_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
   //read Student strength 
   self.on('read_student_strength_report', function () {
     let req = {};
@@ -3003,6 +3037,26 @@ function AdminReportStore() {
       error: function (data) {
         showToast("", data);
       }
+    });
+  });
+
+  self.on('csv_export_student_strength_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/admin_report/csv_export_student_strength_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_student_strength_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
     });
   });
 
@@ -3036,6 +3090,26 @@ function AdminReportStore() {
     });
   });
 
+  self.on('csv_export_student_category_summary_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/admin_report/csv_export_student_category_summary_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_student_category_summary_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
+
   //student category Strength report
   self.on('read_student_category_strength_report', function (category_id) {
     let req = {};
@@ -3060,6 +3134,26 @@ function AdminReportStore() {
       error: function (data) {
         showToast("", data);
       }
+    });
+  });
+
+  self.on('csv_export_student_category_strength_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/admin_report/csv_export_student_category_strength_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_student_category_strength_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
     });
   });
 
@@ -3092,7 +3186,25 @@ function AdminReportStore() {
       }
     });
   });
-
+  self.on('csv_export_student_religion_listing_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/admin_report/csv_export_student_religion_listing_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_student_religion_listing_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
   // student  Blood Grooup listing
 
   self.on('read_student_blood_group_listing_report', function () {
@@ -3166,6 +3278,26 @@ function AdminReportStore() {
     });
   });
 
+  self.on('csv_export_student_blood_group_listing_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/admin_report/csv_export_student_blood_group_listing_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_student_blood_group_listing_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
+
   //stdent Group Report
 
   self.on('read_student_group_report', function (standard_id, section_id) {
@@ -3193,6 +3325,25 @@ function AdminReportStore() {
       error: function (data) {
         showToast("", data);
       }
+    });
+  });
+  self.on('csv_export_student_group_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/admin_report/csv_export_student_group_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_student_group_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
     });
   });
 
@@ -3279,6 +3430,26 @@ function AdminReportStore() {
     });
   });
 
+  self.on('csv_export_student_house_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/admin_report/csv_export_student_house_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_student_house_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
+
   //stdent Class Teacher Report
 
   self.on('read_class_teacher_report', function () {
@@ -3307,6 +3478,26 @@ function AdminReportStore() {
     });
   });
 
+  self.on('csv_export_student_class_teacher_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/admin_report/csv_export_student_class_teacher_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_student_class_teacher_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
+
   // new stdent list report
 
   self.on('read_new_student_list_report', function () {
@@ -3332,6 +3523,26 @@ function AdminReportStore() {
       error: function (data) {
         showToast("", data);
       }
+    });
+  });
+
+  self.on('csv_export_new_student_list_report', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/admin_report/csv_export_new_student_list_report',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_new_student_list_report_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
     });
   });
 
@@ -3591,6 +3802,67 @@ function AnalysisReportStore() {
       }
     });
   });
+  self.on('read_subjects', function (standard_id) {
+    let req = {};
+    $.ajax({
+      url: '/yearly_section_wise_comparison_report/read_subjects/' + standard_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_subjects_changed', data.subjects);
+        } else if (data.status == 'e') {
+          showToast("Standard Read Error. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+  self.on('read_subjects_for_yearly_class_wise_comparison_report', function () {
+    let req = {};
+    $.ajax({
+      url: '/yearly_class_wise_comparison_report/read_subjects_for_yearly_class_wise_comparison_report/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_subjects_for_yearly_class_wise_comparison_report_changed', data.subjects);
+        } else if (data.status == 'e') {
+          showToast("Standard Read Error. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+  self.on('read_section', function () {
+    let req = {};
+    $.ajax({
+      url: '/student/read_section/',
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.sections = data.sections;
+          self.trigger('read_section_changed', data.sections);
+        } else if (data.status == 'e') {
+          showToast("Section Read Error. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
 
   self.on('read_exam_types', function (standard_id) {
     $.ajax({
@@ -3604,6 +3876,175 @@ function AnalysisReportStore() {
           self.trigger('exam_types_changed', data.examTypes);
         } else if (data.status == 'e') {
           showToast("Exam Type Read Error. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+  self.on('read_subjects', function (standard_id, section_id) {
+    $.ajax({
+      url: '/marks-entry/subjects/' + standard_id + '/' + section_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('subjects_changed', data.subjects);
+        } else if (data.status == 'e') {
+          showToast("Subjects Read Error. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_assessment_report', function (obj) {
+    $.ajax({
+      url: '/assessment_report/read_assessment_report',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_assessment_report_changed', data.sections, data.subjects, data.graphData);
+        } else if (data.status == 'e') {
+          showToast("Error Read Assessment Report. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_year_wise_class_subject_avg_report', function (standard_id, term_id) {
+    $.ajax({
+      url: '/yearly_class_wise_subject_avg_report/read_year_wise_class_subject_avg_report/' + standard_id + '/' + term_id,
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_year_wise_class_subject_avg_report_changed', data.sessions, data.subjects, data.graphData);
+        } else if (data.status == 'e') {
+          showToast("Student Read Error. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_yearly_section_wise_comparison_report', function (obj) {
+    $.ajax({
+      url: '/yearly_section_wise_comparison_report/read_yearly_section_wise_comparison_report',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_yearly_section_wise_comparison_report_changed', data.sections, data.sessions, data.graphData);
+        } else if (data.status == 'e') {
+          showToast("Error Read Assessment Report. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_yearly_class_wise_comparison_report', function (obj) {
+    $.ajax({
+      url: '/yearly_class_wise_comparison_report/read_yearly_class_wise_comparison_report',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_yearly_class_wise_comparison_report_changed', data.sections, data.sessions, data.graphData);
+        } else if (data.status == 'e') {
+          showToast("Error Read Assessment Report. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+
+  self.on('read_consolidate_tabulation_sheet_report', function (obj) {
+    $.ajax({
+      url: '/consolidate_tabulation_sheet_report/read_consolidate_tabulation_sheet_report',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_consolidate_tabulation_sheet_report_changed', data.headers, data.reports, data.class_teacher);
+        } else if (data.status == 'e') {
+          showToast("Error Read Assessment Report. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+  self.on('read_subject_wise_failure_report', function (obj) {
+    $.ajax({
+      url: '/subject_wise_failure_report/read_subject_wise_failure_report',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_subject_wise_failure_report_changed', data.report_data);
+        } else if (data.status == 'e') {
+          showToast("Error Read Assessment Report. Please try again.", data);
+        }
+      },
+      error: function (data) {
+        showToast("", data);
+      }
+    });
+  });
+  self.on('read_student_wise_subject_failure_report', function (obj) {
+    $.ajax({
+      url: '/student_wise_subject_failure_report/read_student_wise_subject_failure_report',
+      type: "POST",
+      data: JSON.stringify(obj),
+      contentType: "application/json",
+      dataType: "json",
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('read_student_wise_subject_failure_report_changed', data.subject_marks);
+        } else if (data.status == 'e') {
+          showToast("Error Read Assessment Report. Please try again.", data);
         }
       },
       error: function (data) {
@@ -17791,6 +18232,26 @@ function StaffStore() {
       })
   })*/
 
+  self.on('csv_export_ex_staff', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/staff/csv_export_ex_staff',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_ex_staff_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
+
   self.on('read_staff_id_card', function (st) {
     $.ajax({
       url: '/staff/read_staff_id_card',
@@ -17948,6 +18409,25 @@ function StaffStore() {
       }
     });
   });
+  self.on('csv_export_staff', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/staff/csv_export_staff',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('csv_export_staff_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
+    });
+  });
 
   // read for profile Approved
 
@@ -18095,6 +18575,26 @@ function StaffStore() {
       error: function (data) {
         showToast("", data);
       }
+    });
+  });
+
+  self.on('browse_staff_csv', function (obj) {
+    let req = {};
+    req.data = obj;
+    $.ajax({
+      url: '/staff/browse_staff_csv',
+      contentType: "application/json",
+      dataType: "json",
+      type: 'POST',
+      data: JSON.stringify(req),
+      headers: { "Authorization": getCookie('token') },
+      success: function (data) {
+        console.log(data);
+        if (data.status == 's') {
+          self.trigger('browse_staff_csv_changed', data.url);
+        } else if (data.status == 'e') {}
+      },
+      error: function (data) {}
     });
   });
 
@@ -19791,11 +20291,12 @@ function StudentInfirmaryStore() {
       }
     });
   });
-  self.on('read_student_infirmary', function (id) {
+
+  self.on('read_student_infirmary', function (id, session_id) {
     console.log('i am in read_section api call from ajax');
     let req = {};
     $.ajax({
-      url: '/infirmary_student/read_student_infirmary/' + id,
+      url: '/infirmary_student/read_student_infirmary/' + id + '/' + session_id,
       contentType: "application/json",
       dataType: "json",
       headers: { "Authorization": getCookie('token') },

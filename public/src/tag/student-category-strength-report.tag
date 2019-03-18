@@ -83,6 +83,9 @@
     	self.loading=true
        adminReportStore.trigger('read_student_category_strength_report',self.refs.category_id.value)
     }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_category_strength_report', self.studentCategoryStrengthReports)
+    }
 
     categoryStore.on('categories_changed',CategoriesChanged)
     function CategoriesChanged(categories){
@@ -105,6 +108,13 @@
       self.session_name = session_name
       self.update()
       //console.log(self.employeeTypes)
+    }
+    adminReportStore.on('csv_export_student_category_strength_report_changed',csvStudentCategoryStrengthReportChanged)
+    function csvStudentCategoryStrengthReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
     
 

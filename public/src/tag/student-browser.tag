@@ -471,7 +471,7 @@
 			{ field_name : "p_Address", array_name : "Permanent Address"},
 			{ field_name : "Mobile" , array_name : "SMS"},
 			{ field_name : "ResidencePhone", array_name : "Residence Phone"},
-			{ field_name : "Emergency No.", array_name : "Emergency No."},
+			{ field_name : "Emergency No", array_name : "Emergency No"},
 			{ field_name : "StudentType", array_name : "Student Type"},
 			{ field_name : "StaffChild", array_name : "Staff Child"},
 			{ field_name : "StaffName", array_name : "Staff Name"},

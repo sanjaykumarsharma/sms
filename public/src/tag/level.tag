@@ -144,6 +144,7 @@
     self.edit = (d,e) => {
       console.log(d)
       self.title='Update'
+      document.getElementById("addLevelInput").focus()
       self.refs.addLevelInput.value = d.level
       self.edit_id = d.level_id
     }

@@ -69,7 +69,8 @@
 
     self.on("unmount", function(){
       adminReportStore.off('read_student_category_summary_report_changed',ReadStudentCategorySummaryReportChanged)
-       categoryStore.off('categories_changed', CategoriesChanged)
+      categoryStore.off('categories_changed', CategoriesChanged)
+      adminReportStore.off('csv_export_student_category_summary_report_changed',csvStudentCategorySummaryReportChanged)
     })
 
      self.readCategory = () => {
@@ -90,6 +91,9 @@
       self.update()	
      self.readStudentCategorySummaryReport()
       console.log(self.categories)
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_category_summary_report', self.studentCategorySummaryReports)
     }
 
 
@@ -122,6 +126,14 @@
       })
       self.update()
       //console.log(self.employeeTypes)
+    }
+
+    adminReportStore.on('csv_export_student_category_summary_report_changed',csvStudentCategorySummaryReportChanged)
+    function csvStudentCategorySummaryReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
     
 

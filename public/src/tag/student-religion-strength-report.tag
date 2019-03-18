@@ -76,11 +76,15 @@
 
     self.on("unmount", function(){
       adminReportStore.off('read_student_religion_listing_report_changed',ReadStudentReligionListingReportChanged)
+      adminReportStore.off('csv_export_student_religion_listing_report_changed',csvStudentReligionListingReportChanged)
     })
 
     self.readStudentReligionListingReport = () => {
     	self.loading=true
        adminReportStore.trigger('read_student_religion_listing_report')
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_religion_listing_report', self.studentReligionListingReports)
     }
     
     adminReportStore.on('read_student_religion_listing_report_changed',ReadStudentReligionListingReportChanged)
@@ -120,6 +124,13 @@
       })
       self.update()
       //console.log(self.employeeTypes)
+    }
+    adminReportStore.on('csv_export_student_religion_listing_report_changed',csvStudentReligionListingReportChanged)
+    function csvStudentReligionListingReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
     
 

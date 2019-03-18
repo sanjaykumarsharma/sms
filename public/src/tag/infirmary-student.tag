@@ -18,6 +18,19 @@
               </select>
             </div>
           </div>
+        </div> 
+        <div class="column is-narrow">
+          <label class="label">Session</label>
+        </div>
+        <div class="column is-narrow">
+          <div class="control">
+            <div class="select">
+              <select ref="sessionId" id="sessionId">
+                <option each={sessions} value={session_id}>{session_name}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
         <div class="column">
           <button class="button is-danger has-text-weight-bold"
@@ -169,6 +182,8 @@
         self.infirmary_student_view='show_student_table'
         self.readInfirmaryCategory()
         self.readInfirmaryCase()
+        self.readSession()
+
        // self.close_student_infirmary_form()
         console.log("inside student infirmary")
         flatpickr(".date", {
@@ -186,18 +201,26 @@
        studentinfirmaryStore.off('edit_student_infirmary_changed',EditStudentInfirmaryChanged)
        studentinfirmaryStore.off('delete_student_infirmary_changed',DeleteStudentInfirmaryChanged)
        studentinfirmaryStore.off('csv_export_infirmary_changed',csvStudentInfirmaryChanged)
+        sessionStore.off('read_session_changed', ReadSessionChanged)
      })
-      self.filteredInfirmaryStudent = ()=>{
-        self.filteredInfirmaryStudents = self.studentInfirmarys.filter(c => {
-          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryStudent.value.toLowerCase())>=0
-        })
-      } 
+
+
+    self.filteredInfirmaryStudent = ()=>{
+      self.filteredInfirmaryStudents = self.studentInfirmarys.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryStudent.value.toLowerCase())>=0
+      })
+    } 
+
+    self.readSession = () => {
+       sessionStore.trigger('read_session')
+    }
      //read courses
      self.readStudentInfirmary = () => {
          self.loading=true
+         console.log(self.refs.sessionId.value)
          self.category_name = $("#read_category_id option:selected").text();
          self.infirmary_student_view='show_student_table'
-         studentinfirmaryStore.trigger('read_student_infirmary', self.refs.read_category_id.value)
+         studentinfirmaryStore.trigger('read_student_infirmary', self.refs.read_category_id.value,self.refs.sessionId.value)
            //studentStore.trigger('read_students', obj)
      }
      self.readInfirmaryCase = () => {
@@ -431,6 +454,16 @@
       self.loading = false
       self.update()
      }
+
+    sessionStore.on('read_session_changed',ReadSessionChanged)
+    function ReadSessionChanged(sessions){
+      console.log(sessions) 
+      self.title='Create'
+      self.loading = false
+      self.sessions = sessions
+      self.update()
+      console.log(self.sessions)
+    }
 
 </script>
 </infirmary-student>

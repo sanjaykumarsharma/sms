@@ -62,6 +62,7 @@
       /*studentStore.off('read_standard_changed',StandardChanged)
       studentStore.off('read_section_changed',SectionChanged)*/
       adminReportStore.off('read_class_teacher_report_change',ReadClassTeacherReportChanged)
+      adminReportStore.off('csv_export_student_class_teacher_report_changed',csvStudentClassTeacherReportChanged)
     })
 
      /*self.viewTable = () => {
@@ -90,6 +91,9 @@
     	self.loading=true
        adminReportStore.trigger('read_class_teacher_report')
     }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_class_teacher_report', self.studentClassTeacherReports)
+    }
     
   /* studentStore.on('read_standard_changed',StandardChanged)
     function StandardChanged(standards){
@@ -114,6 +118,13 @@
       self.studentClassTeacherReports = studentClassTeacherReports
       self.update()
       //console.log(self.employeeTypes)
+    }
+    adminReportStore.on('csv_export_student_class_teacher_report_changed',csvStudentClassTeacherReportChanged)
+    function csvStudentClassTeacherReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
     
 

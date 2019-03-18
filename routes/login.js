@@ -73,7 +73,7 @@ router.post('/login', function(req, res, next) {
      }
      
 
-     //console.log(qry)
+     console.log(qry)
 
      connection.query(qry,function(err,result)     {
             

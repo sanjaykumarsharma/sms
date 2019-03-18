@@ -464,7 +464,7 @@
        self.fieldList.map( q => {
            
             if(q.array_name== "first_name"){
-                    self.view_first_name="show_irst_name"    
+                    self.view_first_name="show_first_name"    
                      q.done=true 
                 }
             if(q.array_name== "middle_name"){
@@ -508,6 +508,7 @@
     self.on("unmount", function(){
       staffStore.off('read_browse_staff_changed',ReadBrowseStaffChanged)
       employeeTypeStore.off('employeeTypes_changed',EmployeeTypesChanged)
+      staffStore.on('browse_staff_csv_changed',csvBrowseStaffChanged)
     })
 
      self.filteredBrowseStaff = ()=>{
@@ -1436,7 +1437,9 @@ if(q.done==false && q.array_name== "nationality"){
     self.readEmployeeTypes = () => {
        employeeTypeStore.trigger('read_employeeTypes')
     }
-    
+    self.downloadCSV = () =>{
+        staffStore.trigger('browse_staff_csv', self.browseStaffs)
+    }
     employeeTypeStore.on('employeeTypes_changed',EmployeeTypesChanged)
     function EmployeeTypesChanged(employeeTypes){
       //console.log(employeeTypes) 
@@ -1456,7 +1459,13 @@ if(q.done==false && q.array_name== "nationality"){
       self.update()
       //console.log(self.employeeTypes)
     }
-    
+    staffStore.on('browse_staff_csv_changed',csvBrowseStaffChanged)
+    function csvBrowseStaffChanged(url){
+        var open_url = window.location.origin+url 
+        window.open(open_url);
+        self.loading = false
+        self.update()
+    }
 
     
 </script>

@@ -74,6 +74,30 @@ function StaffStore() {
       })
   })*/
 
+  self.on('csv_export_ex_staff', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/staff/csv_export_ex_staff',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_ex_staff_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
 
   self.on('read_staff_id_card', function(st) {
     $.ajax({
@@ -233,6 +257,29 @@ function StaffStore() {
         }
       })
   })
+  self.on('csv_export_staff', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/staff/csv_export_staff',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_staff_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
 
   // read for profile Approved
 
@@ -383,7 +430,29 @@ function StaffStore() {
       })
   })
 
-
+  self.on('browse_staff_csv', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/staff/browse_staff_csv',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('browse_staff_csv_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
    
 
   self.on('edit_staff', function(obj,staff_id,editType) {

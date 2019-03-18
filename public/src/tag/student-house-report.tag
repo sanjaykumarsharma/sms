@@ -121,6 +121,7 @@
       studentStore.off('read_standard_changed',StandardChanged)
       studentStore.off('read_section_changed',SectionChanged)
       adminReportStore.off('read_student_house_report_change',ReadStudentHouseReportChanged)
+      adminReportStore.off('csv_export_student_house_report_changed',csvStudentHouseReportChanged)
     })
      self.addEnter = (e) => {
       if(e.which == 13){
@@ -154,6 +155,10 @@
     	self.loading=true
        adminReportStore.trigger('read_student_house_report',self.refs.standard_id.value,self.refs.section_id.value)
     }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_house_report', self.studentHouseReports)
+    }
+    
     
    studentStore.on('read_standard_changed',StandardChanged)
     function StandardChanged(standards){
@@ -246,7 +251,13 @@
       self.update()
       //console.log(self.employeeTypes)
     }
-    
+    adminReportStore.on('csv_export_student_house_report_changed',csvStudentHouseReportChanged)
+    function csvStudentHouseReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
     
 </script>

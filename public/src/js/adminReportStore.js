@@ -110,6 +110,29 @@ function AdminReportStore() {
         }
       })
   })
+  self.on('csv_export_student_summary_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/admin_report/csv_export_student_summary_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_student_summary_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
  //read Student strength 
  self.on('read_student_strength_report', function() {
     let req = {}
@@ -133,6 +156,30 @@ function AdminReportStore() {
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+ self.on('csv_export_student_strength_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/admin_report/csv_export_student_strength_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_student_strength_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
         }
       })
   })
@@ -167,6 +214,30 @@ function AdminReportStore() {
       })
   })
 
+ self.on('csv_export_student_category_summary_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/admin_report/csv_export_student_category_summary_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_student_category_summary_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
 
  //student category Strength report
  self.on('read_student_category_strength_report', function(category_id) {
@@ -191,6 +262,30 @@ function AdminReportStore() {
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+ self.on('csv_export_student_category_strength_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/admin_report/csv_export_student_category_strength_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_student_category_strength_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
         }
       })
   })
@@ -224,7 +319,29 @@ function AdminReportStore() {
         }
       })
   })
-
+  self.on('csv_export_student_religion_listing_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/admin_report/csv_export_student_religion_listing_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_student_religion_listing_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
  // student  Blood Grooup listing
 
  self.on('read_student_blood_group_listing_report', function() {
@@ -303,6 +420,30 @@ function AdminReportStore() {
       })
   })
 
+ self.on('csv_export_student_blood_group_listing_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/admin_report/csv_export_student_blood_group_listing_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_student_blood_group_listing_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
 
  //stdent Group Report
 
@@ -330,6 +471,29 @@ function AdminReportStore() {
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+ self.on('csv_export_student_group_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/admin_report/csv_export_student_group_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_student_group_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
         }
       })
   })
@@ -417,6 +581,30 @@ function AdminReportStore() {
       })
   })
 
+ self.on('csv_export_student_house_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/admin_report/csv_export_student_house_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_student_house_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
  //stdent Class Teacher Report
 
  self.on('read_class_teacher_report', function() {
@@ -445,6 +633,30 @@ function AdminReportStore() {
       })
   })
 
+ self.on('csv_export_student_class_teacher_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/admin_report/csv_export_student_class_teacher_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_student_class_teacher_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
+        }
+      })
+  })
+
  // new stdent list report
 
 self.on('read_new_student_list_report', function() {
@@ -469,6 +681,30 @@ self.on('read_new_student_list_report', function() {
         },
         error: function(data){
           showToast("", data)
+        }
+      })
+  })
+
+self.on('csv_export_new_student_list_report', function(obj) {
+    let req = {}
+    req.data=obj
+    $.ajax({
+      url:'/admin_report/csv_export_new_student_list_report',
+        contentType: "application/json",
+        dataType:"json",
+        type:'POST',
+        data: JSON.stringify(req),
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('csv_export_new_student_list_report_changed', data.url)
+          }else if(data.status == 'e'){
+            
+          }
+        },
+        error: function(data){
+          
         }
       })
   })

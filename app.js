@@ -69,6 +69,13 @@ var activityReport = require('./routes/activity_report');
 var Career = require('./routes/career');
 var Alumni = require('./routes/alumni');
 var AssessmentReport = require('./routes/assessment_report');
+var YearlySectionWiseComparisonReport = require('./routes/yearly_section_wise_comparison_report');
+var YearlyClassWiseComparisonReport = require('./routes/yearly_class_wise_comparison_report');
+var YearlyClassWiseSubjectAvgReport = require('./routes/yearly_class_wise_subject_avg_report');
+var ConsolidateTabulationSheetReport = require('./routes/consolidate_tabulation_sheet_report');
+var SubjectWiseFailureReport = require('./routes/subject_wise_failure_report');
+var StudentWiseSubjectFailureReport = require('./routes/student_wise_subject_failure_report');
+
 
 
 //Tarique
@@ -145,8 +152,8 @@ app.use(
     connection(mysql,{
         
         host: 'localhost',
-        user: 'root',
-        password : '',
+        user: 'phpmyadmin',
+        password : 'root',
         database:'mckvieor_school',
         multipleStatements: true,
     },'request')
@@ -234,6 +241,12 @@ app.use('/activity_report', verifyToken, activityReport);
 app.use('/career', verifyToken, Career);
 app.use('/alumni', verifyToken, Alumni);
 app.use('/assessment_report', verifyToken, AssessmentReport);
+app.use('/yearly_section_wise_comparison_report', verifyToken, YearlySectionWiseComparisonReport);
+app.use('/yearly_class_wise_comparison_report', verifyToken, YearlyClassWiseComparisonReport);
+app.use('/yearly_class_wise_subject_avg_report', verifyToken, YearlyClassWiseSubjectAvgReport);
+app.use('/consolidate_tabulation_sheet_report', verifyToken, ConsolidateTabulationSheetReport);
+app.use('/subject_wise_failure_report', verifyToken, SubjectWiseFailureReport);
+app.use('/student_wise_subject_failure_report', verifyToken, StudentWiseSubjectFailureReport);
 
 //Tarique
 app.use('/admin_report', verifyToken, adminReportRouter);

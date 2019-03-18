@@ -318,7 +318,7 @@
        self.staffBpWeights = staffBpWeights
        self.filteredInfirmaryStaffBpWeights = staffBpWeights
        self.update()
-       //self.readStaffInfirmary()
+       self.readStaffBPWeight()
        console.log(self.staffBpWeights)
      }
 
@@ -339,7 +339,7 @@
        self.staffBpWeights = staffBpWeights
        self.filteredInfirmaryStaffBpWeights = staffBpWeights
        self.update()
-      // self.readStaffInfirmary()
+       self.readStaffBPWeight()
       // console.log(self.empsectionsloye_roles)
      }
 

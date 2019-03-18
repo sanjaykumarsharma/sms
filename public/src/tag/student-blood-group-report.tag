@@ -82,11 +82,15 @@
 
     self.on("unmount", function(){
       adminReportStore.off('read_student_blood_group_listing_report_changed',ReadStudentBloodGroupListingReportChanged)
+      adminReportStore.off('csv_export_student_blood_group_listing_report_changed',csvStudentBloodGroupReportChanged)
     })
 
     self.readStudentBloodGroupListingReport = () => {
     	self.loading=true
        adminReportStore.trigger('read_student_blood_group_listing_report')
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_blood_group_listing_report', self.studentBloodGroupListingReports)
     }
     
     adminReportStore.on('read_student_blood_group_listing_report_changed',ReadStudentBloodGroupListingReportChanged)
@@ -142,6 +146,13 @@
 
       self.update()
       //console.log(self.employeeTypes)
+    }
+    adminReportStore.on('csv_export_student_blood_group_listing_report_changed',csvStudentBloodGroupReportChanged)
+    function csvStudentBloodGroupReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
     
 

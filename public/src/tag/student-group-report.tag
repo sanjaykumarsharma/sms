@@ -120,6 +120,7 @@
       studentStore.off('read_standard_changed',StandardChanged)
       studentStore.off('read_section_changed',SectionChanged)
       adminReportStore.off('read_student_group_report_change',ReadStudentGroupReportChanged)
+      adminReportStore.off('csv_export_student_group_report_changed',csvStudentGroupReportChanged)
     })
 
     self.viewTable = () => {
@@ -143,6 +144,9 @@
     	self.readfilteredSections = self.sections.filter(s => {
     		return s.standard_id == self.refs.standard_id.value
     	})
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_group_report', self.studentGroupReports)
     }
      self.addEnter = (e) => {
       if(e.which == 13){
@@ -243,9 +247,13 @@
 	      self.update()
 	      console.log(self.studentGroupReports)
 	      //self.update()
-
-
-     
+    }
+    adminReportStore.on('csv_export_student_group_report_changed',csvStudentGroupReportChanged)
+    function csvStudentGroupReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
     
 

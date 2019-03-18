@@ -200,7 +200,7 @@
             self.refs.section_id.value,self.refs.start_date.value,self.refs.end_date.value,self.refs.description.value,self.holiday)
          }else if(self.title=='Update'){
            console.log('update')
-           classholidayStore.trigger('edit_class_hliday',  self.refs.event_name.value,
+           classholidayStore.trigger('edit_class_holiday',  self.refs.event_name.value,
             self.refs.section_id.value,self.refs.start_date.value,self.refs.end_date.value,self.refs.description.value,self.holiday,self.edit_id)
          }
        }

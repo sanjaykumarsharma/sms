@@ -60,7 +60,7 @@
 					<td>{st.first_name} {st.middle_name} {st.last_name}</td>
 					<td>{st.doj}</td>
 					<td>{st.dol}</td>
-					<td>{st.leaving_remark}</td>
+					<td>{st.remarks}</td>
 					<td>{st.mobile}</td>
 					<td>{st.email}</td>
 					
@@ -86,6 +86,7 @@
     self.on("unmount", function(){
       staffStore.off('read_ex_staff_changed',ReadExStaffChanged)
       employeeTypeStore.off('employeeTypes_changed',EmployeeTypesChanged)
+      staffStore.off('csv_export_ex_staff_changed',csvExStaffChanged)
     })
     self.filteredExStaff = ()=>{
         self.filteredExStaffs = self.exStaffs.filter(c => {
@@ -98,6 +99,9 @@
     }
     self.readEmployeeTypes = () => {
        employeeTypeStore.trigger('read_employeeTypes')
+    }
+    self.downloadCSV = () =>{
+      staffStore.trigger('csv_export_ex_staff', self.exStaffs)
     }
     
     employeeTypeStore.on('employeeTypes_changed',EmployeeTypesChanged)
@@ -118,6 +122,13 @@
       self.filteredExStaffs = exStaffs
       self.update()
       //console.log(self.employeeTypes)
+    }
+    staffStore.on('csv_export_ex_staff_changed',csvExStaffChanged)
+    function csvExStaffChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
     
 

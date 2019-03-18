@@ -24,7 +24,7 @@
 				<div class="column is-narrow">
 					<div class="control">
             <div class="select">
-              <select ref="addEmployeeRoleInput">
+              <select ref="addEmployeeRoleInput" id="addEmployeeRoleInput" onkeyup="{addEnter}">
                 <option value='Activity'>Activity</option>
                 <option value='Mentor'>Mentor</option>
                 <option value='Infirmary'>Infirmary</option>
@@ -183,6 +183,7 @@
     self.edit = (ev,e) => {
       console.log(ev)
       self.title='Update'
+      document.getElementById("addEmployeeRoleInput").focus()
       self.refs.addEmployeeRoleInput.value = ev.role
       self.refs.employee_id.value = ev.employee_id
       self.edit_id = ev.role_id

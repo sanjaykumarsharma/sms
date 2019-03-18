@@ -1805,7 +1805,7 @@ riot.tag2('alumni', '<print-header></print-header> <loading-bar if="{loading}"><
     	}
 
 });
-riot.tag2('analysis-report', '<div class="field has-addons no-print"> <p class="control"> <a class="button {is-active: selected_master == \'assessment-report\'}" href="#/analysis-report/assessment-report"> <span>Assessment Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'yearly-section-wise-comparison\'}" href="#/analysis-report/yearly-section-wise-comparison"> <span>Yearly Section wise comparison </span> </a> </p> </div> <div id="analysis-report-view"></div>', '', '', function(opts) {
+riot.tag2('analysis-report', '<div class="field has-addons no-print"> <p class="control"> <a class="button {is-active: selected_master == \'assessment-report\'}" href="#/analysis-report/assessment-report"> <span>Assessment Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'yearly-section-wise-comparison-report\'}" href="#/analysis-report/yearly-section-wise-comparison-report"> <span>Yearly Section Wise Comparison </span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'yearly-class-wise-comparison-report\'}" href="#/analysis-report/yearly-class-wise-comparison-report"> <span>Yearly Class Wise Comparison </span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'yearly-class-wise-subject-avg-report\'}" href="#/analysis-report/yearly-class-wise-subject-avg-report"> <span>Yearly Class Subject Avg.</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'consolidate-tabulation-sheet-report\'}" href="#/analysis-report/consolidate-tabulation-sheet-report"> <span>Consolidated Tabulation Sheet</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'subject-wise-failure-report\'}" href="#/analysis-report/subject-wise-failure-report"> <span>Subject Wise Failure Report</span> </a> </p> </div> <div class="field has-addons no-print"> <p class="control"> <a class="button {is-active: selected_master == \'student-wise-subject-failure-report\'}" href="#/analysis-report/student-wise-subject-failure-report"> <span>Student Wise Subject Failure</span> </a> </p> </div> <div id="analysis-report-view"></div>', '', '', function(opts) {
 	    var self = this
 	    console.log('opts.selected_master')
 	    console.log(opts.selected_master)
@@ -3263,10 +3263,36 @@ riot.tag2('approve-staff-profile', '<loading-bar if="{loading}"></loading-bar> <
 
     self.addExtraActivityInformation = () =>{
 
-    		self.staff_view='add_extra_activity_information'
-    		self.update()
+    	self.staff_view='add_extra_activity_information'
+    	if(self.workExperienceArray.length==0){
+    			console.log("inside")
+		  	    self.workExperienceArray =[]
+		         let obj = {}
+		             obj.work_institution=''
+		        self.workExperienceArray.push(obj)
+	        }
 
+    	    let work_doj_id='#work_doj'+ (self.workExperienceArray.length-1).toString()
+            let work_dol_id='#work_dol'+ (self.workExperienceArray.length-1).toString()
+
+			   console.log(work_dol_id)
+		  	   setTimeout(function(){
+
+		        flatpickr(work_doj_id, {
+			    	allowInput: true,
+		        	dateFormat: "d/m/Y",
+		  		})
+
+		        flatpickr(work_dol_id, {
+			    	allowInput: true,
+		        	dateFormat: "d/m/Y",
+			  	})
+
+			}, 1000);
+
+	      self.update()
     }
+
     self.closeExtraActivityInformation = () =>{
     	self.staff_view = 'add_professional_master_course_information'
     }
@@ -4172,6 +4198,20 @@ riot.tag2('approve-staff-profile', '<loading-bar if="{loading}"></loading-bar> <
     	self.refs.details_publication.value=staff_details[0].details_publication
     	self.refs.details_curricular_activities.value=staff_details[0].details_curricular_activities
     	self.refs.details_sport.value=staff_details[0].details_sport
+    	self.refs.organization_of_previous_job.value=staff_details[0].organization_of_previous_job
+	    self.refs.add_l1_of_previous_job.value=staff_details[0].add_l1_of_previous_job
+	    self.refs.add_l2_of_previous_job.value=staff_details[0].add_l2_of_previous_job
+	    self.refs.city_of_previous_job.value=staff_details[0].city_of_previous_job
+	    self.refs.zip_of_previous_job.value=staff_details[0].zip_of_previous_job
+	    self.refs.state_of_previous_job.value=staff_details[0].state_of_previous_job
+	    self.refs.country_of_previous_job.value=staff_details[0].country_of_previous_job
+	    self.refs.designation_of_previous_job.value=staff_details[0].designation_of_previous_job
+	    self.refs.doj_of_previous_job.value=staff_details[0].doj_of_previous_job
+	    self.refs.salary_of_previous_job.value=staff_details[0].salary_of_previous_job
+	    self.refs.basic_of_previous_job.value=staff_details[0].basic_of_previous_job
+	    self.refs.allowances_of_previous_job.value=staff_details[0].allowances_of_previous_job
+	    self.refs.other_benefits_of_previous_job.value=staff_details[0].other_benefits_of_previous_job
+	    self.refs.bond_details_of_previous_job.value=staff_details[0].bond_details_of_previous_job
     	self.update()
     	 flatpickr(".date", {
 	    	allowInput: true,
@@ -4340,6 +4380,20 @@ riot.tag2('approve-staff-profile', '<loading-bar if="{loading}"></loading-bar> <
     	self.details_publication=staff_details[0].details_publication
     	self.details_curricular_activities=staff_details[0].details_curricular_activities
     	self.details_sport=staff_details[0].details_sport
+    	self.refs.organization_of_previous_job.value=staff_details[0].organization_of_previous_job
+	    self.refs.add_l1_of_previous_job.value=staff_details[0].add_l1_of_previous_job
+	    self.refs.add_l2_of_previous_job.value=staff_details[0].add_l2_of_previous_job
+	    self.refs.city_of_previous_job.value=staff_details[0].city_of_previous_job
+	    self.refs.zip_of_previous_job.value=staff_details[0].zip_of_previous_job
+	    self.refs.state_of_previous_job.value=staff_details[0].state_of_previous_job
+	    self.refs.country_of_previous_job.value=staff_details[0].country_of_previous_job
+	    self.refs.designation_of_previous_job.value=staff_details[0].designation_of_previous_job
+	        self.refs.doj_of_previous_job.value=staff_details[0].doj_of_previous_job
+	    self.refs.salary_of_previous_job.value=staff_details[0].salary_of_previous_job
+	    self.refs.basic_of_previous_job.value=staff_details[0].basic_of_previous_job
+	    self.refs.allowances_of_previous_job.value=staff_details[0].allowances_of_previous_job
+	    self.refs.other_benefits_of_previous_job.value=staff_details[0].other_benefits_of_previous_job
+	    self.refs.bond_details_of_previous_job.value=staff_details[0].bond_details_of_previous_job
     	self.update()
     		self.update()
     	 flatpickr(".date", {
@@ -5255,16 +5309,16 @@ riot.tag2('area', '<print-header></print-header> <loading-bar if="{loading}"></l
     }
 
 });
-riot.tag2('assessment-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{changeExamType}"> <option>--Choose Class--</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getData}"> GO </button> <label class="checkbox " each="{examTypes}" style="padding: 10px;"> <input type="checkbox" riot-value="{exam_type_id}">{exam_type} </label> </div> </div> <div each="{st, i in marksRangeArray}" style="margin-bottom:20px;margin-top:20px"> <div class="columns mt30"> <div class="column is-2"> <label class="label" for="">Min Marks</label> </div> <div class="column is-2"> <input class="input" ref="min_marks" id="min_marks{i}" type="text" riot-value="{st.min_marks}"> </div> <div class="column is-2"> <label class="label" for="">Max Marks</label> </div> <div class="column is-2 "> <input class="input" ref="max_marks" id="max_marks{i}" type="text" riot-value="{st.max_marks}"> </div> <div class="column is-2"> <button class="button is-success ml5 " onclick="{add_marks_range}"> <span class="icon"><span class="fas fa-plus"></span></span> </button> <button class="button is-danger ml5" onclick="{remove.bind(this, i)}" show="{i!=0}"> <span class="icon"><span class="fas fa-minus"></span></span> </button> </div> </div> </div> </div> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <p><center><strong></strong></center></p> <thead> <tr></tr> </thead> <tbody> <tr> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('assessment-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{changeExamType}"> <option>--Choose Class--</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getAssessmentReport}">GO</button> <label class="checkbox " each="{st, i in examTypes}" style="padding: 10px;"> <input type="checkbox" checked="{st.done}" id="{\'ID\' + st.exam_type_id}" onclick="{selectExamType.bind(this,st)}">{st.exam_type} </label> </div> </div> <div each="{st, i in marksRangeArray}" style="margin-bottom:20px;margin-top:20px"> <div class="columns mt30"> <div class="column is-2"> <label class="label" for="">Min Marks</label> </div> <div class="column is-2"> <input class="input" ref="min_marks" id="min_marks{i}" type="text" riot-value="{st.min_marks}"> </div> <div class="column is-2"> <label class="label" for="">Max Marks</label> </div> <div class="column is-2 "> <input class="input" ref="max_marks" id="max_marks{i}" type="text" riot-value="{st.max_marks}"> </div> <div class="column is-2"> <button class="button is-danger ml5" onclick="{remove.bind(this, i)}" show="{marksRangeArray.length>1}"> <span class="icon"><span class="fas fa-minus"></span></span> </button> <button class="button is-success ml5 " onclick="{add_marks_range}" show="{marksRangeArray.length==(i+1)}"> <span class="icon"><span class="fas fa-plus"></span></span> </button> </div> </div> </div> </div> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <p><center><strong>Assessment Report For Class{ClassName}</strong></center></p> <p><span each="{s, i in labels}">{s.exam_type} &nbsp;&nbsp;</span></p> </table> <table class="table is-fullwidth"> <tr each="{s,i in subjects}"> <td> graphdata {i} <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <thead> <th rowspan="2">Range</th> <th each="{sub, j in s.subjects}" colspan="{sections.length}">{sub}</th> </thead> <tbody> <tr each="{r, k in marksRangeArray}"> <td>range value</td> <virtual each="{sub in s.subjects}"> <td each="{sec, m in sections}">{sec}</td> </virtual> </tr> </tbody> </table> </td> </tr> </table> </section>', '', '', function(opts) {
 	var self = this;
     self.on("mount", function(){
     	self.readStandard()
-
         self.update()
     })
     self.on("unmount", function(){
       analysisReportStore.off('read_standard_changed',StandardChanged)
       analysisReportStore.off('exam_types_changed',ExamTypesChanged)
+      analysisReportStore.off('read_assessment_report_changed',AssessmentReportChanged)
     })
 
     self.readStandard = () => {
@@ -5287,28 +5341,66 @@ riot.tag2('assessment-report', '<print-header></print-header> <loading-bar if="{
         obj.max_marks=''
         self.marksRangeArray.push(obj)
     }
-    self.marksRangeArray.map((x, index) => {
-        let min_marks='#min_marks'+index
-        let max_marks='#max_marks'+index
-
-        x.min_marks =  $(min_marks).val()
-        x.max_marks =  $(max_marks).val()
-    });
-
     self.remove = (index,e) => {
       console.log(index)
        self.marksRangeArray.splice(index,1);
     }
+    self.selectExamType = (item,event) => {
+    	console.log(event)
+    	item.done=!event.item.st.done
+        self.exam_type_id = item.exam_type_id;
+        console.log(self.exam_type_id)
+    }
+    self.getAssessmentReport = () =>{
+    	var obj={}
+        var searchdata={};
+    	let exam_type_id='';
+	     self.examTypes.map( q => {
+	        if(q.done){
+	          if(exam_type_id==''){
+	            exam_type_id=q.exam_type_id
+	          }else{
+	            exam_type_id=exam_type_id+','+q.exam_type_id
+	          }
+	        }
+	      })
+	    console.log(exam_type_id);
+	    self.marksRangeArray.map((x, index) => {
+	        let min_marks='#min_marks'+index
+	        let max_marks='#max_marks'+index
+
+	        x.min_marks =  $(min_marks).val()
+	        x.max_marks =  $(max_marks).val()
+    	});
+    	searchdata['standard_id']=self.refs.standard_id.value
+    	searchdata['exam_type_id']=exam_type_id
+    	searchdata['marksRangeArray']=self.marksRangeArray
+    	obj['searchdata']=searchdata;
+    	console.log(obj)
+    	analysisReportStore.trigger('read_assessment_report', obj)
+    }
     analysisReportStore.on('read_standard_changed',StandardChanged)
     function StandardChanged(standards){
-      self.standards = standards
-      self.update()
+      	self.standards = standards
+      	self.update()
     }
     analysisReportStore.on('exam_types_changed',ExamTypesChanged)
     function ExamTypesChanged(examTypes){
-      self.loading = false
-      self.examTypes = []
-      self.examTypes = examTypes
+    	self.loading = false
+      	self.examTypes = []
+      	self.examTypes = examTypes
+      	self.examTypes.map(i=>{
+	    	i.done = false;
+      	})
+      self.update()
+    }
+    analysisReportStore.on('read_assessment_report_changed',AssessmentReportChanged)
+    function AssessmentReportChanged(sections,subjects,graphData){
+    	self.ClassName = $("#standard_id option:selected").text();
+      self.sections = sections
+      self.subjects = subjects
+      self.graphData = graphData
+
       self.update()
     }
 });
@@ -5949,7 +6041,7 @@ riot.tag2('browse-staff', '<print-header></print-header> <loading-bar if="{loadi
        self.fieldList.map( q => {
 
             if(q.array_name== "first_name"){
-                    self.view_first_name="show_irst_name"
+                    self.view_first_name="show_first_name"
                      q.done=true
                 }
             if(q.array_name== "middle_name"){
@@ -5992,6 +6084,7 @@ riot.tag2('browse-staff', '<print-header></print-header> <loading-bar if="{loadi
     self.on("unmount", function(){
       staffStore.off('read_browse_staff_changed',ReadBrowseStaffChanged)
       employeeTypeStore.off('employeeTypes_changed',EmployeeTypesChanged)
+      staffStore.on('browse_staff_csv_changed',csvBrowseStaffChanged)
     })
 
      self.filteredBrowseStaff = ()=>{
@@ -6918,7 +7011,9 @@ if(q.done==false && q.array_name== "nationality"){
     self.readEmployeeTypes = () => {
        employeeTypeStore.trigger('read_employeeTypes')
     }
-
+    self.downloadCSV = () =>{
+        staffStore.trigger('browse_staff_csv', self.browseStaffs)
+    }
     employeeTypeStore.on('employeeTypes_changed',EmployeeTypesChanged)
     function EmployeeTypesChanged(employeeTypes){
 
@@ -6937,6 +7032,13 @@ if(q.done==false && q.array_name== "nationality"){
       self.filteredBrowseStaffs = browseStaffs
       self.update()
 
+    }
+    staffStore.on('browse_staff_csv_changed',csvBrowseStaffChanged)
+    function csvBrowseStaffChanged(url){
+        var open_url = window.location.origin+url
+        window.open(open_url);
+        self.loading = false
+        self.update()
     }
 
 });
@@ -7516,7 +7618,7 @@ riot.tag2('class-holiday', '<header></header> <loading-bar if="{loading}"></load
             self.refs.section_id.value,self.refs.start_date.value,self.refs.end_date.value,self.refs.description.value,self.holiday)
          }else if(self.title=='Update'){
            console.log('update')
-           classholidayStore.trigger('edit_class_hliday',  self.refs.event_name.value,
+           classholidayStore.trigger('edit_class_holiday',  self.refs.event_name.value,
             self.refs.section_id.value,self.refs.start_date.value,self.refs.end_date.value,self.refs.description.value,self.holiday,self.edit_id)
          }
        }
@@ -8126,6 +8228,105 @@ riot.tag2('club', '<print-header></print-header> <section class=" is-fluid"> <h2
     }
 
 });
+riot.tag2('consolidate-tabulation-sheet-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{changeExamType}"> <option>--Choose Class--</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="section_id" id="section_id"> <option each="{filteredSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getConsolidateTabulationSheetReport}">GO</button> <label class="checkbox " each="{st, i in examTypes}" style="padding: 10px;"> <input type="checkbox" checked="{st.done}" id="{\'ID\' + st.exam_type_id}" onclick="{selectExamType.bind(this,st)}">{st.exam_type} </label> </div> </div> </div> <h1 class="has-text-centered is-size-4">Consolidated Tabulation Sheet for class : {class} section : {section}<br> Exam : {exam} </h1> <h1 class="is-size-4">Class Teacher : {class_teacher}</h1> <p><span each="{s, i in labels}">{s.exam_type} &nbsp;&nbsp;</span></p> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <thead> <tr> <th>Roll No</th> <th>Enroll No</th> <th>Student Name</th> <th each="{c, i in headers}">{c}</th> <th>Percentage</th> <th>Total</th> </tr> </thead> <tbody> <tr each="{c, i in reports}"> <td>{c.roll_number}</td> <td>{c.enroll_number}</td> <td>{c.student_name}</td> <td each="{m, j in c.orderedSubjects}">{m}</td> <td>{c.total}</td> <td>{c.percentage}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+	var self = this;
+    self.on("mount", function(){
+    	self.readStandard()
+    	self.readSection()
+        self.update()
+    })
+    self.on("unmount", function(){
+      analysisReportStore.off('read_standard_changed',StandardChanged)
+      analysisReportStore.off('exam_types_changed',ExamTypesChanged)
+      analysisReportStore.off('read_section_changed',SectionChanged)
+      analysisReportStore.off('read_consolidate_tabulation_sheet_report_changed',ConsolidateTabulationSheetReportChanged)
+    })
+
+    self.readStandard = () => {
+       analysisReportStore.trigger('read_standard')
+    }
+    self.readSection = () => {
+       analysisReportStore.trigger('read_section')
+    }
+
+    self.changeExamType = () => {
+       analysisReportStore.trigger('read_exam_types',self.refs.standard_id.value)
+       self.update()
+       self.getSection()
+    }
+    self.getSection = () => {
+    	self.filteredSections = []
+    	self.filteredSections = self.sections.filter(s => {
+    		return s.standard_id == self.refs.standard_id.value
+    	})
+    }
+
+    self.selectExamType = (item,event) => {
+    	console.log(event)
+    	item.done=!event.item.st.done
+        self.exam_type_id = item.exam_type_id;
+        console.log(self.exam_type_id)
+    }
+    self.getConsolidateTabulationSheetReport= () =>{
+    	var obj={}
+      var searchdata={};
+    	let exam_type_id='';
+	     self.examTypes.map( q => {
+	        if(q.done){
+	          if(exam_type_id==''){
+	            exam_type_id=q.exam_type_id
+	          }else{
+	            exam_type_id=exam_type_id+','+q.exam_type_id
+	          }
+	        }
+	      })
+	    console.log(exam_type_id);
+    	searchdata['standard_id']=self.refs.standard_id.value
+      searchdata['exam_type_id']=exam_type_id
+    	searchdata['section_id']=self.refs.section_id.value
+    	obj['searchdata']=searchdata;
+    	console.log(obj)
+    	analysisReportStore.trigger('read_consolidate_tabulation_sheet_report', obj)
+    }
+    analysisReportStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      	self.standards = standards
+      	self.update()
+    }
+    analysisReportStore.on('read_section_changed',SectionChanged)
+    function SectionChanged(sections){
+      console.log(sections)
+      self.sections = sections
+      self.update()
+      self.getSection()
+
+    }
+    analysisReportStore.on('exam_types_changed',ExamTypesChanged)
+    function ExamTypesChanged(examTypes){
+    	self.loading = false
+      	self.examTypes = []
+      	self.examTypes = examTypes
+      	self.examTypes.map(i=>{
+	    	i.done = false;
+      	})
+      self.update()
+      self.getSection()
+    }
+    analysisReportStore.on('read_consolidate_tabulation_sheet_report_changed',ConsolidateTabulationSheetReportChanged)
+    function ConsolidateTabulationSheetReportChanged(headers,reports,class_teacher){
+      self.loading = false
+      self.headers = {}
+      self.headers = headers
+
+      self.reports = []
+      self.reports = reports
+      self.class = $("#standard_id option:selected").text();
+      self.section = $("#section_id option:selected").text();
+      self.class_teacher = class_teacher
+
+      self.update()
+    }
+});
 riot.tag2('consolidate-tabulation-sheet', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level no-print"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Consolidate Tabulation Sheet</h2> </div> <div class="level-right"> <button class="button is-link ml5" onclick="{readReport}"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> <button class="button is-success ml5" onclick="{downloadCSV}"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary ml5" onclick="window.print()"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> </div> </div> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"><label class="label">Standard</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="standardSelect" onchange="{changeSection}" id="standard_id"> <option value="">Select Standard</option> <option each="{classes}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"><label class="label">Section</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="sectionSelect" onchange="{readClassSubject}" id="section_id"> <option value="">Select Section</option> <option each="{tempSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column is-narrow"><label class="label">Exam Type</label></div> <div class="column"> <div class="control"> <div class="select is-fullwidth"> <select ref="examTypeSelect" onchange="{readMarksLimit}" id="exam_type_id"> <option value="">Select Exam Type</option> <option each="{examTypes}" riot-value="{exam_type_id}">{exam_type}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readReport}">GO </button> </div> </div> </div> <h1 class="has-text-centered is-size-4">Consolidated Tabulation Sheet of Class {class}<br> Exam : {exam} </h1> <h1 class="is-size-4">Class Teacher : {class_teacher}</h1> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>Roll No</th> <th>Enroll No</th> <th>Student Name</th> <th each="{c, i in headers}">{c}</th> <th>Percentage</th> <th>Total</th> </tr> </thead> <tbody> <tr each="{c, i in reports}"> <td>{c.roll_number}</td> <td>{c.enroll_number}</td> <td>{c.student_name}</td> <td each="{m, j in c.orderedSubjects}">{m}</td> <td>{c.total}</td> <td>{c.percentage}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
 	var self = this
     self.class = ''
@@ -8655,7 +8856,7 @@ riot.tag2('date-wise', '<header></header> <loading-bar if="{loading}"></loading-
       self.update()
     }
 });
-riot.tag2('department', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class="is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Department Details</h2> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Department</label> </div> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="department_name" type="text"> </div> </div> <div class="column is-narrow"> <label class="label">HOD</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="emp_name"> <option each="{employees}" riot-value="{name}">{name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{add}">{title} </button> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{readDepartment}" style="margin-right:5px"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> <input class="input is-pulled-right" ref="searchDepartment" onkeyup="{filteredDepartment}" type="text" style="width:200px;margin-right:5px" placeholder="Search"> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>#</th> <th>Department</th> <th>HOD</th> <th></th> </tr> </thead> <tbody> <tr each="{d, i in filteredDepartments}"> <td>{i + 1}</td> <td>{d.department_name}</td> <td>{d.hod}</td> <td class="has-text-right no-print"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{d.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, d)}">Edit</a></span> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{d.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <soan disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('department', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class="is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Department Details</h2> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Department</label> </div> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="department_name" type="text" id="department_name"> </div> </div> <div class="column is-narrow"> <label class="label">HOD</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="emp_name" onkeyup="{addEnter}"> <option each="{employees}" riot-value="{name}">{name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{add}">{title} </button> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{readDepartment}" style="margin-right:5px"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> <input class="input is-pulled-right" ref="searchDepartment" onkeyup="{filteredDepartment}" type="text" style="width:200px;margin-right:5px" placeholder="Search"> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>#</th> <th>Department</th> <th>HOD</th> <th></th> </tr> </thead> <tbody> <tr each="{d, i in filteredDepartments}"> <td>{i + 1}</td> <td>{d.department_name}</td> <td>{d.hod}</td> <td class="has-text-right no-print"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{d.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, d)}">Edit</a></span> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{d.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <soan disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
   var self = this
     self.on("mount", function(){
       self.title='Create'
@@ -8742,6 +8943,7 @@ riot.tag2('department', '<print-header></print-header> <loading-bar if="{loading
     self.edit = (d,e) => {
       console.log(d)
       self.title='Update'
+      document.getElementById("department_name").focus()
       self.refs.department_name.value = d.department_name
       self.refs.emp_name.value = d.hod
       self.edit_id = d.department_id
@@ -10557,7 +10759,7 @@ riot.tag2('event', '<section class=" is-fluid"> <h2 class="title has-text-center
     }
 
 });
-riot.tag2('ex-staff', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Ex-Employee Details</h2> <div class="box no-print"> <div class="columns"> <div class="column "> <div class="control"> <div class="select"> <select ref="emp_type_id" onchange="{ReadExStaff}"> <option riot-value="{-1}">All</option> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{ReadExStaff}" style="margin-left:5px;margin-right:5px"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> <input class="input is-pulled-right" ref="searchExStaff" onkeyup="{filteredExStaff}" type="text" style="width:200px;margin-right:5px;" placeholder="Search"> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Emp ID</th> <th>Name</th> <th>DOJ</th> <th>DOL</th> <th>Remarks</th> <th>Mobile</th> <th>Email</th> </tr> </thead> <tbody> <tr each="{st, i in filteredExStaffs}"> <td>{i+1}</td> <td>{st.employee_id}</td> <td>{st.first_name} {st.middle_name} {st.last_name}</td> <td>{st.doj}</td> <td>{st.dol}</td> <td>{st.leaving_remark}</td> <td>{st.mobile}</td> <td>{st.email}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('ex-staff', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Ex-Employee Details</h2> <div class="box no-print"> <div class="columns"> <div class="column "> <div class="control"> <div class="select"> <select ref="emp_type_id" onchange="{ReadExStaff}"> <option riot-value="{-1}">All</option> <option each="{employeeTypes}" riot-value="{emp_type_id}">{emp_type} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{ReadExStaff}" style="margin-left:5px;margin-right:5px"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> <input class="input is-pulled-right" ref="searchExStaff" onkeyup="{filteredExStaff}" type="text" style="width:200px;margin-right:5px;" placeholder="Search"> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Emp ID</th> <th>Name</th> <th>DOJ</th> <th>DOL</th> <th>Remarks</th> <th>Mobile</th> <th>Email</th> </tr> </thead> <tbody> <tr each="{st, i in filteredExStaffs}"> <td>{i+1}</td> <td>{st.employee_id}</td> <td>{st.first_name} {st.middle_name} {st.last_name}</td> <td>{st.doj}</td> <td>{st.dol}</td> <td>{st.remarks}</td> <td>{st.mobile}</td> <td>{st.email}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
 
 	var self = this
     self.on("mount", function(){
@@ -10574,6 +10776,7 @@ riot.tag2('ex-staff', '<print-header></print-header> <loading-bar if="{loading}"
     self.on("unmount", function(){
       staffStore.off('read_ex_staff_changed',ReadExStaffChanged)
       employeeTypeStore.off('employeeTypes_changed',EmployeeTypesChanged)
+      staffStore.off('csv_export_ex_staff_changed',csvExStaffChanged)
     })
     self.filteredExStaff = ()=>{
         self.filteredExStaffs = self.exStaffs.filter(c => {
@@ -10586,6 +10789,9 @@ riot.tag2('ex-staff', '<print-header></print-header> <loading-bar if="{loading}"
     }
     self.readEmployeeTypes = () => {
        employeeTypeStore.trigger('read_employeeTypes')
+    }
+    self.downloadCSV = () =>{
+      staffStore.trigger('csv_export_ex_staff', self.exStaffs)
     }
 
     employeeTypeStore.on('employeeTypes_changed',EmployeeTypesChanged)
@@ -10606,6 +10812,13 @@ riot.tag2('ex-staff', '<print-header></print-header> <loading-bar if="{loading}"
       self.filteredExStaffs = exStaffs
       self.update()
 
+    }
+    staffStore.on('csv_export_ex_staff_changed',csvExStaffChanged)
+    function csvExStaffChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 });
@@ -14102,7 +14315,7 @@ riot.tag2('infirmary-staff-bp-weight', '<print-header></print-header> <loading-b
        self.staffBpWeights = staffBpWeights
        self.filteredInfirmaryStaffBpWeights = staffBpWeights
        self.update()
-
+       self.readStaffBPWeight()
        console.log(self.staffBpWeights)
      }
 
@@ -14123,6 +14336,7 @@ riot.tag2('infirmary-staff-bp-weight', '<print-header></print-header> <loading-b
        self.staffBpWeights = staffBpWeights
        self.filteredInfirmaryStaffBpWeights = staffBpWeights
        self.update()
+       self.readStaffBPWeight()
 
      }
 
@@ -14980,7 +15194,7 @@ riot.tag2('infirmary-student-report', '<div class="field has-addons no-print"> <
 
 
 
-riot.tag2('infirmary-student', '<header></header> <loading-bar if="{loading}"></loading-bar> <section class="is-fluid" show="{infirmary_student_view == \'show_student_table\'}"> <h2 class="title has-text-centered" style="color: #ff3860;">Student Infirmary Details<br> Category : {category_name}</h2> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Category</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="read_category_id" id="read_category_id"> <option each="{infirmaryCategories}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readStudentInfirmary}">Go </button> </div> <div class="column"> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{readStudentInfirmary}" style="margin-left:5px;margin-right:5px"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> <button class="button is-info is-rounded is-pulled-right is-small ml5" onclick="{add_student_infirmary}"> <span class="icon"> <span class="fas fa-plus"></span> </span> </button> <input class="input is-pulled-right" ref="searchInfirmaryStudent" onkeyup="{filteredInfirmaryStudent}" type="text" style="width:200px;margin-right:5px;" placeholder="Search"> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <thead> <tr> <th>#</th> <th>Name</th> <th>Enroll No</th> <th>Class</th> <th>Case Name</th> <th>Date</th> <th>Time In</th> <th>Time Out</th> <th>Treatment</th> <th>Action</th> </tr> </thead> <tbody> <tr each="{st, i in filteredInfirmaryStudents}"> <td>{i+1}</td> <td>{st.student_name}</td> <td>{st.enroll_number}</td> <td>{st.standard}</td> <td>{st.case_name}</td> <td>{st.treatment_date}</td> <td>{st.time_in}</td> <td>{st.time_out}</td> <td>{st.treatment}</td> <td class="has-text-right no-print"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{st.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, st)}">Edit</a></span> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{st.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <soan disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <section class="is-fluid" show="{infirmary_student_view ==\'show_infirmary_student_form\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Student Infirmary</h2> </div> <div class="level-right"> <button class="button" onclick="{close_student_infirmary_form}">Back</button> </div> </div> <div class="box"> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label">Enroll No</label> <input type="text" ref="enroll_number" type="text" class="input" onkeyup="{addEnter}"> </div> <div class="column is-one-third"> <label class="label" for="class">Category</label> <div class="control"> <div class="select is-fullwidth"> <select ref="category_id" id="category_id" onkeyup="{addEnter}" onchange="{filterInfiramryCase}"> <option></option> <option each="{infirmaryCategories}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="class">Case</label> <div class="control"> <div class="select is-fullwidth"> <select ref="case_id" id="case_id" onkeyup="{addEnter}"> <option each="{filterInfirmaryCases}" riot-value="{case_id}">{case_name} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label">Date</label> <input class="input date flatpickr-input form-control input" ref="treatment_date" placeholder="" tabindex="0" type="text"> </div> <div class="column is-one-third"> <label class="label">Time In</label> <input type="text" ref="time_in" type="text" class="input" onkeyup="{addEnter}"> </div> <div class="column is-one-third"> <label class="label">Time Out</label> <input type="text" ref="time_out" type="text" class="input" onkeyup="{addEnter}"> </div> <div class="column is-one-third"> <label class="label">Treatment</label> <input type="text" ref="treatment" type="text" class="input" onkeyup="{addEnter}"> </div> <div class="column is-one-third"> <label class="label">Sent Home</label> <input type="checkbox" id="sent_home_check_box" onkeyup="{addEnter}"> </div> <div class="column is-full"> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{add}">{title}</button> </div> </div> </div> </section>', '', '', function(opts) {
+riot.tag2('infirmary-student', '<header></header> <loading-bar if="{loading}"></loading-bar> <section class="is-fluid" show="{infirmary_student_view == \'show_student_table\'}"> <h2 class="title has-text-centered" style="color: #ff3860;">Student Infirmary Details<br> Category : {category_name}</h2> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Category</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="read_category_id" id="read_category_id"> <option each="{infirmaryCategories}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Session</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="sessionId" id="sessionId"> <option each="{sessions}" riot-value="{session_id}">{session_name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readStudentInfirmary}">Go </button> </div> <div class="column"> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{readStudentInfirmary}" style="margin-left:5px;margin-right:5px"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> <button class="button is-info is-rounded is-pulled-right is-small ml5" onclick="{add_student_infirmary}"> <span class="icon"> <span class="fas fa-plus"></span> </span> </button> <input class="input is-pulled-right" ref="searchInfirmaryStudent" onkeyup="{filteredInfirmaryStudent}" type="text" style="width:200px;margin-right:5px;" placeholder="Search"> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-bordered"> <thead> <tr> <th>#</th> <th>Name</th> <th>Enroll No</th> <th>Class</th> <th>Case Name</th> <th>Date</th> <th>Time In</th> <th>Time Out</th> <th>Treatment</th> <th>Action</th> </tr> </thead> <tbody> <tr each="{st, i in filteredInfirmaryStudents}"> <td>{i+1}</td> <td>{st.student_name}</td> <td>{st.enroll_number}</td> <td>{st.standard}</td> <td>{st.case_name}</td> <td>{st.treatment_date}</td> <td>{st.time_in}</td> <td>{st.time_out}</td> <td>{st.treatment}</td> <td class="has-text-right no-print"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{st.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, st)}">Edit</a></span> <span> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{st.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <soan disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section> <section class="is-fluid" show="{infirmary_student_view ==\'show_infirmary_student_form\'}"> <div class="label"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">{title} Student Infirmary</h2> </div> <div class="level-right"> <button class="button" onclick="{close_student_infirmary_form}">Back</button> </div> </div> <div class="box"> <div class="columns is-variable is-1 is-multiline"> <div class="column is-one-third"> <label class="label">Enroll No</label> <input type="text" ref="enroll_number" type="text" class="input" onkeyup="{addEnter}"> </div> <div class="column is-one-third"> <label class="label" for="class">Category</label> <div class="control"> <div class="select is-fullwidth"> <select ref="category_id" id="category_id" onkeyup="{addEnter}" onchange="{filterInfiramryCase}"> <option></option> <option each="{infirmaryCategories}" riot-value="{category_id}">{category_name} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label" for="class">Case</label> <div class="control"> <div class="select is-fullwidth"> <select ref="case_id" id="case_id" onkeyup="{addEnter}"> <option each="{filterInfirmaryCases}" riot-value="{case_id}">{case_name} </option> </select> </div> </div> </div> <div class="column is-one-third"> <label class="label">Date</label> <input class="input date flatpickr-input form-control input" ref="treatment_date" placeholder="" tabindex="0" type="text"> </div> <div class="column is-one-third"> <label class="label">Time In</label> <input type="text" ref="time_in" type="text" class="input" onkeyup="{addEnter}"> </div> <div class="column is-one-third"> <label class="label">Time Out</label> <input type="text" ref="time_out" type="text" class="input" onkeyup="{addEnter}"> </div> <div class="column is-one-third"> <label class="label">Treatment</label> <input type="text" ref="treatment" type="text" class="input" onkeyup="{addEnter}"> </div> <div class="column is-one-third"> <label class="label">Sent Home</label> <input type="checkbox" id="sent_home_check_box" onkeyup="{addEnter}"> </div> <div class="column is-full"> <button class="button is-danger has-text-weight-bold adjusted-top" onclick="{add}">{title}</button> </div> </div> </div> </section>', '', '', function(opts) {
    var self = this
         self.on("mount", function(){
         self.title='Create'
@@ -14988,6 +15202,7 @@ riot.tag2('infirmary-student', '<header></header> <loading-bar if="{loading}"></
         self.infirmary_student_view='show_student_table'
         self.readInfirmaryCategory()
         self.readInfirmaryCase()
+        self.readSession()
 
         console.log("inside student infirmary")
         flatpickr(".date", {
@@ -15005,18 +15220,25 @@ riot.tag2('infirmary-student', '<header></header> <loading-bar if="{loading}"></
        studentinfirmaryStore.off('edit_student_infirmary_changed',EditStudentInfirmaryChanged)
        studentinfirmaryStore.off('delete_student_infirmary_changed',DeleteStudentInfirmaryChanged)
        studentinfirmaryStore.off('csv_export_infirmary_changed',csvStudentInfirmaryChanged)
+        sessionStore.off('read_session_changed', ReadSessionChanged)
      })
-      self.filteredInfirmaryStudent = ()=>{
-        self.filteredInfirmaryStudents = self.studentInfirmarys.filter(c => {
-          return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryStudent.value.toLowerCase())>=0
-        })
-      }
+
+    self.filteredInfirmaryStudent = ()=>{
+      self.filteredInfirmaryStudents = self.studentInfirmarys.filter(c => {
+        return JSON.stringify(c).toLowerCase().indexOf(self.refs.searchInfirmaryStudent.value.toLowerCase())>=0
+      })
+    }
+
+    self.readSession = () => {
+       sessionStore.trigger('read_session')
+    }
 
      self.readStudentInfirmary = () => {
          self.loading=true
+         console.log(self.refs.sessionId.value)
          self.category_name = $("#read_category_id option:selected").text();
          self.infirmary_student_view='show_student_table'
-         studentinfirmaryStore.trigger('read_student_infirmary', self.refs.read_category_id.value)
+         studentinfirmaryStore.trigger('read_student_infirmary', self.refs.read_category_id.value,self.refs.sessionId.value)
 
      }
      self.readInfirmaryCase = () => {
@@ -15246,6 +15468,16 @@ riot.tag2('infirmary-student', '<header></header> <loading-bar if="{loading}"></
       self.loading = false
       self.update()
      }
+
+    sessionStore.on('read_session_changed',ReadSessionChanged)
+    function ReadSessionChanged(sessions){
+      console.log(sessions)
+      self.title='Create'
+      self.loading = false
+      self.sessions = sessions
+      self.update()
+      console.log(self.sessions)
+    }
 
 });
 riot.tag2('infirmary', '<div class="field has-addons no-print"> <p class="control"> <a class="button {is-active: selected_master == \'infirmary-student\'}" href="#/infirmary/infirmary-student"> <span>Student Infirmary</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'infirmary-student-report\'}" href="#/infirmary/infirmary-student-report/infirmary-date-wise-case-report">Student Report</a> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'infirmary-staff\'}" href="#/infirmary/infirmary-staff"> <span>Staff Infirmary</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'infirmary-lab-test\'}" href="#/infirmary/infirmary-lab-test"> <span>Lab Test</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'infirmary-staff-report\'}" href="#/infirmary/infirmary-staff-report/infirmary-staff-date-wise-case-report"> <span>Staff Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'infirmary-staff-bp-weight\'}" href="#/infirmary/infirmary-staff-bp-weight"> <span>Staff B.P/Weight </span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'infirmary-staff-bp-weight-report\'}" href="#/infirmary/infirmary-staff-bp-weight-report/infirmary-staff-wise-report"> <span>Staff B.P/Report</span> </a> </p> </div> <div id="infirmary-view"></div>', '', '', function(opts) {
@@ -18586,6 +18818,7 @@ riot.tag2('level', '<print-header></print-header> <loading-bar if="{loading}"></
     self.edit = (d,e) => {
       console.log(d)
       self.title='Update'
+      document.getElementById("addLevelInput").focus()
       self.refs.addLevelInput.value = d.level
       self.edit_id = d.level_id
     }
@@ -18753,6 +18986,8 @@ riot.tag2('main-nav', '<nav class="navbar is-fixed-top is-light no-print" role="
          self.showAdmissionItems=true
         }else if(role=='Store'){
          self.showInventoryNavItems=true
+        }else if(role=='Infirmary'){
+         self.showInfirmaryNavItems=true
         }else {
 
         }
@@ -20954,14 +21189,14 @@ riot.tag2('mentor-detail', '<print-header></print-header> <loading-bar if="{load
       console.log(edit_case_details)
       self.refress_case_detail()
       self.update()
-     }
+    }
 
     mentordetailStore.on('delete_case_details_changed',DeleteCaseDetailsChanged)
     function DeleteCaseDetailsChanged(delete_case_details){
       console.log(delete_case_details)
       self.refress_case_detail()
       self.update()
-     }
+    }
 
     mentordetailStore.on('delete_mentor_detail_changed',DeleteMentorDetailsChanged)
     function DeleteMentorDetailsChanged(delete_mentor_details){
@@ -20969,7 +21204,7 @@ riot.tag2('mentor-detail', '<print-header></print-header> <loading-bar if="{load
       self.getMentorData()
 
       self.update()
-     }
+    }
 
     mentordetailStore.on('csv_export_mentor_changed',csvMentorDetailsChanged)
     function csvMentorDetailsChanged(url){
@@ -20977,7 +21212,7 @@ riot.tag2('mentor-detail', '<print-header></print-header> <loading-bar if="{load
       window.open(open_url);
       self.loading = false
       self.update()
-     }
+    }
 
     mentordetailStore.on('read_mentor_case_csv_changed',csvMentorCaseDetailsChanged)
     function csvMentorCaseDetailsChanged(url){
@@ -20985,7 +21220,7 @@ riot.tag2('mentor-detail', '<print-header></print-header> <loading-bar if="{load
       window.open(open_url);
       self.loading = false
       self.update()
-     }
+    }
 });
 riot.tag2('mentor-report', '<div class="field has-addons no-print"> <p class="control"> <a class="button {is-active: selected_master == \'mentor-case-wise-report\'}" href="#/mentor-report/mentor-case-wise-report"> <span>Case Wise Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'mentor-class-wise-report\'}" href="#/mentor-report/mentor-class-wise-report"> <span>Class Wise Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'mentor-date-wise-case-report\'}" href="#/mentor-report/mentor-date-wise-case-report"> <span>Date Wise Case Report</span> </a> </p> </div> <div id="mentor-report-view"></div>', '', '', function(opts) {
     var self = this
@@ -21310,11 +21545,15 @@ riot.tag2('new-admission-list-report', '<print-header></print-header> <loading-b
     self.on("unmount", function(){
 
       adminReportStore.off('read_new_student_list_report_changed',ReadNewStudentListReportChanged)
+      adminReportStore.off('csv_export_new_student_list_report_changed',csvNewStudentListReportChanged)
     })
 
     self.ReadNewStudentListReports = () => {
     	self.loading=true
        adminReportStore.trigger('read_new_student_list_report')
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_new_student_list_report', self.newStudentListReports)
     }
 
     adminReportStore.on('read_new_student_list_report_changed',ReadNewStudentListReportChanged)
@@ -21326,6 +21565,13 @@ riot.tag2('new-admission-list-report', '<print-header></print-header> <loading-b
       self.newStudentListReports = newStudentListReports
       self.update()
 
+    }
+    adminReportStore.on('csv_export_new_student_list_report_changed',csvNewStudentListReportChanged)
+    function csvNewStudentListReportChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 });
@@ -23264,7 +23510,7 @@ riot.tag2('result-activation', '<loading-bar if="{loading}"></loading-bar> <sect
     }
 
 });
-riot.tag2('role', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Employee Role Details</h2> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Employee</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="employee_id"> <option each="{employees}" riot-value="{employee_id}">{name} </option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Role</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="addEmployeeRoleInput"> <option value="Activity">Activity</option> <option value="Mentor">Mentor</option> <option value="Infirmary">Infirmary</option> <option value="Store">Store</option> <option value="Time Table">Time Table</option> <option value="Discipline">Discipline</option> <option value="Career">Career</option> <option value="Admission">Admission</option> <option value="Fees">Fees</option> <option value="Certificate">Certificate</option> </select> </div> </div> </div> <div class="column"> <button disabled="{loading}" class="button is-danger has-text-weight-bold" onclick="{add}">{title} </button> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <input class="input is-pulled-right is-small ml5" ref="searchRole" onkeyup="{filteredRole}" type="text" style="width:200px;margin-right:5px" placeholder="Search"> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>SL</th> <th>Employee ID</th> <th>Employee</th> <th>Role</th> <th></th> </tr> </thead> <tbody> <tr each="{ev, i in filteredRoles}"> <td>{i+1}</td> <td>{ev.employee_id}</td> <td>{ev.employee_name}</td> <td>{ev.role}</td> <td class="has-text-right no-print"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{ev.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, ev)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{ev.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('role', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Employee Role Details</h2> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Employee</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="employee_id"> <option each="{employees}" riot-value="{employee_id}">{name} </option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Role</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="addEmployeeRoleInput" id="addEmployeeRoleInput" onkeyup="{addEnter}"> <option value="Activity">Activity</option> <option value="Mentor">Mentor</option> <option value="Infirmary">Infirmary</option> <option value="Store">Store</option> <option value="Time Table">Time Table</option> <option value="Discipline">Discipline</option> <option value="Career">Career</option> <option value="Admission">Admission</option> <option value="Fees">Fees</option> <option value="Certificate">Certificate</option> </select> </div> </div> </div> <div class="column"> <button disabled="{loading}" class="button is-danger has-text-weight-bold" onclick="{add}">{title} </button> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <input class="input is-pulled-right is-small ml5" ref="searchRole" onkeyup="{filteredRole}" type="text" style="width:200px;margin-right:5px" placeholder="Search"> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>SL</th> <th>Employee ID</th> <th>Employee</th> <th>Role</th> <th></th> </tr> </thead> <tbody> <tr each="{ev, i in filteredRoles}"> <td>{i+1}</td> <td>{ev.employee_id}</td> <td>{ev.employee_name}</td> <td>{ev.role}</td> <td class="has-text-right no-print"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{ev.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, ev)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{ev.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
 	var self = this
     self.on("mount", function(){
       self.title='Create'
@@ -23357,6 +23603,7 @@ riot.tag2('role', '<print-header></print-header> <loading-bar if="{loading}"></l
     self.edit = (ev,e) => {
       console.log(ev)
       self.title='Update'
+      document.getElementById("addEmployeeRoleInput").focus()
       self.refs.addEmployeeRoleInput.value = ev.role
       self.refs.employee_id.value = ev.employee_id
       self.edit_id = ev.role_id
@@ -25310,6 +25557,20 @@ riot.tag2('staff-profile', '<loading-bar if="{loading}"></loading-bar> <section 
     	self.refs.details_publication.value=staff_details[0].details_publication
     	self.refs.details_curricular_activities.value=staff_details[0].details_curricular_activities
     	self.refs.details_sport.value=staff_details[0].details_sport
+    	self.refs.organization_of_previous_job.value=staff_details[0].organization_of_previous_job
+	    self.refs.add_l1_of_previous_job.value=staff_details[0].add_l1_of_previous_job
+	    self.refs.add_l2_of_previous_job.value=staff_details[0].add_l2_of_previous_job
+	    self.refs.city_of_previous_job.value=staff_details[0].city_of_previous_job
+	    self.refs.zip_of_previous_job.value=staff_details[0].zip_of_previous_job
+	    self.refs.state_of_previous_job.value=staff_details[0].state_of_previous_job
+	    self.refs.country_of_previous_job.value=staff_details[0].country_of_previous_job
+	    self.refs.designation_of_previous_job.value=staff_details[0].designation_of_previous_job
+	    self.refs.doj_of_previous_job.value=staff_details[0].doj_of_previous_job
+	    self.refs.salary_of_previous_job.value=staff_details[0].salary_of_previous_job
+	    self.refs.basic_of_previous_job.value=staff_details[0].basic_of_previous_job
+	    self.refs.allowances_of_previous_job.value=staff_details[0].allowances_of_previous_job
+	    self.refs.other_benefits_of_previous_job.value=staff_details[0].other_benefits_of_previous_job
+	    self.refs.bond_details_of_previous_job.value=staff_details[0].bond_details_of_previous_job
 
     }
 
@@ -25504,6 +25765,7 @@ riot.tag2('staff', '<print-header></print-header> <loading-bar if="{loading}"></
       staffStore.off('reset_staff_password_changed',ResetStaffPasswordChanged)
       staffStore.off('update_staff_fast_edit_changed',updateStaffFastEditChanged)
       staffStore.off('read_staff_id_card_changed',ReadIdCardChanged)
+      staffStore.off('csv_export_staff_changed',csvStaffChanged)
     })
 
       self.filteredStaff = ()=>{
@@ -25725,6 +25987,9 @@ riot.tag2('staff', '<print-header></print-header> <loading-bar if="{loading}"></
     		self.loading=true
     		staffStore.trigger('read_staff', self.refs.r_emp_type_id.value,self.refs.r_department_id.value,self.refs.r_designation_id.value,self.refs.r_level_id.value)
 
+    }
+    self.downloadCSV = () =>{
+      staffStore.trigger('csv_export_staff', self.staffs)
     }
 
     self.add_new_staff = () =>{
@@ -26847,6 +27112,20 @@ riot.tag2('staff', '<print-header></print-header> <loading-bar if="{loading}"></
     	self.refs.details_publication.value=staff_details[0].details_publication
     	self.refs.details_curricular_activities.value=staff_details[0].details_curricular_activities
     	self.refs.details_sport.value=staff_details[0].details_sport
+    	self.refs.organization_of_previous_job.value=staff_details[0].organization_of_previous_job
+	    self.refs.add_l1_of_previous_job.value=staff_details[0].add_l1_of_previous_job
+	    self.refs.add_l2_of_previous_job.value=staff_details[0].add_l2_of_previous_job
+	    self.refs.city_of_previous_job.value=staff_details[0].city_of_previous_job
+	    self.refs.zip_of_previous_job.value=staff_details[0].zip_of_previous_job
+	    self.refs.state_of_previous_job.value=staff_details[0].state_of_previous_job
+	    self.refs.country_of_previous_job.value=staff_details[0].country_of_previous_job
+	    self.refs.designation_of_previous_job.value=staff_details[0].designation_of_previous_job
+	        self.refs.doj_of_previous_job.value=staff_details[0].doj_of_previous_job
+	    self.refs.salary_of_previous_job.value=staff_details[0].salary_of_previous_job
+	    self.refs.basic_of_previous_job.value=staff_details[0].basic_of_previous_job
+	    self.refs.allowances_of_previous_job.value=staff_details[0].allowances_of_previous_job
+	    self.refs.other_benefits_of_previous_job.value=staff_details[0].other_benefits_of_previous_job
+	    self.refs.bond_details_of_previous_job.value=staff_details[0].bond_details_of_previous_job
 
     	self.update()
      }else{
@@ -27019,6 +27298,20 @@ riot.tag2('staff', '<print-header></print-header> <loading-bar if="{loading}"></
     	self.details_publication=staff_details[0].details_publication
     	self.details_curricular_activities=staff_details[0].details_curricular_activities
     	self.details_sport=staff_details[0].details_sport
+    	self.refs.organization_of_previous_job.value=staff_details[0].organization_of_previous_job
+	    self.refs.add_l1_of_previous_job.value=staff_details[0].add_l1_of_previous_job
+	    self.refs.add_l2_of_previous_job.value=staff_details[0].add_l2_of_previous_job
+	    self.refs.city_of_previous_job.value=staff_details[0].city_of_previous_job
+	    self.refs.zip_of_previous_job.value=staff_details[0].zip_of_previous_job
+	    self.refs.state_of_previous_job.value=staff_details[0].state_of_previous_job
+	    self.refs.country_of_previous_job.value=staff_details[0].country_of_previous_job
+	    self.refs.designation_of_previous_job.value=staff_details[0].designation_of_previous_job
+	        self.refs.doj_of_previous_job.value=staff_details[0].doj_of_previous_job
+	    self.refs.salary_of_previous_job.value=staff_details[0].salary_of_previous_job
+	    self.refs.basic_of_previous_job.value=staff_details[0].basic_of_previous_job
+	    self.refs.allowances_of_previous_job.value=staff_details[0].allowances_of_previous_job
+	    self.refs.other_benefits_of_previous_job.value=staff_details[0].other_benefits_of_previous_job
+	    self.refs.bond_details_of_previous_job.value=staff_details[0].bond_details_of_previous_job
 
     	self.update()
      }
@@ -27074,6 +27367,13 @@ riot.tag2('staff', '<print-header></print-header> <loading-bar if="{loading}"></
       self.image_type = image_type['type']
       console.log(self.image_type)
       self.staff_id_card_details = staff_id_card_details
+      self.update()
+    }
+    staffStore.on('csv_export_staff_changed',csvStaffChanged)
+    function csvStaffChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
 
@@ -27907,11 +28207,15 @@ riot.tag2('student-blood-group-report', '<print-header></print-header> <loading-
 
     self.on("unmount", function(){
       adminReportStore.off('read_student_blood_group_listing_report_changed',ReadStudentBloodGroupListingReportChanged)
+      adminReportStore.off('csv_export_student_blood_group_listing_report_changed',csvStudentBloodGroupReportChanged)
     })
 
     self.readStudentBloodGroupListingReport = () => {
     	self.loading=true
        adminReportStore.trigger('read_student_blood_group_listing_report')
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_blood_group_listing_report', self.studentBloodGroupListingReports)
     }
 
     adminReportStore.on('read_student_blood_group_listing_report_changed',ReadStudentBloodGroupListingReportChanged)
@@ -27964,6 +28268,13 @@ riot.tag2('student-blood-group-report', '<print-header></print-header> <loading-
       self.update()
 
     }
+    adminReportStore.on('csv_export_student_blood_group_listing_report_changed',csvStudentBloodGroupReportChanged)
+    function csvStudentBloodGroupReportChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
 });
 riot.tag2('student-browser', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid" show="{student_view ==\'student_list\'}"> <h4 class="title has-text-centered" style="color: #ff3860;">Students Details <span class="printOnly_t"><br> Session: <span style="color:#000">{session_name}</span></span></h4> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Standard</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" onchange="{getReadSection}" onkeyup="{addEnter}"> <option each="{standards}" riot-value="{standard_id}">{standard} </option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Section</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="section_id" onkeyup="{addEnter}"> <option each="{readfilteredSections}" riot-value="{section_id}">{section} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{readStudentBrowserData}">GO </button> <button if="{role==\'Class Teacher\'}" class="button ml5 is-pulled-right" onclick="{view_images}" title="View Images"> <span class="icon"> <i class="fa fa-address-book" aria-hidden="true"></i> </span> </button> <button if="{role==\'Class Teacher\'}" class="button is-link has-text-weight-bold ml5 is-pulled-right" onclick="{print_list}" title="Print List"> <span class="icon"> <i class="far fa-eye"></i> </span> </button> <button class="button is-success has-text-weight-bold ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right ml5" onclick="window.print()" title="Print" style="margin-left:5px"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <button class="button is-warning has-text-weight-bold is-pulled-right ml5" onclick="{showStudentField}">Setting </button> <input class="input is-pulled-right" ref="searchBrowseStudent" onkeyup="{filteredBrowseStudent}" type="text" style="width:200px;margin-right:5px;" placeholder="Search"> </div> </div> </div> <div style="overflow-x: scroll; border:solid #000 1px;"> <table class="table is-fullwidth is-bordered is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th show="{roll_no_view ==\'show_roll_no\'}">Roll No</th> <th show="{enroll_no_view ==\'show_enroll_no\'}">Enroll No</th> <th show="{student_view ==\'show_student\'}">Student Name</th> <th show="{class_view ==\'show_class\'}">Class</th> <th show="{group_view ==\'show_group\'}">Group</th> <th show="{house_view ==\'show_house\'}">House</th> <th show="{reg_no_view ==\'show_reg_no\'}">Reg. No</th> <th show="{gender_view ==\'show_gender\'}">Gender</th> <th show="{category_view ==\'show_category\'}">Category</th> <th show="{dob_view ==\'show_dob\'}">DOB</th> <th show="{age_view ==\'show_age\'}">Age</th> <th show="{income_view ==\'show_income\'}">Income</th> <th show="{f_annual_income_view ==\'show_f_annual_income\'}">Father\'s AnnualIncome</th> <th show="{doa_view ==\'show_doa\'}">DOA</th> <th show="{old_doa_view ==\'show_old_doa\'}">Old DOA</th> <th show="{old_doj_view ==\'show_old_doj\'}">Old DOJ</th> <th show="{title_view ==\'show_title\'}">Title</th> <th show="{first_name_view ==\'show_first_name\'}">First Name</th> <th show="{middle_name_view ==\'show_middle_name\'}">Middle Name </th> <th show="{last_name_view ==\'show_last_name\'}">Last Name</th> <th show="{withdrawn_view ==\'show_withdrawn\'}">Withdrawn</th> <th show="{doj_view ==\'show_doj\'}">DOJ</th> <th show="{mother_tongue_view ==\'show_mother_tongue\'}">Mother Tongue</th> <th show="{last_school_view ==\'show_last_school\'}">Last School</th> <th show="{last_class_view ==\'show_last_class\'}">Last Class</th> <th show="{admission_for_view ==\'show_admission_for\'}">Admission For</th> <th show="{hobby_view ==\'show_hobby\'}">Hobby</th> <th show="{blood_group_view ==\'show_blood_group\'}">Blood Group</th> <th show="{nationality_view ==\'show_nationality\'}">Nationality</th> <th show="{cast_view ==\'show_cast\'}">Cast</th> <th show="{religion_view ==\'show_religion\'}">Religion</th> <th show="{c_add_view ==\'show_c_add\'}">C Add</th> <th show="{p_add_view ==\'show_p_add\'}">P Add</th> <th show="{sms_view ==\'show_sms\'}">SMS</th> <th show="{residence_phone_view ==\'show_residence_phone\'}">Residence Phone </th> <th show="{fax_view ==\'show_fax\'}">Emergency No.</th> <th show="{student_type_view ==\'show_student_type\'}">Student Type</th> <th show="{staff_child_view ==\'show_staff_child\'}">Staff Child</th> <th show="{staff_name_view ==\'show_staff_name\'}">Staff Name</th> <th show="{student_email_view ==\'show_student_email\'}">Student Email</th> <th show="{f_title_view ==\'show_f_title\'}">Father Title</th> <th show="{f_name_view ==\'show_f_name\'}">Father\'s Name</th> <th show="{f_school_name_view ==\'show_f_school_name\'}">Father\'s School Name</th> <th show="{f_school_exam__view ==\'show_f_school_exam_\'}">Father\'s School Exam</th> <th show="{f_college_name_view ==\'show_f_college_name\'}">Father\'s College Name</th> <th show="{f_college_exam_view ==\'show_f_college_exam\'}">Father\'s College Exam</th> <th show="{f_occupation_view ==\'show_f_occupation\'}">Father\'s Occupation</th> <th show="{f_add_view ==\'show_f_add\'}">Father\'s Address</th> <th show="{f_phone_view ==\'show_f_phone\'}">Father\'s Phone</th> <th show="{f_mobile_view ==\'show_f_mobile\'}">Father\'s Mobile</th> <th show="{f_email_view ==\'show_f_email\'}">Father\'s Email</th> <th show="{f_organisation_type_view ==\'show_f_organisation_type\'}">Father\'s Organisation Type</th> <th show="{f_organisation_view ==\'show_f_organisation\'}">Father\'s Organisation</th> <th show="{f_designation_view ==\'show_f_designation\'}">Father\'s Designation</th> <th show="{f_department_view ==\'show_f_department\'}">Father\'s Department</th> <th show="{f_office_add_view ==\'show_f_office_add\'}">Father\'s Office Add</th> <th show="{f_office_phone_view ==\'show_f_office_phone\'}">Father\'s Office Phone</th> <th show="{f_nationality_view ==\'show_f_nationality\'}">Father\'s Nationality</th> <th show="{m_title_view ==\'show_m_title\'}">Mother Title</th> <th show="{m_name_view ==\'show_m_name\'}">Mother\'s Name</th> <th show="{m_school_exam_view ==\'show_m_school_exam\'}">Mother\'s School Name</th> <th show="{m_exam_exam_view ==\'show_m_exam_exam\'}">Mother\'s School Exam</th> <th show="{m_college_exam_view ==\'show_m_college_exam\'}">Mother\'s College Name</th> <th show="{m_college_name_view ==\'show_m_college_name\'}">Mother\'s College Exam</th> <th show="{m_occupation_view ==\'show_m_occupation\'}">Mother\'s Occupation</th> <th show="{m_add_view ==\'show_m_add\'}">Mother\'s Address</th> <th show="{m_phone_view ==\'show_m_phone\'}">Mother\'s Phone</th> <th show="{m-mobile_view ==\'show_m-mobile\'}">Mother\'s Mobile</th> <th show="{m_email_view ==\'show_m_email\'}">Mother\'s Email</th> <th show="{m_organisation_view ==\'show_m_organisation\'}">Mother\'s Organisation</th> <th show="{m_annual_income_view ==\'show_m_annual_income\'}">Mother\'s AnnualIncome</th> <th show="{m_designation_view ==\'show_m_designation\'}">Mother\'s Designation</th> <th show="{m_department_view ==\'show_m_department\'}">Mother\'s Department</th> <th show="{m_office_add_view ==\'show_m_office_add\'}">Mother\'s Office Add</th> <th show="{m_office_phone_view ==\'show_m_office_phone\'}">Mother\'s Office Phone</th> <th show="{m_nationality_view ==\'show_m_nationality\'}">Mother\'s Nationality</th> <th show="{g_name_view ==\'show_g_name\'}">Guardian\'s Name</th> <th show="{g_school_name_view ==\'show_g_school_name\'}">Guardian\'s School Name</th> <th show="{g_school_exam_view ==\'show_g_school_exam\'}">Guardian\'s School Exam</th> <th show="{g_college_name_view ==\'show_g_college_name\'}">Guardian\'s College Name</th> <th show="{g-college_exam_view ==\'show_g-college_exam\'}">Guardian\'s College Exam</th> <th show="{g_occupation_view ==\'show_g_occupation\'}">Guardian\'s Occupation</th> <th show="{g_add_view ==\'show_g_add\'}">Guardian\'s Address</th> <th show="{g_phone_view ==\'show_g_phone\'}">Guardian\'s Phone</th> <th show="{g_mobile_view ==\'show_g_mobile\'}">Guardian\'s Mobile</th> <th show="{g_email_view ==\'show_g_email\'}">Guardian\'s Email</th> <th show="{g_organisation_view ==\'show_g_organisation\'}">Guardian\'s Organisation</th> <th show="{g_annual_income_view ==\'show_g_annual_income\'}">Guardian\'s AnnualIncome</th> <th show="{g_designation_view ==\'show_g_designation\'}">Guardian\'s Designation</th> <th show="{g_department_view ==\'show_g_department\'}">Guardian\'s Department</th> <th show="{g_office_add_view ==\'show_g_office_add\'}">Guardian\'s Office Add</th> <th show="{g_office_phone_view ==\'show_g_office_phone\'}">Guardian\'s Office Phone</th> <th show="{g_nationality_view ==\'show_g_nationality\'}">Guardian\'s Nationality</th> <th show="{g_relation_view ==\'show_g_relation\'}">Guardian\'s Relation</th> <th show="{sibling_name_view ==\'show_sibling_name\'}">Sibling Name</th> <th show="{sibling_enroll_no_view ==\'show_sibling_enroll_no\'}">Sibling Enroll No</th> </tr> </thead> <tbody> <tr each="{st, i in filteredBrowseStudents}"> <td>{i+1}</td> <td show="{roll_no_view ==\'show_roll_no\'}">{st.roll_number}</td> <td show="{enroll_no_view ==\'show_enroll_no\'}">{st.enroll_number}</td> <td show="{student_view ==\'show_student\'}">{st.first_name} {st.middle_name} {st.last_name}</td> <td show="{class_view ==\'show_class\'}">{st.standard}</td> <td show="{group_view ==\'show_group\'}">{st.group_name}</td> <td show="{house_view ==\'show_house\'}">{st.house_name}</td> <td show="{reg_no_view ==\'show_reg_no\'}">{st.reg_number}</td> <td show="{gender_view ==\'show_gender\'}">{st.gender}</td> <td show="{category_view ==\'show_category\'}">{st.category_name}</td> <td show="{age_view ==\'show_dob\'}">{st.dob}</td> <td show="{dob_view ==\'show_age\'}">{st.age}</td> <td show="{income_view ==\'income_age\'}">{st.f_annual_income}</td> <td show="{f_annual_income_view ==\'show_f_annual_income\'}">{st.f_annual_income}</td> <td show="{doa_view ==\'show_doa\'}">{st.doa}</td> <td show="{title_view ==\'show_title\'}">{st.title}</td> <td show="{first_name_view ==\'show_first_name\'}">{st.first_name}</td> <td show="{middle_name_view ==\'show_middle_name\'}">{st.middle_name}</td> <td show="{last_name_view ==\'show_last_name\'}">{st.last_name}</td> <td show="{withdrawn_view ==\'show_withdrawn\'}">{st.withdrawn}</td> <td show="{doj_view ==\'show_doj\'}">{st.doj}</td> <td show="{mother_tongue_view ==\'show_mother_tongue\'}">{st.mother_tongue}</td> <td show="{last_school_view ==\'show_last_school\'}">{st.last_school}</td> <td show="{last_class_view ==\'show_last_class\'}">{st.last_class}</td> <td show="{admission_for_view ==\'show_admission_for\'}">{st.admission_for_class}</td> <td show="{hobby_view ==\'show_hobby\'}">{st.hobby}</td> <td show="{blood_group_view ==\'show_blood_group\'}">{st.blood_group}</td> <td show="{nationality_view ==\'show_nationality\'}">{st.nationality}</td> <td show="{cast_view ==\'show_cast\'}">{st.cast}</td> <td show="{religion_view ==\'show_religion\'}">{st.religion}</td> <td show="{c_add_view ==\'show_c_add\'}">{st.c_add_l1} {st.c_add_l2} <br> {st.c_city}-{st.c_zip} <br>{st.c_state}, {st.c_country}</td> <td show="{p_add_view ==\'show_p_add\'}">{st.p_add_l1} {st.p_add_l2} <br> {st.p_city}-{st.p_zip} <br>{st.p_state}, {st.p_country}</td> <td show="{mobile_view ==\'show_mobile\'}">{st.mobile}</td> <td show="{residence_phone_view ==\'show_residence_phone\'}">{st.residence_phone}</td> <td show="{fax_view ==\'show_fax\'}">{st.fax}</td> <td show="{student_type_view ==\'show_student_type\'}">{st.student_type}</td> <td show="{staff_child_view ==\'show_staff_child\'}">{st.staff_child}</td> <td show="{staff_name_view ==\'show_staff_name\'}">{st.staff_name}</td> <td show="{email_view ==\'show_email\'}">{st.email}</td> <td show="{f_title_view ==\'show_f_title\'}">{st.f_title}</td> <td show="{f_name_view ==\'show_f_name\'}">{st.f_name}</td> <td show="{f_school_name_view ==\'show_f_school_name\'}">{st.f_school_name}</td> <td show="{f_school_exam_view ==\'show_f_school_exam\'}">{st.f_school_exam_passed}</td> <td show="{f_college_name_view ==\'show_f_college_name\'}">{st.f_college_name}</td> <td show="{f_college_exam ==\'show_f_college_exam\'}">{st.f_college_exam_passed}</td> <td show="{occupation_view ==\'show_occupation\'}">{f_occupation}</td> <td show="{f_add_view ==\'show_f_add\'}">{st.f_add_l1} {st.f_add_l2} <br> {st.f_city}-{st.f_zip} <br>{st.f_state}, {st.f_country}</td> <td show="{f_phone_view ==\'show_f_phone\'}">{st.f_phone}</td> <td show="{f_mobile_view ==\'show_f_mobile\'}">{st.f_mobile}</td> <td show="{f_fax_view ==\'show_f_fax\'}">{st.f_fax}</td> <td show="{f_email_view ==\'show_f_email\'}">{st.f_email}</td> <td show="{f_organisation_type_view ==\'show_f_organisation_type\'}">{st.f_organisation_type}</td> <td show="{f_organisation_view ==\'show_f_organisation\'}">{st.f_organisation_name}</td> <td show="{f_designation_view ==\'show_f_designation\'}">{st.f_designation}</td> <td show="{f_department_view ==\'show_f_department\'}">{st.f_department}</td> <td show="{f_office_add_view ==\'show_f_office_add\'}">{st.f_office_add_l1} {st.f_office_add_l2} <br> {st.f_office_city}-{st.f_office_zip} <br>{st.f_office_state}, {st.f_office_country}</td> <td show="{f_office_phone_view ==\'show_f_office_phone\'}">{st.f_office_phone}</td> <td show="{f_nationality_view ==\'show_f_nationality\'}">{st.f_nationality}</td> <td show="{m_title_view ==\'show_itle\'}">{st.m_title}</td> <td show="{m_name_view ==\'show_m_name\'}">{st.m_name}</td> <td show="{m_school_name_view ==\'show_m_school_name\'}">{st.m_school_name}</td> <td show="{m_school_exam_view ==\'show_chool_exam\'}">{st.m_school_exam_passed}</td> <td show="{m_college_name_view ==\'show_m_college_name\'}">{st.m_college_name}</td> <td show="{m_college_exam_view ==\'show_m_college_exam\'}">{st.m_college_exam_passed}</td> <td show="{occupation_view ==\'show_occupation\'}">{m_occupation}</td> <td show="{m_add_view ==\'show_m_add\'}">{st.m_add_l1} {st.m_add_l2} <br> {st.m_city}-{st.m_zip} <br>{st.m_state}, {st.m_country}</td> <td show="{m_phone_view ==\'show_m_phone\'}">{st.m_phone}</td> <td show="{m_mobile_view ==\'show_m_mobile\'}">{st.m_mobile}</td> <td show="{m_fax_view ==\'show_m_fax\'}">{st.m_fax}</td> <td show="{m_email_view ==\'show_m_email\'}">{st.m_email}</td> <td show="{m_organisation_view ==\'show_m_organisation\'}">{st.m_organisation_name}</td> <td show="{m_annual_income_view ==\'show_m_annual_income\'}">{st.m_annual_income}</td> <td show="{m_designation_view ==\'show_m_designation\'}">{st.m_designation}</td> <td show="{m_department_view ==\'show_m_department\'}">{st.m_department}</td> <td show="{m_office_add_view ==\'show_m_office_add\'}">{st.m_office_add_l1} {st.m_office_add_l2} <br> {st.m_office_city}-{st.m_office_zip} <br>{st.m_office_state}, {st.m_office_country}</td> <td show="{m_office_phone_view ==\'show_m_office_phone\'}">{st.m_office_phone}</td> <td show="{m_nationality_view ==\'show_m_nationality\'}">{st.m_nationality}</td> <td show="{g_title_view ==\'show_g_title\'}">{st.g_title}</td> <td show="{g_name_view ==\'show_g_name\'}">{st.g_name}</td> <td show="{g_school_name_view ==\'show_g_school_name\'}">{st.g_school_name}</td> <td show="{g_school_exam_view ==\'show_g_school_exam\'}">{st.g_school_exag_passed}</td> <td show="{g_college_name_view ==\'show_g_college_name\'}">{st.g_college_name}</td> <td show="{g_college_exam_view ==\'show_g_college_exam\'}">{st.g_college_exag_passed}</td> <td show="{occupation_view ==\'show_occupation\'}">{g_occupation}</td> <td show="{g_add_view ==\'show_g_add\'}">{st.g_add_l1} {st.g_add_l2} <br> {st.g_city}-{st.g_zip} <br>{st.g_state}, {st.g_country}</td> <td show="{g_phone_view ==\'show_g_phone\'}">{st.g_phone}</td> <td show="{g_mobile_view ==\'show_g_mobile\'}">{st.g_mobile}</td> <td show="{g_fax_view ==\'show_g_fax\'}">{st.g_fax}</td> <td show="{g_email_view ==\'show_g_email\'}">{st.g_email}</td> <td show="{g_organisation_view ==\'show_g_organisation\'}">{st.g_organisation_name}</td> <td show="{g_annual_income_view ==\'show_g_annual_income\'}">{st.g_annual_income}</td> <td show="{g_designation_view ==\'show_g_designation\'}">{st.g_designation}</td> <td show="{g_department_view ==\'show_g_department\'}">{st.g_department}</td> <td show="{g_office_add_view ==\'show_g_office_add\'}">{st.g_office_add_l1} {st.g_office_add_l2} <br> {st.g_office_city}-{st.g_office_zip} <br>{st.g_office_state}, {st.g_office_country}</td> <td show="{g_office_phone_view ==\'show_g_office_phone\'}">{st.g_office_phone}</td> <td show="{g_nationality_view ==\'show_g_nationality\'}">{st.g_nationality}</td> <td show="{g_relation_view ==\'show_g_relation\'}">{st.g_relation}</td> <td show="{sibling_name_view ==\'show_sibling_name\'}">{st.sibling_name}</td> <td show="{sibling_enroll_no_view ==\'show_sibling_enroll_no\'}">{st.sibling_enroll_number}</td> </tr> </tbody> </table> </div> </section> <section> <div id="columnSetting" class="modal"> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Setting Configuaration</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <div class="field"> <div class="control" each="{st, i in fieldList}"> <input class="checkbox" type="checkbox" checked="{st.done}" id="{\'addStudentName\' + st.array_name}" onclick="{addCheckedColumn.bind(this,st)}">{st.field_name} </div> </div> </div> </div> </section> <footer class="modal-card-foot"> <div class="control"> <input type="checkbox" id="checkAllCheckBox" onclick="{selectAllCheckBox}"> All </div> <button class="button" id="item-modal-close" onclick="{closeCheckBoxModal}">Close</button> </footer> </div> </div> </section> <section class=" is-fluid" show="{student_view ==\'print_list\'}"> <div class="level no-print"> <div class="level-left"> </div> <div class="level-right"> <div class="control no-print"> <div class="select is-fullwidth is-small"> <select id="add_column" ref="add_column" onchange="{AddColumn}"> <option value="0">Select Column</option> <option value="1">1</option> <option value="2">2</option> <option value="3">3</option> <option value="4">4</option> <option value="5">5</option> <option value="6">6</option> <option value="7">7</option> <option value="8">8</option> <option value="9">9</option> </select> </div> </div> <input type="checkbox" id="checkHouse" checked="{e.done}" onclick="{viewHouse}" class="no-print ml5"> <b class="ml5">House</b> <button class="button is-primary has-text-weight-bold ml5 is-small" onclick="window.print()"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <button class="button is-warning has-text-weight-bold ml5 is-small " onclick="{close_print_list}"> <span class="icon"> <span class="fas fa-arrow-left"></span> </span> </button> </div> </div> <center> <div style="text-align:left;"> <table class="table is-fullwidth is-bordered"> <caption class="caption">Students List {pl.standard} - {pl.section} ({pl.session_name}) </caption> <tr> <th style="">Roll No</th> <th style="">Enrol No</th> <th style="">Name</th> <th style="" show="{house_column}">House</th> <th show="{column_one}"></th> <th show="{column_two}"></th> <th show="{column_three}"></th> <th show="{column_four}"></th> <th show="{column_five}"></th> <th show="{column_six}"></th> <th show="{column_seven}"></th> <th show="{column_eight}"></th> <th show="{column_nine}"></th> </tr> <tr each="{pl, i in print_list}"> <td>{pl.roll_number}</td> <td>{pl.enroll_number}</td> <td>{pl.name}</td> <td show="{house_column}">{pl.house}</td> <td show="{column_one}"></td> <td show="{column_two}"></td> <td show="{column_three}"></td> <td show="{column_four}"></td> <td show="{column_five}"></td> <td show="{column_six}"></td> <td show="{column_seven}"></td> <td show="{column_eight}"></td> <td show="{column_nine}"></td> </tr> </table> </div> </center> </section> <section class=" is-fluid" show="{student_view ==\'image_list_view\'}"> <div class="level no-print"> <div class="level-left"> <h2 class="title has-text-danger is-size-5"></h2> </div> <div class="level-right"> <button class="button is-primary has-text-weight-bold " onclick="window.print()"> <span class="icon"> <span class="fas fa-print"></span> </span> </button> <button class="button is-warning has-text-weight-bold ml5" onclick="{close_image_list}"> <span class="icon"> <span class="fas fa-arrow-left"></span> </span> </button> </div> </div> <center> <table class="table class-teacher-table"><caption class="class-teacher-caption"> Student\\\'s Image Varification </caption></table> <table class="table class-teacher-table" each="{c, i in image_list}" style="margin-top:-25px;"> <tr class="class-teacher-tr"> <td rowspan="3" style="width:100px;" class=""> <img riot-src="images/{session_id}/studentImages/{c.student_id}.jpg" height="75"> </td> <th> Name </th> <td>{c.name}</td> <th style="width:160px;">Enroll No</th> <td> {c.enroll_number}</td> </tr> <tr class="class-teacher-tr"> <th>Date of Birth </th> <td>{c.dob}</td> <th>Reg. No</th> <td style="width:150px"> {c.reg_number}</td> </tr> <tr class="class-teacher-tr"> <th style="width:115px;"> standard </th> <td colspan="3"></td> </tr> </table> </center> </section>', '', '', function(opts) {
@@ -28006,7 +28317,7 @@ riot.tag2('student-browser', '<print-header></print-header> <loading-bar if="{lo
 			{ field_name : "p_Address", array_name : "Permanent Address"},
 			{ field_name : "Mobile" , array_name : "SMS"},
 			{ field_name : "ResidencePhone", array_name : "Residence Phone"},
-			{ field_name : "Emergency No.", array_name : "Emergency No."},
+			{ field_name : "Emergency No", array_name : "Emergency No"},
 			{ field_name : "StudentType", array_name : "Student Type"},
 			{ field_name : "StaffChild", array_name : "Staff Child"},
 			{ field_name : "StaffName", array_name : "Staff Name"},
@@ -29013,6 +29324,9 @@ riot.tag2('student-category-strength-report', '<print-header></print-header> <lo
     	self.loading=true
        adminReportStore.trigger('read_student_category_strength_report',self.refs.category_id.value)
     }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_category_strength_report', self.studentCategoryStrengthReports)
+    }
 
     categoryStore.on('categories_changed',CategoriesChanged)
     function CategoriesChanged(categories){
@@ -29035,6 +29349,13 @@ riot.tag2('student-category-strength-report', '<print-header></print-header> <lo
       self.update()
 
     }
+    adminReportStore.on('csv_export_student_category_strength_report_changed',csvStudentCategoryStrengthReportChanged)
+    function csvStudentCategoryStrengthReportChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
 });
 riot.tag2('student-category-summary-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h4 class="title has-text-centered" style="color: #ff3860;">Class Wise Cast Category Strength({session_name}) </h4> <div class="box no-print"> <div class="columns"> <div class=" column"> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i></span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{readStudentCategorySummaryReport}" style="margin-left:5px;margin-right:5px"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Standard</th> <th>General</th> <th>ST</th> <th>SC</th> <th>OBC</th> </tr> </thead> <tbody> <tr each="{st, i in studentCategorySummaryReports}"> <td>{i+1}</td> <td>{st.standard}</td> <td>{st.General}</td> <td>{st.ST}</td> <td>{st.SC}</td> <td>{st.OBC}</td> </tr> <tr><th colspan="2">Total</th> <th>{totalGeneral}</th> <th>{totalST}</th> <th>{totalSC}</th> <th>{totalOBC}</th> </tr> </tbody> </table> </section>', '', '', function(opts) {
@@ -29053,7 +29374,8 @@ riot.tag2('student-category-summary-report', '<print-header></print-header> <loa
 
     self.on("unmount", function(){
       adminReportStore.off('read_student_category_summary_report_changed',ReadStudentCategorySummaryReportChanged)
-       categoryStore.off('categories_changed', CategoriesChanged)
+      categoryStore.off('categories_changed', CategoriesChanged)
+      adminReportStore.off('csv_export_student_category_summary_report_changed',csvStudentCategorySummaryReportChanged)
     })
 
      self.readCategory = () => {
@@ -29074,6 +29396,9 @@ riot.tag2('student-category-summary-report', '<print-header></print-header> <loa
       self.update()
      self.readStudentCategorySummaryReport()
       console.log(self.categories)
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_category_summary_report', self.studentCategorySummaryReports)
     }
 
     adminReportStore.on('read_student_category_summary_report_changed',ReadStudentCategorySummaryReportChanged)
@@ -29107,6 +29432,14 @@ riot.tag2('student-category-summary-report', '<print-header></print-header> <loa
 
     }
 
+    adminReportStore.on('csv_export_student_category_summary_report_changed',csvStudentCategorySummaryReportChanged)
+    function csvStudentCategorySummaryReportChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
+
 });
 riot.tag2('student-class-teacher-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h4 class="title has-text-centered" style="color: #ff3860;">Class Teacher Listing <br> Session : ({session_name})</h4> <div class="box no-print"> <div class="columns"> <div class=" column"> <button class="button is-success has-text-weight-bold is-pulled-right is-small ml5" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i></span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{readClassTeaherReport}" style="margin-left:5px;margin-right:5px"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> </div> <table class="table is-fullwidth is-bordered is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Class</th> <th>Section</th> <th>Teacher</th> </tr> </thead> <tbody> <tr each="{st, i in studentClassTeacherReports}"> <td>{i+1}</td> <td>{st.standard}</td> <td>{st.section}</td> <td>{st.teacher_name}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
 
@@ -29125,11 +29458,15 @@ riot.tag2('student-class-teacher-report', '<print-header></print-header> <loadin
     self.on("unmount", function(){
 
       adminReportStore.off('read_class_teacher_report_change',ReadClassTeacherReportChanged)
+      adminReportStore.off('csv_export_student_class_teacher_report_changed',csvStudentClassTeacherReportChanged)
     })
 
     self.readClassTeaherReport = () => {
     	self.loading=true
        adminReportStore.trigger('read_class_teacher_report')
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_class_teacher_report', self.studentClassTeacherReports)
     }
 
     adminReportStore.on('read_class_teacher_report_change',ReadClassTeacherReportChanged)
@@ -29141,6 +29478,13 @@ riot.tag2('student-class-teacher-report', '<print-header></print-header> <loadin
       self.studentClassTeacherReports = studentClassTeacherReports
       self.update()
 
+    }
+    adminReportStore.on('csv_export_student_class_teacher_report_changed',csvStudentClassTeacherReportChanged)
+    function csvStudentClassTeacherReportChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 });
@@ -29164,6 +29508,7 @@ riot.tag2('student-group-report', '<print-header></print-header> <loading-bar if
       studentStore.off('read_standard_changed',StandardChanged)
       studentStore.off('read_section_changed',SectionChanged)
       adminReportStore.off('read_student_group_report_change',ReadStudentGroupReportChanged)
+      adminReportStore.off('csv_export_student_group_report_changed',csvStudentGroupReportChanged)
     })
 
     self.viewTable = () => {
@@ -29187,6 +29532,9 @@ riot.tag2('student-group-report', '<print-header></print-header> <loading-bar if
     	self.readfilteredSections = self.sections.filter(s => {
     		return s.standard_id == self.refs.standard_id.value
     	})
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_group_report', self.studentGroupReports)
     }
      self.addEnter = (e) => {
       if(e.which == 13){
@@ -29247,6 +29595,13 @@ riot.tag2('student-group-report', '<print-header></print-header> <loading-bar if
 	      self.update()
 	      console.log(self.studentGroupReports)
 
+    }
+    adminReportStore.on('csv_export_student_group_report_changed',csvStudentGroupReportChanged)
+    function csvStudentGroupReportChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 });
@@ -29868,6 +30223,7 @@ riot.tag2('student-house-report', '<print-header></print-header> <loading-bar if
       studentStore.off('read_standard_changed',StandardChanged)
       studentStore.off('read_section_changed',SectionChanged)
       adminReportStore.off('read_student_house_report_change',ReadStudentHouseReportChanged)
+      adminReportStore.off('csv_export_student_house_report_changed',csvStudentHouseReportChanged)
     })
      self.addEnter = (e) => {
       if(e.which == 13){
@@ -29900,6 +30256,9 @@ riot.tag2('student-house-report', '<print-header></print-header> <loading-bar if
     self.readStudentHouseReport = () => {
     	self.loading=true
        adminReportStore.trigger('read_student_house_report',self.refs.standard_id.value,self.refs.section_id.value)
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_house_report', self.studentHouseReports)
     }
 
    studentStore.on('read_standard_changed',StandardChanged)
@@ -29951,6 +30310,13 @@ riot.tag2('student-house-report', '<print-header></print-header> <loading-bar if
 
       self.update()
 
+    }
+    adminReportStore.on('csv_export_student_house_report_changed',csvStudentHouseReportChanged)
+    function csvStudentHouseReportChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 });
@@ -30518,11 +30884,15 @@ riot.tag2('student-religion-strength-report', '<print-header></print-header> <lo
 
     self.on("unmount", function(){
       adminReportStore.off('read_student_religion_listing_report_changed',ReadStudentReligionListingReportChanged)
+      adminReportStore.off('csv_export_student_religion_listing_report_changed',csvStudentReligionListingReportChanged)
     })
 
     self.readStudentReligionListingReport = () => {
     	self.loading=true
        adminReportStore.trigger('read_student_religion_listing_report')
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_religion_listing_report', self.studentReligionListingReports)
     }
 
     adminReportStore.on('read_student_religion_listing_report_changed',ReadStudentReligionListingReportChanged)
@@ -30562,6 +30932,13 @@ riot.tag2('student-religion-strength-report', '<print-header></print-header> <lo
       })
       self.update()
 
+    }
+    adminReportStore.on('csv_export_student_religion_listing_report_changed',csvStudentReligionListingReportChanged)
+    function csvStudentReligionListingReportChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
 
 });
@@ -31054,7 +31431,7 @@ riot.tag2('student-search', '<print-header></print-header> <loading-bar if="{loa
 			{ field_name : "p_Address", array_name : "Permanent Address"},
 			{ field_name : "Mobile" , array_name : "SMS"},
 			{ field_name : "ResidencePhone", array_name : "Residence Phone"},
-			{ field_name : "Emergency No.", array_name : "Emergency No."},
+			{ field_name : "Emergency No.", array_name : "Emergency No"},
 			{ field_name : "StudentType", array_name : "Student Type"},
 			{ field_name : "StaffChild", array_name : "Staff Child"},
 			{ field_name : "StaffName", array_name : "Staff Name"},
@@ -31164,8 +31541,8 @@ riot.tag2('student-search', '<print-header></print-header> <loading-bar if="{loa
       if($('#checkAllCheckBox').is(":checked")){
         self.fieldList.map(i=>{
         	console.log(i)
-          i.done = true;
-          $('addStudentName'+i.array_name).prop('checked', true);
+              i.done = true;
+             $('addStudentName'+ i.array_name).prop('checked', true);
         })
       }else{
         self.fieldList.map(i=>{
@@ -31882,6 +32259,7 @@ riot.tag2('student-strength-report', '<print-header></print-header> <loading-bar
 
     self.on("unmount", function(){
       adminReportStore.off('read_student_strength_report_changed',ReadStudentStrengthReportChanged)
+      adminReportStore.off('csv_export_student_strength_report_changed',csvStudentStrengthReportChanged)
     })
 
     self.readStudentStrengthReport = () => {
@@ -31895,6 +32273,10 @@ riot.tag2('student-strength-report', '<print-header></print-header> <loading-bar
     	}else{
 	        self.report_view = 'show_graph'
     	}
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_strength_report', self.studentStrengthReports)
+
     }
 
     adminReportStore.on('read_student_strength_report_changed',ReadStudentStrengthReportChanged)
@@ -31936,6 +32318,13 @@ riot.tag2('student-strength-report', '<print-header></print-header> <loading-bar
 	      self.update()
 
     }
+    adminReportStore.on('csv_export_student_strength_report_changed',csvStudentStrengthReportChanged)
+    function csvStudentStrengthReportChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
 });
 riot.tag2('student-summary-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h4 class="title has-text-centered" style="color: #ff3860;">Class Wise Strength ({session_name})</h4> <div class="box no-print"> <div class="columns"> <div class=" column"> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i></span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{readStudentSummaryReport}" style="margin-left:5px;margin-right:5px"> <span class="icon"> <span class="fas fa-sync-alt"></span> </span> </button> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable is-narrow"> <thead> <tr> <th>#</th> <th>Standard</th> <th>A</th> <th>B</th> <th>C</th> <th>D</th> <th>E</th> <th>N</th> <th>Total</th> </tr> </thead> <tbody> <tr each="{st, i in studentSummaryReports}"> <td>{i+1}</td> <td>{st.standard}</td> <td>{st.s0}</td> <td>{st.s1}</td> <td>{st.s2}</td> <td>{st.s3}</td> <td>{st.s4}</td> <td>{st.n}</td> <td class="has-text-weight-bold">{st.total}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
@@ -31954,11 +32343,15 @@ riot.tag2('student-summary-report', '<print-header></print-header> <loading-bar 
 
     self.on("unmount", function(){
       adminReportStore.off('read_student_summary_report_changed',ReadStudentSummaryReportChanged)
+      adminReportStore.off('csv_export_student_summary_report_changed',csvStudentSummaryReportChanged)
     })
 
     self.readStudentSummaryReport = () => {
     	self.loading=true
        adminReportStore.trigger('read_student_summary_report')
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_summary_report', self.studentSummaryReports)
     }
 
     adminReportStore.on('read_student_summary_report_changed',ReadStudentSummaryReportChanged)
@@ -31971,7 +32364,87 @@ riot.tag2('student-summary-report', '<print-header></print-header> <loading-bar 
       self.update()
 
     }
+    adminReportStore.on('csv_export_student_summary_report_changed',csvStudentSummaryReportChanged)
+    function csvStudentSummaryReportChanged(url){
+      var open_url = window.location.origin+url
+      window.open(open_url);
+      self.loading = false
+      self.update()
+    }
 
+});
+riot.tag2('student-wise-subject-failure-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{changeExamType}"> <option>--Choose Class--</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Section</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="section_id" id="section_id" onchange="{changeSubject}"> <option>--Choose Section--</option> <option each="{filteredSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Exam Type</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="exam_type_id" id="exam_type_id"> <option each="{examTypes}" riot-value="{exam_type_id}">{exam_type}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getStudentWiseSubjectFailureReport}">GO</button> </div> </div> </div> <p><center><b>Standard:</b>{StandardName} <b>Section:</b>{SectionName} <b>Exam:</b>{ExamtypeName}</center></p> <div each="{st, i in subject_marks}"> <p class="is-size-5"><b>Name:</b>{st.student_details.name} <b>Enroll No:</b>{st.student_details.enroll_number}</p> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th style="width:60px;">Sl no</th> <th>Subject Name</th> <th style="width:60px;">Marks</th> </tr> </thead> <tbody> <tr each="{d, i in st.subjectList}"> <td>{i+1}</td> <td>{d.subject_name}</td> <td class="has-text-right">{d.marks}</td> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
+	var self = this;
+    self.on("mount", function(){
+    	self.readStandard()
+    	self.readSection()
+        self.update()
+    })
+    self.on("unmount", function(){
+      analysisReportStore.off('read_standard_changed',StandardChanged)
+      analysisReportStore.off('read_section_changed',SectionChanged)
+      analysisReportStore.off('exam_types_changed',ExamTypesChanged)
+      analysisReportStore.off('read_student_wise_subject_failure_report_changed',StudentWiseSubjectFailureReportChanged)
+    })
+
+    self.readStandard = () => {
+       analysisReportStore.trigger('read_standard')
+    }
+    self.readSection = () => {
+       analysisReportStore.trigger('read_section')
+    }
+    self.changeExamType = () => {
+       analysisReportStore.trigger('read_exam_types',self.refs.standard_id.value)
+       self.getSection()
+    }
+
+    self.getSection = () => {
+    	self.filteredSections = []
+    	self.filteredSections = self.sections.filter(s => {
+    		return s.standard_id == self.refs.standard_id.value
+    	})
+    }
+
+    self.getStudentWiseSubjectFailureReport = () =>{
+    	var obj={}
+        var searchdata={};
+
+    	searchdata['standard_id']=self.refs.standard_id.value
+    	searchdata['section_id']=self.refs.section_id.value
+    	searchdata['exam_type_id']=self.refs.exam_type_id.value
+    	obj['searchdata']=searchdata;
+    	console.log(obj)
+    	analysisReportStore.trigger('read_student_wise_subject_failure_report', obj)
+    }
+    analysisReportStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      	self.standards = standards
+      	self.update()
+    }
+    analysisReportStore.on('read_section_changed',SectionChanged)
+    function SectionChanged(sections){
+      console.log(sections)
+      self.sections = sections
+      self.update()
+      self.getSection()
+
+    }
+    analysisReportStore.on('exam_types_changed',ExamTypesChanged)
+    function ExamTypesChanged(examTypes){
+    	self.loading = false
+      	self.examTypes = []
+      	self.examTypes = examTypes
+      	self.update()
+    }
+
+    analysisReportStore.on('read_student_wise_subject_failure_report_changed',StudentWiseSubjectFailureReportChanged)
+    function StudentWiseSubjectFailureReportChanged(subject_marks){
+    	self.StandardName = $("#standard_id option:selected").text();
+    	self.SectionName = $("#section_id option:selected").text();
+    	self.ExamtypeName = $("#exam_type_id option:selected").text();
+    	self.subject_marks = subject_marks;
+      	self.update()
+    }
 });
 riot.tag2('student-withdrawn-student', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="level no-print"> <div class="level-left"> <h2 class="title" style="color: #ff3860;">Withdrawn Student</h2> </div> <div class="level-right"> </div> </div> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"><label class="label">From Date</label></div> <div class="column is-small"> <div class="control"> <input class="input date" type="text" ref="fromDateInput"> </div> </div> <div class="column is-narrow"><label class="label">To Date</label></div> <div class="column is-small"> <div class="control"> <input class="input date" type="text" ref="toDateInput"> </div> </div> <div class="column is-narrow"><label class="label">Standard</label></div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="standardSelect" id="standard" onchange="{changeSection}"> <option value="">Select Standard</option> <option each="{classes}" riot-value="{standard_id}">{standard}</option> <option value="-1">All</option> </select> </div> </div> </div> <div class="column is-narrow"><label class="label">Section</label></div> <div class="column is-narrow"> <div class="control"> <div class="select is-fullwidth"> <select ref="sectionSelect" id="section"> <option value="">Select Section</option> <option each="{tempSections}" riot-value="{section_id}">{section}</option> <option value="-1">All</option> </select> </div> </div> </div> <div class="column is-narrow"> <button class="button is-danger has-text-weight-bold" onclick="{refreshStudents}">GO </button> </div> <div class="column is-narrow"> <button class="button is-primary has-text-weight-bold ml5" style="margin-bottom:12px;" onclick="window.print()"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> </div> <div class="column is-narrow"> <button class="button is-success has-text-weight-bold ml5" style="margin-bottom:12px;" onclick="{downloadCSV}"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> </div> </div> </div> <h2 class="title has-text-centered is-size-6" style="color: #ff3860;">Withdraw Report</h2> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th class="slno">Sl</th> <th>Enroll No</th> <th>Student Name</th> <th>Withdraw class</th> <th>Date of withdraw</th> <th>Reason</th> <th>TC No</th> <th class="no-print"></th> </tr> </thead> <tbody> <tr each="{c, i in students}"> <td>{i+1}</td> <td>{c.enroll_number}</td> <td>{c.first_name} {c.middle_name} {c.last_name}</td> <td>{c.prev_class}</td> <td>{c.dol}</td> <td>{c.remarks}</td> <td>{c.tc_no}</td> <td class="has-text-right no-print"> <span><a class="button is-small is-rounded is-danger" rel="nofollow" onclick="{cancleWithdraw.bind(this, c)}">Cancle Withdraw</a></span> </td> </tr> </tbody> </table> </section> <div id="cancelWithdrawModal" class="modal "> <div class="modal-background"></div> <div class="modal-card"> <header class="modal-card-head"> <p class="modal-card-title">Confirmation Required</p> </header> <section class="modal-card-body"> <div class="columns"> <div class="column"> <h1 class="title has-text-centered is-size-5" style="color: #ff3860;">Are you sure you want to Remove the selected Student?</h1> </div> </div> </section> <footer class="modal-card-foot"> <button class="button is-success" onclick="{UpdateWithdraw}">Yes</button> <button class="button is-danger" id="item-modal-close" onclick="{closecancelWithdrawModal}">No</button> </footer> </div> </div>', '', '', function(opts) {
 	var self = this
@@ -34311,7 +34784,97 @@ riot.tag2('student', '<print-header></print-header> <loading-bar if="{loading}">
       self.guardian_profile_picture = image_name
     }
 });
-riot.tag2('subject', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Subject Details</h2> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Name</label> </div> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="subject_name" type="text"> </div> </div> <div class="column is-narrow"> <label class="label">Short Name</label> </div> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="subject_short_name" type="text" style="width:150px"> </div> </div> <div class="column is-narrow"> <label class="label">Department</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="department_id" onkeyup="{addEnter}"> <option>Select</option> <option each="{departments}" riot-value="{department_id}">{department_name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{add}">{title} </button> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{readSubject}" style="margin-right:3px;margin-left:2px"> <span class="icon"><span class="fas fa-sync-alt"></span></span> </button> <input class="input is-pulled-right" ref="searchSubject" onkeyup="{filteredSubject}" type="text" style="width:180px;margin-right:5px" placeholder="Search"> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>SL</th> <th>Name</th> <th>Short Name</th> <th>Department</th> <th></th> </tr> </thead> <tbody> <tr each="{ev, i in filteredSubjects}"> <td>{i+1}</td> <td>{ev.subject_name}</td> <td>{ev.subject_short_name}</td> <td>{ev.department_name}</td> <td class="has-text-right no-print"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{ev.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, ev)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{ev.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+riot.tag2('subject-wise-failure-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{changeExamType}"> <option>--Choose Class--</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Section</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="section_id" id="section_id" onchange="{changeSubject}"> <option>--Choose Section--</option> <option each="{filteredSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Subject</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="subject_id" id="subject_id"> <option each="{subjects}" riot-value="{subject_id}">{subject_name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Exam Type</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="exam_type_id" id="exam_type_id"> <option each="{examTypes}" riot-value="{exam_type_id}">{exam_type}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getSubjectWiseFailureReport}">GO</button> </div> </div> </div> <p><center><strong>Subject wise Failure Report</strong></center></p> <p><center><b>Standard:</b>{StandardName} <b>Section:</b>{SectionName} <b>Subject:</b>{SubjectName} <b>Exam:</b>{ExamtypeName}</center></p> <table class="table is-fullwidth is-bordered is-hoverable"> <thead> <tr> <th>Sl no</th> <th>Enroll No</th> <th>Student Name</th> <th>Marks</th> </tr> </thead> <tbody> <tr each="{st, i in report_data}"> <td>{i+1}</td> <td>{st.enroll_number}</td> <td>{st.name}</td> <td>{st.marks}</td> </tr> </tbody> </table> </section>', '', '', function(opts) {
+	var self = this;
+    self.on("mount", function(){
+    	self.readStandard()
+    	self.readSection()
+        self.update()
+    })
+    self.on("unmount", function(){
+      analysisReportStore.off('read_standard_changed',StandardChanged)
+      analysisReportStore.off('read_section_changed',SectionChanged)
+      analysisReportStore.off('exam_types_changed',ExamTypesChanged)
+      analysisReportStore.off('subjects_changed',SubjectsChanged)
+      analysisReportStore.off('read_subject_wise_failure_report_changed',SubjectWiseFailureReportChanged)
+    })
+
+    self.readStandard = () => {
+       analysisReportStore.trigger('read_standard')
+    }
+    self.readSection = () => {
+       analysisReportStore.trigger('read_section')
+    }
+    self.changeExamType = () => {
+       analysisReportStore.trigger('read_exam_types',self.refs.standard_id.value)
+       self.getSection()
+    }
+    self.changeSubject = () => {
+       analysisReportStore.trigger('read_subjects',self.refs.standard_id.value,self.refs.section_id.value)
+       self.getSection()
+    }
+    self.getSection = () => {
+    	self.filteredSections = []
+    	self.filteredSections = self.sections.filter(s => {
+    		return s.standard_id == self.refs.standard_id.value
+    	})
+    }
+
+    self.getSubjectWiseFailureReport = () =>{
+    	var obj={}
+        var searchdata={};
+
+    	searchdata['standard_id']=self.refs.standard_id.value
+    	searchdata['section_id']=self.refs.section_id.value
+    	searchdata['subject_id']=self.refs.subject_id.value
+    	searchdata['exam_type_id']=self.refs.exam_type_id.value
+    	obj['searchdata']=searchdata;
+    	console.log(obj)
+    	self.loading=true;
+    	analysisReportStore.trigger('read_subject_wise_failure_report', obj)
+    }
+    analysisReportStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      	self.standards = standards
+      	self.update()
+    }
+    analysisReportStore.on('read_section_changed',SectionChanged)
+    function SectionChanged(sections){
+      console.log(sections)
+      self.sections = sections
+      self.update()
+      self.getSection()
+
+    }
+    analysisReportStore.on('exam_types_changed',ExamTypesChanged)
+    function ExamTypesChanged(examTypes){
+    	self.loading = false
+      	self.examTypes = []
+      	self.examTypes = examTypes
+      	self.update()
+    }
+    analysisReportStore.on('subjects_changed',SubjectsChanged)
+    function SubjectsChanged(subjects){
+      self.loading = false
+      self.subjects = []
+      self.subjects = subjects
+      self.update()
+    }
+    analysisReportStore.on('read_subject_wise_failure_report_changed',SubjectWiseFailureReportChanged)
+    function SubjectWiseFailureReportChanged(report_data){
+    	self.loading=false
+    	self.StandardName = $("#standard_id option:selected").text();
+    	self.SectionName = $("#section_id option:selected").text();
+    	self.SubjectName = $("#subject_id option:selected").text();
+    	self.ExamtypeName = $("#exam_type_id option:selected").text();
+    	self.report_data = report_data;
+    	if(self.report_data.length==0){
+    		toastr.info("No Data Found!")
+    	}
+      	self.update()
+    }
+});
+riot.tag2('subject', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <h2 class="title has-text-centered" style="color: #ff3860;">Subject Details</h2> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Name</label> </div> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="subject_name" type="text"> </div> </div> <div class="column is-narrow"> <label class="label">Short Name</label> </div> <div class="column is-narrow"> <div class="control"> <input class=" input" ref="subject_short_name" type="text" style="width:150px" id="subject_short_name"> </div> </div> <div class="column is-narrow"> <label class="label">Department</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="department_id" onkeyup="{addEnter}"> <option>Select</option> <option each="{departments}" riot-value="{department_id}">{department_name} </option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{add}">{title} </button> <button class="button is-success has-text-weight-bold is-small ml5 is-pulled-right" onclick="{downloadCSV}" title="Excel Down Load"> <span class="icon"> <i class="far fa-file-excel"></i> </span> </button> <button class="button is-primary has-text-weight-bold is-pulled-right is-small ml5" onclick="window.print()" title="Print"> <span class="icon"> <i class="fas fa-print"></i> </span> </button> <button class="button is-warning is-rounded is-pulled-right is-small ml5" onclick="{readSubject}" style="margin-right:3px;margin-left:2px"> <span class="icon"><span class="fas fa-sync-alt"></span></span> </button> <input class="input is-pulled-right" ref="searchSubject" onkeyup="{filteredSubject}" type="text" style="width:180px;margin-right:5px" placeholder="Search"> </div> </div> </div> <table class="table is-fullwidth is-striped is-hoverable"> <thead> <tr> <th>SL</th> <th>Name</th> <th>Short Name</th> <th>Department</th> <th></th> </tr> </thead> <tbody> <tr each="{ev, i in filteredSubjects}"> <td>{i+1}</td> <td>{ev.subject_name}</td> <td>{ev.subject_short_name}</td> <td>{ev.department_name}</td> <td class="has-text-right no-print"> <div class="inline-flex rounded border border-grey overflow-hidden" hide="{ev.confirmDelete}"> <span><a class="button is-small is-rounded" onclick="{edit.bind(this, ev)}">Edit</a></span> <span if="{role==\'ADMIN\'}"> <a class="button is-small has-text-danger is-rounded" rel="nofollow" onclick="{confirmDelete}">Delete</a></span> </div> <div class="table-buttons" if="{ev.confirmDelete}"> <span disabled="{loading}" class="button is-small is-rounded" onclick="{delete}"><i class="fa fa-check"></i></span> <span disabled="{loading}" class="button is-small has-text-danger is-rounded" onclick="{cancelOperation}"><i class="fa fa-times"></i></span> </div> </td> </tr> </tbody> </table> </section>', '', '', function(opts) {
 	var self = this
     self.on("mount", function(){
       self.title='Create'
@@ -34407,6 +34970,7 @@ riot.tag2('subject', '<print-header></print-header> <loading-bar if="{loading}">
     self.edit = (ev,e) => {
       console.log(ev)
       self.title='Update'
+       document.getElementById("subject_short_name").focus()
       self.refs.subject_name.value = ev.subject_name
       self.refs.subject_short_name.value = ev.subject_short_name
       self.refs.department_id.value = ev.department_id
@@ -35794,5 +36358,184 @@ riot.tag2('udise-report', '<print-header></print-header> <loading-bar if="{loadi
     }
 
 });
-riot.tag2('yearly-section-wise-comparison', '<h1>yearly-section-wise-comparison</h1>', '', '', function(opts) {
+riot.tag2('yearly-class-wise-comparison-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Subject</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="subject_id" id="subject_id"> <option>--Choose Subject--</option> <option each="{subjects}" riot-value="{subject_id}">{subject_name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Term</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="term_id" id="term_id"> <option value="F">Final</option> <option value="H">Half Yearly</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getAssessmentReport}">GO</button> </div> </div> <div each="{st, i in marksRangeArray}" style="margin-bottom:20px;margin-top:20px"> <div class="columns mt30"> <div class="column is-2"> <label class="label" for="">Min Marks</label> </div> <div class="column is-2"> <input class="input" ref="min_marks" id="min_marks{i}" type="text" riot-value="{st.min_marks}"> </div> <div class="column is-2"> <label class="label" for="">Max Marks</label> </div> <div class="column is-2 "> <input class="input" ref="max_marks" id="max_marks{i}" type="text" riot-value="{st.max_marks}"> </div> <div class="column is-2"> <button class="button is-danger ml5" onclick="{remove.bind(this, i)}" show="{marksRangeArray.length>1}"> <span class="icon"><span class="fas fa-minus"></span></span> </button> <button class="button is-success ml5 " onclick="{add_marks_range}" show="{marksRangeArray.length==(i+1)}"> <span class="icon"><span class="fas fa-plus"></span></span> </button> </div> </div> </div> </div> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <p><center><strong>Assessment Report For Class:{ClassName} , Subject:{SubjectName} and Exam Term:{ExamTerm} </strong></center></p> </table> <div class=""> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> </table> </div> </section>', '', '', function(opts) {
+	var self = this;
+    self.on("mount", function(){
+    	self.readClassSubject()
+        self.update()
+    })
+    self.on("unmount", function(){
+      analysisReportStore.off('read_subjects_for_yearly_class_wise_comparison_report_changed',ReadSubjectForClassWiseChanged)
+      analysisReportStore.off('read_yearly_class_wise_comparison_report_changed',YearlyClassWiseComparisonReportChanged)
+    })
+
+    self.readClassSubject = () =>{
+       analysisReportStore.trigger('read_subjects_for_yearly_class_wise_comparison_report')
+    }
+    self.marksRangeArray =[]
+    if(self.marksRangeArray.length==0){
+		self.marksRangeArray =[]
+		let obj = {}
+		obj.min_marks=''
+        obj.max_marks=''
+		self.marksRangeArray.push(obj)
+	}
+    self.add_marks_range=()=>{
+	    let obj = {}
+        obj.min_marks=''
+        obj.max_marks=''
+        self.marksRangeArray.push(obj)
+    }
+    self.remove = (index,e) => {
+      console.log(index)
+       self.marksRangeArray.splice(index,1);
+    }
+
+    self.getAssessmentReport = () =>{
+    	var obj={}
+        var searchdata={};
+
+	    self.marksRangeArray.map((x, index) => {
+	        let min_marks='#min_marks'+index
+	        let max_marks='#max_marks'+index
+
+	        x.min_marks =  $(min_marks).val()
+	        x.max_marks =  $(max_marks).val()
+    	});
+    	searchdata['subject_id']=self.refs.subject_id.value
+    	searchdata['term_id']=self.refs.term_id.value
+    	searchdata['marksRangeArray']=self.marksRangeArray
+    	obj['searchdata']=searchdata;
+    	console.log(obj)
+    	analysisReportStore.trigger('read_yearly_class_wise_comparison_report', obj)
+    }
+
+    analysisReportStore.on('read_subjects_for_yearly_class_wise_comparison_report_changed',ReadSubjectForClassWiseChanged)
+    function ReadSubjectForClassWiseChanged(subjects){
+      	self.subjects = subjects
+      	self.update()
+    }
+
+    analysisReportStore.on('read_yearly_class_wise_comparison_report_changed',YearlyClassWiseComparisonReportChanged)
+    function YearlyClassWiseComparisonReportChanged(sections,subjects,graphData){
+    	self.SubjectName = $("#subject_id option:selected").text();
+    	self.ExamTerm = $("#term_id option:selected").text();
+
+      	self.update()
+    }
+});
+riot.tag2('yearly-class-wise-subject-avg-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{changeExamType}"> <option>--Choose Class--</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Term</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="term_id" id="term_id"> <option value="F">Final</option> <option value="H">Half Yearly</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getYearWiseClassSubjectAvgReport}">GO</button> </div> </div> </div> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <p><center><strong>Subject Wise Average Marks Report For Class:{ClassName}</strong></center></p> <p><span each="{s, i in labels}">{s.exam_type} &nbsp;&nbsp;</span></p> </table> <div class=""> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <thead> <tr> <th>Subjects</th> <th class="has-text-centered" each="{s,i in sessions}">{s}</th> </tr> </thead> <tbody> <tr each="{g,i in graphData}"> <td>{g.subject_name}</td> <td class="has-text-centered" each="{s in g.sessions}"> {s} </td> </tr> </tbody> </table> </div> </section>', '', '', function(opts) {
+	var self = this;
+    self.on("mount", function(){
+    	self.readStandard()
+        self.update()
+    })
+    self.on("unmount", function(){
+      analysisReportStore.off('read_standard_changed',StandardChanged)
+      analysisReportStore.off('read_year_wise_class_subject_avg_report_changed',YearWiseClassSubjectAvgReportChanged)
+    })
+
+    self.readStandard = () => {
+       analysisReportStore.trigger('read_standard')
+    }
+
+    self.getYearWiseClassSubjectAvgReport = () =>{
+
+    	analysisReportStore.trigger('read_year_wise_class_subject_avg_report', self.refs.standard_id.value,self.refs.term_id.value)
+    }
+    analysisReportStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      	self.standards = standards
+      	self.update()
+    }
+    analysisReportStore.on('read_year_wise_class_subject_avg_report_changed',YearWiseClassSubjectAvgReportChanged)
+    function YearWiseClassSubjectAvgReportChanged(sessions,subjects,graphData){
+    	self.ClassName = $("#standard_id option:selected").text();
+    	self.sessions = sessions
+      	self.subjects = subjects
+      	self.graphData = graphData
+      	console.log(self.sessions)
+      	console.log(self.subjects)
+      	console.log(self.graphData)
+      	self.update()
+    }
+
+});
+riot.tag2('yearly-section-wise-comparison-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{readClassSubject}"> <option>--Choose Class--</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Subject</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="subject_id" id="subject_id"> <option>--Choose Subject--</option> <option each="{subjects}" riot-value="{subject_id}">{subject_name}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Term</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="term_id" id="term_id"> <option value="F">Final</option> <option value="H">Half Yearly</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getAssessmentReport}">GO</button> </div> </div> <div each="{st, i in marksRangeArray}" style="margin-bottom:20px;margin-top:20px"> <div class="columns mt30"> <div class="column is-2"> <label class="label" for="">Min Marks</label> </div> <div class="column is-2"> <input class="input" ref="min_marks" id="min_marks{i}" type="text" riot-value="{st.min_marks}"> </div> <div class="column is-2"> <label class="label" for="">Max Marks</label> </div> <div class="column is-2 "> <input class="input" ref="max_marks" id="max_marks{i}" type="text" riot-value="{st.max_marks}"> </div> <div class="column is-2"> <button class="button is-danger ml5" onclick="{remove.bind(this, i)}" show="{marksRangeArray.length>1}"> <span class="icon"><span class="fas fa-minus"></span></span> </button> <button class="button is-success ml5 " onclick="{add_marks_range}" show="{marksRangeArray.length==(i+1)}"> <span class="icon"><span class="fas fa-plus"></span></span> </button> </div> </div> </div> </div> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <p><center><strong>Assessment Report For Class:{ClassName} , Subject:{SubjectName} and Exam Term:{ExamTerm} </strong></center></p> </table> <div class=""> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> </table> </div> </section>', '', '', function(opts) {
+	var self = this;
+    self.on("mount", function(){
+    	self.readStandard()
+        self.update()
+    })
+    self.on("unmount", function(){
+      analysisReportStore.off('read_standard_changed',StandardChanged)
+      analysisReportStore.off('read_subjects_changed',ReadSubjectChanged)
+      analysisReportStore.off('read_yearly_section_wise_comparison_report_changed',YearlySectionWiseComparisonReportChanged)
+    })
+
+    self.readStandard = () => {
+       analysisReportStore.trigger('read_standard')
+    }
+    self.readClassSubject = () =>{
+       analysisReportStore.trigger('read_subjects',self.refs.standard_id.value)
+    }
+    self.marksRangeArray =[]
+    if(self.marksRangeArray.length==0){
+		self.marksRangeArray =[]
+		let obj = {}
+		obj.min_marks=''
+        obj.max_marks=''
+		self.marksRangeArray.push(obj)
+	}
+    self.add_marks_range=()=>{
+	    let obj = {}
+        obj.min_marks=''
+        obj.max_marks=''
+        self.marksRangeArray.push(obj)
+    }
+    self.remove = (index,e) => {
+      console.log(index)
+       self.marksRangeArray.splice(index,1);
+    }
+
+    self.getAssessmentReport = () =>{
+    	var obj={}
+        var searchdata={};
+
+	    self.marksRangeArray.map((x, index) => {
+	        let min_marks='#min_marks'+index
+	        let max_marks='#max_marks'+index
+
+	        x.min_marks =  $(min_marks).val()
+	        x.max_marks =  $(max_marks).val()
+    	});
+    	searchdata['standard_id']=self.refs.standard_id.value
+    	searchdata['subject_id']=self.refs.subject_id.value
+    	searchdata['term_id']=self.refs.term_id.value
+    	searchdata['marksRangeArray']=self.marksRangeArray
+    	obj['searchdata']=searchdata;
+    	console.log(obj)
+    	analysisReportStore.trigger('read_yearly_section_wise_comparison_report', obj)
+    }
+
+    analysisReportStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      	self.standards = standards
+      	self.update()
+    }
+
+    analysisReportStore.on('read_subjects_changed',ReadSubjectChanged)
+    function ReadSubjectChanged(subjects){
+      	self.subjects = subjects
+      	self.update()
+    }
+
+    analysisReportStore.on('read_yearly_section_wise_comparison_report_changed',YearlySectionWiseComparisonReportChanged)
+    function YearlySectionWiseComparisonReportChanged(sections,subjects,graphData){
+    	self.ClassName = $("#standard_id option:selected").text();
+    	self.SubjectName = $("#subject_id option:selected").text();
+    	self.ExamTerm = $("#term_id option:selected").text();
+
+      	self.update()
+    }
 });

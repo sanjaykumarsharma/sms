@@ -2450,6 +2450,7 @@
       staffStore.off('reset_staff_password_changed',ResetStaffPasswordChanged)
       staffStore.off('update_staff_fast_edit_changed',updateStaffFastEditChanged)
       staffStore.off('read_staff_id_card_changed',ReadIdCardChanged)
+      staffStore.off('csv_export_staff_changed',csvStaffChanged)
     })
 
       self.filteredStaff = ()=>{
@@ -2720,6 +2721,9 @@
     		staffStore.trigger('read_staff', self.refs.r_emp_type_id.value,self.refs.r_department_id.value,self.refs.r_designation_id.value,self.refs.r_level_id.value)
     	//}
       
+    }
+    self.downloadCSV = () =>{
+      staffStore.trigger('csv_export_staff', self.staffs)
     }
 
     self.add_new_staff = () =>{
@@ -3960,6 +3964,20 @@
     	self.refs.details_publication.value=staff_details[0].details_publication
     	self.refs.details_curricular_activities.value=staff_details[0].details_curricular_activities
     	self.refs.details_sport.value=staff_details[0].details_sport
+    	self.refs.organization_of_previous_job.value=staff_details[0].organization_of_previous_job
+	    self.refs.add_l1_of_previous_job.value=staff_details[0].add_l1_of_previous_job
+	    self.refs.add_l2_of_previous_job.value=staff_details[0].add_l2_of_previous_job
+	    self.refs.city_of_previous_job.value=staff_details[0].city_of_previous_job
+	    self.refs.zip_of_previous_job.value=staff_details[0].zip_of_previous_job
+	    self.refs.state_of_previous_job.value=staff_details[0].state_of_previous_job
+	    self.refs.country_of_previous_job.value=staff_details[0].country_of_previous_job
+	    self.refs.designation_of_previous_job.value=staff_details[0].designation_of_previous_job
+	        self.refs.doj_of_previous_job.value=staff_details[0].doj_of_previous_job
+	    self.refs.salary_of_previous_job.value=staff_details[0].salary_of_previous_job
+	    self.refs.basic_of_previous_job.value=staff_details[0].basic_of_previous_job
+	    self.refs.allowances_of_previous_job.value=staff_details[0].allowances_of_previous_job
+	    self.refs.other_benefits_of_previous_job.value=staff_details[0].other_benefits_of_previous_job
+	    self.refs.bond_details_of_previous_job.value=staff_details[0].bond_details_of_previous_job
     	
     	self.update()
      }else{
@@ -4134,6 +4152,20 @@
     	self.details_publication=staff_details[0].details_publication
     	self.details_curricular_activities=staff_details[0].details_curricular_activities
     	self.details_sport=staff_details[0].details_sport
+    	self.refs.organization_of_previous_job.value=staff_details[0].organization_of_previous_job
+	    self.refs.add_l1_of_previous_job.value=staff_details[0].add_l1_of_previous_job
+	    self.refs.add_l2_of_previous_job.value=staff_details[0].add_l2_of_previous_job
+	    self.refs.city_of_previous_job.value=staff_details[0].city_of_previous_job
+	    self.refs.zip_of_previous_job.value=staff_details[0].zip_of_previous_job
+	    self.refs.state_of_previous_job.value=staff_details[0].state_of_previous_job
+	    self.refs.country_of_previous_job.value=staff_details[0].country_of_previous_job
+	    self.refs.designation_of_previous_job.value=staff_details[0].designation_of_previous_job
+	        self.refs.doj_of_previous_job.value=staff_details[0].doj_of_previous_job
+	    self.refs.salary_of_previous_job.value=staff_details[0].salary_of_previous_job
+	    self.refs.basic_of_previous_job.value=staff_details[0].basic_of_previous_job
+	    self.refs.allowances_of_previous_job.value=staff_details[0].allowances_of_previous_job
+	    self.refs.other_benefits_of_previous_job.value=staff_details[0].other_benefits_of_previous_job
+	    self.refs.bond_details_of_previous_job.value=staff_details[0].bond_details_of_previous_job
     	 
     	self.update()
      }
@@ -4191,6 +4223,13 @@
       self.image_type = image_type['type']
       console.log(self.image_type)
       self.staff_id_card_details = staff_id_card_details
+      self.update()
+    }
+    staffStore.on('csv_export_staff_changed',csvStaffChanged)
+    function csvStaffChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
       self.update()
     }
     

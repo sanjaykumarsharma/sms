@@ -81,11 +81,15 @@
 
     self.on("unmount", function(){
       adminReportStore.off('read_student_summary_report_changed',ReadStudentSummaryReportChanged)
+      adminReportStore.off('csv_export_student_summary_report_changed',csvStudentSummaryReportChanged)
     })
 
     self.readStudentSummaryReport = () => {
     	self.loading=true
        adminReportStore.trigger('read_student_summary_report')
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_summary_report', self.studentSummaryReports)
     }
     
     adminReportStore.on('read_student_summary_report_changed',ReadStudentSummaryReportChanged)
@@ -97,6 +101,13 @@
       self.session_name = session_name
       self.update()
       //console.log(self.employeeTypes)
+    }
+    adminReportStore.on('csv_export_student_summary_report_changed',csvStudentSummaryReportChanged)
+    function csvStudentSummaryReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
     
 

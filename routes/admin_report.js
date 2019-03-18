@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var multer = require('multer')
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
 
 
 
@@ -335,6 +339,59 @@ router.get('/read_student_summary_report', function(req, res, next) {
 
 });
 
+
+/*  csv export Student Summary Report*/
+router.post('/csv_export_student_summary_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Standard'] = result[i].standard;
+        obj['A'] = result[i].s0;
+        obj['B'] = result[i].s1;
+        obj['C'] = result[i].s2;
+        obj['D'] = result[i].s3;
+        obj['E'] = result[i].s4;
+        obj['N'] = result[i].s5;
+        obj['Total'] = result[i].total;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Standard','A', 'B','C','D','E','N','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StudentSummaryReport.csv'; 
+      data.url = '/csv/StudentSummaryReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
+
 /* Student Category Summary report */
 
 router.post('/read_student_category_summary_report', function(req, res, next) {
@@ -478,6 +535,55 @@ router.post('/read_student_category_summary_report', function(req, res, next) {
 
 });
 
+/*  csv export Student Category Summary Report*/
+router.post('/csv_export_student_category_summary_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Standard'] = result[i].standard;
+        obj['General'] = result[i].General;
+        obj['ST'] = result[i].ST;
+        obj['SC'] = result[i].SC;
+        obj['OBC'] = result[i].OBC;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Standard','General','ST','SC','OBC'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StudentCategorySummaryReport.csv'; 
+      data.url = '/csv/StudentCategorySummaryReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
+
  /* Student Religion Listing report */
 
 router.post('/read_student_religion_listing_report', function(req, res, next) {
@@ -619,6 +725,57 @@ router.post('/read_student_religion_listing_report', function(req, res, next) {
       });
     });
 
+});
+
+/*  csv export Student Religion Listing Report*/
+router.post('/csv_export_student_religion_listing_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Standard'] = result[i].standard;
+        obj['Buddhism'] = result[i].Buddhism;
+        obj['Christianity'] = result[i].Christianity;
+        obj['Hinduism'] = result[i].Hinduism;
+        obj['Jainism'] = result[i].Jainism;
+        obj['Islam'] = result[i].Islam;
+        obj['Sikhism'] = result[i].Sikhism;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Standard','Buddhism', 'Christianity','Hinduism','Jainism','Islam','Sikhism'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StudentCategoryStrengthReport.csv'; 
+      data.url = '/csv/StudentCategoryStrengthReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
 });
 
 /* Student Religion Listing report */
@@ -777,6 +934,58 @@ router.post('/read_student_blood_group_listing_report', function(req, res, next)
     });
 
 });
+
+/*  csv export Student Blood Group Report*/
+router.post('/csv_export_student_blood_group_listing_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+      result.map(c => {
+        var obj = {};
+        obj['Standard'] = c.standard;
+        obj['A+'] = c['A+'];
+        obj['A-'] = c['A-'];
+        obj['AB+'] = c['AB+'];
+        obj['AB-'] = c['AB-'];
+        obj['B+'] = c['B+'];
+        obj['B-'] = c['B-'];
+        obj['O+'] = c['O+'];
+        obj['O-'] = c['O-'];
+        std.push(obj);
+      });
+      data.status = 's';
+      const fields = ['Standard','A+','A-','AB+','AB-','B+','B-','O+','O-'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StudentBloodGroupReport.csv'; 
+      data.url = '/csv/StudentBloodGroupReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
  
  // read New Student List Report
 
@@ -904,6 +1113,56 @@ router.get('/read_new_student_list_report', function(req, res, next) {
        
   });
 
+});
+/*  csv export New Student List Report*/
+router.post('/csv_export_new_student_list_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Enroll No'] = result[i].enroll_number;
+        obj['Student Name'] = result[i].student_name;
+        obj['Category Name'] = result[i].category_name;
+        obj['DOB'] = result[i].dob;
+        obj['Blood Group'] = result[i].blood_group;
+        obj['Religion'] = result[i].religion;
+        obj['Withdrawn'] = result[i].withdraw;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Enroll No','Student Name','Category Name','DOB','Blood Group','Religion','Withdrawn'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/NewStudentListReport.csv'; 
+      data.url = '/csv/NewStudentListReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
 });
 
 
@@ -1116,6 +1375,54 @@ router.get('/read_student_category_strength_report/:category_id', function(req, 
 
 });
 
+/*  csv export Student Category Strength Report*/
+router.post('/csv_export_student_category_strength_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Enroll'] = result[i].enroll_number;
+        obj['Name'] = result[i].name;
+        obj['Class'] = result[i].standard;
+        obj['Sms'] = result[i].sms;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Enroll','Name', 'Class','Sms'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StudentCategoryStrengthReport.csv'; 
+      data.url = '/csv/StudentCategoryStrengthReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
+
 
 //read Session From Session AMster
 
@@ -1252,6 +1559,52 @@ router.get('/read_student_group_report/:standard_id/:section_id', function(req, 
 
 });
 
+/*  csv export Student Group Report*/
+router.post('/csv_export_student_group_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Student Group'] = result[i].group_name;
+        obj['Strength'] = result[i].total;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Student Group','Strength'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StudentGroupReport.csv'; 
+      data.url = '/csv/StudentGroupReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
+
 
 //student House Report
 
@@ -1307,6 +1660,52 @@ router.get('/read_student_house_report/:standard_id/:section_id', function(req, 
 
 });
 
+/*  csv export Student House Report*/
+router.post('/csv_export_student_house_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Student House'] = result[i].house_name;
+        obj['Strength'] = result[i].total;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Student House','Strength'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StudentHouseReport.csv'; 
+      data.url = '/csv/StudentHouseReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
+
 
 //student Class teacher Report
 
@@ -1342,6 +1741,53 @@ router.get('/read_class_teacher_report', function(req, res, next) {
        
   });
 
+});
+
+/*  csv export Student Class Teacher Report*/
+router.post('/csv_export_student_class_teacher_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Class'] = result[i].standard;
+        obj['Section'] = result[i].section;
+        obj['Teacher'] = result[i].teacher_name;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Class','Section','Teacher'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StudentClassTeacherReport.csv'; 
+      data.url = '/csv/StudentClassTeacherReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
 });
 
 
@@ -1387,6 +1833,52 @@ router.get('/read_student_strength_report', function(req, res, next) {
        
   });
 
+});
+
+/*  csv export Student Strength Report*/
+router.post('/csv_export_student_strength_report', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Class'] = result[i].standard;
+        obj['Total'] = result[i].total;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Class','Total'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/StudentStrengthReport.csv'; 
+      data.url = '/csv/StudentStrengthReport.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
 });
 
 // read occupation 

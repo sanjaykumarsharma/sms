@@ -246,11 +246,12 @@ self.on('read_case_wise_report', function(obj) {
         }
       })
   })
-  self.on('read_student_infirmary', function(id) {
+
+  self.on('read_student_infirmary', function(id,session_id) {
     console.log('i am in read_section api call from ajax')
     let req = {}
     $.ajax({
-      url:'/infirmary_student/read_student_infirmary/'+id,
+      url:'/infirmary_student/read_student_infirmary/'+id +'/'+session_id,
         contentType: "application/json",
         dataType:"json",
         headers: {"Authorization": getCookie('token')},

@@ -3535,6 +3535,20 @@
     	self.refs.details_publication.value=staff_details[0].details_publication
     	self.refs.details_curricular_activities.value=staff_details[0].details_curricular_activities
     	self.refs.details_sport.value=staff_details[0].details_sport
+    	self.refs.organization_of_previous_job.value=staff_details[0].organization_of_previous_job
+	    self.refs.add_l1_of_previous_job.value=staff_details[0].add_l1_of_previous_job
+	    self.refs.add_l2_of_previous_job.value=staff_details[0].add_l2_of_previous_job
+	    self.refs.city_of_previous_job.value=staff_details[0].city_of_previous_job
+	    self.refs.zip_of_previous_job.value=staff_details[0].zip_of_previous_job
+	    self.refs.state_of_previous_job.value=staff_details[0].state_of_previous_job
+	    self.refs.country_of_previous_job.value=staff_details[0].country_of_previous_job
+	    self.refs.designation_of_previous_job.value=staff_details[0].designation_of_previous_job
+	    self.refs.doj_of_previous_job.value=staff_details[0].doj_of_previous_job
+	    self.refs.salary_of_previous_job.value=staff_details[0].salary_of_previous_job
+	    self.refs.basic_of_previous_job.value=staff_details[0].basic_of_previous_job
+	    self.refs.allowances_of_previous_job.value=staff_details[0].allowances_of_previous_job
+	    self.refs.other_benefits_of_previous_job.value=staff_details[0].other_benefits_of_previous_job
+	    self.refs.bond_details_of_previous_job.value=staff_details[0].bond_details_of_previous_job
     /* }else{
      	console.log("inside else")
      	console.log(staff_details[0].first_name)

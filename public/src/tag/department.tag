@@ -11,7 +11,7 @@
         <div class="column is-narrow">
           <div class="control">
             <input class=" input"
-              ref="department_name" type="text">
+              ref="department_name" type="text" id="department_name">
           </div>
         </div>
         <div class="column is-narrow">
@@ -20,7 +20,7 @@
         <div class="column is-narrow">
           <div class="control">
             <div class="select">
-              <select ref="emp_name">
+              <select ref="emp_name" onkeyup={addEnter}>
                 <option each={employees} value={name}>{name}
                 </option>
               </select>
@@ -168,6 +168,7 @@
     self.edit = (d,e) => {
       console.log(d)
       self.title='Update'
+      document.getElementById("department_name").focus()
       self.refs.department_name.value = d.department_name
       self.refs.emp_name.value = d.hod
       self.edit_id = d.department_id

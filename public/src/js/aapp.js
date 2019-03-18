@@ -1301,8 +1301,23 @@ case 'receive-fees':
        case 'assessment-report':
          riot.mount("div#analysis-report-view", 'assessment-report')
        break;
-       case 'yearly-section-wise-comparison':
-         riot.mount("div#analysis-report-view", 'yearly-section-wise-comparison')
+       case 'yearly-section-wise-comparison-report':
+         riot.mount("div#analysis-report-view", 'yearly-section-wise-comparison-report')
+       break;
+       case 'yearly-class-wise-comparison-report':
+         riot.mount("div#analysis-report-view", 'yearly-class-wise-comparison-report')
+       break;
+       case 'yearly-class-wise-subject-avg-report':
+         riot.mount("div#analysis-report-view", 'yearly-class-wise-subject-avg-report')
+       break;
+       case 'consolidate-tabulation-sheet-report':
+         riot.mount("div#analysis-report-view", 'consolidate-tabulation-sheet-report')
+       break;
+       case 'subject-wise-failure-report':
+         riot.mount("div#analysis-report-view", 'subject-wise-failure-report')
+       break;
+       case 'student-wise-subject-failure-report':
+         riot.mount("div#analysis-report-view", 'student-wise-subject-failure-report')
        break;
        default:
          riot.mount("div#analysis-report-view", 'assessment-report')

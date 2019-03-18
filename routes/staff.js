@@ -1,9 +1,62 @@
 var express = require('express');
 var router = express.Router();
 var multer = require('multer')
+const Json2csvParser = require('json2csv').Parser;
+const fs = require('fs');
+var http = require('http');
+var async = require("async");
 
 
+/*  csv export Ex Staff */
+router.post('/csv_export_ex_staff', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
 
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Emp ID'] = result[i].employee_id;
+        obj['Staff Name'] = result[i].name;
+        obj['DOJ'] = result[i].doj;
+        obj['DOL'] = result[i].dol;
+        obj['Mobile'] = result[i].mobile;
+        obj['Email'] = result[i].email;
+        obj['Remarks'] = result[i].remarks;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Emp ID','Staff Name','DOJ','DOL','Mobile','Email','Remarks'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/ExStaff.csv'; 
+      data.url = '/csv/ExStaff.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
+});
 
 //staff Type Report
 
@@ -169,7 +222,8 @@ router.get('/read_ex_staff/:emp_type_id', function(req, res, next) {
       var condition="";
       if(emp_type_id == -1)   condition = ``;
       if(emp_type_id != -1)   condition = `and emp_type_id = ${emp_type_id} `;
-      var qry =`select emp_id,employee_id, first_name,middle_name, last_name, mobile, email, 
+      var qry =`select emp_id,employee_id, first_name,middle_name, last_name, mobile, email,
+                concat(first_name,' ',middle_name, ' ' ,last_name)as name,
                 date_format(leaving_date, '%d/%m/%Y') as dol,leaving_remarks as remarks,
                 date_format(doj, '%d/%m/%Y') as doj
                 from employee where  is_active='N' 
@@ -272,6 +326,163 @@ router.get('/read_browse_staff/:emp_type_id', function(req, res, next) {
 
 });
 
+router.post('/browse_staff_csv', function(req, res, next) {
+
+  var input = JSON.parse(JSON.stringify(req.body));
+  var session_name = req.cookies.session_name
+  req.getConnection(function(err,connection){
+
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Title'] = result[i].title;
+        obj['First Name'] = result[i].first_name;
+        obj['Middle Name'] = result[i].middle_name;
+        obj['Last Name'] = result[i].last_name;
+        obj['Employee ID'] = result[i].employee_id;
+        obj['Short Name'] = result[i].short_name;
+        obj['Marital Status'] = result[i].marital_status;
+        obj['Father Name'] = result[i].father_name;
+        obj['Spouse'] = result[i].spouse;
+        obj['Blood Group'] = result[i].blood_group;
+        obj['Religion Id'] = result[i].religion_id;
+        obj['Language'] = result[i].language;
+        obj['Emp Type Id'] = result[i].emp_type_id;
+        obj['Department Id'] = result[i].department_id;
+        obj['Employment Status Id'] = result[i].employment_status_id;
+        obj['Subject Id'] = result[i].subject_id;
+        obj['Designation Id'] = result[i].designation_id;
+        obj['Qualification'] = result[i].qualification;
+        obj['DOJ'] = result[i].doj;
+        obj['DOB'] = result[i].dob;
+        obj['Add l1'] = result[i].add_l1;
+        obj['City'] = result[i].city;
+        obj['Zip'] = result[i].zip;
+        obj['State'] = result[i].state;
+        obj['Country'] = result[i].country;
+        obj['Residence Phone'] = result[i].residence_phone;
+        obj['Office Phone'] = result[i].office_phone;
+        obj['Mobile'] = result[i].mobile;
+        obj['Email'] = result[i].email;
+        obj['Nationality'] = result[i].nationality;
+        obj['X Subject'] = result[i].x_subject;
+        obj['X Institution'] = result[i].x_institution;
+        obj['X Board'] = result[i].x_board;
+        obj['X YOP'] = result[i].x_yop;
+        obj['X Marks'] = result[i].x_marks;
+        obj['X Division'] = result[i].x_div;
+        obj['XII Subject'] = result[i].xii_subject;
+        obj['XII Institution'] = result[i].xii_institution;
+        obj['XII Board'] = result[i].xii_board;
+        obj['XII YOP'] = result[i].xii_yop;
+        obj['XII Marks'] = result[i].xii_marks;
+        obj['XII Division'] = result[i].xii_div;
+        obj['UG Course'] = result[i].ug_course;
+        obj['UG Institution'] = result[i].ug_institution;
+        obj['UG University'] = result[i].ug_university;
+        obj['UG YOP'] = result[i].ug_yop;
+        obj['UG Marks'] = result[i].ug_marks;
+        obj['UG Division'] = result[i].ug_div;
+        obj['PG Course'] = result[i].pg_course;
+        obj['PG Institution'] = result[i].pg_institution;
+        obj['PG University'] = result[i].pg_university;
+        obj['PG YOP'] = result[i].pg_yop;
+        obj['PG Marks'] = result[i].pg_marks;
+        obj['PG Division'] = result[i].pg_div;
+        obj['BED Stream'] = result[i].bed_stream;
+        obj['BED Institution'] = result[i].bed_institution;
+        obj['BED University'] = result[i].bed_university;
+        obj['BED YOP'] = result[i].bed_yop;
+        obj['BED Marks'] = result[i].bed_marks;
+        obj['BED Division'] = result[i].bed_div;
+        obj['BT Stream'] = result[i].bt_stream;
+        obj['BT Institution'] = result[i].bt_institution;
+        obj['BT University'] = result[i].bt_university;
+        obj['BT YOP'] = result[i].bt_yop;
+        obj['BT Marks'] = result[i].bt_marks;
+        obj['BT Division'] = result[i].bt_div;
+        obj['BPED Stream'] = result[i].bped_stream;
+        obj['BPED Institution'] = result[i].bped_institution;
+        obj['BPED University'] = result[i].bped_university;
+        obj['BPED YOP'] = result[i].bped_yop;
+        obj['BPED Marks'] = result[i].bped_marks;
+        obj['BPED Division'] = result[i].bped_div;
+        obj['DPED Stream'] = result[i].dped_stream;
+        obj['DPED Institution'] = result[i].dped_institution;
+        obj['DPED University'] = result[i].dped_university;
+        obj['DPED YOP'] = result[i].dped_yop;
+        obj['DPED Marks'] = result[i].dped_marks;
+        obj['DPED Division'] = result[i].dped_div;
+        obj['MPED Stream'] = result[i].mped_stream;
+        obj['MPED Institution'] = result[i].mped_institution;
+        obj['MPED University'] = result[i].mped_university;
+        obj['MPED YOP'] = result[i].mped_yop;
+        obj['MPED Marks'] = result[i].mped_marks;
+        obj['MPED Division'] = result[i].mped_div;
+        obj['MED Stream'] = result[i].med_stream;
+        obj['MED Institution'] = result[i].med_institution;
+        obj['MED University'] = result[i].med_university;
+        obj['MED YOP'] = result[i].med_yop;
+        obj['MED Marks'] = result[i].med_marks;
+        obj['MED Division'] = result[i].med_div;
+        obj['MPHIL Stream'] = result[i].mphil_stream;
+        obj['MPHIL Institution'] = result[i].mphil_institution;
+        obj['MPHIL University'] = result[i].mphil_university;
+        obj['MPHIL YOP'] = result[i].mphil_yop;
+        obj['MPHIL Marks'] = result[i].mphil_marks;
+        obj['MPHIL Division'] = result[i].mphil_div;
+        obj['PHD Stream'] = result[i].phd_stream;
+        obj['PHD Institution'] = result[i].phd_institution;
+        obj['PHD University'] = result[i].phd_university;
+        obj['PHD YOP'] = result[i].phd_yop;
+        obj['PHD Marks'] = result[i].phd_marks;
+        obj['PHD Division'] = result[i].phd_div;
+        obj['OTHER Stream'] = result[i].other_stream;
+        obj['OTHER Institution'] = result[i].other_institution;
+        obj['OTHER University'] = result[i].other_university;
+        obj['OTHER YOP'] = result[i].other_yop;
+        obj['OTHER Marks'] = result[i].other_marks;
+        obj['OTHER Division'] = result[i].other_div;
+        obj['Details Scholarship'] = result[i].details_scholarship;
+        obj['Details Honours'] = result[i].details_honours;
+        obj['Details Publication'] = result[i].details_publication;
+        obj['Details Curricular Activities'] = result[i].details_curricular_activities;
+        obj['Details Sport'] = result[i].details_sport;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Title','First Name','Middle Name','Last Name','Employee ID','Short Name','Marital Status','Father Name','Spouse','Blood Group','Religion Id','Language','Emp Type Id','Department Id','Employment Status Id','Subject Id','Designation Id','Qualification','DOJ','DOB','Add l1','City','zip','State','Country','Residence Phone','Office Phone','Mobile','Email','Nationality','X Subject','X Institution','X Board','X YOP','X Marks','X Division','XII Subject','XII Institution','XII Board','XII YOP','XII Marks','XII Division','UG Course','UG Institution','UG University','UG YOP','UG Marks','UG Division','PG Course','PG Institution','PG University','PG YOP','PG Marks','PG Division','BED Stream','BED Institution','BED University','BED YOP','BED Marks','BED Division','BT Stream','BT Institution','BT University','BT YOP','BT Marks','BT Division','BPED Stream','BPED Institution','BPED University','BPED YOP','BPED Marks','BPED Division','DPED Stream','DPED Institution','DPED University','DPED YOP','DPED Marks','DPED Division','MPED Stream','MPED Institution','MPED University','MPED YOP','MPED Marks','MPED Division','MED Stream','MED Institution','MED University','MED YOP','MED Marks','MED Division','MPHIL Stream','MPHIL Institution','MPHIL University','MPHIL YOP','MPHIL Marks','MPHIL Division','PHD Stream','PHD Institution','PHD University','PHD YOP','PHD Marks','PHD Division','OTHER Stream','OTHER Institution','OTHER University','OTHER YOP','OTHER Marks','OTHER Division','Details Scholarship','Details Honours','Details Publication','Details Curricular Activities','Details Sport'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/BrowseStaff.csv'; 
+      data.url = '/csv/BrowseStaff.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });   
+  });
+
+});
+
 /* Read Staff */
 
 router.get('/read_staff/:emp_type_id/:department_id/:designation_id/:level_id', function(req, res, next) {
@@ -294,15 +505,16 @@ router.get('/read_staff/:emp_type_id/:department_id/:designation_id/:level_id', 
   req.getConnection(function(err,connection){
        
     var data = {}
-      var qry =` select  a.status, a.emp_id, employee_id, first_name, middle_name, last_name,
-         office_phone, mobile, email,
-        a.department_id, b.department_name, is_active,
-        a.designation_id, c.designation,employment_status
-        from employee a
-        LEFT JOIN department_master b on a.department_id = b.department_id 
-        LEFT JOIN designation_master c on a.designation_id = c.designation_id
-        LEFT JOIN emp_type_master e on a.emp_type_id = e.emp_type_id
-        LEFT JOIN employment_status_master f on a.employment_status_id = f.employment_status_id
+      var qry =`select  a.status, a.emp_id, employee_id, first_name, middle_name, last_name,
+                concat(first_name,' ',middle_name, ' ' ,last_name)as name,
+                office_phone, mobile, email,
+                a.department_id, b.department_name, is_active,
+                a.designation_id, c.designation,employment_status
+                from employee a
+                LEFT JOIN department_master b on a.department_id = b.department_id 
+                LEFT JOIN designation_master c on a.designation_id = c.designation_id
+                LEFT JOIN emp_type_master e on a.emp_type_id = e.emp_type_id
+                LEFT JOIN employment_status_master f on a.employment_status_id = f.employment_status_id
       
          ${emp_type_condition} ${department_condition} ${designation_condition} ${level_condition}
         order by first_name, middle_name, last_name`;
@@ -326,6 +538,58 @@ router.get('/read_staff/:emp_type_id/:department_id/:designation_id/:level_id', 
        
   });
 
+});
+
+/*  csv export Ex Staff */
+router.post('/csv_export_staff', function(req, res, next) {
+  var input = JSON.parse(JSON.stringify(req.body));
+
+  req.getConnection(function(err,connection){
+       
+    var data = {}
+    var std = Array();
+    var result = input.data;
+    console.log(result)
+    var slips = [1];
+    async.forEachOf(slips, function (value, key, callback) {
+
+      for(var i = 0; i < result.length; i++){
+        var obj = {};
+        obj['Emp ID'] = result[i].employee_id;
+        obj['Staff Name'] = result[i].name;
+        obj['Department'] = result[i].department_name;
+        obj['Designation'] = result[i].designation;
+        obj['Mobile'] = result[i].mobile;
+        obj['Status'] = result[i].status;
+        obj['Email'] = result[i].email;
+        obj['Active'] = result[i].is_active;
+        std.push(obj);
+      }
+      data.status = 's';
+      const fields = ['Emp ID','Staff Name','Department','Designation','Mobile','Status','Email','Active'];
+      const json2csvParser = new Json2csvParser({ fields });
+      const csv = json2csvParser.parse(std);
+      var path='./public/csv/Staff.csv'; 
+      data.url = '/csv/Staff.csv';
+
+      fs.writeFile(path, csv, function(err,data) {
+        if (err) {
+          throw err;
+        }else{ 
+          callback() 
+        }
+      });        
+    },function (err) {
+      if (err) {
+        console.error(err.message);
+        data.status = 'e';
+        res.send(data)
+      }
+        data.status = 's';
+        res.send(data)
+    });
+  });
+       
 });
 
 // read Temp Staff
@@ -470,6 +734,7 @@ router.get('/read_for_edit_staff/:emp_id', function(req, res, next) {
 router.get('/read_for_edit_temp_staff/:emp_id', function(req, res, next) {
 
   var emp_id = req.params.emp_id;
+  console.log(emp_id);
  // var session_id = req.cookies.session_id
 
   req.getConnection(function(err,connection){
@@ -478,7 +743,7 @@ router.get('/read_for_edit_temp_staff/:emp_id', function(req, res, next) {
     var qry =` select a.employee_id, a.emp_id,title,first_name, middle_name, last_name, short_name,
         gender,marital_status,father_name,father_occupation,spouse,spouse_occupation,
         date_format(anniversary, '%d/%m/%Y') as anniversary,id_mark,blood_group,qualification,a.emp_type_id,
-        e.emp_type,a.category_id,  category_name, level,
+        e.emp_type,a.category_id,  category_name,
         a.department_id, b.department_name, a.subject_id, d.subject_name,  
         a.designation_id,c.designation,date_format(dob, '%d/%m/%Y') as dob,date_format(doj, '%d/%m/%Y') as doj,
         add_l1,add_l2,city,zip,state,country,same_as_p_add,c_add_l1,c_add_l2,c_city,c_zip,c_state,c_country, 
@@ -514,10 +779,10 @@ router.get('/read_for_edit_temp_staff/:emp_id', function(req, res, next) {
         LEFT JOIN employee_temp_qualification f on a.emp_id = f.emp_id
         LEFT JOIN employee_temp_previous_job g on a.emp_id=g.emp_id
         LEFT JOIN employee_temp_children h on a.emp_id=h.emp_id              
-        and a.emp_id=${emp_id}
+        where a.emp_id=${emp_id}
         order by 3`;
 
-
+      console.log(qry);
       var query_one = `select institution,date_format(date_of_joining, '%d/%m/%Y') as  date_of_joining,
             date_format(date_of_leaving, '%d/%m/%Y') as  date_of_leaving, position, subjects_taught
             from work_experience

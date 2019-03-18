@@ -665,6 +665,8 @@
          self.showAdmissionItems=true
         }else if(role=='Store'){
          self.showInventoryNavItems=true
+        }else if(role=='Infirmary'){
+         self.showInfirmaryNavItems=true
         }else {
            
         }

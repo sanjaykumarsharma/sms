@@ -713,14 +713,14 @@
       console.log(edit_case_details) 
       self.refress_case_detail()
       self.update()
-     }
+    }
 
     mentordetailStore.on('delete_case_details_changed',DeleteCaseDetailsChanged)
     function DeleteCaseDetailsChanged(delete_case_details){
       console.log(delete_case_details) 
       self.refress_case_detail()
       self.update()
-     }
+    }
 
     mentordetailStore.on('delete_mentor_detail_changed',DeleteMentorDetailsChanged)
     function DeleteMentorDetailsChanged(delete_mentor_details){
@@ -728,7 +728,7 @@
       self.getMentorData()
       
       self.update()
-     }
+    }
 
     mentordetailStore.on('csv_export_mentor_changed',csvMentorDetailsChanged)
     function csvMentorDetailsChanged(url){
@@ -736,7 +736,7 @@
       window.open(open_url);
       self.loading = false
       self.update()
-     }
+    }
 
     mentordetailStore.on('read_mentor_case_csv_changed',csvMentorCaseDetailsChanged)
     function csvMentorCaseDetailsChanged(url){
@@ -744,6 +744,6 @@
       window.open(open_url);
       self.loading = false
       self.update()
-     }
+    }
 </script>
 </mentor-detail>

@@ -83,6 +83,7 @@
 
     self.on("unmount", function(){
       adminReportStore.off('read_student_strength_report_changed',ReadStudentStrengthReportChanged)
+      adminReportStore.off('csv_export_student_strength_report_changed',csvStudentStrengthReportChanged)
     })
 
     self.readStudentStrengthReport = () => {
@@ -96,6 +97,10 @@
     	}else{
 	        self.report_view = 'show_graph'
     	}
+    }
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_student_strength_report', self.studentStrengthReports)
+
     }
     
     adminReportStore.on('read_student_strength_report_changed',ReadStudentStrengthReportChanged)
@@ -176,6 +181,13 @@
 	      self.update()
 
       //console.log(self.employeeTypes)
+    }
+    adminReportStore.on('csv_export_student_strength_report_changed',csvStudentStrengthReportChanged)
+    function csvStudentStrengthReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
     
 

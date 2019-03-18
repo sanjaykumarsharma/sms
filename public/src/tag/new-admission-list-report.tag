@@ -69,6 +69,7 @@
       /*studentStore.off('read_standard_changed',StandardChanged)
       studentStore.off('read_section_changed',SectionChanged)*/
       adminReportStore.off('read_new_student_list_report_changed',ReadNewStudentListReportChanged)
+      adminReportStore.off('csv_export_new_student_list_report_changed',csvNewStudentListReportChanged)
     })
 
     
@@ -76,7 +77,9 @@
     	self.loading=true
        adminReportStore.trigger('read_new_student_list_report')
     }
-    
+    self.downloadCSV = () =>{
+      adminReportStore.trigger('csv_export_new_student_list_report', self.newStudentListReports)
+    }
  
     adminReportStore.on('read_new_student_list_report_changed',ReadNewStudentListReportChanged)
     function ReadNewStudentListReportChanged(newStudentListReports,session_name){
@@ -87,6 +90,13 @@
       self.newStudentListReports = newStudentListReports
       self.update()
       //console.log(self.employeeTypes)
+    }
+    adminReportStore.on('csv_export_new_student_list_report_changed',csvNewStudentListReportChanged)
+    function csvNewStudentListReportChanged(url){
+      var open_url = window.location.origin+url 
+      window.open(open_url);
+      self.loading = false
+      self.update()
     }
     
 
