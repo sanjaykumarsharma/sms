@@ -75,6 +75,8 @@ var YearlyClassWiseSubjectAvgReport = require('./routes/yearly_class_wise_subjec
 var ConsolidateTabulationSheetReport = require('./routes/consolidate_tabulation_sheet_report');
 var SubjectWiseFailureReport = require('./routes/subject_wise_failure_report');
 var StudentWiseSubjectFailureReport = require('./routes/student_wise_subject_failure_report');
+var threesixtyDegreeView = require('./routes/threesixty_degree_view');
+
 
 
 
@@ -247,6 +249,7 @@ app.use('/yearly_class_wise_subject_avg_report', verifyToken, YearlyClassWiseSub
 app.use('/consolidate_tabulation_sheet_report', verifyToken, ConsolidateTabulationSheetReport);
 app.use('/subject_wise_failure_report', verifyToken, SubjectWiseFailureReport);
 app.use('/student_wise_subject_failure_report', verifyToken, StudentWiseSubjectFailureReport);
+app.use('/threesixty_degree_view', verifyToken, threesixtyDegreeView);
 
 //Tarique
 app.use('/admin_report', verifyToken, adminReportRouter);

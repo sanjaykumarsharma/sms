@@ -99,24 +99,24 @@ router.post('/read_consolidate_tabulation_sheet_report', function(req, res, next
               subject_short_name,if(marks = -1,'AB',marks)as marks ,e.max_marks,e.min_marks, marking_type,grand_total
               from marks_entry_master a
               join student_current_standing c on (a.student_id=c.student_id and a.session_id=c.session_id)
-              join student_master b on (a.student_id = b.student_id and b.current_session_id = ${section_id})
+              join student_master b on (a.student_id = b.student_id and b.current_session_id = ${session_id})
               join marks_setting e on (a.subject_id=e.subject_id and a.exam_id=e.exam_id and a.section_id=e.section_id)
               join exam_type f on e.exam_id = f.exam_type_id
               join subject_master g on a.subject_id = g.subject_id
               where a.exam_id in (${exam_type_id})
               and a.section_id =${section_id}
-              and a.session_id=${section_id}
+              and a.session_id=${session_id}
               and e.marking_type = 'NG'
-              and (b.withdraw='N' || b.withdraw_session > ${section_id})
+              and (b.withdraw='N' || b.withdraw_session > ${session_id})
               group by a.subject_id,a.student_id) z  
-              order by z.student_id,z.roll_number`;
+              order by z.roll_number+0 , z.student_id`;
 
     var clasTeacher = `select concat(first_name,' ',middle_name,' ',last_name)as class_teacher
                       from employee a
                       join class_teacher_section b on a.emp_id = b.class_teacher
                       where section_id=${section_id}
                       and b.session_id = ${session_id} limit 1`;
-    /*console.log(marks);*/
+    console.log(marks);
 
     var qry = headers+';'+marks+';'+clasTeacher;          
 
@@ -142,6 +142,7 @@ router.post('/read_consolidate_tabulation_sheet_report', function(req, res, next
                 var obj = {}
                 var subjects = {} //subjects_marks
                 var marksData = []
+
 
                 results[1].map(r=>{
 

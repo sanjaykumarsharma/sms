@@ -231,6 +231,9 @@ RiotControl.addStore(alumniStore)
 var analysisReportStore = new AnalysisReportStore()
 RiotControl.addStore(analysisReportStore)
 
+var threesixtyDegreeViewStore = new ThreesixtyDegreeViewStore()
+RiotControl.addStore(threesixtyDegreeViewStore)
+
 //tarique
 var roleStore = new RoleStore() 
 RiotControl.addStore(roleStore) 
@@ -893,6 +896,9 @@ let adminRoute = (path1, path2, path3) => {
   switch(path1) {
     case 'login':
       currentPage = riot.mount('div#view', 'login')[0];
+    break;
+    case 'threesixty-degree-view':
+      currentPage = riot.mount('div#view', 'threesixty-degree-view')[0];
     break;
     case 'exam-scheme':
       currentPage = riot.mount('div#view', 'exam-scheme')[0];

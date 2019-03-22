@@ -55,22 +55,44 @@
 		<p><span each={s, i in labels}>{s.exam_type} &nbsp;&nbsp;</span></p>
 		
 		</table>
-		<table class="table is-fullwidth">
+
+<div class="row">
+  <div class="col-sm-12">
+    <table class="table table-bordered reportTable">
+      <thead>
+        <tr>
+          <th rowspan="2">Range</th>
+          <th class="text-center" ng-repeat="sub in subject_first" colspan="{sections.length}">{sub}</th>
+        </tr>
+        <tr>
+          <!-- <th ng-repeat="mk in marks_keys_fifth">{{sections[$index%sections.length]}}</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="m in marksLimits">
+          <td>{{m.min_marks + "-" + m.max_marks}}</td>
+          <td ng-repeat="mk in marks_keys_fifth">{{report_data[m.min_marks + "-" + m.max_marks + "|" + mk]}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+	<!-- 	<table class="table is-fullwidth">
 
       <tr each={s,i in subjects}>
         <td>
-          graphdata {i}
   				<table class="table is-striped is-hoverable is-bordered is-fullwidth">
     				<thead>
                 <th rowspan="2">Range</th>
       					<th each={sub, j in s.subjects} colspan={sections.length}>{sub}</th>
     				</thead>
     				<tbody>
-      					<tr each={r, k in marksRangeArray}>
-                   <td>range value</td>
-                    <virtual each={sub in s.subjects}>
-                     <td each={sec, m in sections}>{sec}</td>
-                   </virtual>
+      					<tr each={r, k in graphData}>
+                   <td>{r.range}</td>
+                    
+                     <td each={sec, m in r[s]} >{sec}</td>
+                   
                 </tr>
     				</tbody>
   				</table>
@@ -78,7 +100,7 @@
         </td>  
       </tr>
 
-		</table><!-- main loop table -->
+		</table> --><!-- main loop table -->
   		
 	</section>
 
@@ -126,7 +148,7 @@
     }
     self.getAssessmentReport = () =>{
     	var obj={}
-        var searchdata={};
+      var searchdata={};
     	let exam_type_id='';
 	     self.examTypes.map( q => {
 	        if(q.done){

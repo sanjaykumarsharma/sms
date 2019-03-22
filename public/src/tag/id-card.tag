@@ -5,19 +5,19 @@
 				<h2 class="title" style="color: #ff3860;">Print Cards</h2>
 			</div>
 			<div class="level-right">
-				<button class="button is-small is-rounded" onclick={id_card_print_preview}>
+				<button class="button is-small " onclick={id_card_print_preview}>
 				<span>Issue Id Card</span>
 				</button>
 
-				<button class="button is-small is-rounded ml5" onclick={escort_card_print_preview}>
+				<button class="button is-small  ml5" onclick={escort_card_print_preview}>
 				<span>Issue Escort Card</span>
 				</button>
 
-				<button class="button is-small is-rounded ml5" onclick={duplicate_id_card_print_preview}>
+				<button class="button is-small  ml5" onclick={duplicate_id_card_print_preview}>
 				<span>Duplicate Id Card</span>
 				</button>
 
-				<button class="button  is-small is-rounded ml5" onclick={duplicate_escort_card_print_preview}>
+				<button class="button  is-small  ml5" onclick={duplicate_escort_card_print_preview}>
 				<span>Duplicate Escort Card</span>
 				</button>
 			</div>

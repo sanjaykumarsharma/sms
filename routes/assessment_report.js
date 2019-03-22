@@ -86,7 +86,7 @@ router.post('/read_assessment_report', function(req, res, next) {
                 ) a, subject_master b
                 where a.subject_id = b.subject_id
                 and marks between '${c.min_marks}' and '${c.max_marks}'
-                group by subject_name,a.section_id`;
+                group by subject_id,a.section_id`;
         }
       }) 
 
@@ -102,9 +102,10 @@ router.post('/read_assessment_report', function(req, res, next) {
 
 
           var prev_subject_id = ''
-          var obj = {}
           var sectionsObj = {}
+          var graphData = []
 
+          //getting unique subject and sections
           result.map(r=>{
             if(subjects.indexOf(r.subject_short_name)==-1){
               subjects.push(r.subject_short_name)
@@ -112,32 +113,23 @@ router.post('/read_assessment_report', function(req, res, next) {
             if(sections.indexOf(r.section)==-1){
               sections.push(r.section)
             }
-            // var obj={}
-            // obj[r.min_marks + '-' + r.max_marks + "|" + r.subject_short_name + "|" + r.section] = r.count;
-            // graphData.push(obj)
-
-            
-            // if(prev_subject_id==''){//loop runs first time
-            //   prev_subject_id=r.subject_id
-            //   obj['subject_name']=r.subject_short_name
-            //   obj['range']=r.min_marks + '-' + r.max_marks
-            //   obj[r.section]=r.count
-            // }else if(prev_subject_id==r.subject_id){
-            //   obj['range']=r.min_marks + '-' + r.max_marks
-            //   obj[r.section]=r.count
-            // }else{
-            //   graphData.push(obj)
-
-            //   prev_subject_id=r.subject_id
-            //   obj = {}
-            //   obj['subject_name']=r.subject_short_name
-            //   obj['range']=r.min_marks + '-' + r.max_marks
-            //   obj[r.section]=r.count
-            // }
-
           })   
 
-          graphData.push(obj)
+          //data accoring to range
+          // range_data.map(c=>{
+          //     var obj = {}
+          //     obj['range']=`${c.min_marks} - ${c.max_marks}`
+          //     result.map(r=>{
+                
+          //       if(Number(c.min_marks)==Number(r.min_marks) && Number(c.max_marks)==Number(r.max_marks)){
+          //         var s_name = r.subject_short_name + '|' + r.section
+          //         obj[s_name] = r.count
+          //       }
+
+          //     })
+          //     graphData.push(obj)
+          // })
+
 
           var graphDataBlock=[]
           var tempArray =[]
@@ -158,13 +150,56 @@ router.post('/read_assessment_report', function(req, res, next) {
           graphDataBlock.push({'subjects':tempArray})
 
 
+          //data according to subject
+
+        /*  range_data.map(c=>{ //range
+              graphDataBlock.map(sub=>{ //blocks of four
+            
+
+              var obj = {}
+              obj['range']=`${c.min_marks} - ${c.max_marks}`
+
+              sub.subjects.map(s=>{ //subjects
+                
+                var sectionsObj ={}
+                sections.map(sec=>{ //sections
+
+                  var sec_count=0
+                  result.map(r=>{
+                    
+                    if(c.min_marks==r.min_marks && c.max_marks==r.max_marks && s==r.subject_short_name && sec==r.section){
+                      sectionsObj[sec]=r.count
+                      sec_count=1
+                    }
+
+                  })
+
+                  if(sec_count==0) sectionsObj[sec]=''
+
+                })
+
+                obj[s]=sectionsObj
+
+              })
+
+              graphData.push(obj)
+            })
+
+
+          })
+*/
+           
+
+
+
           // console.log(subjects)
           // console.log(sections)
           
           data.status = 's';
           data.sections = sections;
           data.subjects = graphDataBlock;
-          data.graphData = result;
+          data.graphData = graphData;
+          data.subject_first = subjects[0];
           res.send(data)
         }
       });

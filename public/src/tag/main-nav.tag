@@ -17,6 +17,9 @@
         <div class="navbar-end">
 
           <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-item" href="#/threesixty-degree-view">360 degree view</a>
+          </div>
+          <div class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-item" >Exam</a>
             <div class="navbar-dropdown">
               <a class="navbar-item" href="#/exam-scheme">Exam Scheme</a>

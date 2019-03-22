@@ -44,7 +44,7 @@
    </h1> 
   
   <h1 class="is-size-4">Class Teacher : {class_teacher}</h1>
-  <p><span each={s, i in labels}>{s.exam_type} &nbsp;&nbsp;</span></p>
+  <p><span each={s, i in labels} class="is-size-6">{s.exam_type} &nbsp;&nbsp;</span></p>
   <table class="table is-striped is-hoverable is-bordered is-fullwidth">
     <thead>
       <tr>
@@ -152,7 +152,7 @@
       	self.examTypes = []
       	self.examTypes = examTypes
       	self.examTypes.map(i=>{
-	    	i.done = false;
+	    	  i.done = false;
       	})
       self.update()
       self.getSection()
@@ -162,15 +162,14 @@
       self.loading = false
       self.headers = {}
       self.headers = headers
-
       self.reports = []
       self.reports = reports
       self.class = $("#standard_id option:selected").text();
       self.section = $("#section_id option:selected").text();
       self.class_teacher = class_teacher
-      /*var selectedExamNames = []; 
+      var selectedExamNames = []; 
       self.examTypes.map(i=>{
-        if(i.done = true){
+        if(i.done == true){
           var d = {};
           d.exam_type = i.exam_type;
           selectedExamNames.push(d);
@@ -178,10 +177,7 @@
       })
 
     self.labels = selectedExamNames;
-    console.log(self.labels)
-    console.log("self.labels")*/
-    
-      self.update()
+    self.update()
     }
 </script>
 </consolidate-tabulation-sheet-report>
