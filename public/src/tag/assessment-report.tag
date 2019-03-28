@@ -62,7 +62,7 @@
       <thead>
         <tr>
           <th rowspan="2">Range</th>
-          <th class="text-center" ng-repeat="sub in subject_first" colspan="{sections.length}">{sub}</th>
+          <!-- <th class="text-center" ng-repeat="sub in subject_first" colspan="{sections.length}">{sub}</th> -->
         </tr>
         <tr>
           <!-- <th ng-repeat="mk in marks_keys_fifth">{{sections[$index%sections.length]}}</th> -->
@@ -70,8 +70,8 @@
       </thead>
       <tbody>
         <tr ng-repeat="m in marksLimits">
-          <td>{{m.min_marks + "-" + m.max_marks}}</td>
-          <td ng-repeat="mk in marks_keys_fifth">{{report_data[m.min_marks + "-" + m.max_marks + "|" + mk]}}</td>
+          <!-- <td>{{m.min_marks + "-" + m.max_marks}}</td> -->
+          <!-- <td ng-repeat="mk in marks_keys_fifth">{{report_data[m.min_marks + "-" + m.max_marks + "|" + mk]}}</td> -->
         </tr>
       </tbody>
     </table>

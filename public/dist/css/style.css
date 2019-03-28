@@ -227,6 +227,13 @@ h2, h2, h3,h4.title{
     display: block !important;
     margin-top: -40px !important; 
   }
+  td.nameHeader {
+    background-color: #efefef !important;
+    color: #ffffff;
+    font-weight: bold;
+    -webkit-print-color-adjust: exact;
+  } 
+
 }
 
 
@@ -1081,3 +1088,14 @@ hr{
    }
   
   /* End Class Teacher Image View*/
+
+  /* promotion sheet */
+  .nameHeader{
+    background-color: #000;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  .test{
+    width:1px;
+    word-wrap: break-word;
+  }

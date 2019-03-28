@@ -76,6 +76,7 @@ var ConsolidateTabulationSheetReport = require('./routes/consolidate_tabulation_
 var SubjectWiseFailureReport = require('./routes/subject_wise_failure_report');
 var StudentWiseSubjectFailureReport = require('./routes/student_wise_subject_failure_report');
 var threesixtyDegreeView = require('./routes/threesixty_degree_view');
+var PromotionSheetReport = require('./routes/promotion-sheet-report');
 
 
 
@@ -154,8 +155,8 @@ app.use(
     connection(mysql,{
         
         host: 'localhost',
-        user: 'phpmyadmin',
-        password : 'root',
+        user: 'root',
+        password : '',
         database:'mckvieor_school',
         multipleStatements: true,
     },'request')
@@ -250,6 +251,7 @@ app.use('/consolidate_tabulation_sheet_report', verifyToken, ConsolidateTabulati
 app.use('/subject_wise_failure_report', verifyToken, SubjectWiseFailureReport);
 app.use('/student_wise_subject_failure_report', verifyToken, StudentWiseSubjectFailureReport);
 app.use('/threesixty_degree_view', verifyToken, threesixtyDegreeView);
+app.use('/promotion-sheet-report', verifyToken, PromotionSheetReport);
 
 //Tarique
 app.use('/admin_report', verifyToken, adminReportRouter);

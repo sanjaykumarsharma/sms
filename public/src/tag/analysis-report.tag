@@ -25,13 +25,19 @@
 		      <span>Consolidated Tabulation Sheet</span>
 		    </a>
 		</p>
+		
+	</div>
+	<div class="field has-addons no-print">
 		<p class="control">
 		    <a class="button {is-active: selected_master == 'subject-wise-failure-report'}" href="#/analysis-report/subject-wise-failure-report">
 		      <span>Subject Wise Failure Report</span>
 		    </a>
 		</p>
-	</div>
-	<div class="field has-addons no-print">
+		<p class="control">
+		    <a class="button {is-active: selected_master == 'promotion-sheet-report'}" href="#/analysis-report/promotion-sheet-report">
+		      <span>Promotion Sheet</span>
+		    </a>
+		</p>
 	  	<p class="control">
 		    <a class="button {is-active: selected_master == 'student-wise-subject-failure-report' }" href="#/analysis-report/student-wise-subject-failure-report">
 		      <span>Student Wise Subject Failure</span>

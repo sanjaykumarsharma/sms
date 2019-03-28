@@ -274,4 +274,49 @@ function AnalysisReportStore() {
       })
   })
 
+
+  /*promotion Sheet*/
+
+  // self.on('read_exam_types_promotion_sheet', function(standard_id) {
+  //   $.ajax({
+  //     url:'/assessment_report/exam-type/'+standard_id,
+  //       contentType: "application/json",
+  //       dataType:"json",
+  //       headers: {"Authorization": getCookie('token')},
+  //       success: function(data){
+  //         console.log(data)
+  //         if(data.status == 's'){
+  //           self.trigger('exam_types_promotion_changed', data.examTypes)
+  //         }else if(data.status == 'e'){
+  //           showToast("Exam Type Read Error. Please try again.", data)
+  //         }
+  //       },
+  //       error: function(data){
+  //         showToast("", data)
+  //       }
+  //     })
+  // })
+
+  self.on('read_promotion_sheet_report', function(obj) {
+    $.ajax({
+      url:'/promotion-sheet-report/read-promotion-sheet-report',
+        type:"POST",
+        data: JSON.stringify(obj),
+        contentType: "application/json",
+        dataType:"json",
+        headers: {"Authorization": getCookie('token')},
+        success: function(data){
+          console.log(data)
+          if(data.status == 's'){
+            self.trigger('read_promotion_sheet_report_changed',data.subjects, data.students, data.marks, data.marks1)
+          }else if(data.status == 'e'){
+            showToast("Error Read Assessment Report. Please try again.", data)
+          }
+        },
+        error: function(data){
+          showToast("", data)
+        }
+      })
+  })
+
 }

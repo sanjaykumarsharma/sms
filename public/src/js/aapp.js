@@ -1319,6 +1319,9 @@ case 'receive-fees':
        case 'consolidate-tabulation-sheet-report':
          riot.mount("div#analysis-report-view", 'consolidate-tabulation-sheet-report')
        break;
+       case 'promotion-sheet-report':
+         riot.mount("div#analysis-report-view", 'promotion-sheet-report')
+       break;
        case 'subject-wise-failure-report':
          riot.mount("div#analysis-report-view", 'subject-wise-failure-report')
        break;

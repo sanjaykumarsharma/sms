@@ -1805,7 +1805,7 @@ riot.tag2('alumni', '<print-header></print-header> <loading-bar if="{loading}"><
     	}
 
 });
-riot.tag2('analysis-report', '<div class="field has-addons no-print"> <p class="control"> <a class="button {is-active: selected_master == \'assessment-report\'}" href="#/analysis-report/assessment-report"> <span>Assessment Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'yearly-section-wise-comparison-report\'}" href="#/analysis-report/yearly-section-wise-comparison-report"> <span>Yearly Section Wise Comparison </span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'yearly-class-wise-comparison-report\'}" href="#/analysis-report/yearly-class-wise-comparison-report"> <span>Yearly Class Wise Comparison </span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'yearly-class-wise-subject-avg-report\'}" href="#/analysis-report/yearly-class-wise-subject-avg-report"> <span>Yearly Class Subject Avg.</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'consolidate-tabulation-sheet-report\'}" href="#/analysis-report/consolidate-tabulation-sheet-report"> <span>Consolidated Tabulation Sheet</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'subject-wise-failure-report\'}" href="#/analysis-report/subject-wise-failure-report"> <span>Subject Wise Failure Report</span> </a> </p> </div> <div class="field has-addons no-print"> <p class="control"> <a class="button {is-active: selected_master == \'student-wise-subject-failure-report\'}" href="#/analysis-report/student-wise-subject-failure-report"> <span>Student Wise Subject Failure</span> </a> </p> </div> <div id="analysis-report-view"></div>', '', '', function(opts) {
+riot.tag2('analysis-report', '<div class="field has-addons no-print"> <p class="control"> <a class="button {is-active: selected_master == \'assessment-report\'}" href="#/analysis-report/assessment-report"> <span>Assessment Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'yearly-section-wise-comparison-report\'}" href="#/analysis-report/yearly-section-wise-comparison-report"> <span>Yearly Section Wise Comparison </span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'yearly-class-wise-comparison-report\'}" href="#/analysis-report/yearly-class-wise-comparison-report"> <span>Yearly Class Wise Comparison </span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'yearly-class-wise-subject-avg-report\'}" href="#/analysis-report/yearly-class-wise-subject-avg-report"> <span>Yearly Class Subject Avg.</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'consolidate-tabulation-sheet-report\'}" href="#/analysis-report/consolidate-tabulation-sheet-report"> <span>Consolidated Tabulation Sheet</span> </a> </p> </div> <div class="field has-addons no-print"> <p class="control"> <a class="button {is-active: selected_master == \'subject-wise-failure-report\'}" href="#/analysis-report/subject-wise-failure-report"> <span>Subject Wise Failure Report</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'promotion-sheet-report\'}" href="#/analysis-report/promotion-sheet-report"> <span>Promotion Sheet</span> </a> </p> <p class="control"> <a class="button {is-active: selected_master == \'student-wise-subject-failure-report\'}" href="#/analysis-report/student-wise-subject-failure-report"> <span>Student Wise Subject Failure</span> </a> </p> </div> <div id="analysis-report-view"></div>', '', '', function(opts) {
 	    var self = this
 	    console.log('opts.selected_master')
 	    console.log(opts.selected_master)
@@ -5309,7 +5309,7 @@ riot.tag2('area', '<print-header></print-header> <loading-bar if="{loading}"></l
     }
 
 });
-riot.tag2('assessment-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{changeExamType}"> <option>--Choose Class--</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getAssessmentReport}">GO</button> <label class="checkbox " each="{st, i in examTypes}" style="padding: 10px;"> <input type="checkbox" checked="{st.done}" id="{\'ID\' + st.exam_type_id}" onclick="{selectExamType.bind(this,st)}">{st.exam_type} </label> </div> </div> <div each="{st, i in marksRangeArray}" style="margin-bottom:20px;margin-top:20px"> <div class="columns mt30"> <div class="column is-2"> <label class="label" for="">Min Marks</label> </div> <div class="column is-2"> <input class="input" ref="min_marks" id="min_marks{i}" type="text" riot-value="{st.min_marks}"> </div> <div class="column is-2"> <label class="label" for="">Max Marks</label> </div> <div class="column is-2 "> <input class="input" ref="max_marks" id="max_marks{i}" type="text" riot-value="{st.max_marks}"> </div> <div class="column is-2"> <button class="button is-danger ml5" onclick="{remove.bind(this, i)}" show="{marksRangeArray.length>1}"> <span class="icon"><span class="fas fa-minus"></span></span> </button> <button class="button is-success ml5 " onclick="{add_marks_range}" show="{marksRangeArray.length==(i+1)}"> <span class="icon"><span class="fas fa-plus"></span></span> </button> </div> </div> </div> </div> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <p><center><strong>Assessment Report For Class{ClassName}</strong></center></p> <p><span each="{s, i in labels}">{s.exam_type} &nbsp;&nbsp;</span></p> </table> <div class="row"> <div class="col-sm-12"> <table class="table table-bordered reportTable"> <thead> <tr> <th rowspan="2">Range</th> <th class="text-center" ng-repeat="sub in subject_first" colspan="{sections.length}">{sub}</th> </tr> <tr> </tr> </thead> <tbody> <tr ng-repeat="m in marksLimits"> <td>{{m.min_marks + ⁗-⁗ + m.max_marks}}</td> <td ng-repeat="mk in marks_keys_fifth">{{report_data[m.min_marks + ⁗-⁗ + m.max_marks + ⁗|⁗ + mk]}}</td> </tr> </tbody> </table> </div> </div> </section>', '', '', function(opts) {
+riot.tag2('assessment-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{changeExamType}"> <option>--Choose Class--</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getAssessmentReport}">GO</button> <label class="checkbox " each="{st, i in examTypes}" style="padding: 10px;"> <input type="checkbox" checked="{st.done}" id="{\'ID\' + st.exam_type_id}" onclick="{selectExamType.bind(this,st)}">{st.exam_type} </label> </div> </div> <div each="{st, i in marksRangeArray}" style="margin-bottom:20px;margin-top:20px"> <div class="columns mt30"> <div class="column is-2"> <label class="label" for="">Min Marks</label> </div> <div class="column is-2"> <input class="input" ref="min_marks" id="min_marks{i}" type="text" riot-value="{st.min_marks}"> </div> <div class="column is-2"> <label class="label" for="">Max Marks</label> </div> <div class="column is-2 "> <input class="input" ref="max_marks" id="max_marks{i}" type="text" riot-value="{st.max_marks}"> </div> <div class="column is-2"> <button class="button is-danger ml5" onclick="{remove.bind(this, i)}" show="{marksRangeArray.length>1}"> <span class="icon"><span class="fas fa-minus"></span></span> </button> <button class="button is-success ml5 " onclick="{add_marks_range}" show="{marksRangeArray.length==(i+1)}"> <span class="icon"><span class="fas fa-plus"></span></span> </button> </div> </div> </div> </div> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <p><center><strong>Assessment Report For Class{ClassName}</strong></center></p> <p><span each="{s, i in labels}">{s.exam_type} &nbsp;&nbsp;</span></p> </table> <div class="row"> <div class="col-sm-12"> <table class="table table-bordered reportTable"> <thead> <tr> <th rowspan="2">Range</th> </tr> <tr> </tr> </thead> <tbody> <tr ng-repeat="m in marksLimits"> </tr> </tbody> </table> </div> </div> </section>', '', '', function(opts) {
 	var self = this;
     self.on("mount", function(){
     	self.readStandard()
@@ -22633,6 +22633,252 @@ riot.tag2('promote', '<loading-bar if="{loading}"></loading-bar> <section class=
 
     }
 
+});
+riot.tag2('promotion-sheet-report', '<print-header></print-header> <loading-bar if="{loading}"></loading-bar> <section class=" is-fluid"> <div class="box no-print"> <div class="columns"> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="standard_id" id="standard_id" onchange="{changeExamType}"> <option>--Choose Class--</option> <option each="{standards}" riot-value="{standard_id}">{standard}</option> </select> </div> </div> </div> <div class="column is-narrow"> <label class="label">Class</label> </div> <div class="column is-narrow"> <div class="control"> <div class="select"> <select ref="section_id" id="section_id"> <option each="{filteredSections}" riot-value="{section_id}">{section}</option> </select> </div> </div> </div> <div class="column"> <button class="button is-danger has-text-weight-bold" onclick="{getConsolidateTabulationSheetReport}">GO</button> <label class="checkbox " each="{st, i in examTypes}" style="padding: 10px;"> <input type="checkbox" checked="{st.done}" id="{\'ID\' + st.exam_type_id}" onclick="{selectExamType.bind(this,st)}">{st.exam_type} </label> </div> </div> </div> <h1 class="has-text-centered is-size-4">Tabulation Sheet 2018-2019 (studentwise) for class : {class} section : {section} </h1> <table class="table is-striped is-hoverable is-bordered is-fullwidth"> <thead> <tr style="font-size:10px;"> <th></th> <th each="{sub in subjects}" class="has-text-centered"><p class="test">{sub.subject_short_name}</p></th> <th>Total</th> <th>Per.</th> </tr> </thead> <tbody each="{student in students}"> <tr> <td colspan="{3+subjects.length}" class="nameHeader">{student.student_name}</td> </tr> <tr each="{ex in selectedExams}"> <th style="width:130px;">{ex.exam_type}</th> <td each="{sub in subjects}" style="text-align:center"> <span if="{marks[student.student_id+⁗-⁗+ex.exam_type_id+⁗-⁗+sub.subject_id]!=undefined}"> {marks[student.student_id+⁗-⁗+ex.exam_type_id+⁗-⁗+sub.subject_id].marks} {marks[student.student_id+⁗-⁗+ex.exam_type_id+⁗-⁗+sub.subject_id].grade} </span> </td> <td style="text-align:center">{getTotal(ex.exam_type_id,student.student_id)}</td> <td style="text-align:center">{getTotalPercentage(ex.exam_type_id,student.student_id)}</td> </tr> <tr> <th style="font-size:10px;">Grand Total</th> <th each="{sub in subjects}" style="text-align:center">{getExamTotal(sub.subject_id,student.student_id)}</th> <th style="text-align:center">{getGrandtotal(student.student_id)}</th> <th style="text-align:center">{getGrandTotalPercentage(student.student_id)}%</th> </tr> </tbody> </table> </section>', '', '', function(opts) {
+	var self = this;
+    self.on("mount", function(){
+    	self.readStandard()
+    	self.readSection()
+        self.update()
+    })
+    self.on("unmount", function(){
+      analysisReportStore.off('read_standard_changed',StandardChanged)
+      analysisReportStore.off('exam_types_changed',ExamTypesChanged)
+      analysisReportStore.off('read_section_changed',SectionChanged)
+      analysisReportStore.off('read_promotion_sheet_report_changed',PromotionSheetReportChanged)
+    })
+
+    self.readStandard = () => {
+       analysisReportStore.trigger('read_standard')
+    }
+    self.readSection = () => {
+       analysisReportStore.trigger('read_section')
+    }
+
+    self.changeExamType = () => {
+       analysisReportStore.trigger('read_exam_types',self.refs.standard_id.value)
+       self.update()
+       self.getSection()
+    }
+
+    self.getSection = () => {
+    	self.filteredSections = []
+    	self.filteredSections = self.sections.filter(s => {
+    		return s.standard_id == self.refs.standard_id.value
+    	})
+    }
+
+    self.selectExamType = (item,event) => {
+    	console.log(event)
+    	item.done=!event.item.st.done
+      console.log(item.exam_type_id)
+    }
+
+    self.getConsolidateTabulationSheetReport= () =>{
+    	var obj={}
+      var searchdata={};
+    	let exam_type_id='';
+	     self.examTypes.map( q => {
+	        if(q.done){
+	          if(exam_type_id==''){
+	            exam_type_id=q.exam_type_id
+	          }else{
+	            exam_type_id=exam_type_id+','+q.exam_type_id
+	          }
+	        }
+	      })
+	    console.log(exam_type_id);
+    	searchdata['standard_id']=self.refs.standard_id.value
+      searchdata['exam_type_id']=exam_type_id
+    	searchdata['section_id']=self.refs.section_id.value
+    	obj['searchdata']=searchdata;
+    	console.log(obj)
+      self.loading=true
+    	analysisReportStore.trigger('read_promotion_sheet_report', obj)
+    }
+
+    self.getTotal = (examId,student) => {
+
+     var total_marks = 0;
+     var subject_total = 0;
+     var total_label = "";
+
+      self.marks_total.map(type=>{
+
+        if(examId==type.exam_id && student==type.student_id){
+
+          if(type.grand_total=='Y'){
+
+             if(type.marks !='AB'){
+               total_marks =Number(total_marks) + Number(type.marks);
+             }
+             subject_total = Number(subject_total) + Number(type.max_marks);
+             total_label = total_marks +"/"+subject_total;
+
+           }
+
+        }
+
+      })
+
+      return total_label
+
+    }
+
+    self.getTotalPercentage = (examId,student) => {
+
+     var total_marks = 0;
+     var subject_total = 0;
+
+      self.marks_total.map(type=>{
+
+        if(examId==type.exam_id && student==type.student_id){
+
+          if(type.grand_total=='Y'){
+
+             if(type.marks !='AB'){
+               total_marks =Number(total_marks) + Number(type.marks);
+             }
+             subject_total = Number(subject_total) + Number(type.max_marks);
+
+           }
+
+        }
+
+      })
+
+      var examPercenatge = ((Number(total_marks) / Number(subject_total)) *100).toFixed(2) +"%";
+
+      return examPercenatge
+
+    }
+
+    self.getExamTotal = (subject,studentID) => {
+
+      var subject_total = '';
+
+      self.marks_total.map(type=>{
+
+        if(subject==type.subject_id && studentID==type.student_id){
+
+           if(type.grand_total=='Y'){
+              if(type.marks !='AB'){
+                if(!Number(type.marks)){
+                    subject_total =Number(subject_total);
+                  }else{
+                  subject_total =Number(subject_total) + Number(type.marks);
+                }
+              }
+            }
+
+         }
+
+      })
+
+      return subject_total;
+
+    }
+
+    self.getGrandtotal = (stdId) => {
+
+       var total_marks = 0;
+       var subject_grand_total = 0;
+       var total_label = "";
+
+       self.marks_total.map(type=>{
+
+        if(stdId == type.student_id){
+
+         if(type.grand_total =='Y'){
+            if(type.marks !='AB'){
+              total_marks =Number(total_marks) + Number(type.marks);
+            }
+              subject_grand_total = Number(subject_grand_total) + Number(type.max_marks);
+
+          }
+
+        }
+
+      })
+
+      total_label = total_marks +"/"+subject_grand_total;
+      return total_label;
+
+    }
+
+     self.getGrandTotalPercentage = (stdId) => {
+
+       var total_marks = 0;
+       var subject_grand_total = 0;
+
+       self.marks_total.map(type=>{
+
+        if(stdId == type.student_id){
+
+         if(type.grand_total =='Y'){
+            if(type.marks !='AB'){
+              total_marks =Number(total_marks) + Number(type.marks);
+            }
+              subject_grand_total = Number(subject_grand_total) + Number(type.max_marks);
+          }
+
+        }
+
+      })
+
+      var grandTotalPercentage = ((Number(total_marks) / Number(subject_grand_total)) *100).toFixed(2);
+      return grandTotalPercentage;
+
+    }
+
+    analysisReportStore.on('read_standard_changed',StandardChanged)
+    function StandardChanged(standards){
+      	self.standards = standards
+      	self.update()
+    }
+    analysisReportStore.on('read_section_changed',SectionChanged)
+    function SectionChanged(sections){
+      console.log(sections)
+      self.sections = sections
+      self.update()
+      self.getSection()
+
+    }
+    analysisReportStore.on('exam_types_changed',ExamTypesChanged)
+    function ExamTypesChanged(examTypes){
+    	self.loading = false
+      	self.examTypes = []
+      	self.examTypes = examTypes
+      	self.examTypes.map(i=>{
+	    	  i.done = false;
+      	})
+      self.update()
+      self.getSection()
+    }
+    analysisReportStore.on('read_promotion_sheet_report_changed',PromotionSheetReportChanged)
+    function PromotionSheetReportChanged(subjects,students,marks,marks_total){
+      self.loading = false
+      self.subjects = {}
+      self.subjects = subjects
+
+      self.students = []
+      self.students = students
+
+      self.selectedExams = []
+      self.examTypes.map(i=>{
+          if(i.done) {
+            self.selectedExams.push(i)
+          }
+      })
+
+      self.marks = marks
+      self.marks_total = marks_total
+
+      self.class = $("#standard_id option:selected").text();
+      self.section = $("#section_id option:selected").text();
+
+    self.update()
+    }
 });
 riot.tag2('raw', '<span></span>', '', '', function(opts) {
 
